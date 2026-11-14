@@ -5,6 +5,10 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { openDb } from './db/index.js';
 import { dbUrl } from './config.js';
+import { registerLibraryRoutes } from './routes/library.js';
+import { registerInsightRoutes } from './routes/insights.js';
+import { registerExtRoutes } from './routes/ext.js';
+import { registerShareRoutes } from './routes/share.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_DIST = process.env.VRC_WEB_DIST || path.join(__dirname, '../../web/dist');
@@ -15,6 +19,10 @@ const iso = (v) => (v instanceof Date ? v.toISOString() : v);
 
 const app = Fastify({ logger: false });
 await app.register(fastifyStatic, { root: WEB_DIST, prefix: '/' });
+registerLibraryRoutes(app, { db, T, iso });
+registerInsightRoutes(app, { db, T, iso });
+registerExtRoutes(app, { db, T, iso });
+registerShareRoutes(app, { db, T, iso });
 
 app.get('/api/health', async () => {
   const [s] = await db.query(
@@ -177,7 +185,8 @@ app.get('/api/my-sessions', async () => {
 });
 
 /** 同房玩家：game_event 聚合 */
-app.get('/api/players', async () => {
+app.get('/api/players', async (req) => {
+  const minMeets = Math.max(1, Number(req.query.min_meets ?? 1) || 1);
   const rows = await db.query(
     `select display_name, user_id, world_name, at from ${T('game_event')} where kind = 'room_join' order by at desc`,
   );
@@ -185,13 +194,20 @@ app.get('/api/players', async () => {
   for (const r of rows) {
     const key = r.user_id ?? r.display_name;
     const cur = map.get(key);
-    if (cur) cur.meets += 1;
-    else map.set(key, {
+    if (cur) {
+      cur.meets += 1;
+      if (cur.last_world !== r.world_name) cur.worlds.push(r.world_name);
+    } else map.set(key, {
       name: r.display_name ?? r.user_id, user_id: r.user_id, meets: 1,
       last_seen: iso(r.at), last_world: r.world_name ?? null,
+      worlds: r.world_name ? [r.world_name] : [],
     });
   }
-  return { returned: map.size, players: [...map.values()].sort((a, b) => b.meets - a.meets).slice(0, 200) };
+  const players = [...map.values()]
+    .filter((p) => p.meets >= minMeets)
+    .sort((a, b) => b.meets - a.meets || (a.last_seen < b.last_seen ? 1 : -1))
+    .slice(0, 200);
+  return { returned: players.length, min_meets: minMeets, players };
 });
 
 function ingestToken() {

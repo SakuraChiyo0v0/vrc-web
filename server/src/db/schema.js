@@ -56,6 +56,28 @@ export const PG = [
      last_error text
    )`,
   `insert into vrc.collector_state (id) values (1) on conflict do nothing`,
+  // 收藏：分组 + 收藏项（world / friend），pinned 的世界上侧栏
+  `create table if not exists vrc.favorite_group (
+     id text primary key, name text not null,
+     sort_order int default 0, created_at timestamptz not null default now()
+   )`,
+  `create table if not exists vrc.favorite (
+     id text primary key, kind text not null, target_id text not null,
+     group_id text, note text, pinned boolean default false,
+     sort_order int default 0, created_at timestamptz not null default now(),
+     unique (kind, target_id)
+   )`,
+  `create index if not exists favorite_kind_idx on vrc.favorite (kind, sort_order)`,
+  // 分享：世界 / 收藏合集的只读快照
+  `create table if not exists vrc.share (
+     id text primary key, kind text not null, target_id text,
+     title text, payload jsonb, created_at timestamptz not null default now()
+   )`,
+  // 对外只读 API 令牌
+  `create table if not exists vrc.api_token (
+     token text primary key, name text, created_at timestamptz not null default now(),
+     last_used_at timestamptz
+   )`,
   // 老库补列
   `alter table vrc.friend add column if not exists icon_url text`,
   `alter table vrc.friend_event add column if not exists icon_url text`,
@@ -112,6 +134,25 @@ export const SQLITE = [
      last_error text
    )`,
   `insert or ignore into collector_state (id) values (1)`,
+  `create table if not exists favorite_group (
+     id text primary key, name text not null,
+     sort_order integer default 0, created_at text not null default (datetime('now'))
+   )`,
+  `create table if not exists favorite (
+     id text primary key, kind text not null, target_id text not null,
+     group_id text, note text, pinned integer default 0,
+     sort_order integer default 0, created_at text not null default (datetime('now')),
+     unique (kind, target_id)
+   )`,
+  `create index if not exists favorite_kind_idx on favorite (kind, sort_order)`,
+  `create table if not exists share (
+     id text primary key, kind text not null, target_id text,
+     title text, payload text, created_at text not null default (datetime('now'))
+   )`,
+  `create table if not exists api_token (
+     token text primary key, name text,
+     created_at text not null default (datetime('now')), last_used_at text
+   )`,
 ];
 
 export function ddlFor(dialect) {

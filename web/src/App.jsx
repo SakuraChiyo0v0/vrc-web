@@ -9,6 +9,8 @@ import StatsPage from './pages/StatsPage.jsx';
 import SessionsPage from './pages/SessionsPage.jsx';
 import PlayersPage from './pages/PlayersPage.jsx';
 import NotificationsPage from './pages/NotificationsPage.jsx';
+import FavoritesPage from './pages/FavoritesPage.jsx';
+import InsightsPage from './pages/InsightsPage.jsx';
 
 const PAGES = {
   friends: FriendsPage,
@@ -16,7 +18,9 @@ const PAGES = {
   notifications: NotificationsPage,
   sessions: SessionsPage,
   players: PlayersPage,
-  stats: StatsPage
+  stats: StatsPage,
+  favorites: FavoritesPage,
+  insights: InsightsPage
 };
 
 const TITLES = {
@@ -25,7 +29,9 @@ const TITLES = {
   notifications: ['通知', '邀请 / 好友请求 / 群公告'],
   sessions: ['我的行程', '进出过的世界与停留时长'],
   players: ['玩家', '同房遇到过的人'],
-  stats: ['统计', '近 24 小时']
+  stats: ['统计', '近 24 小时'],
+  favorites: ['收藏', '世界 / 好友、分组与备注，固定的世界在侧栏'],
+  insights: ['洞察', '常一起玩 / 渐行渐远 / 最常遇到的时段']
 };
 
 function useTheme() {

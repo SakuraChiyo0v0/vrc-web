@@ -13,6 +13,7 @@
  *   3. 去重：同一行内容 5 分钟内只报一次（行哈希）
  *   4. --dry 只打印事件不发请求；--once 跑一轮退出；--file <path> 指定日志
  *   5. token：--token / VRC_INGEST_TOKEN / --token-file <path>
+ *   6. --from <dir> 补录：批量回填历史 output_log（时间取日志行首时间戳）
  *
  * 只读 %LOCALAPPDATA%Low\VRChat\VRChat\output_log_*.txt，不改游戏文件、不打 mod。
  */
@@ -43,6 +44,7 @@ function usage() {
   --file <path>       指定日志文件路径（默认自动找最新 output_log_*.txt）
   --token <token>     上报 token（三选一：--token / --token-file / VRC_INGEST_TOKEN）
   --token-file <path> 从文件读取 token（内容去空白）
+  --from <dir>        补录：批量回填目录下所有 output_log_*.txt（配合 --dry 只统计）
   --help              显示本帮助
 
 能力：
@@ -55,7 +57,7 @@ function usage() {
 }
 
 const args = process.argv.slice(2);
-let OPTS = { dry: false, once: false, file: null, token: null, tokenFile: null };
+let OPTS = { dry: false, once: false, file: null, token: null, tokenFile: null, from: null };
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
   if (a === '--help' || a === '-h') { usage(); process.exit(0); }
@@ -64,6 +66,7 @@ for (let i = 0; i < args.length; i++) {
   else if (a === '--file') OPTS.file = args[++i];
   else if (a === '--token') OPTS.token = args[++i];
   else if (a === '--token-file') OPTS.tokenFile = args[++i];
+  else if (a === '--from') OPTS.from = args[++i];
   else { console.error(`未知参数: ${a}（--help 查看用法）`); process.exit(1); }
 }
 
@@ -121,10 +124,10 @@ function newestLog() {
 function parseLine(line, ts) {
   const at = ts;
   let m;
-  if ((m = /\[Behaviour\] OnPlayerJoined\s+(.+?)(?:\s+\((usr_[0-9a-f-]+)\))?\s*$/.exec(line))) {
+  if ((m = /\[Behaviour\] OnPlayerJoined\s+(.+?)(?:\s+\((usr_[0-9a-zA-Z_-]+)\))?\s*$/.exec(line))) {
     return { kind: 'room_join', displayName: m[1].trim(), userId: m[2] ?? null, worldName: state.world, at };
   }
-  if ((m = /\[Behaviour\] OnPlayerLeft\s+(.+?)(?:\s+\((usr_[0-9a-f-]+)\))?\s*$/.exec(line))) {
+  if ((m = /\[Behaviour\] OnPlayerLeft\s+(.+?)(?:\s+\((usr_[0-9a-zA-Z_-]+)\))?\s*$/.exec(line))) {
     return { kind: 'room_leave', displayName: m[1].trim(), userId: m[2] ?? null, worldName: state.world, at };
   }
   if ((m = /\[Behaviour\] Entering Room:\s*(.+)$/.exec(line))) {
@@ -160,6 +163,62 @@ async function flush() {
       return;
     }
   }
+}
+
+/** 日志行首时间（VRChat 写本地时间）：2026.11.01 10:00:01 → ISO */
+function tsOfLine(line, fallback) {
+  const m = /^(\d{4})\.(\d{2})\.(\d{2}) (\d{2}):(\d{2}):(\d{2})/.exec(line);
+  if (!m) return fallback;
+  const [, y, mo, d, h, mi, s] = m.map(Number);
+  return new Date(y, mo - 1, d, h, mi, s).toISOString();
+}
+
+/** 补录：按文件名顺序回放目录里的 output_log_*.txt，时间取行首时间戳 */
+async function backfill(dir) {
+  let names;
+  try {
+    names = fs.readdirSync(dir).filter((n) => /output_log_.*\.txt$/i.test(n)).sort();
+  } catch (e) {
+    console.error(`[from] 读目录失败：${e.message}`);
+    process.exit(1);
+  }
+  if (!names.length) {
+    console.error(`[from] ${dir} 里没有 output_log_*.txt`);
+    process.exit(1);
+  }
+
+  const events = [];
+  for (const name of names) {
+    const full = path.join(dir, name);
+    state.world = null;                       // 每个文件是一局游戏，世界从头记
+    const fallback = new Date(fs.statSync(full).mtimeMs).toISOString();
+    const text = fs.readFileSync(full, 'utf8');
+    let n = 0;
+    for (const line of text.split(/\r?\n/)) {
+      if (!line.trim()) continue;
+      const ev = parseLine(line, tsOfLine(line, fallback));
+      if (!ev) continue;
+      events.push({ ...ev, source: name });
+      n++;
+    }
+    console.log(`[from] ${name} → ${n} 条`);
+  }
+
+  events.sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
+  console.log(`backfill files=${names.length} events=${events.length}`);
+
+  if (OPTS.dry) {
+    for (const ev of events.slice(0, 20)) console.log(`[dry] ${JSON.stringify(ev)}`);
+    if (events.length > 20) console.log(`[dry] … 其余 ${events.length - 20} 条未打印`);
+    return;
+  }
+
+  pending.push(...events);
+  while (pending.length) {
+    await flush();
+    if (pending.length) await sleep(backoffMs || 1000);
+  }
+  console.log(`[from] 已上报 ${events.length} 条`);
 }
 
 function tick() {
@@ -208,5 +267,10 @@ if (OPTS.dry) {
   console.log(`[agent] 监听 ${LOG_DIR}`);
 }
 
-tick();
-if (!OPTS.once) setInterval(tick, TICK_MS);
+if (OPTS.from) {
+  await backfill(OPTS.from);
+  process.exit(0);
+} else {
+  tick();
+  if (!OPTS.once) setInterval(tick, TICK_MS);
+}
