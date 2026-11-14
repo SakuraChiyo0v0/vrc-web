@@ -86,13 +86,13 @@ export default function App() {
               <div className="flex items-center gap-2">
                 <h1 className="text-[14px] font-medium leading-tight">{TITLES[page]?.[0] ?? ''}</h1>
               </div>
-              <p className="text-[11px] text-fg3">{TITLES[page]?.[1] ?? ''}</p>
+              <p className="hidden truncate text-[11px] text-fg3 sm:block">{TITLES[page]?.[1] ?? ''}</p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
               <button onClick={() => setPalette(true)} className="chip" title="全局搜索（⌘K）">
-                <span className="opacity-60">⌕</span> 搜索
-                <kbd className="ml-1 text-[9.5px] opacity-50">⌘K</kbd>
+                <span className="opacity-60">⌕</span><span className="hidden sm:inline"> 搜索</span>
+                <kbd className="ml-1 hidden text-[9.5px] opacity-50 sm:inline">⌘K</kbd>
               </button>
               <StatusBar status={status} />
               <button onClick={toggleTheme} className="chip" title="切换主题">

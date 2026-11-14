@@ -56,7 +56,7 @@ export default function FriendsPage() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="搜索好友"
-          className="h-8 w-60 rounded-lg border px-2.5 text-[12px] outline-none"
+          className="h-8 w-full rounded-lg border px-2.5 text-[12px] outline-none sm:w-60"
           style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)', color: 'var(--content-primary)' }}
         />
         <button
@@ -67,7 +67,7 @@ export default function FriendsPage() {
           {only ? '只看在线' : '全部好友'}
         </button>
         <span className="text-[11.5px] text-fg3">{data?.total ?? 0} 人</span>
-        <a className="chip ml-auto" href={`${BASE}api/export/friends.csv`} download>导出 CSV</a>
+        <a className="chip sm:ml-auto" href={`${BASE}api/export/friends.csv`} download>导出 CSV</a>
       </div>
 
       {isLoading && <div className="text-[12px] text-fg3">加载中…</div>}
