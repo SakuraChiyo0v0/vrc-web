@@ -19,7 +19,19 @@ const T = (n) => db.tbl(n);
 const iso = (v) => (v instanceof Date ? v.toISOString() : v);
 
 const app = Fastify({ logger: false });
-await app.register(fastifyStatic, { root: WEB_DIST, prefix: '/' });
+// index.html 不能长缓存：每次发版 JS/CSS 文件名都会变，缓存旧的 index 会指向已删除的 asset（白屏）
+const staticOpts = { root: WEB_DIST };
+app.addHook('onSend', async (req, reply, payload) => {
+  if (req.url.endsWith('index.html') || req.url.endsWith('/')) {
+    reply.header('cache-control', 'no-cache, must-revalidate');
+  } else if (req.url.includes('/assets/')) {
+    reply.header('cache-control', 'public, max-age=31536000, immutable');
+  }
+  return payload;
+});
+await app.register(fastifyStatic, { ...staticOpts, prefix: '/' });
+// 同一份前端也挂在 /vrc/ 下：内网 nginx 会剥掉前缀，直连 8791 的访问带前缀，两边都要能开
+await app.register(fastifyStatic, { ...staticOpts, prefix: '/vrc/', decorateReply: false });
 registerLibraryRoutes(app, { db, T, iso });
 registerInsightRoutes(app, { db, T, iso });
 registerExtRoutes(app, { db, T, iso });
