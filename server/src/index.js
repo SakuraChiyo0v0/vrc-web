@@ -16,6 +16,24 @@ const iso = (v) => (v instanceof Date ? v.toISOString() : v);
 const app = Fastify({ logger: false });
 await app.register(fastifyStatic, { root: WEB_DIST, prefix: '/' });
 
+app.get('/api/health', async () => {
+  const [s] = await db.query(
+    `select connected, last_msg_at, msg_count, last_error from ${T('collector_state')} where id = 1`,
+  );
+  return {
+    ok: true,
+    db: { kind: db.dialect },
+    collector: s
+      ? {
+          connected: !!Number(s.connected),
+          lastMsgAt: s.last_msg_at ? iso(s.last_msg_at) : null,
+          msgCount: Number(s.msg_count ?? 0),
+          lastError: s.last_error ?? null,
+        }
+      : { connected: false, lastMsgAt: null, msgCount: 0, lastError: null },
+  };
+});
+
 app.get('/api/status', async () => {
   const [s] = await db.query(`select connected, last_msg_at, msg_count, last_error from ${T('collector_state')} where id = 1`);
   const [acc] = await db.query(`select vrchat_user_id, display_name, last_ok_at from ${T('account')} order by id limit 1`);
@@ -200,6 +218,31 @@ app.post('/ingest/log', async (req, reply) => {
   return { ok: true, inserted: n };
 });
 
+/** 事件留存：清理 N 天前的事件，启动时 + 每 24h 各跑一次 */
+const retentionDays = (() => {
+  const n = Number(process.env.VRC_EVENT_RETENTION_DAYS);
+  return Number.isFinite(n) && n > 0 ? n : 30;
+})();
+
+async function purgeOldEvents() {
+  const cutoff = new Date(Date.now() - retentionDays * 86400_000).toISOString();
+  let total = 0;
+  for (const table of ['friend_event', 'self_event', 'game_event']) {
+    try {
+      const [c] = await db.query(`select count(*) as n from ${T(table)} where at < ?`, [cutoff]);
+      await db.query(`delete from ${T(table)} where at < ?`, [cutoff]);
+      const n = Number(c?.n ?? 0);
+      total += n;
+      console.log(`[retention] ${table}: deleted ${n} rows older than ${retentionDays}d`);
+    } catch (e) {
+      console.error(`[retention] ${table}:`, e.message);
+    }
+  }
+  return total;
+}
+
 const port = Number(process.env.PORT ?? 8790);
 await app.listen({ port, host: '0.0.0.0' });
 console.log(`[api] http://0.0.0.0:${port} (db=${db.dialect})`);
+purgeOldEvents().catch((e) => console.error('[retention]', e.message));
+setInterval(() => purgeOldEvents().catch((e) => console.error('[retention]', e.message)), 24 * 3600_000).unref();

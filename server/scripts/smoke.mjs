@@ -62,7 +62,14 @@ try {
   console.log('sessions', sessions.returned, 'my', mine.returned);
   console.log('events  ', (await (await fetch(`${base}/api/events`)).json()).returned);
 
-  const pass = status.dialect && players.players.length === 2 && ing.inserted === 3;
+  const health = await (await fetch(`${base}/api/health`)).json();
+  console.log('health  ', JSON.stringify(health));
+  const healthOk = health.ok === true
+    && health.db && ['postgres', 'sqlite'].includes(health.db.kind)
+    && health.collector && typeof health.collector.connected === 'boolean'
+    && typeof health.collector.msgCount === 'number';
+
+  const pass = status.dialect && players.players.length === 2 && ing.inserted === 3 && healthOk;
   console.log(pass ? 'SMOKE OK' : 'SMOKE FAIL');
   exitCode = pass ? 0 : 1;
 } catch (e) {

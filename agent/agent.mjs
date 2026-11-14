@@ -7,20 +7,74 @@
  *   set VRC_INGEST_TOKEN=<NAS 上 /opt/data/state/vrc-web/ingest.token 的内容>
  *   node agent.mjs
  *
+ * 能力：
+ *   1. 日志轮转：每 30 秒重新解析最新 output_log_*.txt，切换文件时从头读
+ *   2. POST 失败指数退避（1/2/4…最大 60s），缓冲不丢
+ *   3. 去重：同一行内容 5 分钟内只报一次（行哈希）
+ *   4. --dry 只打印事件不发请求；--once 跑一轮退出；--file <path> 指定日志
+ *   5. token：--token / VRC_INGEST_TOKEN / --token-file <path>
+ *
  * 只读 %LOCALAPPDATA%Low\VRChat\VRChat\output_log_*.txt，不改游戏文件、不打 mod。
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import crypto from 'node:crypto';
 
 const URL_BASE = (process.env.VRC_INGEST_URL || 'http://192.168.31.254:8730/vrc').replace(/\/$/, '');
-const TOKEN = process.env.VRC_INGEST_TOKEN || '';
 const STATE = path.join(os.homedir(), '.vrc-agent-state.json');
 const LOG_DIR = process.env.VRC_LOG_DIR
   || path.join(process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'), 'Low', 'VRChat', 'VRChat');
 
-if (!TOKEN) {
-  console.error('缺少 VRC_INGEST_TOKEN 环境变量');
+const TICK_MS = 30_000;          // 轮转扫描间隔
+const DEDUP_MS = 5 * 60_000;     // 同一行内容 5 分钟内只报一次
+const BACKOFF_MAX_MS = 60_000;   // 退避上限
+
+// ---- CLI ----
+function usage() {
+  console.log(`VRChat 日志代理 (agent.mjs)
+
+用法：
+  node agent.mjs [选项]
+
+选项：
+  --dry               只解析并打印将上报的事件，不发任何请求
+  --once              解析一轮就退出（可与其他选项组合）
+  --file <path>       指定日志文件路径（默认自动找最新 output_log_*.txt）
+  --token <token>     上报 token（三选一：--token / --token-file / VRC_INGEST_TOKEN）
+  --token-file <path> 从文件读取 token（内容去空白）
+  --help              显示本帮助
+
+能力：
+  1. 跟随日志轮转：每 30 秒重新解析最新 output_log_*.txt，切换文件时从头读
+  2. POST 失败指数退避：1s/2s/4s…上限 60s，事件缓冲不丢，恢复后重发
+  3. 去重：同一行内容 5 分钟内只报一次（按 sha256 行哈希）
+  4. --dry / --once / --file 可组合使用
+  5. token 三选一：--token、VRC_INGEST_TOKEN 环境变量、--token-file 文件
+`);
+}
+
+const args = process.argv.slice(2);
+let OPTS = { dry: false, once: false, file: null, token: null, tokenFile: null };
+for (let i = 0; i < args.length; i++) {
+  const a = args[i];
+  if (a === '--help' || a === '-h') { usage(); process.exit(0); }
+  else if (a === '--dry') OPTS.dry = true;
+  else if (a === '--once') OPTS.once = true;
+  else if (a === '--file') OPTS.file = args[++i];
+  else if (a === '--token') OPTS.token = args[++i];
+  else if (a === '--token-file') OPTS.tokenFile = args[++i];
+  else { console.error(`未知参数: ${a}（--help 查看用法）`); process.exit(1); }
+}
+
+// ---- token：--token / --token-file / VRC_INGEST_TOKEN 三选一 ----
+let TOKEN = OPTS.token ?? process.env.VRC_INGEST_TOKEN ?? '';
+if (!TOKEN && OPTS.tokenFile) {
+  try { TOKEN = fs.readFileSync(OPTS.tokenFile, 'utf8').trim(); }
+  catch (e) { console.error(`读取 token 文件失败: ${e.message}`); process.exit(1); }
+}
+if (!TOKEN && !OPTS.dry) {
+  console.error('缺少 token：用 --token、--token-file 或 VRC_INGEST_TOKEN 提供');
   process.exit(1);
 }
 
@@ -28,8 +82,31 @@ let state = { file: null, offset: 0, world: null };
 try { state = { ...state, ...JSON.parse(fs.readFileSync(STATE, 'utf8')) }; } catch { /* 首次运行 */ }
 
 const pending = [];
+const seen = new Map();   // lineHash -> lastReportedAt(ms)
+let backoffMs = 0;        // 当前退避，0 = 可立即发
+let nextSendAt = 0;
+
+function lineHash(line) {
+  return crypto.createHash('sha256').update(line).digest('hex');
+}
+
+/** 行去重：同一内容 5 分钟内只报一次 */
+function isDuplicate(line) {
+  const h = lineHash(line);
+  const now = Date.now();
+  const last = seen.get(h);
+  if (last != null && now - last < DEDUP_MS) return true;
+  seen.set(h, now);
+  for (const [k, t] of seen) if (now - t >= DEDUP_MS) seen.delete(k);
+  return false;
+}
 
 function newestLog() {
+  if (OPTS.file) {
+    const p = path.resolve(OPTS.file);
+    const st = fs.statSync(p);
+    return { path: p, name: path.basename(p), mtimeMs: st.mtimeMs };
+  }
   let best = null;
   for (const name of fs.readdirSync(LOG_DIR)) {
     if (!name.startsWith('output_log_') || !name.endsWith('.txt')) continue;
@@ -60,20 +137,28 @@ function parseLine(line, ts) {
   return null;
 }
 
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
 async function flush() {
-  if (!pending.length) return;
-  const batch = pending.splice(0, 100);
-  try {
-    const r = await fetch(`${URL_BASE}/ingest/log`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-ingest-token': TOKEN },
-      body: JSON.stringify({ events: batch }),
-    });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    console.log(`[push] ${batch.length} 条 → ${r.status}`);
-  } catch (e) {
-    console.error('[push] 失败，放回队列', e.message);
-    pending.unshift(...batch);
+  while (pending.length) {
+    if (Date.now() < nextSendAt) return;   // 退避中，等待下一轮；缓冲保留
+    const batch = pending.splice(0, 100);
+    try {
+      const r = await fetch(`${URL_BASE}/ingest/log`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-ingest-token': TOKEN },
+        body: JSON.stringify({ events: batch }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      console.log(`[push] ${batch.length} 条 → ${r.status}`);
+      backoffMs = 0;
+    } catch (e) {
+      console.error(`[push] 失败，${backoffMs || 1000}ms 后重试（缓冲 ${batch.length + pending.length} 条不丢）: ${e.message}`);
+      pending.unshift(...batch);
+      backoffMs = Math.min(backoffMs ? backoffMs * 2 : 1000, BACKOFF_MAX_MS);
+      nextSendAt = Date.now() + backoffMs;
+      return;
+    }
   }
 }
 
@@ -99,15 +184,29 @@ function tick() {
   state.offset = st.size;
 
   const now = new Date().toISOString();
+  let printed = 0;
   for (const line of buf.toString('utf8').split(/\r?\n/)) {
     if (!line.trim()) continue;
     const ev = parseLine(line, now);
-    if (ev) pending.push(ev);
+    if (!ev) continue;
+    if (isDuplicate(line)) continue;
+    pending.push(ev);
+    printed++;
   }
-  if (pending.length) flush();
-  fs.writeFileSync(STATE, JSON.stringify(state));
+  if (printed) console.log(`[scan] ${log.name} 新增事件 ${printed} 条`);
+  if (OPTS.dry) {
+    for (const ev of pending.splice(0)) console.log(`[dry] ${JSON.stringify(ev)}`);
+  } else {
+    flush();
+  }
+  if (!OPTS.dry) fs.writeFileSync(STATE, JSON.stringify(state));
 }
 
-console.log(`[agent] 监听 ${LOG_DIR}`);
-setInterval(tick, 2000);
+if (OPTS.dry) {
+  console.log('[agent] dry 模式：只打印事件，不发请求，不写状态');
+} else {
+  console.log(`[agent] 监听 ${LOG_DIR}`);
+}
+
 tick();
+if (!OPTS.once) setInterval(tick, TICK_MS);

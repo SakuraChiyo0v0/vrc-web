@@ -39,6 +39,37 @@ export default function SessionsPage() {
           </table>
         </div>
       )}
+
+      <div className="label-xs mt-5 mb-2">时间线</div>
+      {rows.length === 0 ? (
+        <div className="card p-10 text-center">
+          <div className="text-[13px]">暂无时间线数据</div>
+          <div className="mt-1 text-[11.5px] text-fg3">有行程记录后会在这里按时间展示。</div>
+        </div>
+      ) : (
+        <div className="card p-4">
+          <div className="relative pl-5">
+            <span
+              className="absolute top-1 bottom-1 left-[5px] w-px"
+              style={{ background: 'var(--stroke-default)' }}
+            />
+            {rows.map((s, i) => (
+              <div key={i} className="relative py-2.5">
+                <span
+                  className="absolute top-[17px] -left-[19px] h-[9px] w-[9px] rounded-full"
+                  style={{ background: s.minutes != null ? 'var(--stroke-strong)' : 'var(--status-joinme)', border: '2px solid var(--surface-panel)' }}
+                />
+                <div className="text-[12.5px]">{s.world ?? s.location}</div>
+                <div className="mt-0.5 flex items-center gap-2 text-[11.5px] text-fg3">
+                  <span>{new Date(s.start_at).toLocaleString('zh-CN', { hour12: false })} 进入</span>
+                  <span>·</span>
+                  <span>{s.minutes != null ? `停留 ${s.minutes} 分钟` : '进行中'}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
