@@ -144,3 +144,14 @@ body {
   /* 卡片列表外的容器别再横向滚动 */
   .card { overflow-x: clip; }
 }
+
+/* 大屏适配：2K/4K 下按比例放大整页，避免文字小得看不清（缩放不改变布局逻辑，窄屏不受影响） */
+@media (min-width: 1700px) {
+  body { zoom: 1.15; }
+}
+@media (min-width: 2200px) {
+  body { zoom: 1.35; }
+}
+@media (min-width: 3000px) {
+  body { zoom: 1.7; }
+}
