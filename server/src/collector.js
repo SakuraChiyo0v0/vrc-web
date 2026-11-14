@@ -289,13 +289,28 @@ async function upsertFriend(f) {
   return { prev, changes, trust };
 }
 
-/** 事件落库后按人重算会话与访问区间（失败不影响采集） */
+/** 事件落库后按人重算会话与访问区间（失败不影响采集）
+ *  同一个人同一时刻只允许一个重算在跑：并发重算会先 delete 再 insert，彼此踩踏。
+ *  排队期间再来的请求合并成一次（延迟 300ms 内的抖动只算一次）。 */
+const rebuildQueue = new Map();   // userId -> { running, again }
 async function refreshBehavior(userId) {
   if (!userId) return;
+  const st = rebuildQueue.get(userId) ?? { running: false, again: false };
+  rebuildQueue.set(userId, st);
+  if (st.running) { st.again = true; return; }
+  st.running = true;
   try {
-    await rebuildUser({ db, T, userId });
-  } catch (e) {
-    console.error('[behavior] rebuild', userId, e.message);
+    do {
+      st.again = false;
+      try {
+        await rebuildUser({ db, T, userId });
+      } catch (e) {
+        console.error('[behavior] rebuild', userId, e.message);
+      }
+    } while (st.again);
+  } finally {
+    st.running = false;
+    rebuildQueue.delete(userId);
   }
 }
 

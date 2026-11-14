@@ -60,7 +60,8 @@ export default function App() {
   const [palette, setPalette] = useState(false);
   const [theme, toggleTheme] = useTheme();
   const Page = PAGES[page] ?? FriendsPage;
-  const { data: status } = useQuery({ queryKey: ['status'], queryFn: () => api('status') });
+  // 状态必须自动刷新：否则采集器重连后页面还挂着「离线」，看着像故障
+  const { data: status } = useQuery({ queryKey: ['status'], queryFn: () => api('status'), refetchInterval: 15_000, refetchOnWindowFocus: true });
 
   return (
     <DrawerProvider>

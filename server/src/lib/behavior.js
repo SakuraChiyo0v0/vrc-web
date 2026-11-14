@@ -129,7 +129,8 @@ export async function rebuildUser({ db, T, userId, since = null }) {
   for (const s of sessions) {
     await db.query(
       `insert into ${T('friend_session')} (id, user_id, started_at, ended_at, minutes, location, world_id, world_name, status)
-       values (?,?,?,?,?,?,?,?,?)`,
+       values (?,?,?,?,?,?,?,?,?)
+       on conflict (id) do nothing`,
       [`${userId}|${s.started_at}`, userId, s.started_at, s.ended_at, s.minutes,
        s.location, s.world_id, s.world_name, status],
     );
@@ -137,7 +138,8 @@ export async function rebuildUser({ db, T, userId, since = null }) {
   for (const v of visits) {
     await db.query(
       `insert into ${T('friend_world_visit')} (id, user_id, world_id, world_name, location, started_at, ended_at, minutes)
-       values (?,?,?,?,?,?,?,?)`,
+       values (?,?,?,?,?,?,?,?)
+       on conflict (id) do nothing`,
       [`${userId}|${v.world_id}|${v.started_at}`, userId, v.world_id, v.world_name, v.location,
        v.started_at, v.ended_at, v.minutes],
     );

@@ -40,7 +40,7 @@ function TodaySummary() {
   const { data } = useQuery({
     queryKey: ['summary-today'],
     queryFn: () => api('summary/today'),
-    refetchInterval: 60_000
+    refetchInterval: 30_000
   });
   const cards = [
     ['今日在线', fmtMinutes(data?.onlineMinutes), '自己待在房间里的累计时长'],
