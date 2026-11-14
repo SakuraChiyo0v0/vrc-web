@@ -109,3 +109,25 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 ## 第四轮完成定义
 
 1. 6 项 todo → done；2. `bash scripts/parity4_check.sh` 全绿；3. build + smoke；4. 不 push（主 agent 发布）。
+
+---
+
+# 第五轮：好友行为数据沉淀（2026-11-14 起）
+
+主人明确：**离线期间好友的活动数据最重要**，要能支撑「好友行为分析」。这轮只做数据层与查询，不做花哨 UI。
+验收脚本：`scripts/parity5_check.sh`。
+
+| # | 功能 | 为什么需要 | 验收 | 状态 |
+|---|---|---|---|---|
+| 51 | `friend_session` 会话表 | 把 online→offline 配对成区间，才有「在线多久、在哪、什么状态」 | 每段 session 含 started_at/ended_at/minutes/world_name/status；`/api/friend/:id/sessions` 可查 | todo |
+| 52 | `friend_world_visit` 访问区间 | 分析「这个人常去哪些世界」 | location 事件折叠成区间（进入→离开），`/api/friend/:id/worlds` 返回按次数排序 | todo |
+| 53 | 资料变更 diff | 昵称/简介/头像改了什么要能看见改动前后 | `profile` 事件落 `changes jsonb`，`/api/friend/:id/changes` 返回字段级 old→new | todo |
+| 54 | 状态消息历史 | statusDescription 是行为线索（在干嘛/心情） | `status_history` 表 + `/api/friend/:id/status`，支持关键词检索 | todo |
+| 55 | 通知存档 | 好友请求/邀请/邀请请求会丢，需留档 | pipeline `notification` 落 `notification` 表，`/api/notifications?kind=` | todo |
+| 56 | 信任等级与头像历史 | 判断亲密度与形象变化 | 从 tags 解析 trust rank 落 friend 表；头像 URL 变更记历史 | todo |
+| 57 | 好友活跃热力图 | 「什么时候最容易找到他」 | `/api/friend/:id/heatmap` 返回 7×24 矩阵，页面渲染 | todo |
+| 58 | 好友统一时间线 | 事件/会话/世界访问/状态混排回看 | `/api/friend/:id/timeline?since=` 时间倒序合并四类 | todo |
+
+## 第五轮完成定义
+
+1. 8 项 todo → done；2. `bash scripts/parity5_check.sh` 全绿；3. build + smoke；4. 现有数据回填：用已有 friend_event 生成 51/52 的历史区间；5. 不 push（主 agent 发布）。
