@@ -290,12 +290,15 @@ app.post('/ingest/log', async (req, reply) => {
 });
 
 /** 事件留存：清理 N 天前的事件，启动时 + 每 24h 各跑一次 */
+// 0 = 永久保留（历史事件是趋势分析的基础，默认不再删）
 const retentionDays = (() => {
   const n = Number(process.env.VRC_EVENT_RETENTION_DAYS);
-  return Number.isFinite(n) && n > 0 ? n : 30;
+  if (Number.isFinite(n) && n === 0) return null;
+  return Number.isFinite(n) && n > 0 ? n : null;
 })();
 
 async function purgeOldEvents() {
+  if (!retentionDays) { console.log('[retention] 永久保留，跳过清理'); return 0; }
   const cutoff = new Date(Date.now() - retentionDays * 86400_000).toISOString();
   let total = 0;
   for (const table of ['friend_event', 'self_event', 'game_event']) {
