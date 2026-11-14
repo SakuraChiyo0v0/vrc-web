@@ -4,6 +4,7 @@
  * 单进程常驻；断线指数退避重连，每次重连重新换 token。
  */
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import WS from 'ws';
 import { openDb } from './db/index.js';
 import { dbUrl } from './config.js';
@@ -23,12 +24,99 @@ let lastTouch = 0;
 let lastMsgTs = Date.now();
 const worldCache = new Map();     // world_id -> name（内存级，进程重启再查）
 
+let SESSION = null;   // 内存里的会话，登录成功后写回文件
+
+function session() {
+  if (!SESSION) SESSION = JSON.parse(fs.readFileSync(SESSION_FILE, 'utf8'));
+  return SESSION;
+}
 function cookie() {
-  return JSON.parse(fs.readFileSync(SESSION_FILE, 'utf8')).cookie;
+  return session().cookie;
 }
 
-async function api(path, { method = 'GET' } = {}) {
+/** 账号密码：环境变量 VRC_USERNAME/VRC_PASSWORD，或 VRC_CRED_FILE 指向的 json */
+function creds() {
+  const { VRC_USERNAME, VRC_PASSWORD, VRC_TOTP_SECRET, VRC_CRED_FILE } = process.env;
+  if (VRC_USERNAME && VRC_PASSWORD) return { username: VRC_USERNAME, password: VRC_PASSWORD, totp: VRC_TOTP_SECRET };
+  if (VRC_CRED_FILE) {
+    try {
+      const j = JSON.parse(fs.readFileSync(VRC_CRED_FILE, 'utf8'));
+      if (j.username && j.password) return { username: j.username, password: j.password, totp: j.totp ?? null };
+    } catch { /* 没配置 */ }
+  }
+  return null;
+}
+
+/** RFC 6238 TOTP（VRChat 两步验证用），无密钥直接报错走人工 */
+function totp(secret) {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  const clean = secret.replace(/=+$/, '').replace(/\s/g, '').toUpperCase();
+  const out = [];
+  let bits = 0;
+  let val = 0;
+  for (const ch of clean) {
+    const idx = alphabet.indexOf(ch);
+    if (idx < 0) continue;
+    val = (val << 5) | idx;
+    bits += 5;
+    if (bits >= 8) { out.push((val >>> (bits - 8)) & 0xff); bits -= 8; }
+  }
+  const key = Buffer.from(out);
+  const buf = Buffer.alloc(8);
+  const counter = Math.floor(Date.now() / 30000);
+  buf.writeUInt32BE(Math.floor(counter / 2 ** 32), 0);
+  buf.writeUInt32BE(counter % 2 ** 32, 4);
+  const h = crypto.createHmac('sha1', key).update(buf).digest();
+  const off = h[h.length - 1] & 0x0f;
+  const code = ((h.readUInt32BE(off) & 0x7fffffff) % 1e6).toString().padStart(6, '0');
+  return code;
+}
+
+/** 用账号密码重新登录，拿新 cookie 并写回会话文件 */
+async function relogin() {
+  const c = creds();
+  if (!c) throw new Error('cookie 失效且未配置账号密码（VRC_USERNAME/VRC_PASSWORD）');
+  const basic = 'Basic ' + Buffer.from(`${c.username}:${c.password}`).toString('base64');
+  const r = await fetch(`${API}/auth/user`, {
+    method: 'GET',
+    headers: { authorization: basic, 'user-agent': UA, 'content-type': 'application/json' },
+  });
+  if (!r.ok) throw new Error(`登录失败 ${r.status}`);
+  const setCookie = r.headers.getSetCookie?.() ?? [];
+  const jar = setCookie.map((v) => v.split(';')[0]).filter((v) => v.startsWith('auth=') || v.startsWith('twoFactorAuth='));
+  if (!jar.length) throw new Error('登录未返回 auth cookie');
+  const merged = new Map(session().cookie.split('; ').map((kv) => { const i = kv.indexOf('='); return [kv.slice(0, i), kv.slice(i + 1)]; }));
+  for (const kv of jar) { const i = kv.indexOf('='); merged.set(kv.slice(0, i), kv.slice(i + 1)); }
+  let body = (await r.json().catch(() => null)) ?? null;
+
+  // 需要两步验证：有密钥就自动算，没有就明确报错
+  if (body?.requiresTwoFactorAuth?.length) {
+    if (!c.totp) throw new Error('账号启用了两步验证，需配置 VRC_TOTP_SECRET');
+    const code = totp(c.totp);
+    const r2 = await fetch(`${API}/auth/twofactorauth/totp/verify`, {
+      method: 'POST',
+      headers: { cookie: [...merged].map(([k, v]) => `${k}=${v}`).join('; '), 'user-agent': UA, 'content-type': 'application/json' },
+      body: JSON.stringify({ code }),
+    });
+    if (!r2.ok) throw new Error(`两步验证失败 ${r2.status}`);
+    for (const v of r2.headers.getSetCookie?.() ?? []) {
+      const kv = v.split(';')[0]; const i = kv.indexOf('=');
+      if (i > 0) merged.set(kv.slice(0, i), kv.slice(i + 1));
+    }
+  }
+
+  SESSION = { ...session(), cookie: [...merged].map(([k, v]) => `${k}=${v}`).join('; '), refreshedAt: new Date().toISOString() };
+  fs.writeFileSync(SESSION_FILE, JSON.stringify(SESSION, null, 2), { mode: 0o600 });
+  console.log('[auth] 已用账号密码刷新 cookie');
+  return SESSION.cookie;
+}
+
+async function api(path, { method = 'GET', retry = true } = {}) {
   const r = await fetch(API + path, { method, headers: { cookie: cookie(), 'user-agent': UA } });
+  if ((r.status === 401 || r.status === 403) && retry) {
+    await relogin();   // cookie 过期：用账号密码换新的，再试一次
+    return api(path, { method, retry: false });
+  }
   if (!r.ok) throw new Error(`${method} ${path} → ${r.status}`);
   return r.json();
 }
@@ -277,6 +365,10 @@ async function connect() {
 
   ws.on('close', async (code) => {
     console.log('[ws] closed', code, 'reconnect in', backoff, 'ms');
+    if (code === 4001 || code === 4003 || code === 4004) {
+      // 鉴权类关闭：先刷新 cookie，否则重连还是立刻被踢
+      try { await relogin(); } catch (e) { console.error('[auth] 刷新失败', e.message); }
+    }
     await touchState({ connected: false, last_error: `closed ${code}` });
     setTimeout(connect, backoff);
     backoff = Math.min(backoff * 2, MAX_BACKOFF);
