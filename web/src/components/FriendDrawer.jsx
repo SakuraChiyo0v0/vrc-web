@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { api, imgUrl } from '../api.js';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { api, imgUrl, send } from '../api.js';
 import { useDrawer } from './drawers.jsx';
 
 const KIND = {
@@ -20,6 +21,83 @@ function locLabel(p) {
   if (p.location === 'private') return '私密世界';
   if (p.location === 'traveling') return '切换中';
   return p.world_name || p.location;
+}
+
+/** 42 本地备注 + 标签：只写我们自己的库，VRChat 那边不会变 */
+function NoteAndTags({ id }) {
+  const qc = useQueryClient();
+  const enc = encodeURIComponent(id);
+  const { data: noteData } = useQuery({ queryKey: ['friend-note', id], queryFn: () => api(`friend/${enc}/note`) });
+  const { data: tagData } = useQuery({ queryKey: ['friend-tags', id], queryFn: () => api(`friend/${enc}/tags`) });
+  const [text, setText] = useState(null);
+  const [tag, setTag] = useState('');
+  const [err, setErr] = useState('');
+
+  const value = text ?? noteData?.note ?? '';
+  const save = useMutation({
+    mutationFn: () => send(`friend/${enc}/note`, 'PUT', { note: value }),
+    onSuccess: () => { setText(null); setErr(''); qc.invalidateQueries({ queryKey: ['friend-note', id] }); },
+    onError: (e) => setErr(e.message)
+  });
+  const tagMut = useMutation({
+    mutationFn: ({ t, action }) => send(`friend/${enc}/tag`, 'POST', { tag: t, action }),
+    onSuccess: (_, v) => { if (v.action === 'add') setTag(''); setErr(''); qc.invalidateQueries({ queryKey: ['friend-tags', id] }); },
+    onError: (e) => setErr(e.message)
+  });
+
+  const tags = tagData?.tags ?? [];
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div>
+        <div className="label-xs mb-1.5">备注（只存本地）</div>
+        <textarea
+          value={value}
+          onChange={(e) => setText(e.target.value)}
+          rows={2}
+          placeholder="记得怎么认识的、聊过什么…"
+          className="w-full resize-y rounded-lg border px-2.5 py-1.5 text-[12px] outline-none"
+          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-raised)', color: 'var(--content-primary)' }}
+        />
+        <div className="mt-1 flex items-center justify-end gap-2">
+          <button className="chip" disabled={save.isPending || text === null || value === (noteData?.note ?? '')} onClick={() => save.mutate()}>
+            {save.isPending ? '保存中…' : '保存备注'}
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div className="label-xs mb-1.5">标签</div>
+        <div className="mb-1.5 flex flex-wrap gap-1">
+          {tags.length === 0 ? <span className="text-[11px] text-fg3">还没有标签</span> : null}
+          {tags.map((t) => (
+            <button
+              key={t}
+              className="chip"
+              title="点一下移除"
+              onClick={() => tagMut.mutate({ t, action: 'remove' })}
+            >
+              {t} <span className="opacity-50">×</span>
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-1.5">
+          <input
+            value={tag}
+            onChange={(e) => setTag(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && tag.trim()) tagMut.mutate({ t: tag.trim(), action: 'add' }); }}
+            placeholder="加标签，回车"
+            className="h-7 min-w-0 flex-1 rounded-lg border px-2 text-[11.5px] outline-none"
+            style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-raised)', color: 'var(--content-primary)' }}
+          />
+          <button className="chip" disabled={!tag.trim() || tagMut.isPending} onClick={() => tagMut.mutate({ t: tag.trim(), action: 'add' })}>
+            添加
+          </button>
+        </div>
+      </div>
+      {err ? <div className="text-[11px]" style={{ color: 'var(--status-busy)' }}>{err}</div> : null}
+    </div>
+  );
 }
 
 /** 好友详情抽屉：资料 / 最近事件 / 常一起出现的世界 */
@@ -61,6 +139,8 @@ export default function FriendDrawer({ id, onClose }) {
               <div className="mt-1 flex justify-between gap-3"><span className="text-fg3">同房次数</span><span className="tabular-nums">{data.meets ?? 0}</span></div>
               <div className="mt-1 flex justify-between gap-3"><span className="text-fg3">最近更新</span><span>{fmt(p?.updated_at)}</span></div>
             </div>
+
+            <NoteAndTags id={id} />
 
             <div>
               <div className="label-xs mb-1.5">常一起出现的世界</div>

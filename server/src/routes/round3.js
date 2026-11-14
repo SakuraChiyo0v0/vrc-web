@@ -13,6 +13,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
+import { checkCollectorStale } from '../lib/alerts.js';
 
 const VRCHAT_HOST = /^([a-z0-9-]+\.)*vrchat\.cloud$/i;
 const UA = 'vrc-web/0.1 (self-hosted)';
@@ -146,9 +147,11 @@ export function registerRound3Routes(app, { db, T, iso }) {
     const friendsTracked = Number(fr?.n ?? 0);
     const worldsTracked = Number(wo?.n ?? 0);
     const lastMsgAt = s?.last_msg_at ? iso(s.last_msg_at) : null;
+    const stale = await checkCollectorStale({ db, T, iso }).catch(() => null);
     return {
       ok: true,
       db: db.dialect,
+      stale,
       collector: {
         connected: !!Number(s?.connected ?? 0),
         lastMsgAt,

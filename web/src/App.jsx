@@ -12,6 +12,8 @@ import NotificationsPage from './pages/NotificationsPage.jsx';
 import FavoritesPage from './pages/FavoritesPage.jsx';
 import InsightsPage from './pages/InsightsPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
+import WorldsPage from './pages/WorldsPage.jsx';
+import CalendarPage from './pages/CalendarPage.jsx';
 import CommandPalette from './components/CommandPalette.jsx';
 import { DrawerProvider } from './components/drawers.jsx';
 
@@ -24,6 +26,8 @@ const PAGES = {
   stats: StatsPage,
   favorites: FavoritesPage,
   insights: InsightsPage,
+  worlds: WorldsPage,
+  calendar: CalendarPage,
   settings: SettingsPage
 };
 
@@ -36,6 +40,8 @@ const TITLES = {
   stats: ['统计', '近 24 小时'],
   favorites: ['收藏', '世界 / 好友、分组与备注，固定的世界在侧栏'],
   insights: ['洞察', '常一起玩 / 渐行渐远 / 最常遇到的时段'],
+  worlds: ['世界库', '去过的世界：搜索、按最近活跃或访问次数排序'],
+  calendar: ['日历', '按天回看事件，点某天看当天'],
   settings: ['设置', '采集器状态、事件速率、最近错误']
 };
 

@@ -14,6 +14,8 @@ const GROUPS = [
     title: '历史',
     items: [
       { id: 'sessions', label: '我的行程', icon: '◇' },
+      { id: 'worlds', label: '世界库', icon: '▢' },
+      { id: 'calendar', label: '日历', icon: '▦' },
       { id: 'players', label: '玩家', icon: '☺' },
       { id: 'stats', label: '统计', icon: '▤' },
       { id: 'insights', label: '洞察', icon: '✧' },

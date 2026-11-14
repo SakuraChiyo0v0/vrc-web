@@ -78,6 +78,22 @@ export const PG = [
      token text primary key, name text, created_at timestamptz not null default now(),
      last_used_at timestamptz
    )`,
+  // 第四轮：好友备注 / 标签（只存本地，不写 VRChat）
+  `create table if not exists vrc.friend_note (
+     user_id text primary key, note text, updated_at timestamptz not null default now()
+   )`,
+  `create table if not exists vrc.friend_tag (
+     id text primary key, user_id text not null, tag text not null,
+     created_at timestamptz not null default now(),
+     unique (user_id, tag)
+   )`,
+  `create index if not exists friend_tag_user_idx on vrc.friend_tag (user_id)`,
+  // 采集断连告警事件（同一 fingerprint 去重窗口内只记一条）
+  `create table if not exists vrc.alert_event (
+     id text primary key, fingerprint text not null, level text not null default 'P1',
+     source text, message text, created_at timestamptz not null default now(), resolved_at timestamptz
+   )`,
+  `create index if not exists alert_event_fp_idx on vrc.alert_event (fingerprint, created_at desc)`,
   // 老库补列
   `alter table vrc.friend add column if not exists icon_url text`,
   `alter table vrc.friend_event add column if not exists icon_url text`,
@@ -153,6 +169,20 @@ export const SQLITE = [
      token text primary key, name text,
      created_at text not null default (datetime('now')), last_used_at text
    )`,
+  `create table if not exists friend_note (
+     user_id text primary key, note text, updated_at text not null default (datetime('now'))
+   )`,
+  `create table if not exists friend_tag (
+     id text primary key, user_id text not null, tag text not null,
+     created_at text not null default (datetime('now')),
+     unique (user_id, tag)
+   )`,
+  `create index if not exists friend_tag_user_idx on friend_tag (user_id)`,
+  `create table if not exists alert_event (
+     id text primary key, fingerprint text not null, level text not null default 'P1',
+     source text, message text, created_at text not null default (datetime('now')), resolved_at text
+   )`,
+  `create index if not exists alert_event_fp_idx on alert_event (fingerprint, created_at desc)`,
 ];
 
 export function ddlFor(dialect) {

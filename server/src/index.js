@@ -11,6 +11,7 @@ import { registerExtRoutes } from './routes/ext.js';
 import { registerShareRoutes } from './routes/share.js';
 import { registerRound2Routes } from './routes/round2.js';
 import { registerRound3Routes } from './routes/round3.js';
+import { registerRound4Routes } from './routes/round4.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_DIST = process.env.VRC_WEB_DIST || path.join(__dirname, '../../web/dist');
@@ -39,6 +40,7 @@ registerExtRoutes(app, { db, T, iso });
 registerShareRoutes(app, { db, T, iso });
 registerRound2Routes(app, { db, T, iso });
 registerRound3Routes(app, { db, T, iso });
+registerRound4Routes(app, { db, T, iso });
 
 app.get('/api/health', async () => {
   const [s] = await db.query(

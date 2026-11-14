@@ -29,6 +29,37 @@ function Avatar({ f }) {
   );
 }
 
+function fmtMinutes(m) {
+  const n = Number(m ?? 0);
+  if (n < 60) return `${n} 分钟`;
+  return `${Math.floor(n / 60)} 小时 ${n % 60} 分`;
+}
+
+/** 44 今日摘要：在线时长 / 遇到的人 / 新世界 */
+function TodaySummary() {
+  const { data } = useQuery({
+    queryKey: ['summary-today'],
+    queryFn: () => api('summary/today'),
+    refetchInterval: 60_000
+  });
+  const cards = [
+    ['今日在线', fmtMinutes(data?.onlineMinutes), '自己待在房间里的累计时长'],
+    ['遇到的人', data?.players ?? 0, '今天同房过的人'],
+    ['新世界', data?.newWorlds ?? 0, '第一次去的世界']
+  ];
+  return (
+    <div className="mb-3 grid grid-cols-3 gap-2">
+      {cards.map(([label, value, hint]) => (
+        <div key={label} className="card px-3 py-2" title={hint}>
+          <div className="label-xs">{label}</div>
+          <div className="mt-0.5 text-[15px] tabular-nums">{value}</div>
+          <div className="truncate text-[10px] text-fg3">{hint}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function FriendsPage() {
   const [only, setOnly] = useState(true);
   const [q, setQ] = useState('');
@@ -51,6 +82,7 @@ export default function FriendsPage() {
 
   return (
     <div className="p-4">
+      <TodaySummary />
       <div className="mb-3 flex items-center gap-2">
         <input
           value={q}

@@ -90,12 +90,21 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 | # | 功能 | 对应物 | 验收 | 状态 |
 |---|---|---|---|---|
-| 41 | 世界库页 | 所有去过的世界列表：搜索、按近期活跃/访问次数排序、点进详情 | `/api/worlds?q=&sort=recent|visits` 返回分页列表 | todo |
-| 42 | 好友备注与标签 | 本地备注/标签 CRUD（不写 VRChat） | `PUT /api/friend/:id/note`、`POST /api/friend/:id/tag` 可增删查 | todo |
-| 43 | 事件日历 | 按天聚合的日历视图，点某天看当天事件 | `/api/calendar?month=YYYY-MM` 返回每日计数 | todo |
-| 44 | 今日摘要 | 在线时长、遇到人数、新世界数 | `/api/summary/today` + 首页卡片 | todo |
-| 45 | 全量备份 | 一键导出 JSON（好友/世界/事件/收藏/备注） | `GET /api/export/backup.json` 含 6 个键 | todo |
-| 46 | 采集断连告警 | collector 断连 > 30 分钟记录告警事件 | `/api/diagnostics` 的 stale 字段 + `alert_emit` 接入 | todo |
+| 41 | 世界库页 | 所有去过的世界列表：搜索、按近期活跃/访问次数排序、点进详情 | `/api/worlds?q=&sort=recent|visits` 返回分页列表 | done |
+| 42 | 好友备注与标签 | 本地备注/标签 CRUD（不写 VRChat） | `PUT /api/friend/:id/note`、`POST /api/friend/:id/tag` 可增删查 | done |
+| 43 | 事件日历 | 按天聚合的日历视图，点某天看当天事件 | `/api/calendar?month=YYYY-MM` 返回每日计数 | done |
+| 44 | 今日摘要 | 在线时长、遇到人数、新世界数 | `/api/summary/today` + 首页卡片 | done |
+| 45 | 全量备份 | 一键导出 JSON（好友/世界/事件/收藏/备注） | `GET /api/export/backup.json` 含 6 个键 | done |
+| 46 | 采集断连告警 | collector 断连 > 30 分钟记录告警事件 | `/api/diagnostics` 的 stale 字段 + `alert_emit` 接入 | done |
+
+证据（`bash scripts/parity4_check.sh` → PARITY4 OK 10/10，临时 SQLite，不碰线上）：
+
+- 41：total=3，recent 序 a,b,c，visits 序 a3/b1/c0，q=beta 命中 1，作者搜索大小写不敏感，分页 2+1，非法 sort/limit 回落
+- 42：note PUT/GET（trim、2000 字截断、非字符串 400、清空即删），tag 增/去重/删、空 tag 400、按 user_id 隔离
+- 43：2026-11 每天计数与种子一致，first_weekday/max/total 对得上，1999-12 空月份 31 天 0 条，非法月份 400
+- 44：onlineMinutes=75、players=2、friends=3、events=3、newWorlds=0（今天没有首访世界）
+- 45：6 键 events/favorites/friends/notes/tags/worlds，附件名 vrc-backup-YYYY-MM-DD.json，设置页有下载入口
+- 46：45 分钟无消息 → stale isStale/recorded=true + 1 条 P1 resolved=false；再读诊断不重复落库；恢复后 resolved=true 且不新增
 
 ## 第四轮完成定义
 
