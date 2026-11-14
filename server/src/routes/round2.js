@@ -2,6 +2,16 @@
  * 第二轮：全局搜索 / 世界详情 / 好友详情 / CSV 导出 / 通知已读。
  * SQL 只写 `?`，由 db 适配层翻方言；时间一律 ISO 字符串比较。
  */
+/** 56：tags 在库里是 JSON 文本，读出来统一成数组 */
+function parseTags(v) {
+  if (Array.isArray(v)) return v;
+  if (!v) return [];
+  try {
+    const j = JSON.parse(v);
+    return Array.isArray(j) ? j : [];
+  } catch { return []; }
+}
+
 export function registerRound2Routes(app, { db, T, iso }) {
   const ONLINE = `location is not null and location not in ('offline','private','traveling')`;
 
@@ -120,7 +130,7 @@ export function registerRound2Routes(app, { db, T, iso }) {
     const id = String(req.params.id);
     const [f] = await db.query(
       `select user_id, display_name, trust_level, platform, status, status_description,
-              location, world_id, world_name, group_name, avatar_id, icon_url, updated_at
+              location, world_id, world_name, group_name, avatar_id, icon_url, tags, trust_rank, updated_at
          from ${T('friend')} where user_id = ?`,
       [id],
     );
@@ -153,7 +163,12 @@ export function registerRound2Routes(app, { db, T, iso }) {
     return {
       ok: true,
       profile: f
-        ? { ...f, updated_at: f.updated_at ? iso(f.updated_at) : null }
+        ? {
+            ...f,
+            updated_at: f.updated_at ? iso(f.updated_at) : null,
+            tags: parseTags(f.tags),
+            trust_rank: f.trust_rank === null || f.trust_rank === undefined ? null : Number(f.trust_rank),
+          }
         : { user_id: id, display_name: events[0]?.display_name ?? id, icon_url: null, location: null },
       events: events.map((e) => ({ ...e, at: iso(e.at) })),
       worlds,

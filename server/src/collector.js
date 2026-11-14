@@ -8,6 +8,7 @@ import crypto from 'node:crypto';
 import WS from 'ws';
 import { openDb } from './db/index.js';
 import { dbUrl } from './config.js';
+import { worldIdOf, trustRankOf, rebuildUser } from './lib/behavior.js';
 
 const SESSION_FILE = process.env.VRC_SESSION_FILE || '/opt/astra/home/vr-session.json';
 const UA = 'vrc-web/0.1 (self-hosted)';
@@ -144,12 +145,8 @@ async function pipelineToken() {
   return j.token;
 }
 
-/** 从 location 拆 world id：wrld_xxx:12345~region(us) → wrld_xxx */
-export function worldIdOf(location) {
-  if (!location) return null;
-  const m = /^(wrld_[0-9a-f-]+)/i.exec(location);
-  return m ? m[1] : null;
-}
+/** 从 location 拆 world id（实现见 lib/behavior.js，第五轮起两处共用一份） */
+export { worldIdOf };
 
 async function upsertWorld(worldId) {
   if (!worldId || worldCache.has(worldId)) return worldCache.get(worldId) ?? null;
@@ -178,11 +175,61 @@ async function touchState(patch) {
   await db.query(`update ${T('collector_state')} set ${sets} where id = 1`, cols.map((c) => patch[c]));
 }
 
+/** 53/54/56：会在库里留痕的字段（资料变更 / 状态消息 / 头像） */
+const TRACKED_FIELDS = ['display_name', 'status', 'status_description', 'avatar_id', 'icon_url', 'trust_level', 'trust_rank'];
+
+/**
+ * 写 friend 表顺带做行为沉淀：
+ *   - friend_change          字段级 old→new（53）
+ *   - friend_status_history  statusDescription 变更（54）
+ *   - friend_avatar_history  头像 / 立绘变更（56）
+ *   - friend.trust_rank      由 tags 里的 system_trust_* 解析（56）
+ * 返回 { prev, changes, trust }，profile 事件把 changes 写进 payload。
+ */
 async function upsertFriend(f) {
+  const uid = f.userId ?? f.id;
+  let prev = null;
+  if (uid) {
+    try {
+      [prev] = await db.query(
+        `select user_id, display_name, status, status_description, avatar_id, icon_url, trust_level, trust_rank
+           from ${T('friend')} where user_id = ?`, [uid],
+      );
+    } catch { prev = null; }
+  }
+
+  const trust = trustRankOf(f.tags);
+  const next = {
+    display_name: f.displayName ?? null,
+    trust_level: f.trustLevel ?? (trust.label ?? null),
+    trust_rank: trust.rank,
+    platform: f.platform ?? null,
+    status: f.status ?? null,
+    status_description: f.statusDescription ?? null,
+    location: f.location ?? null,
+    world_id: worldIdOf(f.location),
+    world_name: f.worldName ?? null,
+    avatar_id: f.currentAvatarThumbnailImageUrl ?? null,
+    icon_url: f.iconUrl ?? null,
+  };
+
+  // 只对「上一次已有值、这一次也有值且不同」的字段记 diff；首次补全不算变更，避免回填噪声
+  const changes = [];
+  if (prev) {
+    for (const fld of TRACKED_FIELDS) {
+      const nv = next[fld];
+      if (nv === null || nv === undefined) continue;
+      const ov = prev[fld] ?? null;
+      if (ov === null || ov === undefined) continue;
+      if (String(ov) !== String(nv)) changes.push({ field: fld, old: String(ov), new: String(nv) });
+    }
+  }
+
+  const at = new Date();
   await db.query(
     `insert into ${T('friend')} (user_id, display_name, trust_level, platform, status, status_description,
-                                 location, world_id, world_name, avatar_id, icon_url, updated_at)
-     values (?,?,?,?,?,?,?,?,?,?,?,?)
+                                 location, world_id, world_name, avatar_id, icon_url, tags, trust_rank, updated_at)
+     values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
      on conflict (user_id) do update set
        display_name = coalesce(excluded.display_name, ${T('friend')}.display_name),
        trust_level = coalesce(excluded.trust_level, ${T('friend')}.trust_level),
@@ -194,11 +241,62 @@ async function upsertFriend(f) {
        world_name = coalesce(excluded.world_name, ${T('friend')}.world_name),
        avatar_id = coalesce(excluded.avatar_id, ${T('friend')}.avatar_id),
        icon_url = coalesce(excluded.icon_url, ${T('friend')}.icon_url),
+       tags = coalesce(excluded.tags, ${T('friend')}.tags),
+       trust_rank = coalesce(excluded.trust_rank, ${T('friend')}.trust_rank),
        updated_at = excluded.updated_at`,
-    [f.userId ?? f.id, f.displayName ?? null, f.trustLevel ?? null, f.platform ?? null, f.status ?? null,
-     f.statusDescription ?? null, f.location ?? null, worldIdOf(f.location), f.worldName ?? null,
-     f.currentAvatarThumbnailImageUrl ?? null, f.iconUrl ?? null, new Date()],
+    [uid, next.display_name, next.trust_level, next.platform, next.status, next.status_description,
+     next.location, next.world_id, next.world_name, next.avatar_id, next.icon_url,
+     Array.isArray(f.tags) ? JSON.stringify(f.tags) : null, next.trust_rank, at],
   );
+
+  if (uid) {
+    try {
+      // 第一次见到这个人：先把当前状态记一条，历史表从一开始就有基线
+      if (!prev && (next.status_description || next.status)) {
+        await db.query(
+          `insert into ${T('friend_status_history')} (user_id, status, description, at) values (?,?,?,?)`,
+          [uid, next.status ?? null, next.status_description ?? null, at],
+        );
+      }
+      for (const c of changes) {
+        await db.query(
+          `insert into ${T('friend_change')} (user_id, field, old_value, new_value, at) values (?,?,?,?,?)`,
+          [uid, c.field, c.old, c.new, at],
+        );
+        if (c.field === 'status_description' || c.field === 'status') {
+          await db.query(
+            `insert into ${T('friend_status_history')} (user_id, status, description, at) values (?,?,?,?)`,
+            [uid, next.status ?? null, next.status_description ?? null, at],
+          );
+        }
+        if (c.field === 'avatar_id') {
+          await db.query(
+            `insert into ${T('friend_avatar_history')} (user_id, kind, value, at) values (?,?,?,?)`,
+            [uid, 'avatar', c.new, at],
+          );
+        }
+        if (c.field === 'icon_url') {
+          await db.query(
+            `insert into ${T('friend_avatar_history')} (user_id, kind, value, at) values (?,?,?,?)`,
+            [uid, 'icon', c.new, at],
+          );
+        }
+      }
+    } catch (e) {
+      console.error('[behavior] change history', uid, e.message);
+    }
+  }
+  return { prev, changes, trust };
+}
+
+/** 事件落库后按人重算会话与访问区间（失败不影响采集） */
+async function refreshBehavior(userId) {
+  if (!userId) return;
+  try {
+    await rebuildUser({ db, T, userId });
+  } catch (e) {
+    console.error('[behavior] rebuild', userId, e.message);
+  }
 }
 
 async function logEvent(kind, { userId, displayName, location, worldName, payload }) {
@@ -233,12 +331,14 @@ async function handle(type, content) {
       await logEvent(type === 'friend-online' ? 'online' : 'active', {
         userId: f.id, displayName: f.displayName, location: f.location,
       });
+      await refreshBehavior(f.id);
       break;
     }
     case 'friend-offline': {
       const f = friendOf(content);
       await upsertFriend({ ...f, location: 'offline' });
       await logEvent('offline', { userId: f.id, displayName: f.displayName });
+      await refreshBehavior(f.id);
       break;
     }
     case 'friend-location': {
@@ -249,12 +349,17 @@ async function handle(type, content) {
         userId: f.id, displayName: f.displayName, location: loc,
         payload: { previous: content.previousLocation ?? null },
       });
+      await refreshBehavior(f.id);
       break;
     }
     case 'friend-update': {
       const f = friendOf(content);
-      await upsertFriend(f);
-      await logEvent('profile', { userId: f.id, displayName: f.displayName, payload: { fields: Object.keys(content) } });
+      const { changes } = await upsertFriend(f);
+      await logEvent('profile', {
+        userId: f.id, displayName: f.displayName,
+        payload: { changes, fields: Object.keys(content) },
+      });
+      await refreshBehavior(f.id);
       break;
     }
     case 'friend-add':

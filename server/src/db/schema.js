@@ -94,9 +94,41 @@ export const PG = [
      source text, message text, created_at timestamptz not null default now(), resolved_at timestamptz
    )`,
   `create index if not exists alert_event_fp_idx on vrc.alert_event (fingerprint, created_at desc)`,
+  // 第五轮：好友行为沉淀（会话 / 世界访问 / 资料 diff / 状态历史 / 头像历史）
+  `create table if not exists vrc.friend_session (
+     id text primary key,
+     user_id text not null,
+     started_at timestamptz not null, ended_at timestamptz, minutes int,
+     location text, world_id text, world_name text, status text
+   )`,
+  `create index if not exists friend_session_user_idx on vrc.friend_session (user_id, started_at desc)`,
+  `create table if not exists vrc.friend_world_visit (
+     id text primary key,
+     user_id text not null, world_id text, world_name text, location text,
+     started_at timestamptz not null, ended_at timestamptz, minutes int
+   )`,
+  `create index if not exists friend_visit_user_idx on vrc.friend_world_visit (user_id, started_at desc)`,
+  `create index if not exists friend_visit_world_idx on vrc.friend_world_visit (world_id)`,
+  `create table if not exists vrc.friend_change (
+     id bigserial primary key, user_id text not null, field text not null,
+     old_value text, new_value text, at timestamptz not null default now()
+   )`,
+  `create index if not exists friend_change_user_idx on vrc.friend_change (user_id, at desc)`,
+  `create table if not exists vrc.friend_status_history (
+     id bigserial primary key, user_id text not null, status text, description text,
+     at timestamptz not null default now()
+   )`,
+  `create index if not exists friend_status_user_idx on vrc.friend_status_history (user_id, at desc)`,
+  `create table if not exists vrc.friend_avatar_history (
+     id bigserial primary key, user_id text not null, kind text not null, value text,
+     at timestamptz not null default now()
+   )`,
+  `create index if not exists friend_avatar_user_idx on vrc.friend_avatar_history (user_id, at desc)`,
   // 老库补列
   `alter table vrc.friend add column if not exists icon_url text`,
   `alter table vrc.friend_event add column if not exists icon_url text`,
+  `alter table vrc.friend add column if not exists tags text`,
+  `alter table vrc.friend add column if not exists trust_rank int`,
 ];
 
 export const SQLITE = [
@@ -183,6 +215,35 @@ export const SQLITE = [
      source text, message text, created_at text not null default (datetime('now')), resolved_at text
    )`,
   `create index if not exists alert_event_fp_idx on alert_event (fingerprint, created_at desc)`,
+  `create table if not exists friend_session (
+     id text primary key, user_id text not null,
+     started_at text not null, ended_at text, minutes integer,
+     location text, world_id text, world_name text, status text
+   )`,
+  `create index if not exists friend_session_user_idx on friend_session (user_id, started_at desc)`,
+  `create table if not exists friend_world_visit (
+     id text primary key, user_id text not null, world_id text, world_name text, location text,
+     started_at text not null, ended_at text, minutes integer
+   )`,
+  `create index if not exists friend_visit_user_idx on friend_world_visit (user_id, started_at desc)`,
+  `create index if not exists friend_visit_world_idx on friend_world_visit (world_id)`,
+  `create table if not exists friend_change (
+     id integer primary key autoincrement, user_id text not null, field text not null,
+     old_value text, new_value text, at text not null default (datetime('now'))
+   )`,
+  `create index if not exists friend_change_user_idx on friend_change (user_id, at desc)`,
+  `create table if not exists friend_status_history (
+     id integer primary key autoincrement, user_id text not null, status text, description text,
+     at text not null default (datetime('now'))
+   )`,
+  `create index if not exists friend_status_user_idx on friend_status_history (user_id, at desc)`,
+  `create table if not exists friend_avatar_history (
+     id integer primary key autoincrement, user_id text not null, kind text not null, value text,
+     at text not null default (datetime('now'))
+   )`,
+  `create index if not exists friend_avatar_user_idx on friend_avatar_history (user_id, at desc)`,
+  `alter table friend add column tags text`,
+  `alter table friend add column trust_rank integer`,
 ];
 
 export function ddlFor(dialect) {

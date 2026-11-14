@@ -12,6 +12,7 @@ import { registerShareRoutes } from './routes/share.js';
 import { registerRound2Routes } from './routes/round2.js';
 import { registerRound3Routes } from './routes/round3.js';
 import { registerRound4Routes } from './routes/round4.js';
+import { registerRound5Routes } from './routes/round5.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_DIST = process.env.VRC_WEB_DIST || path.join(__dirname, '../../web/dist');
@@ -41,6 +42,7 @@ registerShareRoutes(app, { db, T, iso });
 registerRound2Routes(app, { db, T, iso });
 registerRound3Routes(app, { db, T, iso });
 registerRound4Routes(app, { db, T, iso });
+registerRound5Routes(app, { db, T, iso });
 
 app.get('/api/health', async () => {
   const [s] = await db.query(
@@ -166,7 +168,8 @@ app.get('/api/notifications', async (req) => {
   const where = [];
   const params = [];
   if (req.query.unread === '1') { where.push('seen = ?'); params.push(false); }
-  if (req.query.type) { where.push('type = ?'); params.push(String(req.query.type)); }
+  const kind = req.query.kind ?? req.query.type;
+  if (kind) { where.push('type = ?'); params.push(String(kind)); }
   const rows = await db.query(
     `select id, type, sender_user_id, message, link, created_at, seen
        from ${T('notification')} ${where.length ? `where ${where.join(' and ')}` : ''}
@@ -178,7 +181,12 @@ app.get('/api/notifications', async (req) => {
     returned: rows.length,
     unread_count: Number(un?.n ?? 0),
     types: [...new Set(rows.map((r) => r.type).filter(Boolean))],
-    notifications: rows.map((r) => ({ ...r, seen: !!Number(r.seen), created_at: iso(r.created_at) })),
+    notifications: rows.map((r) => ({
+      ...r,
+      kind: r.type,
+      seen: !!Number(r.seen),
+      created_at: iso(r.created_at),
+    })),
   };
 });
 

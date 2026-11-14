@@ -119,15 +119,26 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 | # | 功能 | 为什么需要 | 验收 | 状态 |
 |---|---|---|---|---|
-| 51 | `friend_session` 会话表 | 把 online→offline 配对成区间，才有「在线多久、在哪、什么状态」 | 每段 session 含 started_at/ended_at/minutes/world_name/status；`/api/friend/:id/sessions` 可查 | todo |
-| 52 | `friend_world_visit` 访问区间 | 分析「这个人常去哪些世界」 | location 事件折叠成区间（进入→离开），`/api/friend/:id/worlds` 返回按次数排序 | todo |
-| 53 | 资料变更 diff | 昵称/简介/头像改了什么要能看见改动前后 | `profile` 事件落 `changes jsonb`，`/api/friend/:id/changes` 返回字段级 old→new | todo |
-| 54 | 状态消息历史 | statusDescription 是行为线索（在干嘛/心情） | `status_history` 表 + `/api/friend/:id/status`，支持关键词检索 | todo |
-| 55 | 通知存档 | 好友请求/邀请/邀请请求会丢，需留档 | pipeline `notification` 落 `notification` 表，`/api/notifications?kind=` | todo |
-| 56 | 信任等级与头像历史 | 判断亲密度与形象变化 | 从 tags 解析 trust rank 落 friend 表；头像 URL 变更记历史 | todo |
-| 57 | 好友活跃热力图 | 「什么时候最容易找到他」 | `/api/friend/:id/heatmap` 返回 7×24 矩阵，页面渲染 | todo |
-| 58 | 好友统一时间线 | 事件/会话/世界访问/状态混排回看 | `/api/friend/:id/timeline?since=` 时间倒序合并四类 | todo |
+| 51 | `friend_session` 会话表 | 把 online→offline 配对成区间，才有「在线多久、在哪、什么状态」 | 每段 session 含 started_at/ended_at/minutes/world_name/status；`/api/friend/:id/sessions` 可查 | done |
+| 52 | `friend_world_visit` 访问区间 | 分析「这个人常去哪些世界」 | location 事件折叠成区间（进入→离开），`/api/friend/:id/worlds` 返回按次数排序 | done |
+| 53 | 资料变更 diff | 昵称/简介/头像改了什么要能看见改动前后 | `profile` 事件落 `changes jsonb`，`/api/friend/:id/changes` 返回字段级 old→new | done |
+| 54 | 状态消息历史 | statusDescription 是行为线索（在干嘛/心情） | `status_history` 表 + `/api/friend/:id/status`，支持关键词检索 | done |
+| 55 | 通知存档 | 好友请求/邀请/邀请请求会丢，需留档 | pipeline `notification` 落 `notification` 表，`/api/notifications?kind=` | done |
+| 56 | 信任等级与头像历史 | 判断亲密度与形象变化 | 从 tags 解析 trust rank 落 friend 表；头像 URL 变更记历史 | done |
+| 57 | 好友活跃热力图 | 「什么时候最容易找到他」 | `/api/friend/:id/heatmap` 返回 7×24 矩阵，页面渲染 | done |
+| 58 | 好友统一时间线 | 事件/会话/世界访问/状态混排回看 | `/api/friend/:id/timeline?since=` 时间倒序合并四类 | done |
 
 ## 第五轮完成定义
 
 1. 8 项 todo → done；2. `bash scripts/parity5_check.sh` 全绿；3. build + smoke；4. 现有数据回填：用已有 friend_event 生成 51/52 的历史区间；5. 不 push（主 agent 发布）。
+
+## 第五轮验收记录（2026-11-14）
+
+- `bash scripts/parity5_check.sh` → `PARITY5 OK 9/9`（51-58 + 57w 前端接线）
+- `npm run build`（web/）→ 92 modules，`dist/assets/index-*.js 335.83 kB`，built in 1m3s
+- `node server/scripts/smoke.mjs` → `SMOKE OK`
+- 回填（真库 postgres）：`node server/scripts/backfill5.mjs` → `users=51 events=751 sessions=88 visits=210 failed=0`，
+  自检 `--verify` → `sessions=88 visits=210 open_sessions=22 / presence_events=751 uncovered=37 (lone_offline=37 missing=0) VERIFY OK`
+  （37 条是「没有前导上线事件的孤立 offline」，本来就不该有会话）
+- `--dry` 与实跑数字一致（751/88/210），回填可重复执行（先删后插幂等）
+

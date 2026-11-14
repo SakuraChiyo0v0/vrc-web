@@ -100,6 +100,134 @@ function NoteAndTags({ id }) {
   );
 }
 
+/** 57 活跃热力图：7(周几) × 24(小时)，颜色深浅 = 该时段在线次数 */
+function Heatmap({ id }) {
+  const { data } = useQuery({ queryKey: ['friend-heatmap', id], queryFn: () => api(`friend/${encodeURIComponent(id)}/heatmap`) });
+  if (!data?.hourly) return null;
+  const max = data.max || 1;
+  return (
+    <div>
+      <div className="label-xs mb-1.5 flex items-center justify-between">
+        <span>活跃时段</span>
+        <span className="text-fg3" style={{ fontWeight: 400 }}>
+          近 {data.days} 天 · {data.based_on === 'sessions' ? '按在线区间' : '按事件'}
+          {data.peak ? ` · 最常 ${data.peak.label}` : ''}
+        </span>
+      </div>
+      <div className="card px-2 py-2">
+        <div className="mb-1 flex items-center gap-[2px] pl-7 text-[9px] text-fg3">
+          {Array.from({ length: 24 }, (_, h) => (
+            <span key={h} className="flex-1 text-center tabular-nums">{h % 6 === 0 ? h : ''}</span>
+          ))}
+        </div>
+        {(data.weekdays ?? []).map((wd, d) => (
+          <div key={wd} className="mb-[2px] flex items-center gap-[2px]">
+            <span className="w-6 shrink-0 text-[9.5px] text-fg3">{wd}</span>
+            {data.hourly[d].map((n, h) => (
+              <span
+                key={h}
+                title={`${wd} ${String(h).padStart(2, '0')}:00 · ${n} 次`}
+                className="h-[11px] flex-1 rounded-[2px]"
+                style={{
+                  background: n > 0 ? `rgba(94,160,255,${(0.12 + 0.78 * (n / max)).toFixed(2)})` : 'var(--surface-raised)',
+                }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const TL_LABEL = { session: '在线', visit: '到访', status: '状态', change: '资料' };
+
+function tlText(it) {
+  if (it.type === 'event') return `${KIND[it.kind] ?? it.kind}${it.world ? ` · ${it.world}` : ''}`;
+  if (it.type === 'session') return `${it.world ?? '在线'}${it.ongoing ? ' · 进行中' : ` · ${it.minutes} 分钟`}`;
+  if (it.type === 'visit') return `${it.world}${it.minutes === null ? '' : ` · ${it.minutes} 分钟`}`;
+  if (it.type === 'status') return `${it.description || it.status || '—'}`;
+  return `${it.field}: ${it.old ?? '空'} → ${it.new ?? '空'}`;
+}
+
+/** 58 统一时间线（事件/会话/访问/状态/资料混排）+ 51/52 的列表视图 */
+function Behavior({ id }) {
+  const enc = encodeURIComponent(id);
+  const { data: sess } = useQuery({ queryKey: ['friend-sessions', id], queryFn: () => api(`friend/${enc}/sessions?limit=6`) });
+  const { data: worlds } = useQuery({ queryKey: ['friend-worlds5', id], queryFn: () => api(`friend/${enc}/worlds`) });
+  const { data: tl } = useQuery({ queryKey: ['friend-timeline', id], queryFn: () => api(`friend/${enc}/timeline?limit=20`) });
+  const { openWorld } = useDrawer();
+
+  return (
+    <>
+      <Heatmap id={id} />
+
+      <div>
+        <div className="label-xs mb-1.5 flex justify-between">
+          <span>最近在线</span>
+          <span className="text-fg3" style={{ fontWeight: 400 }}>
+            {sess?.returned ? `共 ${sess.returned} 段 · ${Math.round((sess.total_minutes ?? 0) / 60)} 小时` : ''}
+          </span>
+        </div>
+        {(sess?.sessions ?? []).length === 0 ? (
+          <div className="card px-3 py-2 text-[11.5px] text-fg3">还没有会话记录。</div>
+        ) : (
+          (sess.sessions ?? []).map((s) => (
+            <div key={s.id} className="flex items-center justify-between gap-3 px-1 py-1 text-[11.5px]">
+              <span className="flex min-w-0 items-center gap-2">
+                <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 10 }}>{s.status ?? '在线'}</span>
+                <span className="truncate text-fg2">{s.world ?? '—'}</span>
+              </span>
+              <span className="shrink-0 text-fg3 tabular-nums">
+                {s.ongoing ? '进行中' : `${s.minutes} 分钟`} · {fmt(s.started_at)}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div>
+        <div className="label-xs mb-1.5">常去的世界</div>
+        {(worlds?.worlds ?? []).length === 0 ? (
+          <div className="card px-3 py-2 text-[11.5px] text-fg3">还没有世界访问记录。</div>
+        ) : (
+          (worlds.worlds ?? []).slice(0, 6).map((w) => (
+            <button
+              key={w.world_id}
+              onClick={() => w.world_id?.startsWith('wrld_') && openWorld(w.world_id)}
+              className="card mb-1 flex w-full items-center justify-between gap-3 px-3 py-1.5 text-left hover:bg-[var(--state-hover-surface)]"
+            >
+              <span className="min-w-0 truncate text-[12.5px]">{w.world_name}</span>
+              <span className="shrink-0 text-[10.5px] tabular-nums text-fg3">
+                {w.visits} 次 · {w.minutes} 分钟
+              </span>
+            </button>
+          ))
+        )}
+      </div>
+
+      <div>
+        <div className="label-xs mb-1.5">时间线</div>
+        {(tl?.items ?? []).length === 0 ? (
+          <div className="card px-3 py-2 text-[11.5px] text-fg3">还没有行为记录。</div>
+        ) : (
+          (tl.items ?? []).map((it, i) => (
+            <div key={`${it.type}-${it.at}-${i}`} className="flex items-center justify-between gap-3 px-1 py-1 text-[11.5px]">
+              <span className="flex min-w-0 items-center gap-2">
+                <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 10 }}>
+                  {it.type === 'event' ? (KIND[it.kind] ?? it.kind) : TL_LABEL[it.type]}
+                </span>
+                <span className="truncate text-fg2">{tlText(it)}</span>
+              </span>
+              <span className="shrink-0 text-fg3">{fmt(it.at)}</span>
+            </div>
+          ))
+        )}
+      </div>
+    </>
+  );
+}
+
 /** 好友详情抽屉：资料 / 最近事件 / 常一起出现的世界 */
 export default function FriendDrawer({ id, onClose }) {
   const { openWorld } = useDrawer();
@@ -141,6 +269,8 @@ export default function FriendDrawer({ id, onClose }) {
             </div>
 
             <NoteAndTags id={id} />
+
+            <Behavior id={id} />
 
             <div>
               <div className="label-xs mb-1.5">常一起出现的世界</div>
