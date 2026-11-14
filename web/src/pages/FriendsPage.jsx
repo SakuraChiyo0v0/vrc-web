@@ -56,7 +56,7 @@ export default function FriendsPage() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="搜索好友"
-          className="h-8 w-full rounded-lg border px-2.5 text-[12px] outline-none sm:w-60"
+          className="h-8 min-w-0 flex-1 rounded-lg border px-2.5 text-[12px] outline-none sm:w-60 sm:flex-none"
           style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)', color: 'var(--content-primary)' }}
         />
         <button

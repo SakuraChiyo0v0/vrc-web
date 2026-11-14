@@ -3,7 +3,7 @@ export default function StatusBar({ status }) {
   const online = !!c?.connected;
   const n = status?.friends;
   return (
-    <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
+    <div className="hidden flex-wrap items-center justify-end gap-2 sm:flex">
       <span className="chip">
         <span className="size-1.5 rounded-full" style={{ background: online ? 'var(--status-online)' : 'var(--status-busy)' }} />
         {online ? 'pipeline 已连接' : 'pipeline 断开'}

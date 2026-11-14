@@ -84,7 +84,7 @@ export default function App() {
             <div className="flex min-w-0 items-center gap-2">
               <button className="chip md:hidden" onClick={() => setNav(true)} aria-label="菜单">☰</button>
               <div className="flex items-center gap-2">
-                <h1 className="text-[14px] font-medium leading-tight">{TITLES[page]?.[0] ?? ''}</h1>
+                <h1 className="whitespace-nowrap text-[14px] font-medium leading-tight">{TITLES[page]?.[0] ?? ''}</h1>
               </div>
               <p className="hidden truncate text-[11px] text-fg3 sm:block">{TITLES[page]?.[1] ?? ''}</p>
             </div>
