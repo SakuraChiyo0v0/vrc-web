@@ -24,8 +24,9 @@ import crypto from 'node:crypto';
 
 const URL_BASE = (process.env.VRC_INGEST_URL || 'http://192.168.31.254:8730/vrc').replace(/\/$/, '');
 const STATE = path.join(os.homedir(), '.vrc-agent-state.json');
+// VRChat 的日志在 AppData\LocalLow（不是 AppData\Local\Low）
 const LOG_DIR = process.env.VRC_LOG_DIR
-  || path.join(process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'), 'Low', 'VRChat', 'VRChat');
+  || path.join(process.env.USERPROFILE || os.homedir(), 'AppData', 'LocalLow', 'VRChat', 'VRChat');
 
 const TICK_MS = 30_000;          // 轮转扫描间隔
 const DEDUP_MS = 5 * 60_000;     // 同一行内容 5 分钟内只报一次

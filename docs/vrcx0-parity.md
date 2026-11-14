@@ -48,13 +48,13 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 | # | 功能 | 对应物 | 验收 | 状态 |
 |---|---|---|---|---|
-| 21 | 全局搜索 | ⌘K / Ctrl+K 命令面板：好友、世界、玩家统一搜 | `/api/search?q=` 三类结果非空；面板可键盘选择 | todo |
-| 22 | 世界详情 | 点世界名 → 详情页：作者、容量、在线好友数、我去过几次 | `/api/world/:id` 含 author/capacity/online/visits | todo |
-| 23 | 好友详情 | 点好友 → 抽屉：资料、最近事件、常一起出现的世界 | `/api/friend/:id` 含 profile/events/worlds | todo |
-| 24 | 时间线筛选 | 动态页按事件类型 + 时间范围筛选，滚动分页 | `/api/events?kind=&since=&limit=` 生效 | todo |
-| 25 | 数据导出 | 好友/事件/玩家 导出 CSV | `GET /api/export/friends.csv` 200 且首行表头 | todo |
-| 26 | 统计增强 | 7/30 天切换 + 24 小时×7 天热力图 | `/api/stats?days=7` 返回 hourly 矩阵；页面可切 | todo |
-| 27 | 通知管理 | 已读/未读、全部标记已读、按类型过滤 | `/api/notifications?unread=1` + `POST /api/notifications/read` | todo |
+| 21 | 全局搜索 | ⌘K / Ctrl+K 命令面板：好友、世界、玩家统一搜 | `/api/search?q=` 三类结果非空；面板可键盘选择 | done |
+| 22 | 世界详情 | 点世界名 → 详情页：作者、容量、在线好友数、我去过几次 | `/api/world/:id` 含 author/capacity/online/visits | done |
+| 23 | 好友详情 | 点好友 → 抽屉：资料、最近事件、常一起出现的世界 | `/api/friend/:id` 含 profile/events/worlds | done |
+| 24 | 时间线筛选 | 动态页按事件类型 + 时间范围筛选，滚动分页 | `/api/events?kind=&since=&limit=` 生效 | done |
+| 25 | 数据导出 | 好友/事件/玩家 导出 CSV | `GET /api/export/friends.csv` 200 且首行表头 | done |
+| 26 | 统计增强 | 7/30 天切换 + 24 小时×7 天热力图 | `/api/stats?days=7` 返回 hourly 矩阵；页面可切 | done |
+| 27 | 通知管理 | 已读/未读、全部标记已读、按类型过滤 | `/api/notifications?unread=1` + `POST /api/notifications/read` | done |
 
 ## 第二轮完成定义
 

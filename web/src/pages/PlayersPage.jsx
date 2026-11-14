@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../api.js';
+import { api, BASE } from '../api.js';
 
 function InitialAvatar({ name }) {
   const ch = (name ?? '?').trim().charAt(0).toUpperCase();
@@ -20,7 +20,10 @@ export default function PlayersPage() {
   const rows = data?.players ?? [];
   return (
     <div className="p-4">
-      <div className="mb-3 text-[11.5px] text-fg3">来自游戏内日志（PC 端 log-agent）。</div>
+      <div className="mb-3 flex items-center gap-2">
+        <span className="text-[11.5px] text-fg3">来自游戏内日志（PC 端 log-agent）。</span>
+        <a className="chip ml-auto" href={`${BASE}api/export/players.csv`} download>导出 CSV</a>
+      </div>
       {rows.length === 0 ? (
         <div className="card p-10 text-center">
           <div className="text-[13px]">还没有同房记录</div>

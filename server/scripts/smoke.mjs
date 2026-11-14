@@ -5,13 +5,19 @@
  */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
+import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
 
 const useSqlite = !process.env.VRC_DB_URL || process.env.VRC_DB_URL.startsWith('sqlite');
 const file = path.join(os.tmpdir(), `vrc-smoke-${Date.now()}.db`);
 const url = useSqlite ? `sqlite:${file}` : process.env.VRC_DB_URL;
-const port = 8799;
+// 端口动态取，避免上一次进程没退干净导致 bind 失败
+const port = await new Promise((res, rej) => {
+  const s = net.createServer();
+  s.on('error', rej);
+  s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); });
+});
 const token = 'smoke-token';
 
 const srv = spawn(process.execPath, ['src/index.js'], {
@@ -20,19 +26,26 @@ const srv = spawn(process.execPath, ['src/index.js'], {
   stdio: ['ignore', 'pipe', 'pipe'],
 });
 let log = '';
+let exited = null;
 srv.stdout.on('data', (d) => { log += d; });
 srv.stderr.on('data', (d) => { log += d; });
+srv.on('error', (e) => { exited = `spawn ${e.message}`; log += `[spawn error] ${e.message}\n`; });
+srv.on('exit', (code, sig) => { exited = `exit code=${code} sig=${sig ?? ''}`; log += `[exit] ${exited}\n`; });
 
 const base = `http://127.0.0.1:${port}`;
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 let exitCode = 1;
 
 try {
-  for (let i = 0; i < 50; i++) {
+  let ready = false;
+  for (let i = 0; i < 150; i++) {
+    if (exited) break;
+    try {
+      if ((await fetch(`${base}/api/health`)).ok) { ready = true; break; }
+    } catch {}
     await wait(200);
-    if (log.includes('[api]')) break;
   }
-  if (!log.includes('[api]')) throw new Error(`api 未启动:\n${log}`);
+  if (!ready) throw new Error(`api 未启动（${exited ?? 'timeout 30s'}）:\n${log}`);
 
   const now = Date.now();
   const at = (m) => new Date(now - m * 60000).toISOString();

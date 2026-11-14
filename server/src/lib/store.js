@@ -22,6 +22,12 @@ export function createStore({ db, T, iso }) {
 
   /** 同房玩家：meets / 最后遇到 / 去过的世界 */
   async function players({ minMeets = 1, days = 365 } = {}) {
+    // 排除自己：game_event 里也有本人的 room_join，不该出现在「同房玩家」里
+    let selfId = null;
+    try {
+      const [acc] = await db.query(`select vrchat_user_id from ${T('account')} limit 1`);
+      selfId = acc?.vrchat_user_id ?? null;
+    } catch { /* 表还没建时忽略 */ }
     const rows = await db.query(
       `select display_name, user_id, world_name, at from ${T('game_event')}
         where kind = 'room_join' and at >= ? order by at desc`,
@@ -31,6 +37,7 @@ export function createStore({ db, T, iso }) {
     for (const r of rows) {
       const key = r.user_id ?? r.display_name;
       if (!key) continue;
+      if (selfId && r.user_id === selfId) continue;
       const seen = t(r.at);
       const cur = map.get(key);
       if (cur) {

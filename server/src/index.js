@@ -9,6 +9,7 @@ import { registerLibraryRoutes } from './routes/library.js';
 import { registerInsightRoutes } from './routes/insights.js';
 import { registerExtRoutes } from './routes/ext.js';
 import { registerShareRoutes } from './routes/share.js';
+import { registerRound2Routes } from './routes/round2.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_DIST = process.env.VRC_WEB_DIST || path.join(__dirname, '../../web/dist');
@@ -23,6 +24,7 @@ registerLibraryRoutes(app, { db, T, iso });
 registerInsightRoutes(app, { db, T, iso });
 registerExtRoutes(app, { db, T, iso });
 registerShareRoutes(app, { db, T, iso });
+registerRound2Routes(app, { db, T, iso });
 
 app.get('/api/health', async () => {
   const [s] = await db.query(
@@ -72,8 +74,14 @@ app.get('/api/friends', async (req) => {
 });
 
 app.get('/api/events', async (req) => {
-  const limit = Math.min(Number(req.query.limit ?? 100), 500);
-  const kind = req.query.kind;
+  const limit = Math.min(Math.max(Number(req.query.limit ?? 100) || 100, 1), 500);
+  const offset = Math.max(Number(req.query.offset ?? 0) || 0, 0);
+  const where = [];
+  const params = [];
+  if (req.query.kind) { where.push('e.kind = ?'); params.push(String(req.query.kind)); }
+  if (req.query.since) { where.push('e.at >= ?'); params.push(String(req.query.since)); }
+  if (req.query.until) { where.push('e.at < ?'); params.push(String(req.query.until)); }
+  if (req.query.user_id) { where.push('e.user_id = ?'); params.push(String(req.query.user_id)); }
   const rows = await db.query(
     `select e.id, e.user_id, coalesce(e.display_name, f.display_name) as display_name,
             f.icon_url, e.kind, e.location, e.world_id,
@@ -81,18 +89,24 @@ app.get('/api/events', async (req) => {
        from ${T('friend_event')} e
        left join ${T('friend')} f on f.user_id = e.user_id
        left join ${T('world')} w on w.id = e.world_id
-      ${kind ? 'where e.kind = ?' : ''}
-      order by e.at desc limit ?`,
-    kind ? [kind, limit] : [limit],
+      ${where.length ? `where ${where.join(' and ')}` : ''}
+      order by e.at desc limit ? offset ?`,
+    [...params, limit + 1, offset],
   );
-  return { returned: rows.length, events: rows.map((r) => ({ ...r, at: iso(r.at) })) };
+  const has_more = rows.length > limit;
+  const events = (has_more ? rows.slice(0, limit) : rows).map((r) => ({ ...r, at: iso(r.at) }));
+  return { returned: events.length, limit, offset, has_more, events };
 });
 
-app.get('/api/stats', async () => {
-  const cutoff = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+/** 26 统计：days 天窗口 + 24×7 热力图（按 +08:00 切日/切小时） */
+app.get('/api/stats', async (req) => {
+  const days = Math.min(Math.max(Number(req.query.days) || 7, 1), 90);
+  const TZ = 8 * 3600_000;
+  const now = Date.now();
+  const startIso = new Date(now - days * 86400_000).toISOString();
   const byKind = await db.query(
     `select kind, count(*) as n from ${T('friend_event')} where at > ? group by kind order by n desc`,
-    [cutoff],
+    [startIso],
   );
   const topWorlds = await db.query(
     `select coalesce(w.name, e.world_name, e.world_id) as world,
@@ -101,28 +115,53 @@ app.get('/api/stats', async () => {
       where e.at > ? and e.world_id is not null
       group by coalesce(w.name, e.world_name, e.world_id)
       order by events desc limit 8`,
-    [cutoff],
+    [startIso],
   );
-  const rows = await db.query(`select at from ${T('friend_event')} where at > ? order by at`, [cutoff]);
-  const buckets = new Map();
+
+  const dayKey = (ms) => new Date(ms + TZ).toISOString().slice(0, 10);
+  const dates = [];
+  for (let i = days - 1; i >= 0; i--) dates.push(dayKey(now - i * 86400_000));
+  const idx = new Map(dates.map((d, i) => [d, i]));
+  const hourly = dates.map(() => new Array(24).fill(0));
+
+  const rows = await db.query(`select at from ${T('friend_event')} where at > ? order by at`, [startIso]);
   for (const r of rows) {
-    const key = String(iso(r.at)).slice(0, 13);
-    buckets.set(key, (buckets.get(key) ?? 0) + 1);
+    const ms = new Date(iso(r.at)).getTime();
+    const i = idx.get(dayKey(ms));
+    if (i === undefined) continue;
+    const h = new Date(ms + TZ).getUTCHours();
+    hourly[i][h] += 1;
   }
+  const total = hourly.flat().reduce((a, b) => a + b, 0);
+
   return {
+    days,
+    tz: '+08:00',
+    dates,
+    hourly,
+    max: Math.max(1, ...hourly.flat()),
+    total,
     byKind: byKind.map((r) => ({ kind: r.kind, n: Number(r.n) })),
     topWorlds: topWorlds.map((r) => ({ world: r.world, people: Number(r.people), events: Number(r.events) })),
-    hourly: [...buckets.entries()].map(([h, n]) => ({ h, n })),
   };
 });
 
-app.get('/api/notifications', async () => {
+app.get('/api/notifications', async (req) => {
+  const where = [];
+  const params = [];
+  if (req.query.unread === '1') { where.push('seen = ?'); params.push(false); }
+  if (req.query.type) { where.push('type = ?'); params.push(String(req.query.type)); }
   const rows = await db.query(
     `select id, type, sender_user_id, message, link, created_at, seen
-       from ${T('notification')} order by created_at desc limit 50`,
+       from ${T('notification')} ${where.length ? `where ${where.join(' and ')}` : ''}
+      order by created_at desc limit 200`,
+    params,
   );
+  const [un] = await db.query(`select count(*) as n from ${T('notification')} where seen = ?`, [false]);
   return {
     returned: rows.length,
+    unread_count: Number(un?.n ?? 0),
+    types: [...new Set(rows.map((r) => r.type).filter(Boolean))],
     notifications: rows.map((r) => ({ ...r, seen: !!Number(r.seen), created_at: iso(r.created_at) })),
   };
 });

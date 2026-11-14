@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { api } from '../api.js';
+import { api, BASE } from '../api.js';
+import { useDrawer } from '../components/drawers.jsx';
 
 const STATUS_COLOR = {
   active: 'var(--status-active)',
@@ -31,6 +32,7 @@ function Avatar({ f }) {
 export default function FriendsPage() {
   const [only, setOnly] = useState(true);
   const [q, setQ] = useState('');
+  const { openFriend } = useDrawer();
   const { data, isLoading } = useQuery({
     queryKey: ['friends', only],
     queryFn: () => api(`friends${only ? '?online=1' : ''}`)
@@ -65,6 +67,7 @@ export default function FriendsPage() {
           {only ? '只看在线' : '全部好友'}
         </button>
         <span className="text-[11.5px] text-fg3">{data?.total ?? 0} 人</span>
+        <a className="chip ml-auto" href={`${BASE}api/export/friends.csv`} download>导出 CSV</a>
       </div>
 
       {isLoading && <div className="text-[12px] text-fg3">加载中…</div>}
@@ -80,7 +83,11 @@ export default function FriendsPage() {
             </div>
             <div className="grid gap-0.5 p-1.5 sm:grid-cols-2 xl:grid-cols-3">
               {people.map((f) => (
-                <div key={f.user_id} className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-[var(--state-hover-surface)]">
+                <div
+                  key={f.user_id}
+                  onClick={() => openFriend(f.user_id)}
+                  className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-[var(--state-hover-surface)]"
+                >
                   <Avatar f={f} />
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-[12.5px]">{f.display_name ?? f.user_id}</div>

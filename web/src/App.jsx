@@ -11,6 +11,8 @@ import PlayersPage from './pages/PlayersPage.jsx';
 import NotificationsPage from './pages/NotificationsPage.jsx';
 import FavoritesPage from './pages/FavoritesPage.jsx';
 import InsightsPage from './pages/InsightsPage.jsx';
+import CommandPalette from './components/CommandPalette.jsx';
+import { DrawerProvider } from './components/drawers.jsx';
 
 const PAGES = {
   friends: FriendsPage,
@@ -45,38 +47,52 @@ function useTheme() {
 
 export default function App() {
   const [page, setPage] = useState('friends');
+  const [palette, setPalette] = useState(false);
   const [theme, toggleTheme] = useTheme();
   const Page = PAGES[page] ?? FriendsPage;
   const { data: status } = useQuery({ queryKey: ['status'], queryFn: () => api('status') });
 
   return (
-    <div className="flex h-full" style={{ background: 'var(--surface-canvas)' }}>
-      <Sidebar page={page} onNavigate={setPage} me={status?.account} />
+    <DrawerProvider>
+      <div className="flex h-full" style={{ background: 'var(--surface-canvas)' }}>
+        <Sidebar page={page} onNavigate={setPage} me={status?.account} />
 
-      <main className="flex min-w-0 flex-1 flex-col">
-        <header
-          className="flex h-14 shrink-0 items-center justify-between gap-3 border-b px-5"
-          style={{ borderColor: 'var(--stroke-subtle)' }}
-        >
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <h1 className="text-[14px] font-medium leading-tight">{TITLES[page]?.[0] ?? ''}</h1>
+        <main className="flex min-w-0 flex-1 flex-col">
+          <header
+            className="flex h-14 shrink-0 items-center justify-between gap-3 border-b px-5"
+            style={{ borderColor: 'var(--stroke-subtle)' }}
+          >
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <h1 className="text-[14px] font-medium leading-tight">{TITLES[page]?.[0] ?? ''}</h1>
+              </div>
+              <p className="text-[11px] text-fg3">{TITLES[page]?.[1] ?? ''}</p>
             </div>
-            <p className="text-[11px] text-fg3">{TITLES[page]?.[1] ?? ''}</p>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <StatusBar status={status} />
-            <button onClick={toggleTheme} className="chip" title="切换主题">
-              {theme === 'light' ? '◐' : '☀'}
-            </button>
-          </div>
-        </header>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setPalette(true)} className="chip" title="全局搜索（⌘K）">
+                <span className="opacity-60">⌕</span> 搜索
+                <kbd className="ml-1 text-[9.5px] opacity-50">⌘K</kbd>
+              </button>
+              <StatusBar status={status} />
+              <button onClick={toggleTheme} className="chip" title="切换主题">
+                {theme === 'light' ? '◐' : '☀'}
+              </button>
+            </div>
+          </header>
 
-        <div className="min-h-0 flex-1 overflow-auto">
-          <Page />
-        </div>
-      </main>
-    </div>
+          <div className="min-h-0 flex-1 overflow-auto">
+            <Page onNavigate={setPage} />
+          </div>
+        </main>
+      </div>
+
+      <CommandPalette
+        open={palette}
+        onOpen={() => setPalette(true)}
+        onClose={() => setPalette(false)}
+        onNavigate={setPage}
+      />
+    </DrawerProvider>
   );
 }
