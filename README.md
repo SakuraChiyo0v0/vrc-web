@@ -1,6 +1,20 @@
 # vrc-web
 
-自建的 VRChat 数据面板：NAS 常驻采集好友动态与游戏内日志，浏览器查看，数据落 PostgreSQL。
+自建的 VRChat 数据面板：NAS 常驻采集好友动态与游戏内日志，浏览器查看，数据落 PostgreSQL 或 SQLite。
+
+## 数据库：一套代码，两种后端
+
+| 环境 | 连接串 | 说明 |
+|---|---|---|
+| 服务器（NAS） | `postgres://user:pass@host:5432/db` | schema `vrc`，首次启动自动建表 |
+| Windows / 本机 | `sqlite:./data/vrc.db` | 零依赖，文件不存在自动建 |
+
+判定规则：连接串以 `sqlite:` 开头、或等于 `:memory:`、或结尾是 `.db` / `.sqlite` → SQLite，其余按 PostgreSQL。
+两个连接串都不给、又读不到 `VRC_DB_URL_FILE` 时，自动落到 `sqlite:./data/vrc.db`（本机开发零配置）。
+
+代码里只写 `?` 占位符的 SQL，适配层负责翻译（`$1..$n`）、时间类型（timestamptz ↔ ISO 字符串）、
+布尔（boolean ↔ 0/1）、JSON（jsonb ↔ TEXT）和表名前缀（`vrc.friend` ↔ `friend`）。
+会话、统计这类需要方言函数的计算全部在 JS 里做，所以两端结果一致。
 
 ## 能做什么
 
@@ -41,7 +55,16 @@ docker run -d --name vrc-web --restart unless-stopped \
 - `db-url`：`postgres://user:pass@host:5432/db`
 - `ingest.token`：任意随机串，PC 端 agent 用它鉴权
 
-首次启动自动建表（schema `vrc`）。
+首次启动自动建表（PostgreSQL 建在 schema `vrc`，SQLite 直接建在当前库）。
+
+本机开发（Windows / macOS / Linux 都行，不需要装数据库）：
+
+```powershell
+set VRC_DB_URL=sqlite:./data/vrc.db
+node server/src/index.js
+# 或先灌样例数据看界面
+node server/scripts/smoke.mjs
+```
 
 ## PC 端日志代理
 

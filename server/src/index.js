@@ -3,135 +3,177 @@ import fastifyStatic from '@fastify/static';
 import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { q } from './db.js';
+import { openDb } from './db/index.js';
+import { dbUrl } from './config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_DIST = process.env.VRC_WEB_DIST || path.join(__dirname, '../../web/dist');
 
-const app = Fastify({ logger: false });
+const db = await openDb(dbUrl());
+const T = (n) => db.tbl(n);
+const iso = (v) => (v instanceof Date ? v.toISOString() : v);
 
+const app = Fastify({ logger: false });
 await app.register(fastifyStatic, { root: WEB_DIST, prefix: '/' });
 
-const online = (loc) => loc && loc !== 'offline' && loc !== 'private' && loc !== 'traveling';
-
 app.get('/api/status', async () => {
-  const [s] = await q('select connected, last_msg_at, msg_count, last_error from vrc.collector_state where id = 1');
-  const [acc] = await q('select vrchat_user_id, display_name, last_ok_at from vrc.account order by id limit 1');
-  const [cnt] = await q('select count(*)::int as total, count(*) filter (where location not in (\'offline\',\'private\',\'traveling\') and location is not null)::int as online from vrc.friend');
-  return { collector: s ?? null, account: acc ?? null, friends: cnt };
+  const [s] = await db.query(`select connected, last_msg_at, msg_count, last_error from ${T('collector_state')} where id = 1`);
+  const [acc] = await db.query(`select vrchat_user_id, display_name, last_ok_at from ${T('account')} order by id limit 1`);
+  const [cnt] = await db.query(
+    `select count(*) as total,
+            sum(case when location is not null and location not in ('offline','private','traveling') then 1 else 0 end) as online
+       from ${T('friend')}`,
+  );
+  return {
+    dialect: db.dialect,
+    collector: s ? { ...s, connected: !!Number(s.connected), last_msg_at: iso(s.last_msg_at) } : null,
+    account: acc ? { ...acc, last_ok_at: iso(acc.last_ok_at) } : null,
+    friends: { total: Number(cnt?.total ?? 0), online: Number(cnt?.online ?? 0) },
+  };
 });
 
 app.get('/api/friends', async (req) => {
   const only = req.query.online === '1';
-  const rows = await q(
+  const rows = await db.query(
     `select f.user_id, f.display_name, f.status, f.status_description, f.location,
             f.world_id, coalesce(w.name, f.world_name) as world_name, f.platform, f.icon_url, f.updated_at
-       from vrc.friend f left join vrc.world w on w.id = f.world_id
+       from ${T('friend')} f left join ${T('world')} w on w.id = f.world_id
       ${only ? "where f.location is not null and f.location not in ('offline','private','traveling')" : ''}
-      order by (f.location is null or f.location in ('offline','private','traveling')), f.display_name`,
+      order by case when f.location is null or f.location in ('offline','private','traveling') then 1 else 0 end,
+               f.display_name`,
   );
-  return { total: rows.length, friends: rows };
+  return { total: rows.length, friends: rows.map((r) => ({ ...r, updated_at: iso(r.updated_at) })) };
 });
 
 app.get('/api/events', async (req) => {
   const limit = Math.min(Number(req.query.limit ?? 100), 500);
   const kind = req.query.kind;
-  const rows = await q(
+  const rows = await db.query(
     `select e.id, e.user_id, coalesce(e.display_name, f.display_name) as display_name,
-            f.icon_url, e.kind, e.location, e.world_id, coalesce(e.world_name, w.name) as world_name, e.at
-       from vrc.friend_event e
-       left join vrc.friend f on f.user_id = e.user_id
-       left join vrc.world w on w.id = e.world_id
-      ${kind ? 'where e.kind = $2' : ''}
-      order by e.at desc limit $1`,
-    kind ? [limit, kind] : [limit],
+            f.icon_url, e.kind, e.location, e.world_id,
+            coalesce(e.world_name, w.name) as world_name, e.at
+       from ${T('friend_event')} e
+       left join ${T('friend')} f on f.user_id = e.user_id
+       left join ${T('world')} w on w.id = e.world_id
+      ${kind ? 'where e.kind = ?' : ''}
+      order by e.at desc limit ?`,
+    kind ? [kind, limit] : [limit],
   );
-  return { returned: rows.length, events: rows };
+  return { returned: rows.length, events: rows.map((r) => ({ ...r, at: iso(r.at) })) };
 });
 
 app.get('/api/stats', async () => {
-  const byKind = await q(
-    `select kind, count(*)::int as n from vrc.friend_event
-      where at > now() - interval '24 hours' group by kind order by n desc`,
+  const cutoff = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+  const byKind = await db.query(
+    `select kind, count(*) as n from ${T('friend_event')} where at > ? group by kind order by n desc`,
+    [cutoff],
   );
-  const topWorlds = await q(
-    `select coalesce(w.name, e.world_name, e.world_id) as world, count(distinct e.user_id)::int as people,
-            count(*)::int as events
-       from vrc.friend_event e left join vrc.world w on w.id = e.world_id
-      where e.at > now() - interval '24 hours' and e.world_id is not null
-      group by 1 order by events desc limit 8`,
+  const topWorlds = await db.query(
+    `select coalesce(w.name, e.world_name, e.world_id) as world,
+            count(distinct e.user_id) as people, count(*) as events
+       from ${T('friend_event')} e left join ${T('world')} w on w.id = e.world_id
+      where e.at > ? and e.world_id is not null
+      group by coalesce(w.name, e.world_name, e.world_id)
+      order by events desc limit 8`,
+    [cutoff],
   );
-  const hourly = await q(
-    `select date_trunc('hour', at) as h, count(*)::int as n from vrc.friend_event
-      where at > now() - interval '24 hours' group by 1 order by 1`,
-  );
-  return { byKind, topWorlds, hourly };
+  const rows = await db.query(`select at from ${T('friend_event')} where at > ? order by at`, [cutoff]);
+  const buckets = new Map();
+  for (const r of rows) {
+    const key = String(iso(r.at)).slice(0, 13);
+    buckets.set(key, (buckets.get(key) ?? 0) + 1);
+  }
+  return {
+    byKind: byKind.map((r) => ({ kind: r.kind, n: Number(r.n) })),
+    topWorlds: topWorlds.map((r) => ({ world: r.world, people: Number(r.people), events: Number(r.events) })),
+    hourly: [...buckets.entries()].map(([h, n]) => ({ h, n })),
+  };
 });
 
 app.get('/api/notifications', async () => {
-  const rows = await q(
+  const rows = await db.query(
     `select id, type, sender_user_id, message, link, created_at, seen
-       from vrc.notification order by created_at desc nulls last limit 50`,
+       from ${T('notification')} order by created_at desc limit 50`,
   );
-  return { returned: rows.length, notifications: rows };
+  return {
+    returned: rows.length,
+    notifications: rows.map((r) => ({ ...r, seen: !!Number(r.seen), created_at: iso(r.created_at) })),
+  };
 });
 
-
-// ---- 会话 / 玩家 / 日志上报 ----
+/** 好友会话：把每个人的位置事件串成区间（JS 推导，两端一致） */
+async function friendSessions() {
+  const rows = await db.query(
+    `select user_id, display_name, kind, location, world_id, world_name, at
+       from ${T('friend_event')}
+      where kind in ('online','location','offline','active')
+      order by user_id, at`,
+  );
+  const out = [];
+  const last = new Map();
+  for (const r of rows) {
+    const prev = last.get(r.user_id);
+    if (prev?.world_id) {
+      const mins = Math.round((new Date(iso(r.at)) - new Date(prev.start_at)) / 60000);
+      if (mins >= 0) out.push({ ...prev, end_at: iso(r.at), minutes: mins });
+    }
+    const staying = (r.kind === 'online' || r.kind === 'location')
+      && r.location && !['offline', 'private', 'traveling'].includes(r.location);
+    last.set(r.user_id, staying
+      ? { user_id: r.user_id, display_name: r.display_name, location: r.location,
+          world_id: r.world_id, world_name: r.world_name, start_at: iso(r.at) }
+      : null);
+  }
+  return out;
+}
 
 app.get('/api/sessions', async (req) => {
   const limit = Math.min(Number(req.query.limit ?? 100), 500);
-  const rows = await q(
-    `select coalesce(w.name, s.world_name) as world, s.world_id, s.start_at, s.end_at, s.minutes, s.display_name
-       from vrc.v_session s left join vrc.world w on w.id = s.world_id
-      order by s.start_at desc limit $1`,
-    [limit],
-  );
-  return { returned: rows.length, sessions: rows };
+  const sessions = (await friendSessions()).sort((a, b) => (a.start_at < b.start_at ? 1 : -1)).slice(0, limit);
+  const worlds = new Map((await db.query(`select id, name from ${T('world')}`)).map((w) => [w.id, w.name]));
+  return {
+    returned: sessions.length,
+    sessions: sessions.map((s) => ({ ...s, world: worlds.get(s.world_id) ?? s.world_name ?? s.world_id })),
+  };
 });
 
+/** 我自己的行程：self_event 串区间 */
 app.get('/api/my-sessions', async () => {
-  const rows = await q(
-    `with ev as (select kind, location, world_id, at from vrc.self_event order by at),
-          o as (select ev.*, lead(at) over (order by at) as next_at,
-                       lead(kind) over (order by at) as next_kind from ev)
-     select coalesce(w.name, o.world_id) as world, o.location, o.at as start_at, o.next_at as end_at,
-            round(extract(epoch from (o.next_at - o.at)) / 60.0) as minutes
-       from o left join vrc.world w on w.id = o.world_id
-      where o.kind = 'location' and o.next_at is not null and o.location not like 'offline%'
-      order by o.at desc limit 50`,
-  );
-  return { returned: rows.length, sessions: rows };
-});
-
-app.get('/api/players', async () => {
-  const rows = await q(
-    `select coalesce(g.display_name, g.user_id) as name, g.user_id,
-            count(*)::int as meets, max(g.at) as last_seen,
-            (array_agg(g.world_name order by g.at desc))[1] as last_world
-       from vrc.game_event g
-      where g.kind = 'room_join'
-      group by 1, 2 order by meets desc limit 200`,
-  );
-  return { returned: rows.length, players: rows };
-});
-
-app.post('/ingest/log', async (req, reply) => {
-  const token = req.headers['x-ingest-token'];
-  if (!token || token !== ingestToken()) return reply.code(401).send({ ok: false });
-  const events = Array.isArray(req.body?.events) ? req.body.events.slice(0, 500) : [];
-  let n = 0;
-  for (const e of events) {
-    if (!e?.kind || !e?.at) continue;
-    await q(
-      `insert into vrc.game_event (kind, display_name, user_id, location, world_name, detail, at)
-       values ($1,$2,$3,$4,$5,$6,$7)`,
-      [e.kind, e.displayName ?? null, e.userId ?? null, e.location ?? null,
-       e.worldName ?? null, e.detail ?? null, e.at],
-    );
-    n++;
+  const rows = await db.query(`select kind, location, world_id, at from ${T('self_event')} order by at`);
+  const worlds = new Map((await db.query(`select id, name from ${T('world')}`)).map((w) => [w.id, w.name]));
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    if (r.kind !== 'location' || !r.location || String(r.location).startsWith('offline')) continue;
+    const next = rows[i + 1];
+    out.push({
+      world: worlds.get(r.world_id) ?? r.world_id,
+      location: r.location,
+      start_at: iso(r.at),
+      end_at: next ? iso(next.at) : null,
+      minutes: next ? Math.round((new Date(iso(next.at)) - new Date(iso(r.at))) / 60000) : null,
+    });
   }
-  return { ok: true, inserted: n };
+  const sessions = out.reverse();
+  return { returned: sessions.length, sessions };
+});
+
+/** 同房玩家：game_event 聚合 */
+app.get('/api/players', async () => {
+  const rows = await db.query(
+    `select display_name, user_id, world_name, at from ${T('game_event')} where kind = 'room_join' order by at desc`,
+  );
+  const map = new Map();
+  for (const r of rows) {
+    const key = r.user_id ?? r.display_name;
+    const cur = map.get(key);
+    if (cur) cur.meets += 1;
+    else map.set(key, {
+      name: r.display_name ?? r.user_id, user_id: r.user_id, meets: 1,
+      last_seen: iso(r.at), last_world: r.world_name ?? null,
+    });
+  }
+  return { returned: map.size, players: [...map.values()].sort((a, b) => b.meets - a.meets).slice(0, 200) };
 });
 
 function ingestToken() {
@@ -140,6 +182,24 @@ function ingestToken() {
   try { return fs.readFileSync(f, 'utf8').trim(); } catch { return ''; }
 }
 
+app.post('/ingest/log', async (req, reply) => {
+  const token = req.headers['x-ingest-token'];
+  if (!token || token !== ingestToken()) return reply.code(401).send({ ok: false });
+  const events = Array.isArray(req.body?.events) ? req.body.events.slice(0, 500) : [];
+  let n = 0;
+  for (const e of events) {
+    if (!e?.kind || !e?.at) continue;
+    await db.query(
+      `insert into ${T('game_event')} (kind, display_name, user_id, location, world_name, detail, at)
+       values (?,?,?,?,?,?,?)`,
+      [e.kind, e.displayName ?? null, e.userId ?? null, e.location ?? null, e.worldName ?? null,
+       e.detail ? JSON.stringify(e.detail) : null, e.at],
+    );
+    n++;
+  }
+  return { ok: true, inserted: n };
+});
+
 const port = Number(process.env.PORT ?? 8790);
 await app.listen({ port, host: '0.0.0.0' });
-console.log(`[api] http://0.0.0.0:${port}`);
+console.log(`[api] http://0.0.0.0:${port} (db=${db.dialect})`);
