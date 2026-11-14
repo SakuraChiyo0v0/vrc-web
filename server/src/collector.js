@@ -111,8 +111,25 @@ async function relogin() {
   return SESSION.cookie;
 }
 
+/** 把响应里的 Set-Cookie 合并进会话文件——VRChat 每次调 /auth 都会滑动续期，只要每天有请求就不会过期 */
+let lastPersist = 0;
+function persistSetCookie(headers) {
+  const sc = headers.getSetCookie?.() ?? [];
+  if (!sc.length) return;
+  const want = sc.map((v) => v.split(';')[0]).filter((kv) => /^(auth|twoFactorAuth)=/.test(kv));
+  if (!want.length) return;
+  if (Date.now() - lastPersist < 60_000) return;   // 每分钟最多落盘一次
+  const merged = new Map(session().cookie.split('; ').map((kv) => { const i = kv.indexOf('='); return [kv.slice(0, i), kv.slice(i + 1)]; }));
+  for (const kv of want) { const i = kv.indexOf('='); merged.set(kv.slice(0, i), kv.slice(i + 1)); }
+  const next = [...merged].map(([k, v]) => `${k}=${v}`).join('; ');
+  if (next === session().cookie) return;
+  SESSION = { ...session(), cookie: next, refreshedAt: new Date().toISOString() };
+  try { fs.writeFileSync(SESSION_FILE, JSON.stringify(SESSION, null, 2), { mode: 0o600 }); lastPersist = Date.now(); console.log('[auth] cookie 已滑动续期'); } catch (e) { console.error('[auth] 写回会话失败', e.message); }
+}
+
 async function api(path, { method = 'GET', retry = true } = {}) {
   const r = await fetch(API + path, { method, headers: { cookie: cookie(), 'user-agent': UA } });
+  persistSetCookie(r.headers);
   if ((r.status === 401 || r.status === 403) && retry) {
     await relogin();   // cookie 过期：用账号密码换新的，再试一次
     return api(path, { method, retry: false });
