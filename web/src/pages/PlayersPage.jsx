@@ -56,10 +56,10 @@ export default function PlayersPage() {
         </div>
       )}
 
-      <div className="label-xs mt-5 mb-2">共处时长排行</div>
+      <div className="label-xs mt-5 mb-2">共处次数排行</div>
       {rows.length === 0 ? (
         <div className="card p-10 text-center">
-          <div className="text-[13px]">暂无共处时长数据</div>
+          <div className="text-[13px]">暂无共处记录</div>
           <div className="mt-1 text-[11.5px] text-fg3">和好友同处一个房间后会自动累计次数。</div>
         </div>
       ) : (

@@ -10,7 +10,7 @@ export default function SessionsPage() {
     <div className="p-4">
       <div className="mb-3 flex gap-2">
         <span className="chip">共 {rows.length} 段</span>
-        <span className="chip">合计 {Math.round(total / 60)} 小时</span>
+        <span className="chip">{total >= 60 ? `合计 ${Math.floor(total / 60)} 小时 ${total % 60} 分` : `合计 ${total} 分钟`}</span>
       </div>
       {rows.length === 0 ? (
         <div className="card p-10 text-center">
