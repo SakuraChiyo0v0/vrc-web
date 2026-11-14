@@ -71,6 +71,22 @@ for (let i = 0; i < args.length; i++) {
   else { console.error(`未知参数: ${a}（--help 查看用法）`); process.exit(1); }
 }
 
+// ---- 单实例：常驻模式只允许一个进程，否则同一行会被重复上报 ----
+if (!OPTS.once && !OPTS.dry && !OPTS.from) {
+  const lockFile = path.join(os.homedir(), '.vrc-agent.lock');
+  try {
+    const old = parseInt(fs.readFileSync(lockFile, 'utf8'), 10);
+    if (old && old !== process.pid) {
+      try { process.kill(old, 0); console.error(`已有 agent 在跑 (pid ${old})，退出`); process.exit(0); } catch { /* 陈旧锁 */ }
+    }
+  } catch { /* 无锁 */ }
+  fs.writeFileSync(lockFile, String(process.pid));
+  const release = () => { try { if (fs.readFileSync(lockFile, 'utf8').trim() === String(process.pid)) fs.unlinkSync(lockFile); } catch {} };
+  process.on('exit', release);
+  process.on('SIGINT', () => process.exit(0));
+  process.on('SIGTERM', () => process.exit(0));
+}
+
 // ---- token：--token / --token-file / VRC_INGEST_TOKEN 三选一 ----
 let TOKEN = OPTS.token ?? process.env.VRC_INGEST_TOKEN ?? '';
 if (!TOKEN && OPTS.tokenFile) {

@@ -81,3 +81,22 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 ## 第三轮完成定义
 
 1. 6 项 todo → done；2. `bash scripts/parity3_check.sh` 全绿；3. build + smoke 通过；4. 不 push（主 agent 统一发布）。
+
+---
+
+# 第四轮：世界库 / 备注 / 日历（2026-11-14 起）
+
+验收脚本：`scripts/parity4_check.sh`。
+
+| # | 功能 | 对应物 | 验收 | 状态 |
+|---|---|---|---|---|
+| 41 | 世界库页 | 所有去过的世界列表：搜索、按近期活跃/访问次数排序、点进详情 | `/api/worlds?q=&sort=recent|visits` 返回分页列表 | todo |
+| 42 | 好友备注与标签 | 本地备注/标签 CRUD（不写 VRChat） | `PUT /api/friend/:id/note`、`POST /api/friend/:id/tag` 可增删查 | todo |
+| 43 | 事件日历 | 按天聚合的日历视图，点某天看当天事件 | `/api/calendar?month=YYYY-MM` 返回每日计数 | todo |
+| 44 | 今日摘要 | 在线时长、遇到人数、新世界数 | `/api/summary/today` + 首页卡片 | todo |
+| 45 | 全量备份 | 一键导出 JSON（好友/世界/事件/收藏/备注） | `GET /api/export/backup.json` 含 6 个键 | todo |
+| 46 | 采集断连告警 | collector 断连 > 30 分钟记录告警事件 | `/api/diagnostics` 的 stale 字段 + `alert_emit` 接入 | todo |
+
+## 第四轮完成定义
+
+1. 6 项 todo → done；2. `bash scripts/parity4_check.sh` 全绿；3. build + smoke；4. 不 push（主 agent 发布）。
