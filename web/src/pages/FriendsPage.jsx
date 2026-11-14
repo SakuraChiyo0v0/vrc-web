@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { api, BASE } from '../api.js';
+import { api, BASE, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 
 const STATUS_COLOR = {
@@ -23,7 +23,7 @@ function Avatar({ f }) {
   const color = STATUS_COLOR[f.status] ?? 'var(--status-offline)';
   return (
     <span className="avatar">
-      {f.icon_url ? <img src={f.icon_url} alt="" loading="lazy" /> : null}
+      {f.icon_url ? <img src={imgUrl(f.icon_url)} alt="" loading="lazy" /> : null}
       <span className="dot" style={{ background: color }} />
     </span>
   );

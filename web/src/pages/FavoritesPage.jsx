@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, send, shareUrl } from '../api.js';
+import { api, send, shareUrl, imgUrl } from '../api.js';
 
 const KIND_LABEL = { world: '世界', friend: '好友' };
 
@@ -8,7 +8,7 @@ function Thumb({ row }) {
   if (row.thumbnail) {
     return (
       <span className="avatar">
-        <img src={row.thumbnail} alt="" loading="lazy" />
+        <img src={imgUrl(row.thumbnail)} alt="" loading="lazy" />
       </span>
     );
   }

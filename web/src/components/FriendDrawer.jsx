@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../api.js';
+import { api, imgUrl } from '../api.js';
 import { useDrawer } from './drawers.jsx';
 
 const KIND = {
@@ -38,7 +38,7 @@ export default function FriendDrawer({ id, onClose }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2.5">
             <span className="avatar" style={{ width: 40, height: 40 }}>
-              {p?.icon_url ? <img src={p.icon_url} alt="" loading="lazy" /> : null}
+              {p?.icon_url ? <img src={imgUrl(p.icon_url)} alt="" loading="lazy" /> : null}
             </span>
             <div className="min-w-0">
               <div className="label-xs">好友</div>

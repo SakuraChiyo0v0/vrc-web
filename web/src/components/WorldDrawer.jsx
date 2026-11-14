@@ -1,8 +1,50 @@
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../api.js';
+import { useState } from 'react';
+import { api, imgUrl } from '../api.js';
 import { useDrawer } from './drawers.jsx';
 
 const fmt = (v) => (v ? new Date(v).toLocaleString('zh-CN', { hour12: false }) : '—');
+
+/** 35 复制：clipboard 不可用（http 内网/旧浏览器）时退回 textarea + execCommand */
+async function copyText(text) {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch { /* 下面兜底 */ }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
+function CopyButton({ label, value }) {
+  const [state, setState] = useState('');
+  if (!value) return null;
+  return (
+    <button
+      className="chip"
+      title={value}
+      onClick={async () => {
+        const ok = await copyText(value);
+        setState(ok ? '已复制' : '复制失败');
+        setTimeout(() => setState(''), 1500);
+      }}
+    >
+      {state || label}
+    </button>
+  );
+}
 
 /** 世界详情抽屉：作者 / 容量 / 在线好友 / 我去过几次 */
 export default function WorldDrawer({ id, onClose }) {
@@ -25,13 +67,22 @@ export default function WorldDrawer({ id, onClose }) {
           <button className="chip" onClick={onClose}>关闭</button>
         </div>
 
+        {/* 35 世界链接：主页链接固定，实例链接要有活人在里面才有 */}
+        <div className="flex flex-wrap gap-1.5">
+          <CopyButton label="复制 VRChat 链接" value={`https://vrchat.com/home/world/${id}`} />
+          <CopyButton
+            label="复制实例链接"
+            value={data?.instance ? `https://vrchat.com/home/launch?worldId=${id}&instanceId=${encodeURIComponent(data.instance)}` : ''}
+          />
+        </div>
+
         {isLoading && <div className="text-[12px] text-fg3">加载中…</div>}
         {error && <div className="card p-4 text-[12px] text-fg3">读不到这个世界：{error.message}</div>}
 
         {data ? (
           <>
             {data.world?.thumbnail ? (
-              <img src={data.world.thumbnail} alt="" className="w-full rounded-[10px] border" style={{ borderColor: 'var(--stroke-subtle)' }} />
+              <img src={imgUrl(data.world.thumbnail)} alt="" className="w-full rounded-[10px] border" style={{ borderColor: 'var(--stroke-subtle)' }} />
             ) : null}
 
             <div className="grid grid-cols-3 gap-2">
@@ -66,7 +117,7 @@ export default function WorldDrawer({ id, onClose }) {
                     className="card mb-1 flex w-full items-center gap-2 px-2.5 py-1.5 text-left hover:bg-[var(--state-hover-surface)]"
                   >
                     <span className="avatar">
-                      {f.icon_url ? <img src={f.icon_url} alt="" loading="lazy" /> : null}
+                      {f.icon_url ? <img src={imgUrl(f.icon_url)} alt="" loading="lazy" /> : null}
                     </span>
                     <span className="min-w-0 flex-1 truncate text-[12.5px]">{f.display_name ?? f.user_id}</span>
                     <span className="text-[10.5px] text-fg3">{f.status ?? ''}</span>

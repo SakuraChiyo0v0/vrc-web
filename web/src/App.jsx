@@ -11,6 +11,7 @@ import PlayersPage from './pages/PlayersPage.jsx';
 import NotificationsPage from './pages/NotificationsPage.jsx';
 import FavoritesPage from './pages/FavoritesPage.jsx';
 import InsightsPage from './pages/InsightsPage.jsx';
+import SettingsPage from './pages/SettingsPage.jsx';
 import CommandPalette from './components/CommandPalette.jsx';
 import { DrawerProvider } from './components/drawers.jsx';
 
@@ -22,7 +23,8 @@ const PAGES = {
   players: PlayersPage,
   stats: StatsPage,
   favorites: FavoritesPage,
-  insights: InsightsPage
+  insights: InsightsPage,
+  settings: SettingsPage
 };
 
 const TITLES = {
@@ -33,7 +35,8 @@ const TITLES = {
   players: ['玩家', '同房遇到过的人'],
   stats: ['统计', '近 24 小时'],
   favorites: ['收藏', '世界 / 好友、分组与备注，固定的世界在侧栏'],
-  insights: ['洞察', '常一起玩 / 渐行渐远 / 最常遇到的时段']
+  insights: ['洞察', '常一起玩 / 渐行渐远 / 最常遇到的时段'],
+  settings: ['设置', '采集器状态、事件速率、最近错误']
 };
 
 function useTheme() {
@@ -47,6 +50,7 @@ function useTheme() {
 
 export default function App() {
   const [page, setPage] = useState('friends');
+  const [nav, setNav] = useState(false);
   const [palette, setPalette] = useState(false);
   const [theme, toggleTheme] = useTheme();
   const Page = PAGES[page] ?? FriendsPage;
@@ -55,14 +59,30 @@ export default function App() {
   return (
     <DrawerProvider>
       <div className="flex h-full" style={{ background: 'var(--surface-canvas)' }}>
-        <Sidebar page={page} onNavigate={setPage} me={status?.account} />
+        {/* 33 <768px：侧栏收成抽屉，页头汉堡开，选完页面自动关 */}
+        {nav ? (
+          <button
+            className="fixed inset-0 z-40 cursor-default border-0 md:hidden"
+            style={{ background: 'rgb(0 0 0 / 0.28)' }}
+            aria-label="关闭菜单"
+            onClick={() => setNav(false)}
+          />
+        ) : null}
+        <Sidebar
+          page={page}
+          onNavigate={(p) => { setPage(p); setNav(false); }}
+          me={status?.account}
+          open={nav}
+          onClose={() => setNav(false)}
+        />
 
         <main className="flex min-w-0 flex-1 flex-col">
           <header
-            className="flex h-14 shrink-0 items-center justify-between gap-3 border-b px-5"
+            className="flex h-14 shrink-0 items-center justify-between gap-3 border-b px-3 sm:px-5"
             style={{ borderColor: 'var(--stroke-subtle)' }}
           >
-            <div className="min-w-0">
+            <div className="flex min-w-0 items-center gap-2">
+              <button className="chip md:hidden" onClick={() => setNav(true)} aria-label="菜单">☰</button>
               <div className="flex items-center gap-2">
                 <h1 className="text-[14px] font-medium leading-tight">{TITLES[page]?.[0] ?? ''}</h1>
               </div>

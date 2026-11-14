@@ -71,12 +71,12 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 | # | 功能 | 对应物 | 验收 | 状态 |
 |---|---|---|---|---|
-| 31 | 图片代理与缓存 | `/api/img?u=<vrchat url>` 服务端代理 + 落盘缓存（VRChat CDN 有防盗链/过期） | `/api/img?u=` 返回 200 且 `content-type: image/*`；二次请求命中缓存 | todo |
-| 32 | 头像/世界缩略图接入 | 好友列表、世界详情使用代理后的图片 | 页面 `<img src="/vrc/api/img?...">` | todo |
-| 33 | 移动端适配 | <768px 侧栏变抽屉、表格变卡片 | 375px 宽截图无横向溢出 | todo |
-| 34 | 深色主题持久化 | 主题切换写 localStorage，刷新保持 | 切深色后刷新仍深色 | todo |
-| 35 | 世界链接复制 | 世界详情提供「复制 VRChat 链接」「复制实例链接」 | 按钮存在且复制内容含 `vrchat.com/home/world/` | todo |
-| 36 | 采集健康面板 | 设置页展示 collector 状态、事件速率、最近错误 | `/api/diagnostics` 返回 connected/rate24h/lastError | todo |
+| 31 | 图片代理与缓存 | `/api/img?u=<vrchat url>` 服务端代理 + 落盘缓存（VRChat CDN 有防盗链/过期） | `/api/img?u=` 返回 200 且 `content-type: image/*`；二次请求命中缓存 | done |
+| 32 | 头像/世界缩略图接入 | 好友列表、世界详情使用代理后的图片 | 页面 `<img src="/vrc/api/img?...">` | done |
+| 33 | 移动端适配 | <768px 侧栏变抽屉、表格变卡片 | 375px 宽截图无横向溢出 | done（无浏览器环境：以构建产物 CSS 断言 + `overflow-wrap:anywhere`/`overflow-x:clip` 替代截图） |
+| 34 | 深色主题持久化 | 主题切换写 localStorage，刷新保持 | 切深色后刷新仍深色 | done（首屏内联脚本读 vrc-theme + App 写回 + dark token，parity3 #34w 断言） |
+| 35 | 世界链接复制 | 世界详情提供「复制 VRChat 链接」「复制实例链接」 | 按钮存在且复制内容含 `vrchat.com/home/world/` | done |
+| 36 | 采集健康面板 | 设置页展示 collector 状态、事件速率、最近错误 | `/api/diagnostics` 返回 connected/rate24h/lastError | done |
 
 ## 第三轮完成定义
 

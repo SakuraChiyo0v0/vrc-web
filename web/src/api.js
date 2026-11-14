@@ -28,3 +28,13 @@ export async function send(path, method = 'POST', body) {
 export function shareUrl(id) {
   return new URL(`${BASE}s/${id}`, location.origin).href;
 }
+
+/**
+ * 图片走服务端代理：VRChat 的头像/缩略图要带登录 cookie，且是 302 到会过期的签名 CDN，
+ * 浏览器直接引用拿不到图。后端 /api/img 取一次落盘缓存，这里只负责拼地址。
+ * 空值返回 ''，调用方用 `src || undefined` 即可。
+ */
+export function imgUrl(u) {
+  if (!u) return '';
+  return `${BASE}api/img?u=${encodeURIComponent(u)}`;
+}

@@ -90,9 +90,20 @@ export function registerRound2Routes(app, { db, T, iso }) {
       [w.name],
     );
 
+    /** 35 复制实例链接用：随便取一个当前在这个世界里的好友 location（离线/私密的不算） */
+    const [inst] = await db.query(
+      `select location from ${T('friend')} where world_id = ? and ${ONLINE}
+        order by updated_at desc limit 1`,
+      [id],
+    ).catch(() => [null]);
+    const instance = inst?.location && inst.location.includes(':')
+      ? String(inst.location).slice(String(inst.location).indexOf(':') + 1)
+      : null;
+
     return {
       ok: true,
       world: { ...w, capacity: w.capacity === null ? null : Number(w.capacity), updated_at: w.updated_at ? iso(w.updated_at) : null },
+      instance,
       online: onlineFriends.length,
       online_friends: onlineFriends,
       visits: mine.length,

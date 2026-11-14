@@ -19,6 +19,10 @@ const GROUPS = [
       { id: 'insights', label: '洞察', icon: '✧' },
       { id: 'favorites', label: '收藏', icon: '★' }
     ]
+  },
+  {
+    title: '系统',
+    items: [{ id: 'settings', label: '设置', icon: '⚙' }]
   }
 ];
 
@@ -51,9 +55,13 @@ function PinnedWorlds({ onNavigate }) {
   );
 }
 
-export default function Sidebar({ page, onNavigate, me }) {
+export default function Sidebar({ page, onNavigate, me, open = false, onClose }) {
   return (
-    <aside className="flex w-52 shrink-0 flex-col border-r" style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-shell)' }}>
+    <aside
+      className="vrc-sidebar flex w-52 shrink-0 flex-col border-r"
+      data-open={open ? 'true' : 'false'}
+      style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-shell)' }}
+    >
       <div className="flex h-14 items-center gap-2.5 px-4">
         <div
           className="grid size-7 place-items-center rounded-[8px] text-[12px] font-medium"
@@ -65,6 +73,8 @@ export default function Sidebar({ page, onNavigate, me }) {
           <div className="truncate text-[12.5px] font-medium">{me?.display_name ?? 'VRC'}</div>
           <div className="truncate text-[10.5px] text-fg3">self-hosted panel</div>
         </div>
+        {/* 33 只在移动端抽屉里出现 */}
+        <button className="vrc-sidebar-close chip ml-auto" onClick={onClose} aria-label="关闭菜单">✕</button>
       </div>
 
       <nav className="flex flex-1 flex-col gap-5 px-2.5 py-2">

@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { api, BASE } from '../api.js';
+import { api, BASE, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 
 const KIND = {
@@ -108,7 +108,7 @@ export default function FeedPage() {
                       style={{ cursor: e.user_id ? 'pointer' : 'default' }}
                     >
                       <span className="avatar" style={{ width: 22, height: 22 }}>
-                        {e.icon_url ? <img src={e.icon_url} alt="" loading="lazy" style={{ borderRadius: 5 }} /> : null}
+                        {e.icon_url ? <img src={imgUrl(e.icon_url)} alt="" loading="lazy" style={{ borderRadius: 5 }} /> : null}
                       </span>
                       {e.display_name ?? e.user_id ?? '—'}
                     </button>

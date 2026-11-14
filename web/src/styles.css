@@ -106,3 +106,41 @@ body {
   .nav-item:hover { background: var(--state-hover-surface); color: var(--content-primary); }
   .nav-item[data-active='true'] { background: var(--state-selected-surface); color: var(--content-primary); font-weight: 500; }
 }
+
+/* ── 33 移动端（<768px）：侧栏变抽屉，表格变卡片 ─────────────── */
+.vrc-sidebar-close { display: none; }
+
+@media (max-width: 767px) {
+  /* 侧栏：默认移出屏幕，data-open=true 时滑入，盖住内容 */
+  .vrc-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform .18s ease;
+    box-shadow: 8px 0 24px rgb(0 0 0 / .18);
+  }
+  .vrc-sidebar[data-open='true'] { transform: none; }
+  .vrc-sidebar-close { display: inline-flex; }
+
+  /* 表格：表头隐藏，每行一张卡；单元格堆叠并允许长串换行 */
+  .tbl thead { display: none; }
+  .tbl, .tbl tbody, .tbl tr, .tbl td { display: block; width: 100%; }
+  .tbl tbody tr {
+    margin: 0 0 .5rem;
+    padding: .25rem 0;
+    border: 1px solid var(--stroke-subtle);
+    border-radius: var(--radius);
+    background: var(--surface-panel);
+  }
+  .tbl tbody td {
+    height: auto;
+    padding: .1875rem .625rem;
+    border-bottom: 0;
+    overflow-wrap: anywhere;
+  }
+  .tbl tbody td:first-child { font-weight: 500; }
+  .tbl tbody tr:hover td { background: transparent; }
+  /* 卡片列表外的容器别再横向滚动 */
+  .card { overflow-x: clip; }
+}
