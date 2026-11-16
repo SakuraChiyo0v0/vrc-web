@@ -190,7 +190,7 @@ export default function FriendsPage() {
                   </span>
                   {f.region ? <span className="reg">{String(f.region).toUpperCase()}</span> : null}
                   <Platform p={f.platform} />
-                  <span className="w-14 shrink-0 text-right tabular-nums text-fg3">
+                  <span className="w-[4.5rem] shrink-0 whitespace-nowrap text-right tabular-nums text-fg3">
                     {f.online ? dur(f.online_minutes) : ''}
                   </span>
                 </div>
