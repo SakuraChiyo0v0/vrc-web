@@ -16,14 +16,24 @@ function locLabel(f) {
   if (f.location === 'offline') return '离线';
   if (f.location === 'private') return '私密世界';
   if (f.location === 'traveling') return '切换中';
-  return f.world_name || f.location;
+  // 世界元数据拉不到（私有/已删除/接口失败）时显示人话，不要把 wrld_xxx 甩给用户
+  if (f.world_name) return f.world_name;
+  if (String(f.location).startsWith('wrld_')) return '未知世界';
+  return f.location;
 }
 
 function Avatar({ f }) {
   const color = STATUS_COLOR[f.status] ?? 'var(--status-offline)';
   return (
     <span className="avatar">
-      {f.icon_url ? <img src={imgUrl(f.icon_url)} alt="" loading="lazy" /> : null}
+      {f.icon_url ? (
+        <img
+          src={imgUrl(f.icon_url)}
+          alt=""
+          loading="lazy"
+          onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+        />
+      ) : null}
       <span className="dot" style={{ background: color }} />
     </span>
   );
