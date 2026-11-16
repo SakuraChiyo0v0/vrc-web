@@ -28,6 +28,14 @@
   --status-askme: #e97c03;
   --status-offline: #737f8d;
   --status-active: #f4e05e;
+  /* 87 动态页类型图标色：与状态语义对齐（上线=green、下线=gray、换房=teal、改资料=purple） */
+  --ev-online: #3fb950;
+  --ev-offline: #8b949e;
+  --ev-location: #2fb6a8;
+  --ev-profile: #a371f7;
+  --ev-active: #c9a227;
+  --ev-danger: #d1483f;
+  --ev-neutral: var(--content-secondary);
   /* 64 平台徽章（VRCX-0 globals.css:125-127 原值） */
   --platform-pc: #0078d4;
   --platform-quest: #3ddc84;
@@ -116,12 +124,33 @@ body {
   }
   .nav-item:hover { background: var(--state-hover-surface); color: var(--content-primary); }
   /* 61 好友页单列行列表：VRCX-0 紧凑档 h-8（32px），hover 才出现描边 */
+  /* 83 行内改 grid：名字 1fr | 状态 16% | 世界 26% | 区域 40px | 平台 44px | 时长 72px（头像 22px 打头），
+     右侧元数据不再随文字长度流动，六列在所有行严格对齐 */
   .friend-row {
-    display: flex; align-items: center; gap: .5rem;
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr) 16% 26% 40px 44px 72px;
+    align-items: center;
+    column-gap: .5rem;
     height: 32px; padding: 0 .5rem; border-radius: 7px;
     border: 1px solid transparent; background: transparent;
     color: var(--content-primary); font-size: 12px; cursor: pointer;
   }
+  .friend-row > * { min-width: 0; }
+  .fr-name, .fr-status, .fr-world {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .fr-status { color: var(--content-secondary); }
+  .fr-world { color: var(--content-tertiary); }
+  .fr-reg, .fr-plat { justify-self: start; }
+  .fr-dur { text-align: right; white-space: nowrap; color: var(--content-tertiary); }
+
+  /* 84 状态语义色：active 黄 / join me 蓝 / ask me 橙 / busy 红 / offline 灰，
+     全部取自与头像 dot 相同的 --status-* 变量，不改色即不会漂移 */
+  .st[data-s='active'] { color: var(--status-active); }
+  .st[data-s='join me'] { color: var(--status-joinme); }
+  .st[data-s='ask me'] { color: var(--status-askme); }
+  .st[data-s='busy'] { color: var(--status-busy); }
+  .st[data-s='offline'] { color: var(--status-offline); }
   .friend-row + .friend-row { box-shadow: inset 0 1px 0 color-mix(in oklch, var(--foreground) 4%, transparent); }
   .friend-row:hover { background: var(--state-hover-surface); border-color: var(--stroke-subtle); }
   .reg { color: var(--platform-pc); }
@@ -130,6 +159,37 @@ body {
   .friend-row .dot { width: 8px; height: 8px; right: -2px; bottom: -2px; }
   /* 今日摘要三列：语义类，业务页不再出现 grid-cols-N（61 断言要求好友列表页无卡片网格） */
   .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin-bottom: .75rem; }
+  /* 82 今日全 0：三张卡折叠成一行提示，不再占一屏 */
+  .summary-empty {
+    margin-bottom: .75rem; padding: .375rem .625rem;
+    border: 1px solid var(--stroke-subtle); border-radius: var(--radius);
+    background: var(--surface-panel); color: var(--content-tertiary); font-size: 12px;
+  }
+  /* 91 收藏「分组」tab：分组卡网格，避免和世界/好友长表混排 */
+  .fav-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .5rem; }
+
+  /* 90 世界库缩略图网格：桌面 3 列、≤1023px 2 列，一屏至少 9 个（1080p 3×3） */
+  .world-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .625rem; }
+  @media (max-width: 1023px) { .world-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .world-card {
+    display: flex; flex-direction: column; overflow: hidden; cursor: pointer;
+    border: 1px solid var(--stroke-subtle); border-radius: var(--radius); background: var(--surface-panel);
+  }
+  .world-card:hover { border-color: var(--stroke-strong); }
+  .world-card .thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: var(--surface-raised); }
+  .world-card .thumb-empty { display: grid; place-items: center; color: var(--content-tertiary); font-size: 18px; }
+  .world-card .wc-body { padding: .5rem .625rem .625rem; min-width: 0; }
+  .world-card .wc-name { font-size: 12.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .world-card .wc-meta { margin-top: 3px; display: flex; gap: .5rem; font-size: 11px; color: var(--content-tertiary); }
+  .world-card .wc-meta > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .world-card .wc-meta > span:last-child { margin-left: auto; flex: none; }
+
+  /* 89 好友历史类型多选：选中态描边+底色，计数用 tabular-nums 对齐 */
+  .kind-chip[data-on='1'] {
+    background: var(--state-hover-surface);
+    border-color: var(--stroke-strong);
+    color: var(--content-primary);
+  }
 
   .group-head { height: 26px; display: flex; align-items: center; gap: .5rem; padding: 0 .5rem; font-size: 11px; color: var(--content-secondary); }
 
@@ -159,7 +219,14 @@ body {
     font-size: 11.5px; line-height: 1; white-space: nowrap;
   }
   .ek-glyph { font-size: 10px; line-height: 1; opacity: .95; }
-  .ek[data-kind='location'] { letter-spacing: .01em; }
+  /* 87 四类主色固定：上线绿 / 下线灰 / 换房青 / 改资料紫（+=加好友、−=删好友随之） */
+  .ek { color: var(--ev-neutral); }
+  .ek[data-kind='online'], .ek[data-kind='friend_add'] { color: var(--ev-online); }
+  .ek[data-kind='offline'], .ek[data-kind='self_profile'] { color: var(--ev-offline); }
+  .ek[data-kind='location'] { color: var(--ev-location); letter-spacing: .01em; }
+  .ek[data-kind='profile'] { color: var(--ev-profile); }
+  .ek[data-kind='active'] { color: var(--ev-active); }
+  .ek[data-kind='friend_delete'] { color: var(--ev-danger); }
 
   /* 65 workspace 描边层：inset 顶部高光 + 1px ring（VRCX-0 globals.css:851-862） */
   .workspace {
@@ -209,6 +276,28 @@ body {
   .tbl tbody tr:hover td { background: transparent; }
   /* 卡片列表外的容器别再横向滚动 */
   .card { overflow-x: clip; }
+
+  /* 88 手机端好友行改两行：第 1 行 名字+时长，第 2 行 世界+状态；头像跨两行，
+     区域/平台徽章让位（390px 下挤不下），列宽用百分比而不是 auto，保证不横向溢出 */
+  .friend-row {
+    grid-template-columns: 22px minmax(0, 1fr) minmax(0, 42%);
+    grid-template-areas:
+      'av name dur'
+      'av world status';
+    grid-template-rows: auto auto;
+    height: auto;
+    min-height: 40px;
+    padding: .25rem .5rem;
+    row-gap: 1px;
+    column-gap: .5rem;
+    align-items: center;
+  }
+  .friend-row > :nth-child(1) { grid-area: av; align-self: center; }
+  .friend-row > .fr-name { grid-area: name; }
+  .friend-row > .fr-dur { grid-area: dur; font-size: 11px; }
+  .friend-row > .fr-world { grid-area: world; font-size: 11px; }
+  .friend-row > .fr-status { grid-area: status; font-size: 11px; text-align: right; }
+  .friend-row > .fr-reg, .friend-row > .fr-plat { display: none; }
 }
 
 /* 76 右侧常驻好友面板：三栏的最右一栏，244px，可折叠成 32px 竖条；<1280px 让位给主区 */
@@ -339,6 +428,13 @@ body {
   border-color: var(--stroke-strong);
   color: var(--content-primary);
   font-weight: 500;
+}
+/* 85 概览页空态：0 数据时一行说明，不画柱也不画轴 */
+.ov-empty {
+  margin: 0;
+  padding: .5rem .25rem;
+  color: var(--content-tertiary);
+  font-size: 12px;
 }
 .ov-bars {
   display: flex;

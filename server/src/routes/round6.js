@@ -45,41 +45,67 @@ export function registerRound6Routes(app, { db, T, iso }) {
   /* ───────── 73 好友历史：跨好友汇总流水 ───────── */
   app.get('/api/friend-log', async (req) => {
     const hours = clamp(Number(req.query.hours ?? 24) || 24, 1, 24 * 30);
-    const limit = clamp(Number(req.query.limit ?? 300) || 300, 1, 1000);
+    const limit = clamp(Number(req.query.limit ?? 100) || 100, 1, 1000);
     const userId = req.query.user_id ? String(req.query.user_id) : null;
-    const wantKind = req.query.kind ? String(req.query.kind) : null;
+    // kinds=a,b（多选）；老的 kind=a 继续收，单值等价于一项
+    const rawKinds = String(req.query.kinds ?? req.query.kind ?? '')
+      .split(',').map((x) => x.trim()).filter(Boolean);
+    const wantKinds = rawKinds.length ? new Set(rawKinds) : null;
     const since = req.query.since ? String(req.query.since) : new Date(Date.now() - hours * HOUR).toISOString();
+    // 游标 = 上一页最后一条的 `at|id`：新事件插到头上也不会让翻页重复（offset 会）
+    const [cAt, cId] = String(req.query.cursor ?? '').split('|');
+    const cursor = cAt ? { at: cAt, id: cId ?? '' } : null;
 
-    const userWhere = userId ? 'and e.user_id = ?' : '';
-    const p = userId ? [since, userId] : [since];
+    const EVENT_KINDS = ['online', 'offline', 'location'];
+    const eventKinds = wantKinds ? EVENT_KINDS.filter((k) => wantKinds.has(k)) : null;
+    const wantEvents = !wantKinds || eventKinds.length > 0;
+    const wantProfile = !wantKinds || wantKinds.has('profile');
+    const wantStatus = !wantKinds || wantKinds.has('status');
 
-    const events = await db.query(
+    /** 时间窗 + 人 + 游标，三张表共用同一套条件；计数/人数用 withCursor:false（总数不随翻页缩水） */
+    const win = (alias, { withCursor = true } = {}) => {
+      const w = [`${alias}.at >= ?`];
+      const v = [since];
+      if (userId) { w.push(`${alias}.user_id = ?`); v.push(userId); }
+      if (cursor && withCursor) { w.push(`${alias}.at <= ?`); v.push(cursor.at); }
+      return { sql: w.join(' and '), v };
+    };
+    const ew = win('e');
+    const cw = win('c');
+    const sw = win('s');
+    if (eventKinds) {
+      ew.sql += ` and e.kind in (${eventKinds.map(() => '?').join(',')})`;
+      ew.v.push(...eventKinds);
+    }
+
+    const n = limit + 1; // 多取一条判断 has_more
+    const events = wantEvents ? await db.query(
       `select e.id, e.user_id, coalesce(e.display_name, f.display_name) as display_name,
               f.icon_url, e.kind, e.location, e.world_id,
               coalesce(e.world_name, w.name) as world_name, e.at
          from ${T('friend_event')} e
          left join ${T('friend')} f on f.user_id = e.user_id
          left join ${T('world')} w on w.id = e.world_id
-        where e.at >= ? ${userWhere}
+        where ${ew.sql}
         order by e.at desc limit ?`,
-      [...p, limit],
-    );
-    const changes = await db.query(
+      [...ew.v, n],
+    ) : [];
+    const changes = wantProfile ? await db.query(
       `select c.id, c.user_id, f.display_name, f.icon_url, c.field, c.old_value, c.new_value, c.at
          from ${T('friend_change')} c
          left join ${T('friend')} f on f.user_id = c.user_id
-        where c.at >= ? ${userId ? 'and c.user_id = ?' : ''}
+        where ${cw.sql}
         order by c.at desc limit ?`,
-      [...p, limit],
-    );
-    const statuses = await db.query(
+      [...cw.v, n],
+    ) : [];
+    const statuses = wantStatus ? await db.query(
       `select s.id, s.user_id, f.display_name, f.icon_url, s.status, s.description, s.at
          from ${T('friend_status_history')} s
          left join ${T('friend')} f on f.user_id = s.user_id
-        where s.at >= ? ${userId ? 'and s.user_id = ?' : ''}
+        where ${sw.sql}
         order by s.at desc limit ?`,
-      [...p, limit],
-    );
+      [...sw.v, n],
+    ) : [];
 
     const items = [];
     for (const r of events) {
@@ -133,19 +159,56 @@ export function registerRound6Routes(app, { db, T, iso }) {
       });
     }
 
-    const filtered = wantKind ? items.filter((i) => i.kind === wantKind) : items;
-    filtered.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
-    const items2 = filtered.slice(0, limit);
-    const counts = {};
-    for (const i of filtered) counts[i.kind] = (counts[i.kind] ?? 0) + 1;
+    // 倒序（同秒按 id 兜底，保证翻页有全序）；游标之前/同秒已返回的丢掉
+    items.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : a.id < b.id ? 1 : a.id > b.id ? -1 : 0));
+    const after = cursor
+      ? items.filter((i) => i.at < cursor.at || (i.at === cursor.at && i.id < cursor.id))
+      : items;
+    const page = after.slice(0, limit);
+    const nextCursor = after.length > limit ? `${page[page.length - 1]?.at}|${page[page.length - 1]?.id}` : null;
+
+    // 计数按「时间窗 + 人」，不受类型多选 / 游标影响，筛选按钮上的数字才是全量
+    const cnt = (rows) => rows.reduce((m, r) => { m[r.kind] = Number(r.n); return m; }, {});
+    const cEv = win('e', { withCursor: false });
+    const cCh = win('c', { withCursor: false });
+    const cSt = win('s', { withCursor: false });
+    const evCounts = cnt(await db.query(
+      `select e.kind as kind, count(*) as n from ${T('friend_event')} e where ${cEv.sql} group by e.kind`,
+      cEv.v,
+    ));
+    const chCounts = cnt(await db.query(
+      `select 'profile' as kind, count(*) as n from ${T('friend_change')} c where ${cCh.sql}`,
+      cCh.v,
+    ));
+    const stCounts = cnt(await db.query(
+      `select 'status' as kind, count(*) as n from ${T('friend_status_history')} s where ${cSt.sql}`,
+      cSt.v,
+    ));
+    const counts = { ...evCounts, ...chCounts, ...stCounts };
+    const total = Object.entries(counts).reduce((s, [k, v]) => s + (wantKinds && !wantKinds.has(k) ? 0 : v), 0);
+
+    const peopleRows = await db.query(
+      `select count(distinct user_id) as n from (
+         select e.user_id from ${T('friend_event')} e where ${cEv.sql}
+         union all
+         select c.user_id from ${T('friend_change')} c where ${cCh.sql}
+         union all
+         select s.user_id from ${T('friend_status_history')} s where ${cSt.sql}
+       ) u`,
+      [...cEv.v, ...cCh.v, ...cSt.v],
+    );
+
     return {
       since,
       hours,
-      returned: items2.length,
-      total: filtered.length,
+      kinds: rawKinds,
+      returned: page.length,
+      total,
+      has_more: !!nextCursor,
+      next_cursor: nextCursor,
       counts,
-      people: new Set(items.map((i) => i.user_id).filter(Boolean)).size,
-      items: items2,
+      people: Number(peopleRows[0]?.n ?? 0),
+      items: page,
     };
   });
 

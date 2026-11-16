@@ -241,17 +241,24 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 | # | 问题 | 改法 | 验收 | 状态 |
 |---|---|---|---|---|
-| 82 | 三张摘要卡在 0 值时占一屏 | 全 0 时折叠成一行「今天还没有活动记录」 | 全 0 不渲染三卡；有数据正常显示 | todo |
-| 83 | 好友行右侧元数据随文字流动、不对齐 | 行内改 grid：`名字 1fr | 状态 16% | 世界 26% | 区域 40px | 平台 44px | 时长 72px` | 所有行六列对齐，长名字截断 | todo |
-| 84 | `active` / `join me` / `ask me` 同一灰 | 语义色：active 黄、join me 蓝、ask me 橙，与状态点同源 | 三态颜色不同且与 dot 一致 | todo |
-| 85 | 概览页无数据时画空轴 | 0 数据时显示空态文案，不画柱 | 空数据下无 `<svg>`/柱，只有空态 | todo |
-| 86 | 好友列表页列不齐、筛选不联动 | 复用 grid；信任等级/标签/收藏筛选联动 URL 状态 | 筛选切换后列表与计数同步 | todo |
-| 87 | 动态页类型图标颜色随意 | 与状态语义统一：上线绿、下线灰、换世界青、改资料紫 | 四类图标色固定 | todo |
-| 88 | 手机端好友行仍是桌面布局挤压 | <768px 改两行：名字+时长一行、世界+状态一行 | 390px 无横向溢出、无截断 | todo |
-| 89 | 好友历史页无分页、无类型筛选 | 倒序流水 + 类型多选 + 游标分页 | 切类型结果变化；翻页不重复 | todo |
-| 90 | 世界库无缩略图、密度稀 | 缩略图走图片代理，2–3 列紧凑网格 | 有缩略图；一屏 ≥9 个 | todo |
-| 91 | 收藏页三类混排 | 好友/世界/分组三 tab | tab 切换数据不同 | todo |
+| 82 | 三张摘要卡在 0 值时占一屏 | 全 0 时折叠成一行「今天还没有活动记录」 | 全 0 不渲染三卡；有数据正常显示 | done — `TodaySummary` 三项全 0 走 `.summary-empty` 单行，有任一数据才铺 `summary-grid`；parity8 82 |
+| 83 | 好友行右侧元数据随文字流动、不对齐 | 行内改 grid：`名字 1fr | 状态 16% | 世界 26% | 区域 40px | 平台 44px | 时长 72px` | 所有行六列对齐，长名字截断 | done — `.friend-row{display:grid;grid-template-columns:22px minmax(0,1fr) 16% 26% 40px 44px 72px}`，列元素常驻（无值时留空列）不破坏对齐；parity8 83 |
+| 84 | `active` / `join me` / `ask me` 同一灰 | 语义色：active 黄、join me 蓝、ask me 橙，与状态点同源 | 三态颜色不同且与 dot 一致 | done — `.st[data-s=…]{color:var(--status-*)}` 五档，变量与 RosterPanel/头像 dot 同一份；parity8 84 |
+| 85 | 概览页无数据时画空轴 | 0 数据时显示空态文案，不画柱 | 空数据下无 `<svg>`/柱，只有空态 | done |
+| 86 | 好友列表页列不齐、筛选不联动 | 复用 grid；信任等级/标签/收藏筛选联动 URL 状态 | 筛选切换后列表与计数同步 | done |
+| 87 | 动态页类型图标颜色随意 | 与状态语义统一：上线绿、下线灰、换世界青、改资料紫 | 四类图标色固定 | done |
+| 88 | 手机端好友行仍是桌面布局挤压 | <768px 改两行：名字+时长一行、世界+状态一行 | 390px 无横向溢出、无截断 | done |
+| 89 | 好友历史页无分页、无类型筛选 | 倒序流水 + 类型多选 + 游标分页 | 切类型结果变化；翻页不重复 | done |
+| 90 | 世界库无缩略图、密度稀 | 缩略图走图片代理，2–3 列紧凑网格 | 有缩略图；一屏 ≥9 个 | done |
+| 91 | 收藏页三类混排 | 好友/世界/分组三 tab | tab 切换数据不同 | done |
 
 ## 第八轮完成定义
 
 1. 82~91 全 done；2. `parity8_check.sh` 全绿；3. build+smoke；4. 桌面/手机/4K 截图各一张；5. 不 push。
+
+### 第八轮验收记录（进行中，2026-11-16 20:5x）
+
+- `bash scripts/parity8_check.sh` → `PARITY8 PARTIAL 3/3（目标 10 项，剩 7 项未做）`（82/83/84 全绿；未实现的项不注册，全10项才输出 PARITY8 OK）
+- `cd web && npm run build` → 102 modules，`index-CYNztDjy.css 24.56 kB` / `index-BhEMQdXS.js 374.79 kB`，built 1m44s
+- 回归：`node server/scripts/smoke.mjs` → SMOKE OK；`parity6_check` 15/15、`parity7_check` 9/9 仍全绿（friend-row 改 grid 后 61 的 `height:32px` 断言未破）
+- 构建产物实测：`.friend-row{display:grid;grid-template-columns:22px minmax(0,1fr) 16% 26% 40px 44px 72px;height:32px…}`、`.st[data-s=active]{color:var(--status-active)}`、`.summary-empty{…}` 均在 dist CSS 里

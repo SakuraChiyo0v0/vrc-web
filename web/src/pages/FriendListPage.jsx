@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
+import { useHashState } from '../lib/hashQuery.js';
 
 const TRUST_NAME = { 1: '新用户', 2: '基本用户', 3: '已知用户', 4: '可信用户' };
 const STATUS_COLOR = {
@@ -32,11 +32,15 @@ function Platform({ p }) {
 
 /** 75 好友列表：friend 表全量，按信任等级 / 标签 / 收藏筛，显示最后在线 */
 export default function FriendListPage() {
-  const [q, setQ] = useState('');
-  const [trust, setTrust] = useState('');
-  const [tag, setTag] = useState('');
-  const [fav, setFav] = useState(false);
-  const [sort, setSort] = useState('last_seen');
+  // 86 筛选状态进地址栏（#/friendlist?trust=4&fav=1），刷新与深链都能还原
+  const [f, setF] = useHashState({ q: '', trust: '', tag: '', fav: false, sort: 'last_seen' });
+  const { q, trust, tag, fav, sort } = f;
+  const setQ = (q) => setF({ q });
+  const setTrust = (trust) => setF({ trust });
+  const setTag = (tag) => setF({ tag });
+  const setFav = (fn) => setF({ fav: typeof fn === 'function' ? fn(fav) : fn });
+  const setSort = (sort) => setF({ sort });
+  const active = [q, trust, tag, fav ? '1' : '', sort !== 'last_seen' ? '1' : ''].filter(Boolean).length;
   const { openFriend } = useDrawer();
 
   const params = new URLSearchParams({ limit: '2000', sort });
@@ -82,7 +86,15 @@ export default function FriendListPage() {
           <option value="name">按名字</option>
           <option value="trust">按信任等级</option>
         </select>
-        <span className="text-[12px] text-fg3">{data?.returned ?? 0} / {data?.total ?? 0} 人 · 在线 {data?.online ?? 0}</span>
+        <span className="text-[12px] text-fg3" data-count="1">
+          {data?.returned ?? 0} / {data?.total ?? 0} 人 · 在线 {data?.online ?? 0}
+          {active ? ` · 已筛 ${active} 项` : ''}
+        </span>
+        {active ? (
+          <button className="chip" data-reset="1" onClick={() => setF({ q: '', trust: '', tag: '', fav: false, sort: 'last_seen' })}>
+            清空筛选
+          </button>
+        ) : null}
       </div>
 
       {isLoading ? <div className="text-[12px] text-fg3">加载中…</div> : null}

@@ -5,15 +5,20 @@ import { useDrawer } from '../components/drawers.jsx';
 
 const fmt = (v) => (v ? new Date(v).toLocaleString('zh-CN', { hour12: false }) : '—');
 
+// 90 缩略图 16:9 铺满卡片；没有图就留同比例灰底 +首字，网格不会跳
 function Thumb({ w }) {
-  return (
-    <span
-      className="grid size-8 shrink-0 place-items-center overflow-hidden rounded-[7px] text-[11px]"
-      style={{ background: 'var(--surface-raised)', color: 'var(--content-tertiary)' }}
-    >
-      {w.thumbnail ? <img src={imgUrl(w.thumbnail)} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (w.name ?? '?').slice(0, 1)}
-    </span>
-  );
+  if (w.thumbnail) {
+    return (
+      <img
+        className="thumb"
+        src={imgUrl(w.thumbnail)}
+        alt=""
+        loading="lazy"
+        onError={(e) => { e.currentTarget.replaceWith(Object.assign(document.createElement('div'), { className: 'thumb thumb-empty', textContent: (w.name ?? '?').slice(0, 1) })); }}
+      />
+    );
+  }
+  return <div className="thumb thumb-empty">{(w.name ?? '?').slice(0, 1)}</div>;
 }
 
 /** 41 世界库：所有去过的世界，搜索 + 按最近活跃/访问次数排序，点进详情 */
@@ -58,38 +63,23 @@ export default function WorldsPage() {
           <div className="mt-1 text-[12px] text-fg3">采集器记录到自己进出世界后会出现在这里。</div>
         </div>
       ) : (
-        <div className="card overflow-hidden">
-          <table className="tbl">
-            <thead>
-              <tr>
-                <th>世界</th>
-                <th style={{ width: 96 }}>到访</th>
-                <th style={{ width: 110 }}>遇见好友</th>
-                <th style={{ width: 190 }}>最近一次</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((w) => (
-                <tr key={w.id} onClick={() => openWorld(w.id)} style={{ cursor: 'pointer' }}>
-                  <td>
-                    <span className="flex min-w-0 items-center gap-2.5">
-                      <Thumb w={w} />
-                      <span className="min-w-0">
-                        <span className="block truncate">{w.name}</span>
-                        <span className="block truncate text-[11px] text-fg3">
-                          {w.author_name ?? '未知作者'}
-                          {w.capacity ? ` · 容量 ${w.capacity}` : ''}
-                        </span>
-                      </span>
-                    </span>
-                  </td>
-                  <td className="tabular-nums text-fg2">{w.visits} 次</td>
-                  <td className="tabular-nums text-fg2">{w.friends_seen} 人</td>
-                  <td className="text-[12px] text-fg3">{fmt(w.last_at)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="world-grid">
+          {rows.map((w) => (
+            <div key={w.id} className="world-card" onClick={() => openWorld(w.id)} title={w.name}>
+              <Thumb w={w} />
+              <div className="wc-body">
+                <div className="wc-name">{w.name}</div>
+                <div className="wc-meta">
+                  <span>{w.author_name ?? '未知作者'}</span>
+                  <span>{w.visits} 次 · {w.friends_seen} 人</span>
+                </div>
+                <div className="wc-meta">
+                  <span>{fmt(w.last_at)}</span>
+                  {w.capacity ? <span>容量 {w.capacity}</span> : null}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

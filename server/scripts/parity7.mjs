@@ -220,7 +220,11 @@ try {
     const rowH = (css.match(/\.feed-tbl tbody td\{height:(\d+)px/) || [])[1];
     must(rowH && Number(rowH) <= 48, `.feed-tbl 行高=${rowH ?? '缺失'}（要 ≤48）`);
     must(css.includes('.ek') && js.includes('ek-glyph'), '类型列没有图标样式 .ek / .ek-glyph');
-    must(js.includes('#2fb6a8') && js.includes('#3fb950') && js.includes('#8b949e'), '换房/上线/下线 的图标色没落地（青绿/绿/灰）');
+    // 第八轮 87 起图标色收进 CSS 变量（--ev-*），值在样式表、用法在组件里
+    const varColor = (name, hex) => css.replace(/\s+/g, '').includes(`--ev-${name}:${hex}`);
+    must(varColor('online', '#3fb950') && varColor('location', '#2fb6a8') && varColor('offline', '#8b949e')
+      && css.includes('color:var(--ev-online)') && css.includes('color:var(--ev-location)') && css.includes('color:var(--ev-offline)'),
+      '换房/上线/下线 的图标色没落地（青绿/绿/灰，--ev-* 变量）');
     const src = read('web/src/pages/FeedPage.jsx');
     must(!/avatar|imgUrl/.test(src), '动态页还有头像');
     must(src.includes('~region(') && src.includes('群组公开'), '详细信息没解析区域/访问级别');

@@ -72,7 +72,8 @@ function useTheme() {
 export default function App() {
   // 页面来自地址栏 #hash（可深链、可截图/验收直开某页），无 hash 时默认好友位置
   const readHash = () => {
-    const h = (typeof window !== 'undefined' ? window.location.hash : '').replace(/^#\/?/, '');
+    // 允许页面级筛选：#/friendlist?trust=4 —— 取 ? 之前的页面名
+    const h = (typeof window !== 'undefined' ? window.location.hash : '').replace(/^#\/?/, '').split('?')[0];
     return PAGES[h] ? h : null;
   };
   const [page, setPage] = useState(() => readHash() ?? 'friends');
@@ -84,8 +85,9 @@ export default function App() {
 
   // hash ⇄ page 双向同步
   useEffect(() => {
-    const want = `#/${page}`;
-    if (window.location.hash !== want) window.history.replaceState(null, '', want);
+    // 同页不覆盖 query（hashQuery 用它存筛选），换页才重写
+    const cur = (window.location.hash ?? '').replace(/^#\/?/, '').split('?')[0];
+    if (cur !== page) window.history.replaceState(null, '', `#/${page}`);
   }, [page]);
   useEffect(() => {
     const onHash = () => {

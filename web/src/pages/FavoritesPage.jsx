@@ -28,6 +28,8 @@ function Thumb({ row }) {
 export default function FavoritesPage() {
   const qc = useQueryClient();
   const { data, error } = useQuery({ queryKey: ['favorites'], queryFn: () => api('favorites') });
+  // 91 三 tab：好友 / 世界 / 分组，避免两类收藏和分组定义混在一张表里
+  const [tab, setTab] = useState('world');
   const [filter, setFilter] = useState('all');
   const [draft, setDraft] = useState({ kind: 'world', targetId: '', note: '' });
   const [groupName, setGroupName] = useState('');
@@ -90,17 +92,47 @@ export default function FavoritesPage() {
       }
     }, null);
 
-  const shown = favorites.filter((f) => {
+  const kindRows = favorites.filter((f) => f.kind === tab);
+  const shown = kindRows.filter((f) => {
     if (filter === 'all') return true;
     if (filter === 'none') return !f.group_id;
     return f.group_id === filter;
   });
+  const counts = {
+    world: favorites.filter((f) => f.kind === 'world').length,
+    friend: favorites.filter((f) => f.kind === 'friend').length,
+    group: groups.length
+  };
+  const ungrouped = favorites.filter((f) => !f.group_id);
+  const groupMembers = (gid) => favorites.filter((f) => (f.group_id ?? null) === gid);
 
   return (
     <div className="p-4">
+      {/* 91 三类分 tab：世界 / 好友 / 分组，tabs 上带数量 */}
+      <div className="mb-2 flex items-center gap-1.5" role="tablist">
+        {[
+          ['world', '世界'],
+          ['friend', '好友'],
+          ['group', '分组']
+        ].map(([k, label]) => (
+          <button
+            key={k}
+            role="tab"
+            aria-selected={tab === k}
+            className="chip"
+            data-active={tab === k}
+            data-tab={k}
+            onClick={() => { setTab(k); setFilter('all'); if (k !== 'group') setDraft((d) => ({ ...d, kind: k })); }}
+          >
+            {label} {counts[k]}
+          </button>
+        ))}
+      </div>
+
+      {tab !== 'group' ? (
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <button className="chip" data-active={filter === 'all'} onClick={() => setFilter('all')}>
-          全部 {favorites.length}
+          全部 {kindRows.length}
         </button>
         <button className="chip" data-active={filter === 'none'} onClick={() => setFilter('none')}>
           未分组 {favorites.filter((f) => !f.group_id).length}
@@ -135,6 +167,7 @@ export default function FavoritesPage() {
           分享收藏合集
         </button>
       </div>
+      ) : null}
 
       <div className="card mb-3 flex flex-wrap items-center gap-2 p-3">
         <select className="inp" value={draft.kind} onChange={(e) => setDraft({ ...draft, kind: e.target.value })}>
@@ -170,11 +203,37 @@ export default function FavoritesPage() {
 
       {error && <div className="card p-4 text-[12px] text-fg2">{error.message}</div>}
 
-      {shown.length === 0 ? (
+      {tab === 'group' ? (
+        // 91 分组 tab：每个分组一张卡，列出成员（收藏名 + 类型），未分组单独一卡
+        <div className="fav-groups">
+          {[...groups.map((g) => ({ id: g.id, name: g.name, rows: groupMembers(g.id) })),
+            { id: 'none', name: '未分组', rows: ungrouped }].map((g) => (
+            <div key={g.id} className="card p-3">
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="truncate text-[12px] font-medium">{g.name}</span>
+                <span className="shrink-0 text-[11px] text-fg3">{g.rows.length} 项</span>
+              </div>
+              {g.rows.length ? (
+                <ul className="mt-2 space-y-1">
+                  {g.rows.slice(0, 12).map((f) => (
+                    <li key={f.id} className="flex min-w-0 items-center gap-1.5 text-[12px]">
+                      <span className="truncate text-fg2">{f.name}</span>
+                      <span className="shrink-0 text-[11px] text-fg3">{KIND_LABEL[f.kind] ?? f.kind}</span>
+                    </li>
+                  ))}
+                  {g.rows.length > 12 ? <li className="text-[11px] text-fg3">…还有 {g.rows.length - 12} 项</li> : null}
+                </ul>
+              ) : (
+                <div className="mt-2 text-[11px] text-fg3">{g.id === 'none' ? '所有收藏都分了组' : '这个分组还是空的'}</div>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : shown.length === 0 ? (
         <div className="card p-10 text-center">
-          <div className="text-[14px]">{favorites.length ? '这个分组还是空的' : '还没有收藏'}</div>
+          <div className="text-[14px]">{kindRows.length ? '这个分组还是空的' : `还没有收藏的${KIND_LABEL[tab] ?? '项目'}`}</div>
           <div className="mt-1 text-[12px] text-fg3">
-            {favorites.length ? '把收藏项分到这个分组后就会显示。' : '在上面填世界 / 用户 ID 加一条，或从收藏的收藏里固定到侧栏。'}
+            {kindRows.length ? '把收藏项分到这个分组后就会显示。' : '在上面填世界 / 用户 ID 加一条，或从收藏的收藏里固定到侧栏。'}
           </div>
         </div>
       ) : (

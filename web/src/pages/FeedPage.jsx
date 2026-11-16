@@ -7,18 +7,18 @@ import UserHoverCard from '../components/UserHoverCard.jsx';
 /**
  * 80 动态页改表格（规格取自 VRCX-0 真机截图）：
  *   列 = 时间 / 玩家 / 类型 / 详细信息；行高 40–48px；无头像
- *   类型图标：位置变动=青绿、上线=绿、下线=灰、活跃=橙、资料=灰蓝
+ *   类型图标色走 CSS 语义变量（87：上线绿 / 下线灰 / 换房青 / 改资料紫），行内不再写死颜色
  *   详细信息 = 区域 + 世界名 + 访问级别（好友+ / 群组公开 / 仅好友）
  */
 const KIND = {
-  online: ['上线', '#3fb950', '▲'],
-  active: ['活跃', '#c9a227', '◆'],
-  offline: ['下线', '#8b949e', '▼'],
-  location: ['换房', '#2fb6a8', '→'],
-  profile: ['资料变更', '#7d8fa9', '✎'],
-  friend_add: ['加好友', '#3fb950', '+'],
-  friend_delete: ['删好友', '#d1483f', '−'],
-  self_profile: ['自己变更', '#8b949e', '✎']
+  online: ['上线', '▲'],
+  active: ['活跃', '◆'],
+  offline: ['下线', '▼'],
+  location: ['换房', '→'],
+  profile: ['资料变更', '✎'],
+  friend_add: ['加好友', '+'],
+  friend_delete: ['删好友', '−'],
+  self_profile: ['自己变更', '✎']
 };
 
 const KINDS = [['', '全部'], ['online', '上线'], ['location', '换房'], ['offline', '下线'], ['active', '活跃'], ['profile', '资料变更']];
@@ -140,7 +140,7 @@ export default function FeedPage() {
           </thead>
           <tbody>
             {events.map((e) => {
-              const [label, color, glyph] = KIND[e.kind] ?? [e.kind, 'var(--content-secondary)', '·'];
+              const [label, glyph] = KIND[e.kind] ?? [e.kind, '·'];
               return (
                 <tr key={e.id} className="feed-row">
                   <td className="tabular-nums text-[12px] text-fg3">{stamp(e.at)}</td>
@@ -156,7 +156,7 @@ export default function FeedPage() {
                     </UserHoverCard>
                   </td>
                   <td>
-                    <span className="ek" data-kind={e.kind} style={{ color }}>
+                    <span className="ek" data-kind={e.kind}>
                       <span className="ek-glyph">{glyph}</span>
                       {label}
                     </span>

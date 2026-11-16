@@ -41,8 +41,12 @@ const ymd = (d) => {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 };
 
-/** 每日时长柱：宽度按天数自适应，柱高按最大日归一 */
+/** 85 空数据不画空轴：0 时长时只出一行空态，不渲染柱/轴 */
 function DailyBars({ daily }) {
+  const total = daily.reduce((s, d) => s + Number(d.minutes ?? 0), 0);
+  if (!daily.length || total === 0) {
+    return <p className="ov-empty">这个范围内还没有停留时长，暂时画不出每日柱</p>;
+  }
   const max = Math.max(1, ...daily.map((d) => d.minutes));
   const thin = daily.length > 60;
   return (
@@ -57,9 +61,13 @@ function DailyBars({ daily }) {
   );
 }
 
-/** 活跃时段：24 根柱 + 峰值钟点 */
+/** 活跃时段：24 根柱 + 峰值钟点；85 全 0 时同样退化成一行空态 */
 function HourBars({ hourly }) {
   const buckets = hourly?.buckets ?? [];
+  const total = buckets.reduce((s, m) => s + Number(m ?? 0), 0);
+  if (!buckets.length || total === 0) {
+    return <p className="ov-empty">这个范围内还没有活跃时段数据</p>;
+  }
   const max = Math.max(1, ...buckets);
   const peak = hourly?.peak_hour ?? 0;
   return (
@@ -118,6 +126,8 @@ export default function OverviewPage() {
   });
 
   const daily = data?.daily ?? [];
+  const hourlyTotal = (data?.hourly?.buckets ?? []).reduce((s, m) => s + Number(m ?? 0), 0);
+  const hasHourly = hourlyTotal > 0;
   const delta = data?.previous?.delta_pct;
   const selStyle = { borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' };
 
@@ -222,7 +232,11 @@ export default function OverviewPage() {
             <section className="card p-4">
               <div className="mb-2 flex items-baseline justify-between">
                 <div className="label-xs">每日时长</div>
-                <div className="text-[11px] text-fg3 tabular-nums">{daily.length} 天 · 峰值 {dur(Math.max(0, ...daily.map((d) => d.minutes)))}</div>
+                <div className="text-[11px] text-fg3 tabular-nums">
+                  {daily.some((d) => Number(d.minutes ?? 0) > 0)
+                    ? `${daily.length} 天 · 峰值 ${dur(Math.max(0, ...daily.map((d) => d.minutes)))}`
+                    : '无数据'}
+                </div>
               </div>
               <DailyBars daily={daily} />
             </section>
@@ -230,19 +244,26 @@ export default function OverviewPage() {
             {/* 活跃时段 */}
             <section className="card p-4">
               <div className="label-xs mb-1">活跃时段</div>
-              <div className="flex items-end gap-3">
-                <div className="ov-num">
-                  {String(data.hourly.peak_hour).padStart(2, '0')}:00
-                  <span className="ml-1 text-[14px] font-normal text-fg3">前后</span>
-                </div>
-                <div className="pb-1.5 text-[12px] text-fg3">
-                  这个钟点占全部时长的 <b className="tabular-nums">{data.hourly.peak_pct}%</b>
-                </div>
-              </div>
-              <HourBars hourly={data.hourly} />
-              <div className="ov-haxis text-fg3">
-                {['0', '3', '6', '9', '12', '15', '18', '21'].map((h) => <span key={h}>{h}</span>)}
-              </div>
+              {hasHourly ? (
+                <>
+                  <div className="flex items-end gap-3">
+                    <div className="ov-num">
+                      {String(data.hourly.peak_hour).padStart(2, '0')}:00
+                      <span className="ml-1 text-[14px] font-normal text-fg3">前后</span>
+                    </div>
+                    <div className="pb-1.5 text-[12px] text-fg3">
+                      这个钟点占全部时长的 <b className="tabular-nums">{data.hourly.peak_pct}%</b>
+                    </div>
+                  </div>
+                  <HourBars hourly={data.hourly} />
+                  <div className="ov-haxis text-fg3">
+                    {['0', '3', '6', '9', '12', '15', '18', '21'].map((h) => <span key={h}>{h}</span>)}
+                  </div>
+                </>
+              ) : (
+                /* 85 全 0 不画 24 根空柱和 0:00 的假峰值 */
+                <HourBars hourly={data.hourly} />
+              )}
             </section>
           </div>
 

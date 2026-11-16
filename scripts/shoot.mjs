@@ -13,6 +13,8 @@ import path from 'node:path';
 const CDP = process.env.CDP ?? 'http://127.0.0.1:9222';
 const APP = process.env.APP ?? 'http://127.0.0.1:18899/';
 const OUT = new URL('../docs/screenshots/', import.meta.url).pathname;
+const SET = process.env.SHOOT ?? 'round7';
+const PREFIX = process.env.PREFIX ?? SET;
 fs.mkdirSync(OUT, { recursive: true });
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -79,7 +81,7 @@ async function shoot(name, width, height, dpr, mobile, clicks, post) {
     await sleep(800);
   }
   const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
-  const file = path.join(OUT, `round7-${name}.png`);
+  const file = path.join(OUT, `${PREFIX}-${name}.png`);
   fs.writeFileSync(file, Buffer.from(shot.data, 'base64'));
   const info = await evalJs(`JSON.stringify({ title: document.title, w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight, over: document.documentElement.scrollWidth > innerWidth, text: document.body.innerText.replace(/\\s+/g, ' ').slice(0, 260), len: document.body.innerText.replace(/\\s+/g, '').length, stuck: /读取中|加载中/.test(document.body.innerText), bad: performance.getEntriesByType('resource').filter((r) => r.responseStatus >= 400).map((r) => r.name.replace(origin, '') + ':' + r.responseStatus) })`);
   console.log(`${name} ${width}x${height}dpr${dpr} -> ${file} ${info}`);
@@ -88,21 +90,53 @@ async function shoot(name, width, height, dpr, mobile, clicks, post) {
   const meta = JSON.parse(info);
   const badHard = meta.bad.filter((x) => !x.startsWith('/vrc/api/img') && !x.startsWith('/api/img'));
   if (meta.stuck) throw new Error(`${name}: 停在「读取中/加载中」，出图作废`);
-  if (meta.len < 300) throw new Error(`${name}: 正文只有 ${meta.len} 字，疑似空态/白屏`);
+  // 手机端导航收进抽屉，正文天然比桌面短；阈值 200 只拦白屏/空态
+  if (meta.len < 200) throw new Error(`${name}: 正文只有 ${meta.len} 字，疑似空态/白屏`);
   if (badHard.length) throw new Error(`${name}: 子请求失败 ${badHard.join(', ')}`);
   if (meta.bad.length) console.log(`  (忽略头像代理：${meta.bad.length} 个 /api/img 假 id)`);
   return file;
 }
 
-await shoot('desktop-overview', 1600, 1000, 1, false, ['概览']);
-await shoot('desktop-friends', 1600, 1000, 1, false, ['好友位置']);
-await shoot('desktop-feed', 1600, 1000, 1, false, ['动态']);
-await shoot('desktop-gamelog', 1600, 1000, 1, false, ['游戏日志']);
-// 81 的明细（起止/时长/人数/玩家）在展开态才可见，单独出一张，否则截图只证明到分组层
-await shoot('desktop-gamelog-open', 1600, 1000, 1, false, ['游戏日志'],
-  `(() => { const b = document.querySelector('.card button[data-open]'); if (!b) return 'miss'; b.click(); return 'ok'; })()`);
-await shoot('mobile-overview', 390, 844, 2, true, ['概览']);
-await shoot('4k-overview', 3840, 2160, 1, false, ['概览']);
+/* 第八轮：只拍本轮改动到的页面（82~91），三端各取所需 */
+const round7 = [
+  ['desktop-overview', 1600, 1000, 1, false, ['概览']],
+  ['desktop-friends', 1600, 1000, 1, false, ['好友位置']],
+  ['desktop-feed', 1600, 1000, 1, false, ['动态']],
+  ['desktop-gamelog', 1600, 1000, 1, false, ['游戏日志']],
+  // 81 的明细（起止/时长/人数/玩家）在展开态才可见，单独出一张，否则截图只证明到分组层
+  ['desktop-gamelog-open', 1600, 1000, 1, false, ['游戏日志'],
+    `(() => { const b = document.querySelector('.card button[data-open]'); if (!b) return 'miss'; b.click(); return 'ok'; })()`],
+  ['mobile-overview', 390, 844, 2, true, ['概览']],
+  ['4k-overview', 3840, 2160, 1, false, ['概览']]
+];
+
+const setSelect = (idx, v) => `(() => {
+  const s = document.querySelectorAll('select')[${idx}];
+  if (!s) return 'miss';
+  const set = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+  set.call(s, ${JSON.stringify(v)}); s.dispatchEvent(new Event('change', { bubbles: true })); return 'ok';
+})()`;
+
+const round8 = [
+  ['desktop-friends', 1600, 1000, 1, false, ['好友位置']],              // 82/83/84
+  ['desktop-overview', 1600, 1000, 1, false, ['概览']],                  // 85
+  ['desktop-friendlist', 1600, 1000, 1, false, ['好友列表']],            // 86 基线
+  ['desktop-friendlist-filtered', 1600, 1000, 1, false, ['好友列表'], setSelect(0, 'system_trust_trusted')], // 86 筛选联动
+  ['desktop-friendlog', 1600, 1000, 1, false, ['好友历史']],             // 89 首屏
+  ['desktop-friendlog-day', 1600, 1000, 1, false, ['好友历史'], setSelect(0, '168')], // 89 换时间窗
+  ['desktop-feed', 1600, 1000, 1, false, ['动态']],                      // 87
+  ['desktop-worlds', 1600, 1000, 1, false, ['世界库']],                  // 90
+  ['desktop-favorites-group', 1600, 1000, 1, false, ['收藏'],
+    `(() => { const b = document.querySelector('[data-tab="group"]'); if (!b) return 'miss'; b.click(); return 'ok'; })()`], // 91 分组 tab
+  ['mobile-friends', 390, 844, 2, true, ['好友位置']],                   // 88
+  ['4k-worlds', 3840, 2160, 1, false, ['世界库']]                        // 90 密度
+];
+
+const only = (process.env.SHOOT_ONLY ?? '').split(',').filter(Boolean);
+for (const s of ({ round7, round8 }[SET] ?? round7)) {
+  if (only.length && !only.includes(s[0])) continue;
+  await shoot(...s);
+}
 
 ws.close();
 console.log('SHOTS OK');

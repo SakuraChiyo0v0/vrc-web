@@ -84,6 +84,13 @@ function TodaySummary() {
     ['遇到的人', data?.players ?? 0, '今天同房过的人'],
     ['新世界', data?.newWorlds ?? 0, '第一次去的世界']
   ];
+  // 82 全 0 时三张卡只剩空壳，折叠成一行；有任一数据才铺开
+  const blank =
+    !data ||
+    (Number(data.onlineMinutes ?? 0) === 0 && Number(data.players ?? 0) === 0 && Number(data.newWorlds ?? 0) === 0);
+  if (data && blank) {
+    return <div className="summary-empty">今天还没有活动记录</div>;
+  }
   return (
     <div className="mb-3 summary-grid">
       {cards.map(([label, value, hint]) => (
@@ -179,20 +186,17 @@ export default function FriendsPage() {
                   <UserHoverCard id={f.user_id}>
                     <Avatar f={f} />
                   </UserHoverCard>
-                  <span className="min-w-0 flex-1 truncate">{f.display_name ?? f.user_id}</span>
-                  <span className="hidden min-w-0 max-w-[26%] truncate text-fg2 lg:block">
+                  <span className="fr-name">{f.display_name ?? f.user_id}</span>
+                  {/* 84 三态语义色：与头像 dot 同一批 CSS 变量，不再一律灰 */}
+                  <span className="fr-status st" data-s={f.status ?? 'offline'} title={f.status_description ?? f.status ?? ''}>
                     {f.status ?? '—'}
                     {f.status_description ? `「${f.status_description}」` : ''}
                   </span>
                   {/* 79 「世界名·公开」+ 区域 + 在线时长 */}
-                  <span className="hidden min-w-0 max-w-[26%] truncate text-fg3 sm:block">
-                    {f.online ? `${f.world_name ?? '未知世界'}·${f.access_label ?? '公开'}` : '—'}
-                  </span>
-                  {f.region ? <span className="reg">{String(f.region).toUpperCase()}</span> : null}
-                  <Platform p={f.platform} />
-                  <span className="w-[4.5rem] shrink-0 whitespace-nowrap text-right tabular-nums text-fg3">
-                    {f.online ? dur(f.online_minutes) : ''}
-                  </span>
+                  <span className="fr-world">{f.online ? `${f.world_name ?? '未知世界'}·${f.access_label ?? '公开'}` : '—'}</span>
+                  <span className={`fr-reg${f.region ? ' reg' : ''}`}>{f.region ? String(f.region).toUpperCase() : ''}</span>
+                  <span className="fr-plat">{f.platform ? <Platform p={f.platform} /> : null}</span>
+                  <span className="fr-dur tabular-nums">{f.online ? dur(f.online_minutes) : ''}</span>
                 </div>
               ))}
             </div>
