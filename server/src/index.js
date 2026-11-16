@@ -24,6 +24,26 @@ const iso = (v) => (v instanceof Date ? v.toISOString() : v);
 const app = Fastify({ logger: false });
 // index.html 不能长缓存：每次发版 JS/CSS 文件名都会变，缓存旧的 index 会指向已删除的 asset（白屏）
 const staticOpts = { root: WEB_DIST };
+// 公网隧道访问的口令门：只有 Host 命中隧道域名时才校验，内网/中继（已自带登录）不受影响
+const PUBLIC_TOKEN = process.env.VRC_PUBLIC_TOKEN || '';
+const PUBLIC_HOST_HINTS = (process.env.VRC_PUBLIC_HOSTS || 'trycloudflare.com').split(',');
+app.addHook('onRequest', async (req, reply) => {
+  if (!PUBLIC_TOKEN) return;
+  const host = String(req.headers.host || '');
+  if (!PUBLIC_HOST_HINTS.some((h) => h && host.includes(h))) return;
+  const url = new URL(req.raw.url, 'http://x');
+  const given = req.cookies?.vrc_k || url.searchParams.get('k') || '';
+  if (given === PUBLIC_TOKEN) {
+    reply.setCookie?.('vrc_k', PUBLIC_TOKEN, { path: '/', maxAge: 60 * 60 * 24 * 30, httpOnly: true, sameSite: 'lax' });
+    return;
+  }
+  reply.code(401).type('text/html; charset=utf-8').send(
+    `<!doctype html><meta name=viewport content="width=device-width,initial-scale=1">`
+    + `<div style="font:16px/1.6 system-ui;padding:48px;max-width:520px;margin:0 auto">`
+    + `<h2>需要访问口令</h2><p>在地址后加 <code>?k=你的口令</code> 打开一次，之后浏览器会记住。</p></div>`,
+  );
+});
+
 app.addHook('onSend', async (req, reply, payload) => {
   if (req.url.endsWith('index.html') || req.url.endsWith('/')) {
     reply.header('cache-control', 'no-cache, must-revalidate');
