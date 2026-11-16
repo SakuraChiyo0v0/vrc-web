@@ -142,3 +142,43 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
   （37 条是「没有前导上线事件的孤立 offline」，本来就不该有会话）
 - `--dry` 与实跑数字一致（751/88/210），回填可重复执行（先删后插幂等）
 
+---
+
+# 第六轮：对齐 VRCX-0 的交互与视觉（2026-11-16 起）
+
+三个对抗审查（交互/信息架构/视觉）都读了 VRCX-0 源码，证据带行号。这轮把「一眼不像」和「用起来不像」一起改。
+验收脚本：`scripts/parity6_check.sh`。
+
+## A. 视觉层（收益最高、改动最小）
+
+| # | 改造 | 依据 | 验收 | 状态 |
+|---|---|---|---|---|
+| 61 | 好友页去 3 列卡片网格 → 单列 32px 行列表 | VRCX-0 `.object-row`（2rem 行高，hover 才变边框） | 好友页行高 ≤34px；无 `grid-cols-2/3` | todo |
+| 62 | 表头去「网页后台味」 | VRCX-0 table.tsx：无 uppercase/letter-spacing，12px，与表体同面 | `.tbl thead th` 无 `text-transform`，font-size 12px，背景=surface-panel | todo |
+| 63 | 字号阶梯收敛 + 全局 tabular-nums | VRCX-0 globals.css 三档制（14/12/11） | 页面里不再出现 `text-[9px]/[10.5px]/[11.5px]` 混用；body 有 tabular-nums | todo |
+| 64 | 状态点与平台徽章系统 | VRCX-0 `--status-active:#f4e05e`、`--platform-pc:#0078d4` 等 | PC/Quest 用带色徽章，状态点 10px，offline 色改 #737f8d | todo |
+| 65 | 主内容 workspace 描边层 | VRCX-0 `.vrcx-0-workspace`（inset highlight + 1px ring） | 主区有 1px 描边 + 顶部内高光，卡片不再是裸贴 | todo |
+
+## B. 交互层
+
+| # | 改造 | 依据 | 验收 | 状态 |
+|---|---|---|---|---|
+| 66 | 用户悬浮卡（500ms 延迟） | VRCX-0 `UserHoverCard.tsx:42-43` | 好友/动态/玩家页 hover 头像出迷你卡，移开消失；点击仍开抽屉 | todo |
+| 67 | 动态/通知里的人名可点 | `feed/feedRows.ts:51-59` 用户名兜底解析 userId | 每条 feed 人名可点开好友抽屉 | todo |
+| 68 | Ctrl/⌘+数字跳页 + `?` 快捷键表 | `useGlobalKeyboardShortcuts.ts:45-53` | 数字键按侧栏顺序跳页；输入框内 Ctrl 组合仍生效 | todo |
+| 69 | 搜索框粘贴 VRChat 链接/ID 直达 | `QuickSearchProvider.tsx:65-115` | 粘 `wrld_`/`usr_` → 直接开对应抽屉 | todo |
+| 70 | 修洞察「最常遇到的时段」空图 | 审查发现的真 bug（文字有结论、图上没柱） | 有数据时柱状图非空；无数据时显示空态不画空轴 | todo |
+| 71 | 好友抽屉 Tab 化（概览/行程/常去/备注） | `UserDialogTabbedView.tsx:329` 标签带数量、懒加载 | 抽屉内 4 tab，切换不整页重载 | todo |
+
+## C. 信息架构
+
+| # | 改造 | 依据 | 验收 | 状态 |
+|---|---|---|---|---|
+| 72 | 侧栏重分组：实况 / 社交 / 分析 / 档案 / 系统 | 审查二 §C | 分组名与条目完全一致；无「历史」大杂烩 | todo |
+| 73 | 新增「好友历史」页（跨好友汇总） | friend_event/friend_change/friend_status_history 已有，需 `/api/friend-log` | 最近 24h 全好友流水，可按人/类型过滤 | todo |
+| 74 | 新增「游戏日志」页 | game_event 已有，需 `/api/game-log` 明细 | 进入/离开实例明细，可按世界过滤 | todo |
+| 75 | 新增「好友列表」视图 | friend 表全量，零新增数据 | 可按信任等级/标签/收藏筛，显示最后在线 | todo |
+
+## 第六轮完成定义
+
+1. 61~75 全部 done；2. `bash scripts/parity6_check.sh` 全绿（含 61~65 的 CSS 断言、71~75 的接口断言）；3. web build + smoke；4. 截图：桌面 1600 / 手机 390 / 4K 3840 各一张，好友页行高实测 ≤34px；5. 不 push（主 agent 发布）。
