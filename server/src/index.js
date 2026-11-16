@@ -34,7 +34,8 @@ app.addHook('onRequest', async (req, reply) => {
   const url = new URL(req.raw.url, 'http://x');
   const given = req.cookies?.vrc_k || url.searchParams.get('k') || '';
   if (given === PUBLIC_TOKEN) {
-    reply.setCookie?.('vrc_k', PUBLIC_TOKEN, { path: '/', maxAge: 60 * 60 * 24 * 30, httpOnly: true, sameSite: 'lax' });
+    // 没用 @fastify/cookie，直接写头，否则子资源（js/css）拿不到 cookie 会 401 白屏
+    reply.header('set-cookie', `vrc_k=${PUBLIC_TOKEN}; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax`);
     return;
   }
   reply.code(401).type('text/html; charset=utf-8').send(
