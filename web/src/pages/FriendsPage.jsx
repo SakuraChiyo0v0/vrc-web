@@ -120,7 +120,7 @@ export default function FriendsPage() {
             <div className="flex items-center justify-between px-4 py-2.5" style={{ background: 'var(--surface-raised)' }}>
               <div className="flex min-w-0 items-center gap-2">
                 <span className="truncate text-[12.5px] font-medium">{world}</span>
-                <span className="text-[10.5px] text-fg3">{people.length} 人</span>
+                <span className="shrink-0 whitespace-nowrap text-[10.5px] text-fg3">{people.length} 人</span>
               </div>
             </div>
             <div className="grid gap-0.5 p-1.5 sm:grid-cols-2 xl:grid-cols-3">
