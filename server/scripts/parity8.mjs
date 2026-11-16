@@ -76,12 +76,15 @@ try {
 
   // 等服务起来 + 种子（14 条流水：12 事件 / 1 资料 / 1 状态）
   let ready = false;
-  for (let i = 0; i < 150; i++) {
+  // 容器 IO 压力大时 node 冷启动可能 >30s（实测同一镜像 3.8s ~ 40s 都有），
+  // 等到 90s 再判死，避免把「机器慢」误报成「接口挂了」
+  const startAt = Date.now();
+  for (let i = 0; i < 450; i++) {
     if (exited) break;
-    try { if ((await fetch(`${base}/api/health`)).ok) { ready = true; break; } } catch {}
+    try { if ((await fetch(`${base}/api/health`, { signal: AbortSignal.timeout(2000) })).ok) { ready = true; break; } } catch {}
     await wait(200);
   }
-  must(ready, `临时服务未起来（${exited ?? 'timeout 30s'}）：${log.slice(0, 400)}`);
+  must(ready, `临时服务未起来（${exited ?? `timeout ${Math.round((Date.now() - startAt) / 1000)}s`}）：${log.slice(0, 400)}`);
   {
     const db = await openDb(dbUrl);
     const ins = (sql, p) => db.query(sql, p);
@@ -103,8 +106,6 @@ try {
       ['usr_alice', 'display_name', 'Alice', 'Alice2', isoAt(now - 20 * 60_000)]);
     await ins(`insert into friend_status_history (user_id, status, description, at) values (?,?,?,?)`,
       ['usr_bob', 'active', 'gaming', isoAt(now - 10 * 60_000)]);
-    const raw = await db.query(`select kind, count(*) as n from friend_event group by kind`);
-    console.error('SEED RAW', JSON.stringify(raw), JSON.stringify(await db.query('select count(*) as n from friend_change')), JSON.stringify(await db.query('select count(*) as n from friend_status_history')));
     await db.close();
   }
 
@@ -274,7 +275,6 @@ try {
 
   /* ───── 89 好友历史：倒序 + 类型多选 + 游标分页 ───── */
   await check(89, '好友历史倒序流水：类型多选 + 游标翻页不重复', async () => {
-    { const d2 = await openDb(dbUrl); console.error('DBG-AT-CHECK', JSON.stringify(await d2.query('select kind,count(*) n from friend_event group by kind')), JSON.stringify(await d2.query('select count(*) n from friend_event'))); await d2.close(); }
     const seen = new Set();
     const all = [];
     let cursor = null;

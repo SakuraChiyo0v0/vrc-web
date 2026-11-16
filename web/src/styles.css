@@ -542,3 +542,19 @@ body {
 }
 .ov-jrow:last-child { border-bottom: 0; }
 .ov-jrow:hover { background: var(--state-hover-surface); }
+
+/* 手机预览：?phone=1 时把整个应用装进 390×844 设备框（桌面端也能看手机版） */
+html[data-phone='1'] body {
+  background: color-mix(in oklch, var(--foreground) 8%, var(--surface-canvas));
+  padding: 24px 0;
+}
+html[data-phone='1'] #root {
+  width: 390px;
+  height: 844px;
+  max-height: calc(100vh - 48px);
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 18px;
+  box-shadow: 0 0 0 1px var(--stroke-default), 0 24px 60px -24px rgb(0 0 0 / .35);
+  background: var(--surface-canvas);
+}

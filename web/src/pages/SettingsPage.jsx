@@ -97,6 +97,27 @@ export default function SettingsPage() {
             </span>
             <a className="chip" href={`${BASE}api/export/backup.json`} download>导出备份 JSON</a>
           </div>
+
+          {/* 手机版预览：桌面宽屏下把界面装进 390×844 框里看，状态进地址栏 */}
+          <div className="label-xs mt-5 mb-2">手机版预览</div>
+          <div className="card flex flex-wrap items-center gap-2 px-3 py-2.5">
+            <span className="min-w-0 flex-1 text-[12px] text-fg3">
+              在桌面把界面套进 390×844 设备框，检查手机端间距与断行；关掉即恢复。
+            </span>
+            <button
+              className="chip"
+              onClick={() => {
+                const on = new URLSearchParams(location.search).get('phone') === '1';
+                const next = new URLSearchParams(location.search);
+                if (on) next.delete('phone');
+                else next.set('phone', '1');
+                localStorage.setItem('vrc-phone-preview', on ? '0' : '1');
+                location.search = next.toString();
+              }}
+            >
+              {new URLSearchParams(location.search).get('phone') === '1' ? '退出手机预览' : '开启手机预览'}
+            </button>
+          </div>
         </>
       )}
     </div>
