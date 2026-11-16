@@ -108,7 +108,7 @@ export default function WorldDrawer({ id, onClose }) {
             <div>
               <div className="label-xs mb-1.5">此刻在这里的好友</div>
               {(data.online_friends ?? []).length === 0 ? (
-                <div className="card px-3 py-2 text-[11.5px] text-fg3">现在没有好友在这个世界。</div>
+                <div className="card px-3 py-2 text-[12px] text-fg3">现在没有好友在这个世界。</div>
               ) : (
                 (data.online_friends ?? []).map((f) => (
                   <button
@@ -119,8 +119,8 @@ export default function WorldDrawer({ id, onClose }) {
                     <span className="avatar">
                       {f.icon_url ? <img src={imgUrl(f.icon_url)} alt="" loading="lazy" /> : null}
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-[12.5px]">{f.display_name ?? f.user_id}</span>
-                    <span className="text-[10.5px] text-fg3">{f.status ?? ''}</span>
+                    <span className="min-w-0 flex-1 truncate text-[12px]">{f.display_name ?? f.user_id}</span>
+                    <span className="text-[11px] text-fg3">{f.status ?? ''}</span>
                   </button>
                 ))
               )}
@@ -129,10 +129,10 @@ export default function WorldDrawer({ id, onClose }) {
             <div>
               <div className="label-xs mb-1.5">我最近几次到访</div>
               {(data.recent ?? []).length === 0 ? (
-                <div className="card px-3 py-2 text-[11.5px] text-fg3">还没有自己的到访记录。</div>
+                <div className="card px-3 py-2 text-[12px] text-fg3">还没有自己的到访记录。</div>
               ) : (
                 (data.recent ?? []).map((r, i) => (
-                  <div key={`${r.at}-${i}`} className="flex justify-between gap-3 px-1 py-1 text-[11.5px]">
+                  <div key={`${r.at}-${i}`} className="flex justify-between gap-3 px-1 py-1 text-[12px]">
                     <span className="text-fg3">{fmt(r.at)}</span>
                     <span className="tabular-nums">{r.minutes === null ? '未结束' : `${r.minutes} 分`}</span>
                   </div>

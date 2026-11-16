@@ -10,7 +10,7 @@ function Heatmap({ dates, hourly, max }) {
   return (
     <div className="overflow-x-auto p-4">
       <div className="min-w-[560px]">
-        <div className="mb-1 flex items-center gap-1 pl-[52px] text-[10px] text-fg3">
+        <div className="mb-1 flex items-center gap-1 pl-[52px] text-[11px] text-fg3">
           {Array.from({ length: 24 }, (_, h) => (
             <span key={h} className="w-[16px] text-center tabular-nums">
               {h % 3 === 0 ? h : ''}
@@ -19,7 +19,7 @@ function Heatmap({ dates, hourly, max }) {
         </div>
         {dates.map((d, i) => (
           <div key={d} className="mb-0.5 flex items-center gap-1">
-            <span className="w-[48px] shrink-0 text-[10.5px] tabular-nums text-fg3">{d.slice(5)}</span>
+            <span className="w-[48px] shrink-0 text-[11px] tabular-nums text-fg3">{d.slice(5)}</span>
             {hourly[i].map((n, h) => {
               const r = Math.min(1, n / max);
               return (
@@ -33,10 +33,10 @@ function Heatmap({ dates, hourly, max }) {
                 />
               );
             })}
-            <span className="ml-1 text-[10px] tabular-nums text-fg3">{hourly[i].reduce((a, b) => a + b, 0)}</span>
+            <span className="ml-1 text-[11px] tabular-nums text-fg3">{hourly[i].reduce((a, b) => a + b, 0)}</span>
           </div>
         ))}
-        <div className="mt-2 flex items-center gap-1.5 pl-[52px] text-[10px] text-fg3">
+        <div className="mt-2 flex items-center gap-1.5 pl-[52px] text-[11px] text-fg3">
           <span>少</span>
           {[0, 0.25, 0.5, 0.75, 1].map((r) => (
             <span
@@ -76,16 +76,16 @@ export default function StatsPage() {
       <div className="grid gap-3 lg:grid-cols-2">
         <section className="card lg:col-span-2">
           <div className="flex items-center justify-between border-b px-4 py-2.5" style={{ borderColor: 'var(--stroke-subtle)' }}>
-            <span className="text-[12.5px] font-medium">活跃热力图 · 近 {days} 天 × 24 小时</span>
-            <span className="text-[11.5px] text-fg3">{data?.total ?? 0}</span>
+            <span className="text-[12px] font-medium">活跃热力图 · 近 {days} 天 × 24 小时</span>
+            <span className="text-[12px] text-fg3">{data?.total ?? 0}</span>
           </div>
           <Heatmap dates={data?.dates ?? []} hourly={data?.hourly ?? []} max={data?.max ?? 1} />
         </section>
 
         <section className="card">
           <div className="flex items-center justify-between border-b px-4 py-2.5" style={{ borderColor: 'var(--stroke-subtle)' }}>
-            <span className="text-[12.5px] font-medium">近 {days} 天事件构成</span>
-            <span className="text-[11.5px] text-fg3">{total}</span>
+            <span className="text-[12px] font-medium">近 {days} 天事件构成</span>
+            <span className="text-[12px] text-fg3">{total}</span>
           </div>
           <div className="p-4">
             {byKind.length === 0 && <div className="text-[12px] text-fg3">暂无数据</div>}
@@ -102,14 +102,14 @@ export default function StatsPage() {
         </section>
 
         <section className="card">
-          <div className="border-b px-4 py-2.5 text-[12.5px] font-medium" style={{ borderColor: 'var(--stroke-subtle)' }}>
+          <div className="border-b px-4 py-2.5 text-[12px] font-medium" style={{ borderColor: 'var(--stroke-subtle)' }}>
             最热闹的世界
           </div>
           <div className="p-2">
             {worlds.length === 0 && <div className="p-2 text-[12px] text-fg3">暂无数据</div>}
             {worlds.map((w) => (
               <div key={w.world} className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-[var(--state-hover-surface)]">
-                <span className="truncate text-[12.5px]">{w.world ?? '未知'}</span>
+                <span className="truncate text-[12px]">{w.world ?? '未知'}</span>
                 <span className="shrink-0 text-[11px] text-fg3">{w.people} 人 · {w.events} 次</span>
               </div>
             ))}

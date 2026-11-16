@@ -11,14 +11,27 @@ const GROUPS = [
     ]
   },
   {
-    title: '历史',
+    title: '社交',
     items: [
-      { id: 'sessions', label: '我的行程', icon: '◇' },
-      { id: 'worlds', label: '世界库', icon: '▢' },
-      { id: 'calendar', label: '日历', icon: '▦' },
-      { id: 'players', label: '玩家', icon: '☺' },
+      { id: 'friendlist', label: '好友列表', icon: '☷' },
+      { id: 'friendlog', label: '好友历史', icon: '↺' },
+      { id: 'players', label: '玩家', icon: '☺' }
+    ]
+  },
+  {
+    title: '分析',
+    items: [
       { id: 'stats', label: '统计', icon: '▤' },
       { id: 'insights', label: '洞察', icon: '✧' },
+      { id: 'sessions', label: '我的行程', icon: '◇' },
+      { id: 'gamelog', label: '游戏日志', icon: '⏱' }
+    ]
+  },
+  {
+    title: '档案',
+    items: [
+      { id: 'worlds', label: '世界库', icon: '▢' },
+      { id: 'calendar', label: '日历', icon: '▦' },
       { id: 'favorites', label: '收藏', icon: '★' }
     ]
   },
@@ -46,7 +59,7 @@ function PinnedWorlds({ onNavigate }) {
           <span className="w-3.5 text-center text-[11px] opacity-60">★</span>
           <span className="min-w-0 flex-1 truncate">{p.name}</span>
           {p.online > 0 ? (
-            <span className="flex shrink-0 items-center gap-1 text-[10.5px] tabular-nums text-fg3">
+            <span className="flex shrink-0 items-center gap-1 text-[11px] tabular-nums text-fg3">
               <span className="size-1.5 rounded-full" style={{ background: 'var(--status-joinme, #4ade80)' }} />
               {p.online}
             </span>
@@ -72,8 +85,8 @@ export default function Sidebar({ page, onNavigate, me, open = false, onClose })
           V
         </div>
         <div className="min-w-0">
-          <div className="truncate text-[12.5px] font-medium">{me?.display_name ?? 'VRC'}</div>
-          <div className="truncate text-[10.5px] text-fg3">self-hosted panel</div>
+          <div className="truncate text-[12px] font-medium">{me?.display_name ?? 'VRC'}</div>
+          <div className="truncate text-[11px] text-fg3">self-hosted panel</div>
         </div>
         {/* 33 只在移动端抽屉里出现 */}
         <button className="vrc-sidebar-close chip ml-auto" onClick={onClose} aria-label="关闭菜单">✕</button>
@@ -100,7 +113,7 @@ export default function Sidebar({ page, onNavigate, me, open = false, onClose })
 
       <PinnedWorlds onNavigate={onNavigate} />
 
-      <div className="border-t px-4 py-3 text-[10.5px] leading-relaxed text-fg3" style={{ borderColor: 'var(--stroke-subtle)' }}>
+      <div className="border-t px-4 py-3 text-[11px] leading-relaxed text-fg3" style={{ borderColor: 'var(--stroke-subtle)' }}>
         数据来自 VRChat pipeline
         <br />
         NAS 常驻采集

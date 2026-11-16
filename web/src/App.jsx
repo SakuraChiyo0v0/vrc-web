@@ -14,8 +14,13 @@ import InsightsPage from './pages/InsightsPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import WorldsPage from './pages/WorldsPage.jsx';
 import CalendarPage from './pages/CalendarPage.jsx';
+import FriendListPage from './pages/FriendListPage.jsx';
+import FriendLogPage from './pages/FriendLogPage.jsx';
+import GameLogPage from './pages/GameLogPage.jsx';
 import CommandPalette from './components/CommandPalette.jsx';
+import ShortcutHelp from './components/ShortcutHelp.jsx';
 import { DrawerProvider } from './components/drawers.jsx';
+import { resolveShortcut } from './lib/shortcuts.js';
 
 const PAGES = {
   friends: FriendsPage,
@@ -28,6 +33,9 @@ const PAGES = {
   insights: InsightsPage,
   worlds: WorldsPage,
   calendar: CalendarPage,
+  friendlist: FriendListPage,
+  friendlog: FriendLogPage,
+  gamelog: GameLogPage,
   settings: SettingsPage
 };
 
@@ -42,6 +50,9 @@ const TITLES = {
   insights: ['洞察', '常一起玩 / 渐行渐远 / 最常遇到的时段'],
   worlds: ['世界库', '去过的世界：搜索、按最近活跃或访问次数排序'],
   calendar: ['日历', '按天回看事件，点某天看当天'],
+  friendlist: ['好友列表', '全量好友：信任等级 / 标签 / 收藏，最后在线'],
+  friendlog: ['好友历史', '最近 24 小时全好友流水：上线 / 换世界 / 资料 / 状态'],
+  gamelog: ['游戏日志', '自己的进出实例明细，可按世界过滤'],
   settings: ['设置', '采集器状态、事件速率、最近错误']
 };
 
@@ -58,10 +69,25 @@ export default function App() {
   const [page, setPage] = useState('friends');
   const [nav, setNav] = useState(false);
   const [palette, setPalette] = useState(false);
+  const [help, setHelp] = useState(false);
   const [theme, toggleTheme] = useTheme();
   const Page = PAGES[page] ?? FriendsPage;
   // 状态必须自动刷新：否则采集器重连后页面还挂着「离线」，看着像故障
   const { data: status } = useQuery({ queryKey: ['status'], queryFn: () => api('status'), refetchInterval: 15_000, refetchOnWindowFocus: true });
+
+  // 68 ⌘/Ctrl+数字跳页、? 快捷键表（逻辑在 lib/shortcuts.js，有 node 单测）
+  useEffect(() => {
+    const onKey = (e) => {
+      if (palette) return; // 搜索浮层自己处理按键
+      if (help && e.key === 'Escape') { e.preventDefault(); setHelp(false); return; }
+      const hit = resolveShortcut(e);
+      if (!hit) return;
+      if (hit.type === 'navigate') { e.preventDefault(); setPage(hit.page); setHelp(false); setNav(false); }
+      else if (hit.type === 'help') { e.preventDefault(); setHelp((v) => !v); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [palette, help]);
 
   return (
     <DrawerProvider>
@@ -99,7 +125,10 @@ export default function App() {
             <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
               <button onClick={() => setPalette(true)} className="chip" title="全局搜索（⌘K）">
                 <span className="opacity-60">⌕</span><span className="hidden sm:inline"> 搜索</span>
-                <kbd className="ml-1 hidden text-[9.5px] opacity-50 sm:inline">⌘K</kbd>
+                <kbd className="ml-1 hidden text-[11px] opacity-50 sm:inline">⌘K</kbd>
+              </button>
+              <button onClick={() => setHelp(true)} className="chip" title="快捷键（?）">
+                <span className="opacity-60">?</span>
               </button>
               <StatusBar status={status} />
               <button onClick={toggleTheme} className="chip" title="切换主题">
@@ -108,7 +137,8 @@ export default function App() {
             </div>
           </header>
 
-          <div className="min-h-0 flex-1 overflow-auto">
+          {/* 65 主内容 workspace：1px ring + 顶部内高光，卡片不再裸贴页面 */}
+          <div className="workspace min-h-0 flex-1 overflow-auto">
             <Page onNavigate={setPage} />
           </div>
         </main>
@@ -120,6 +150,8 @@ export default function App() {
         onClose={() => setPalette(false)}
         onNavigate={setPage}
       />
+
+      <ShortcutHelp open={help} onClose={() => setHelp(false)} />
     </DrawerProvider>
   );
 }

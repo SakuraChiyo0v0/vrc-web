@@ -163,7 +163,7 @@ export default function FavoritesPage() {
       </div>
 
       {toast && (
-        <div className="card mb-3 truncate px-3 py-2 text-[11.5px] text-fg2" title={toast}>
+        <div className="card mb-3 truncate px-3 py-2 text-[12px] text-fg2" title={toast}>
           {toast}
         </div>
       )}
@@ -172,8 +172,8 @@ export default function FavoritesPage() {
 
       {shown.length === 0 ? (
         <div className="card p-10 text-center">
-          <div className="text-[13px]">{favorites.length ? '这个分组还是空的' : '还没有收藏'}</div>
-          <div className="mt-1 text-[11.5px] text-fg3">
+          <div className="text-[14px]">{favorites.length ? '这个分组还是空的' : '还没有收藏'}</div>
+          <div className="mt-1 text-[12px] text-fg3">
             {favorites.length ? '把收藏项分到这个分组后就会显示。' : '在上面填世界 / 用户 ID 加一条，或从收藏的收藏里固定到侧栏。'}
           </div>
         </div>
@@ -197,11 +197,11 @@ export default function FavoritesPage() {
                       <Thumb row={f} />
                       <span className="min-w-0">
                         <span className="block truncate">{f.name}</span>
-                        {f.location && <span className="block truncate text-[10.5px] text-fg3">{f.location}</span>}
+                        {f.location && <span className="block truncate text-[11px] text-fg3">{f.location}</span>}
                       </span>
                     </span>
                   </td>
-                  <td className="text-[11.5px] text-fg3">{KIND_LABEL[f.kind] ?? f.kind}</td>
+                  <td className="text-[12px] text-fg3">{KIND_LABEL[f.kind] ?? f.kind}</td>
                   <td>
                     <input
                       className="inp w-full"

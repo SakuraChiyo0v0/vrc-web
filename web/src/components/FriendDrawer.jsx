@@ -87,7 +87,7 @@ function NoteAndTags({ id }) {
             onChange={(e) => setTag(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && tag.trim()) tagMut.mutate({ t: tag.trim(), action: 'add' }); }}
             placeholder="加标签，回车"
-            className="h-7 min-w-0 flex-1 rounded-lg border px-2 text-[11.5px] outline-none"
+            className="h-7 min-w-0 flex-1 rounded-lg border px-2 text-[12px] outline-none"
             style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-raised)', color: 'var(--content-primary)' }}
           />
           <button className="chip" disabled={!tag.trim() || tagMut.isPending} onClick={() => tagMut.mutate({ t: tag.trim(), action: 'add' })}>
@@ -115,14 +115,14 @@ function Heatmap({ id }) {
         </span>
       </div>
       <div className="card px-2 py-2">
-        <div className="mb-1 flex items-center gap-[2px] pl-7 text-[9px] text-fg3">
+        <div className="mb-1 flex items-center gap-[2px] pl-7 text-[11px] text-fg3">
           {Array.from({ length: 24 }, (_, h) => (
             <span key={h} className="flex-1 text-center tabular-nums">{h % 6 === 0 ? h : ''}</span>
           ))}
         </div>
         {(data.weekdays ?? []).map((wd, d) => (
           <div key={wd} className="mb-[2px] flex items-center gap-[2px]">
-            <span className="w-6 shrink-0 text-[9.5px] text-fg3">{wd}</span>
+            <span className="w-6 shrink-0 text-[11px] text-fg3">{wd}</span>
             {data.hourly[d].map((n, h) => (
               <span
                 key={h}
@@ -170,10 +170,10 @@ function Behavior({ id }) {
           </span>
         </div>
         {(sess?.sessions ?? []).length === 0 ? (
-          <div className="card px-3 py-2 text-[11.5px] text-fg3">还没有会话记录。</div>
+          <div className="card px-3 py-2 text-[12px] text-fg3">还没有会话记录。</div>
         ) : (
           (sess.sessions ?? []).map((s) => (
-            <div key={s.id} className="flex items-center justify-between gap-3 px-1 py-1 text-[11.5px]">
+            <div key={s.id} className="flex items-center justify-between gap-3 px-1 py-1 text-[12px]">
               <span className="flex min-w-0 items-center gap-2">
                 <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 10 }}>{s.status ?? '在线'}</span>
                 <span className="truncate text-fg2">{s.world ?? '—'}</span>
@@ -189,7 +189,7 @@ function Behavior({ id }) {
       <div>
         <div className="label-xs mb-1.5">常去的世界</div>
         {(worlds?.worlds ?? []).length === 0 ? (
-          <div className="card px-3 py-2 text-[11.5px] text-fg3">还没有世界访问记录。</div>
+          <div className="card px-3 py-2 text-[12px] text-fg3">还没有世界访问记录。</div>
         ) : (
           (worlds.worlds ?? []).slice(0, 6).map((w) => (
             <button
@@ -197,8 +197,8 @@ function Behavior({ id }) {
               onClick={() => w.world_id?.startsWith('wrld_') && openWorld(w.world_id)}
               className="card mb-1 flex w-full items-center justify-between gap-3 px-3 py-1.5 text-left hover:bg-[var(--state-hover-surface)]"
             >
-              <span className="min-w-0 truncate text-[12.5px]">{w.world_name}</span>
-              <span className="shrink-0 text-[10.5px] tabular-nums text-fg3">
+              <span className="min-w-0 truncate text-[12px]">{w.world_name}</span>
+              <span className="shrink-0 text-[11px] tabular-nums text-fg3">
                 {w.visits} 次 · {w.minutes} 分钟
               </span>
             </button>
@@ -209,10 +209,10 @@ function Behavior({ id }) {
       <div>
         <div className="label-xs mb-1.5">时间线</div>
         {(tl?.items ?? []).length === 0 ? (
-          <div className="card px-3 py-2 text-[11.5px] text-fg3">还没有行为记录。</div>
+          <div className="card px-3 py-2 text-[12px] text-fg3">还没有行为记录。</div>
         ) : (
           (tl.items ?? []).map((it, i) => (
-            <div key={`${it.type}-${it.at}-${i}`} className="flex items-center justify-between gap-3 px-1 py-1 text-[11.5px]">
+            <div key={`${it.type}-${it.at}-${i}`} className="flex items-center justify-between gap-3 px-1 py-1 text-[12px]">
               <span className="flex min-w-0 items-center gap-2">
                 <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 10 }}>
                   {it.type === 'event' ? (KIND[it.kind] ?? it.kind) : TL_LABEL[it.type]}
@@ -275,7 +275,7 @@ export default function FriendDrawer({ id, onClose }) {
             <div>
               <div className="label-xs mb-1.5">常一起出现的世界</div>
               {(data.worlds ?? []).length === 0 ? (
-                <div className="card px-3 py-2 text-[11.5px] text-fg3">还没有共同出现过的世界。</div>
+                <div className="card px-3 py-2 text-[12px] text-fg3">还没有共同出现过的世界。</div>
               ) : (
                 (data.worlds ?? []).map((w) => (
                   <button
@@ -283,8 +283,8 @@ export default function FriendDrawer({ id, onClose }) {
                     onClick={() => w.world_id && openWorld(w.world_id)}
                     className="card mb-1 flex w-full items-center justify-between gap-3 px-3 py-1.5 text-left hover:bg-[var(--state-hover-surface)]"
                   >
-                    <span className="min-w-0 truncate text-[12.5px]">{w.world}</span>
-                    <span className="shrink-0 text-[10.5px] tabular-nums text-fg3">{w.meets} 次</span>
+                    <span className="min-w-0 truncate text-[12px]">{w.world}</span>
+                    <span className="shrink-0 text-[11px] tabular-nums text-fg3">{w.meets} 次</span>
                   </button>
                 ))
               )}
@@ -293,10 +293,10 @@ export default function FriendDrawer({ id, onClose }) {
             <div>
               <div className="label-xs mb-1.5">最近事件</div>
               {(data.events ?? []).length === 0 ? (
-                <div className="card px-3 py-2 text-[11.5px] text-fg3">这个好友还没有事件记录。</div>
+                <div className="card px-3 py-2 text-[12px] text-fg3">这个好友还没有事件记录。</div>
               ) : (
                 (data.events ?? []).map((e) => (
-                  <div key={e.id} className="flex items-center justify-between gap-3 px-1 py-1 text-[11.5px]">
+                  <div key={e.id} className="flex items-center justify-between gap-3 px-1 py-1 text-[12px]">
                     <span className="flex items-center gap-2">
                       <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 10 }}>{KIND[e.kind] ?? e.kind}</span>
                       <span className="truncate text-fg2">{e.world_name ?? e.location ?? '—'}</span>

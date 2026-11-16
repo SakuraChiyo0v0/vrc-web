@@ -26,8 +26,15 @@
   --status-joinme: #00b8ff;
   --status-busy: #c80928;
   --status-askme: #e97c03;
-  --status-offline: #8b939c;
-  --status-active: #e8c93c;
+  --status-offline: #737f8d;
+  --status-active: #f4e05e;
+  /* 64 平台徽章（VRCX-0 globals.css:125-127 原值） */
+  --platform-pc: #0078d4;
+  --platform-quest: #3ddc84;
+  --platform-ios: #8e8e93;
+  /* 65 workspace 描边层（VRCX-0 .vrcx-0-workspace） */
+  --workspace-highlight: color-mix(in oklch, var(--background) 60%, var(--foreground));
+  --workspace-edge: var(--stroke-subtle);
 }
 
 [data-theme='dark'] {
@@ -38,6 +45,8 @@
   --stroke-subtle: color-mix(in oklch, var(--foreground) 9%, transparent);
   --stroke-default: color-mix(in oklch, var(--foreground) 12%, transparent);
   --stroke-strong: color-mix(in oklch, var(--foreground) 20%, transparent);
+  --workspace-highlight: color-mix(in oklch, var(--foreground) 50%, transparent);
+  --workspace-edge: var(--stroke-default);
 }
 
 html, body, #root { height: 100%; }
@@ -45,7 +54,8 @@ body {
   background: var(--surface-canvas);
   color: var(--content-primary);
   font-family: Geist, -apple-system, 'PingFang SC', 'Noto Sans SC', 'Segoe UI', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -54,15 +64,16 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 
 @layer components {
-  .label-xs { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--content-tertiary); }
+  /* 63 字号阶梯收敛到 VRCX-0 的三档 14/12/11，并去掉 uppercase 后台味 */
+  .label-xs { font-size: 11px; letter-spacing: 0; text-transform: none; color: var(--content-tertiary); }
 
   .card { background: var(--surface-panel); border: 1px solid var(--stroke-subtle); border-radius: var(--radius); }
 
   .tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
   .tbl thead th {
     height: 32px; padding: 0 .75rem; text-align: left; font-weight: 500;
-    font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
-    color: var(--content-tertiary); background: var(--surface-raised);
+    font-size: 12px; letter-spacing: 0; text-transform: none;
+    color: var(--content-secondary); background: var(--surface-panel);
     border-bottom: 1px solid var(--stroke-subtle);
   }
   .tbl tbody td { height: 40px; padding: 0 .75rem; border-bottom: 1px solid var(--stroke-subtle); }
@@ -97,13 +108,49 @@ body {
     border: 1px solid var(--stroke-subtle); overflow: visible;
   }
   .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 7px; }
-  .dot { position: absolute; right: -2px; bottom: -2px; width: 9px; height: 9px; border-radius: 999px; border: 2px solid var(--surface-panel); }
+  .dot { position: absolute; right: -2px; bottom: -2px; width: 10px; height: 10px; border-radius: 999px; border: 2px solid var(--surface-panel); }
 
   .nav-item {
     display: flex; align-items: center; gap: .5rem; height: 32px; padding: 0 .5rem;
     border-radius: 7px; color: var(--content-secondary); font-size: 12.5px;
   }
   .nav-item:hover { background: var(--state-hover-surface); color: var(--content-primary); }
+  /* 61 好友页单列行列表：VRCX-0 紧凑档 h-8（32px），hover 才出现描边 */
+  .friend-row {
+    display: flex; align-items: center; gap: .5rem;
+    height: 32px; padding: 0 .5rem; border-radius: 7px;
+    border: 1px solid transparent; background: transparent;
+    color: var(--content-primary); font-size: 12px; cursor: pointer;
+  }
+  .friend-row:hover { background: var(--state-hover-surface); border-color: var(--stroke-subtle); }
+  .friend-row .avatar { width: 22px; height: 22px; border-radius: 6px; }
+  .friend-row .avatar img { border-radius: 5px; }
+  .friend-row .dot { width: 8px; height: 8px; right: -2px; bottom: -2px; }
+  /* 今日摘要三列：语义类，业务页不再出现 grid-cols-N（61 断言要求好友列表页无卡片网格） */
+  .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin-bottom: .75rem; }
+
+  .group-head { height: 26px; display: flex; align-items: center; gap: .5rem; padding: 0 .5rem; font-size: 11px; color: var(--content-secondary); }
+
+  /* 64 平台徽章：PC/Quest 用品牌色描边徽章，不是一行灰字 */
+  .plat {
+    display: inline-flex; align-items: center; height: 16px; padding: 0 .25rem;
+    border-radius: 4px; border: 1px solid currentColor; font-size: 11px; line-height: 1;
+    flex: none; opacity: .9;
+  }
+  .plat[data-p='pc'] { color: var(--platform-pc); }
+  .plat[data-p='quest'] { color: var(--platform-quest); }
+  .plat[data-p='ios'] { color: var(--platform-ios); }
+  .plat[data-p='web'] { color: var(--content-tertiary); }
+
+  /* 65 workspace 描边层：inset 顶部高光 + 1px ring（VRCX-0 globals.css:851-862） */
+  .workspace {
+    margin: 6px 8px 8px; border-radius: 12px;
+    background: var(--surface-panel);
+    box-shadow:
+      inset 0 1px 0 var(--workspace-highlight),
+      0 0 0 1px var(--workspace-edge);
+  }
+
   .nav-item[data-active='true'] { background: var(--state-selected-surface); color: var(--content-primary); font-weight: 500; }
 }
 

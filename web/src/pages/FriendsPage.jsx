@@ -39,6 +39,14 @@ function Avatar({ f }) {
   );
 }
 
+/** 64 平台徽章：PC/Quest/iOS 各自品牌色，未知平台回落灰字 */
+function Platform({ p }) {
+  if (!p) return null;
+  const key = p === 'standalonewindows' ? 'pc' : p === 'android' ? 'quest' : p === 'ios' ? 'ios' : 'web';
+  const label = key === 'pc' ? 'PC' : key === 'quest' ? 'Quest' : key === 'ios' ? 'iOS' : p;
+  return <span className="plat" data-p={key}>{label}</span>;
+}
+
 function fmtMinutes(m) {
   const n = Number(m ?? 0);
   if (n < 60) return `${n} 分钟`;
@@ -58,17 +66,18 @@ function TodaySummary() {
     ['新世界', data?.newWorlds ?? 0, '第一次去的世界']
   ];
   return (
-    <div className="mb-3 grid grid-cols-3 gap-2">
+    <div className="mb-3 summary-grid">
       {cards.map(([label, value, hint]) => (
         <div key={label} className="card px-3 py-2" title={hint}>
           <div className="label-xs">{label}</div>
-          <div className="mt-0.5 text-[15px] tabular-nums">{value}</div>
-          <div className="truncate text-[10px] text-fg3">{hint}</div>
+          <div className="mt-0.5 text-[14px] tabular-nums">{value}</div>
+          <div className="truncate text-[11px] text-fg3">{hint}</div>
         </div>
       ))}
     </div>
   );
 }
+
 
 export default function FriendsPage() {
   const [only, setOnly] = useState(true);
@@ -108,38 +117,31 @@ export default function FriendsPage() {
         >
           {only ? '只看在线' : '全部好友'}
         </button>
-        <span className="text-[11.5px] text-fg3">{data?.total ?? 0} 人</span>
+        <span className="text-[12px] text-fg3">{data?.total ?? 0} 人</span>
         <a className="chip sm:ml-auto" href={`${BASE}api/export/friends.csv`} download>导出 CSV</a>
       </div>
 
       {isLoading && <div className="text-[12px] text-fg3">加载中…</div>}
 
-      <div className="flex flex-col gap-3">
+      {/* 61 单列 32px 行列表（VRCX-0 compact 档），不再三列卡片网格 */}
+      <div className="flex flex-col gap-2">
         {groups.map(([world, people]) => (
           <section key={world} className="card overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-2.5" style={{ background: 'var(--surface-raised)' }}>
-              <div className="flex min-w-0 items-center gap-2">
-                <span className="truncate text-[12.5px] font-medium">{world}</span>
-                <span className="shrink-0 whitespace-nowrap text-[10.5px] text-fg3">{people.length} 人</span>
-              </div>
+            <div className="group-head" style={{ background: 'var(--surface-raised)' }}>
+              <span className="truncate font-medium">{world}</span>
+              <span className="shrink-0 whitespace-nowrap tabular-nums text-fg3">{people.length} 人</span>
             </div>
-            <div className="grid gap-0.5 p-1.5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="flex flex-col p-1">
               {people.map((f) => (
-                <div
-                  key={f.user_id}
-                  onClick={() => openFriend(f.user_id)}
-                  className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-[var(--state-hover-surface)]"
-                >
+                <div key={f.user_id} className="friend-row" onClick={() => openFriend(f.user_id)}>
                   <Avatar f={f} />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-[12.5px]">{f.display_name ?? f.user_id}</div>
-                    <div className="truncate text-[11px] text-fg3">
-                      {f.status ?? '—'}
-                      {f.status_description ? `「${f.status_description}」` : ''}
-                      {f.platform ? ` · ${f.platform === 'standalonewindows' ? 'PC' : f.platform === 'android' ? 'Quest' : f.platform}` : ''}
-                    </div>
-                  </div>
-                  <span className="shrink-0 text-[10.5px] text-fg3">
+                  <span className="min-w-0 flex-1 truncate">{f.display_name ?? f.user_id}</span>
+                  <span className="hidden min-w-0 max-w-[42%] truncate text-fg2 sm:block">
+                    {f.status ?? '—'}
+                    {f.status_description ? `「${f.status_description}」` : ''}
+                  </span>
+                  <Platform p={f.platform} />
+                  <span className="shrink-0 tabular-nums text-fg3">
                     {f.updated_at ? new Date(f.updated_at).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) : ''}
                   </span>
                 </div>

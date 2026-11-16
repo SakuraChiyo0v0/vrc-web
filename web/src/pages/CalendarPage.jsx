@@ -65,7 +65,7 @@ export default function CalendarPage() {
     <div className="p-4">
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <button className="chip" onClick={() => setMonth(shiftMonth(month, -1))}>‹ 上月</button>
-        <span className="text-[13px] tabular-nums">{month}</span>
+        <span className="text-[14px] tabular-nums">{month}</span>
         <button className="chip" onClick={() => setMonth(shiftMonth(month, 1))}>下月 ›</button>
         <button className="chip" onClick={() => { setMonth(today().slice(0, 7)); setDay(today()); }}>回到今天</button>
         <span className="chip sm:ml-auto">本月 {data?.total ?? 0} 条事件</span>
@@ -97,8 +97,8 @@ export default function CalendarPage() {
                 }}
               >
                 <div className="flex items-baseline justify-between gap-1">
-                  <span className="text-[11.5px] tabular-nums">{Number(date.slice(-2))}</span>
-                  {n ? <span className="text-[10px] tabular-nums text-fg3">{n}</span> : null}
+                  <span className="text-[12px] tabular-nums">{Number(date.slice(-2))}</span>
+                  {n ? <span className="text-[11px] tabular-nums text-fg3">{n}</span> : null}
                 </div>
               </button>
             );
@@ -114,17 +114,17 @@ export default function CalendarPage() {
           {(events?.events ?? []).map((e) => (
             <div key={e.id} className="flex items-center justify-between gap-3 px-3 py-1.5">
               <span className="flex min-w-0 items-center gap-2">
-                <span className="tabular-nums text-[10.5px] text-fg3">{fmtTime(e.at)}</span>
+                <span className="tabular-nums text-[11px] text-fg3">{fmtTime(e.at)}</span>
                 <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 10 }}>{KIND[e.kind] ?? e.kind}</span>
                 <button className="min-w-0 truncate text-left text-[12px] hover:underline" onClick={() => e.user_id && openFriend(e.user_id)}>
                   {e.display_name ?? e.user_id ?? '—'}
                 </button>
                 {e.world_id ? (
-                  <button className="min-w-0 truncate text-left text-[11.5px] text-fg2 hover:underline" onClick={() => openWorld(e.world_id)}>
+                  <button className="min-w-0 truncate text-left text-[12px] text-fg2 hover:underline" onClick={() => openWorld(e.world_id)}>
                     {e.world_name ?? e.world_id}
                   </button>
                 ) : (
-                  <span className="truncate text-[11.5px] text-fg3">{e.location ?? '—'}</span>
+                  <span className="truncate text-[12px] text-fg3">{e.location ?? '—'}</span>
                 )}
               </span>
             </div>

@@ -54,8 +54,8 @@ export default function WorldsPage() {
         <div className="text-[12px] text-fg3">加载中…</div>
       ) : rows.length === 0 ? (
         <div className="card p-10 text-center">
-          <div className="text-[13px]">还没有去过的世界</div>
-          <div className="mt-1 text-[11.5px] text-fg3">采集器记录到自己进出世界后会出现在这里。</div>
+          <div className="text-[14px]">还没有去过的世界</div>
+          <div className="mt-1 text-[12px] text-fg3">采集器记录到自己进出世界后会出现在这里。</div>
         </div>
       ) : (
         <div className="card overflow-hidden">
@@ -76,7 +76,7 @@ export default function WorldsPage() {
                       <Thumb w={w} />
                       <span className="min-w-0">
                         <span className="block truncate">{w.name}</span>
-                        <span className="block truncate text-[10.5px] text-fg3">
+                        <span className="block truncate text-[11px] text-fg3">
                           {w.author_name ?? '未知作者'}
                           {w.capacity ? ` · 容量 ${w.capacity}` : ''}
                         </span>
@@ -85,7 +85,7 @@ export default function WorldsPage() {
                   </td>
                   <td className="tabular-nums text-fg2">{w.visits} 次</td>
                   <td className="tabular-nums text-fg2">{w.friends_seen} 人</td>
-                  <td className="text-[11.5px] text-fg3">{fmt(w.last_at)}</td>
+                  <td className="text-[12px] text-fg3">{fmt(w.last_at)}</td>
                 </tr>
               ))}
             </tbody>
@@ -98,7 +98,7 @@ export default function WorldsPage() {
           <button className="chip" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - LIMIT))}>
             上一页
           </button>
-          <span className="text-[11.5px] text-fg3">
+          <span className="text-[12px] text-fg3">
             {offset + 1}–{offset + rows.length} / {data?.total ?? 0}
           </span>
           <button className="chip" disabled={!data?.has_more} onClick={() => setOffset(offset + LIMIT)}>

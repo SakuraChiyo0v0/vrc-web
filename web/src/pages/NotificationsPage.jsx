@@ -59,8 +59,8 @@ export default function NotificationsPage() {
 
       {rows.length === 0 ? (
         <div className="card p-10 text-center">
-          <div className="text-[13px]">{unread || type ? '这个筛选下没有通知' : '暂无通知'}</div>
-          <div className="mt-1 text-[11.5px] text-fg3">
+          <div className="text-[14px]">{unread || type ? '这个筛选下没有通知' : '暂无通知'}</div>
+          <div className="mt-1 text-[12px] text-fg3">
             {unread || type ? '换个类型或看全部通知。' : '邀请、好友请求、群公告会出现在这里。'}
           </div>
         </div>
@@ -78,11 +78,11 @@ export default function NotificationsPage() {
                   <span className="label-xs" style={{ color: 'var(--content-secondary)' }}>
                     {TYPE_LABEL[n.type] ?? n.type}
                   </span>
-                  <span className="text-[10.5px] text-fg3">
+                  <span className="text-[11px] text-fg3">
                     {n.created_at ? new Date(n.created_at).toLocaleString('zh-CN', { hour12: false }) : ''}
                   </span>
                 </div>
-                <div className="mt-1 text-[12.5px]" style={n.seen ? { color: 'var(--content-tertiary)' } : undefined}>
+                <div className="mt-1 text-[12px]" style={n.seen ? { color: 'var(--content-tertiary)' } : undefined}>
                   {n.message ?? n.link ?? '—'}
                 </div>
                 {n.link ? (

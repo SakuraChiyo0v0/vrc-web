@@ -11,10 +11,10 @@ function Stat({ label, value, hint, muted }) {
   return (
     <div className="card px-3 py-2.5">
       <div className="label-xs">{label}</div>
-      <div className="mt-1 text-[15px] tabular-nums" style={{ color: muted ? 'var(--content-tertiary)' : undefined }}>
+      <div className="mt-1 text-[14px] tabular-nums" style={{ color: muted ? 'var(--content-tertiary)' : undefined }}>
         {value}
       </div>
-      {hint ? <div className="mt-0.5 text-[10.5px] text-fg3">{hint}</div> : null}
+      {hint ? <div className="mt-0.5 text-[11px] text-fg3">{hint}</div> : null}
     </div>
   );
 }
@@ -55,7 +55,7 @@ export default function SettingsPage() {
       </div>
 
       {isError ? (
-        <div className="card p-6 text-[12.5px] text-fg3">/api/diagnostics 请求失败：{error?.message}</div>
+        <div className="card p-6 text-[12px] text-fg3">/api/diagnostics 请求失败：{error?.message}</div>
       ) : (
         <>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
@@ -78,7 +78,7 @@ export default function SettingsPage() {
               ['最近错误', c?.lastError ?? '无'],
             ].map(([k, v]) => (
               <div key={k} className="flex items-center justify-between gap-3 px-3 py-2">
-                <span className="text-[11.5px] text-fg3">{k}</span>
+                <span className="text-[12px] text-fg3">{k}</span>
                 <span className="min-w-0 truncate text-right text-[12px]" style={{ color: k === '最近错误' && c?.lastError ? 'var(--status-busy)' : undefined }}>
                   {String(v)}
                 </span>
@@ -86,13 +86,13 @@ export default function SettingsPage() {
             ))}
           </div>
 
-          <div className="mt-3 text-[10.5px] leading-relaxed text-fg3">
+          <div className="mt-3 text-[11px] leading-relaxed text-fg3">
             collector 常驻在 NAS，往 pipeline 推消息；这里只读，不会触发采集。
           </div>
 
           <div className="label-xs mt-5 mb-2">数据备份</div>
           <div className="card flex flex-wrap items-center gap-2 px-3 py-2.5">
-            <span className="min-w-0 flex-1 text-[11.5px] text-fg3">
+            <span className="min-w-0 flex-1 text-[12px] text-fg3">
               好友 / 世界 / 事件 / 收藏 / 备注 / 标签，一次导出成 JSON。
             </span>
             <a className="chip" href={`${BASE}api/export/backup.json`} download>导出备份 JSON</a>

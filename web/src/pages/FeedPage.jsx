@@ -67,8 +67,8 @@ export default function FeedPage() {
       <div className="p-4">
         {toolbar}
         <div className="card p-10 text-center">
-          <div className="text-[13px]">{kind || range ? '这个筛选下没有事件' : '还没有事件'}</div>
-          <div className="mt-1 text-[11.5px] text-fg3">
+          <div className="text-[14px]">{kind || range ? '这个筛选下没有事件' : '还没有事件'}</div>
+          <div className="mt-1 text-[12px] text-fg3">
             {kind || range ? '换个事件类型或时间范围试试。' : '采集器连上 pipeline 后，好友上下线和换房会实时出现在这里。'}
           </div>
         </div>
@@ -94,7 +94,7 @@ export default function FeedPage() {
               const [label, color] = KIND[e.kind] ?? [e.kind, 'var(--content-secondary)'];
               return (
                 <tr key={e.id}>
-                  <td className="text-[11.5px] text-fg3">{new Date(e.at).toLocaleString('zh-CN', { hour12: false })}</td>
+                  <td className="text-[12px] text-fg3">{new Date(e.at).toLocaleString('zh-CN', { hour12: false })}</td>
                   <td>
                     <span className="inline-flex items-center gap-1.5">
                       <span className="size-1.5 rounded-full" style={{ background: color }} />

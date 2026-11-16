@@ -21,13 +21,13 @@ export default function PlayersPage() {
   return (
     <div className="p-4">
       <div className="mb-3 flex items-center gap-2">
-        <span className="text-[11.5px] text-fg3">来自游戏内日志（PC 端 log-agent）。</span>
+        <span className="text-[12px] text-fg3">来自游戏内日志（PC 端 log-agent）。</span>
         <a className="chip ml-auto" href={`${BASE}api/export/players.csv`} download>导出 CSV</a>
       </div>
       {rows.length === 0 ? (
         <div className="card p-10 text-center">
-          <div className="text-[13px]">还没有同房记录</div>
-          <div className="mt-1 text-[11.5px] text-fg3">在 PC 上启动 log-agent 后才有数据。</div>
+          <div className="text-[14px]">还没有同房记录</div>
+          <div className="mt-1 text-[12px] text-fg3">在 PC 上启动 log-agent 后才有数据。</div>
         </div>
       ) : (
         <div className="card overflow-hidden">
@@ -50,7 +50,7 @@ export default function PlayersPage() {
                     </span>
                   </td>
                   <td className="tabular-nums text-fg2">{p.meets}</td>
-                  <td className="text-[11.5px] text-fg3">{new Date(p.last_seen).toLocaleString('zh-CN', { hour12: false })}</td>
+                  <td className="text-[12px] text-fg3">{new Date(p.last_seen).toLocaleString('zh-CN', { hour12: false })}</td>
                   <td className="text-fg2">{p.last_world ?? '—'}</td>
                 </tr>
               ))}
@@ -62,8 +62,8 @@ export default function PlayersPage() {
       <div className="label-xs mt-5 mb-2">共处次数排行</div>
       {rows.length === 0 ? (
         <div className="card p-10 text-center">
-          <div className="text-[13px]">暂无共处记录</div>
-          <div className="mt-1 text-[11.5px] text-fg3">和好友同处一个房间后会自动累计次数。</div>
+          <div className="text-[14px]">暂无共处记录</div>
+          <div className="mt-1 text-[12px] text-fg3">和好友同处一个房间后会自动累计次数。</div>
         </div>
       ) : (
         <div className="card overflow-hidden">
@@ -87,7 +87,7 @@ export default function PlayersPage() {
                     </span>
                   </td>
                   <td className="tabular-nums text-fg2">{p.meets} 次</td>
-                  <td className="text-[11.5px] text-fg3">{new Date(p.last_seen).toLocaleString('zh-CN', { hour12: false })}</td>
+                  <td className="text-[12px] text-fg3">{new Date(p.last_seen).toLocaleString('zh-CN', { hour12: false })}</td>
                 </tr>
               ))}
             </tbody>

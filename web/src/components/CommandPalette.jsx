@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api.js';
 import { useDrawer } from './drawers.jsx';
+import { parseVrcTarget } from '../lib/vrchatTarget.js';
 
 /** ⌘K / Ctrl+K 全局搜索：好友、世界、玩家三类，键盘可选 */
 export default function CommandPalette({ open, onClose, onOpen, onNavigate }) {
@@ -30,14 +31,28 @@ export default function CommandPalette({ open, onClose, onOpen, onNavigate }) {
   const { data, isFetching } = useQuery({
     queryKey: ['search', q],
     queryFn: () => api(`search?q=${encodeURIComponent(q)}`),
-    enabled: open && q.trim().length > 0
+    enabled: open && q.trim().length > 0 && !parseVrcTarget(q)
   });
 
+  // 69 粘贴 usr_/wrld_/链接：置顶「直接打开」，Enter 就进抽屉，不用等搜索
+  const direct = useMemo(() => {
+    const t = parseVrcTarget(q);
+    if (!t) return null;
+    return {
+      key: `direct-${t.id}`,
+      group: '直接打开',
+      label: t.type === 'user' ? `好友 ${t.id}` : `世界 ${t.id}`,
+      hint: '插件 ID / 链接',
+      run: () => (t.type === 'user' ? openFriend(t.id) : openWorld(t.id))
+    };
+  }, [q, openFriend, openWorld]);
+
   const items = useMemo(() => [
+    ...(direct ? [direct] : []),
     ...(data?.friends ?? []).map((f) => ({ key: `f-${f.user_id}`, group: '好友', label: f.display_name ?? f.user_id, hint: f.world_name ?? f.location ?? '', run: () => openFriend(f.user_id) })),
     ...(data?.worlds ?? []).map((w) => ({ key: `w-${w.id}`, group: '世界', label: w.name ?? w.id, hint: w.author_name ?? '', run: () => openWorld(w.id) })),
     ...(data?.players ?? []).map((p) => ({ key: `p-${p.user_id ?? p.name}`, group: '玩家', label: p.name, hint: `${p.meets} 次 · ${p.last_seen ? new Date(p.last_seen).toLocaleDateString('zh-CN') : ''}`, run: () => onNavigate?.('players') }))
-  ], [data, openFriend, openWorld, onNavigate]);
+  ], [direct, data, openFriend, openWorld, onNavigate]);
 
   useEffect(() => { setCursor(0); }, [q, items.length]);
 
@@ -68,18 +83,18 @@ export default function CommandPalette({ open, onClose, onOpen, onNavigate }) {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="搜好友、世界、玩家…"
-          className="h-11 w-full border-b px-4 text-[13px] outline-none"
+          placeholder="搜好友、世界、玩家… 也可粘贴 usr_ / wrld_ 链接直达"
+          className="h-11 w-full border-b px-4 text-[14px] outline-none"
           style={{ background: 'transparent', borderColor: 'var(--stroke-subtle)', color: 'var(--content-primary)' }}
         />
         <div className="max-h-[52vh] overflow-auto p-1.5">
           {q.trim().length === 0 && (
-            <div className="px-3 py-6 text-center text-[11.5px] text-fg3">
+            <div className="px-3 py-6 text-center text-[12px] text-fg3">
               输入名字开始搜索 · ↑↓ 选择 · Enter 打开 · Esc 关闭
             </div>
           )}
           {q.trim().length > 0 && items.length === 0 && (
-            <div className="px-3 py-6 text-center text-[11.5px] text-fg3">{isFetching ? '搜索中…' : '没找到匹配的好友 / 世界 / 玩家'}</div>
+            <div className="px-3 py-6 text-center text-[12px] text-fg3">{isFetching ? '搜索中…' : '没找到匹配的好友 / 世界 / 玩家'}</div>
           )}
           {items.map((it, i) => {
             const head = it.group !== lastGroup ? it.group : null;
@@ -93,14 +108,14 @@ export default function CommandPalette({ open, onClose, onOpen, onNavigate }) {
                   className="flex w-full items-center justify-between gap-3 rounded-lg px-2.5 py-1.5 text-left"
                   style={i === cursor ? { background: 'var(--state-selected-surface)' } : undefined}
                 >
-                  <span className="min-w-0 truncate text-[12.5px]">{it.label}</span>
-                  <span className="shrink-0 text-[10.5px] text-fg3">{it.hint}</span>
+                  <span className="min-w-0 truncate text-[12px]">{it.label}</span>
+                  <span className="shrink-0 text-[11px] text-fg3">{it.hint}</span>
                 </button>
               </div>
             );
           })}
         </div>
-        <div className="flex items-center justify-between border-t px-3 py-1.5 text-[10px] text-fg3" style={{ borderColor: 'var(--stroke-subtle)' }}>
+        <div className="flex items-center justify-between border-t px-3 py-1.5 text-[11px] text-fg3" style={{ borderColor: 'var(--stroke-subtle)' }}>
           <span>⌘K 打开 / 关闭</span>
           <span>{items.length} 条结果</span>
         </div>

@@ -14,8 +14,8 @@ export default function SessionsPage() {
       </div>
       {rows.length === 0 ? (
         <div className="card p-10 text-center">
-          <div className="text-[13px]">还没有行程记录</div>
-          <div className="mt-1 text-[11.5px] text-fg3">下次进 VRChat 换世界时会自动记录。</div>
+          <div className="text-[14px]">还没有行程记录</div>
+          <div className="mt-1 text-[12px] text-fg3">下次进 VRChat 换世界时会自动记录。</div>
         </div>
       ) : (
         <div className="card overflow-hidden">
@@ -31,7 +31,7 @@ export default function SessionsPage() {
               {rows.map((s, i) => (
                 <tr key={i}>
                   <td>{s.world ?? s.location}</td>
-                  <td className="text-[11.5px] text-fg3">{new Date(s.start_at).toLocaleString('zh-CN', { hour12: false })}</td>
+                  <td className="text-[12px] text-fg3">{new Date(s.start_at).toLocaleString('zh-CN', { hour12: false })}</td>
                   <td className="text-fg2">{s.minutes != null ? `${s.minutes} 分钟` : '进行中'}</td>
                 </tr>
               ))}
@@ -43,8 +43,8 @@ export default function SessionsPage() {
       <div className="label-xs mt-5 mb-2">时间线</div>
       {rows.length === 0 ? (
         <div className="card p-10 text-center">
-          <div className="text-[13px]">暂无时间线数据</div>
-          <div className="mt-1 text-[11.5px] text-fg3">有行程记录后会在这里按时间展示。</div>
+          <div className="text-[14px]">暂无时间线数据</div>
+          <div className="mt-1 text-[12px] text-fg3">有行程记录后会在这里按时间展示。</div>
         </div>
       ) : (
         <div className="card p-4">
@@ -59,8 +59,8 @@ export default function SessionsPage() {
                   className="absolute top-[17px] -left-[19px] h-[9px] w-[9px] rounded-full"
                   style={{ background: s.minutes != null ? 'var(--stroke-strong)' : 'var(--status-joinme)', border: '2px solid var(--surface-panel)' }}
                 />
-                <div className="text-[12.5px]">{s.world ?? s.location}</div>
-                <div className="mt-0.5 flex items-center gap-2 text-[11.5px] text-fg3">
+                <div className="text-[12px]">{s.world ?? s.location}</div>
+                <div className="mt-0.5 flex items-center gap-2 text-[12px] text-fg3">
                   <span>{new Date(s.start_at).toLocaleString('zh-CN', { hour12: false })} 进入</span>
                   <span>·</span>
                   <span>{s.minutes != null ? `停留 ${s.minutes} 分钟` : '进行中'}</span>
