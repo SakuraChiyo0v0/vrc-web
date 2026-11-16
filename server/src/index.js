@@ -32,7 +32,10 @@ app.addHook('onRequest', async (req, reply) => {
   const host = String(req.headers.host || '');
   if (!PUBLIC_HOST_HINTS.some((h) => h && host.includes(h))) return;
   const url = new URL(req.raw.url, 'http://x');
-  const given = req.cookies?.vrc_k || url.searchParams.get('k') || '';
+  // 没有 @fastify/cookie：手写解析 Cookie 头
+  const cookieHeader = String(req.headers.cookie || '');
+  const cookieToken = (cookieHeader.match(/(?:^|;\s*)vrc_k=([^;]+)/) || [])[1] || '';
+  const given = cookieToken || url.searchParams.get('k') || '';
   if (given === PUBLIC_TOKEN) {
     // 没用 @fastify/cookie，直接写头，否则子资源（js/css）拿不到 cookie 会 401 白屏
     reply.header('set-cookie', `vrc_k=${PUBLIC_TOKEN}; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax`);
