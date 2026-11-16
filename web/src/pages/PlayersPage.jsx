@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api, BASE } from '../api.js';
+import UserHoverCard from '../components/UserHoverCard.jsx';
 
 function InitialAvatar({ name }) {
   const ch = (name ?? '?').trim().charAt(0).toUpperCase();
@@ -45,7 +46,9 @@ export default function PlayersPage() {
                 <tr key={p.user_id ?? p.name}>
                   <td>
                     <span className="flex items-center gap-2.5">
-                      <InitialAvatar name={p.name} />
+                      <UserHoverCard id={p.user_id}>
+                        <InitialAvatar name={p.name} />
+                      </UserHoverCard>
                       <span>{p.name}</span>
                     </span>
                   </td>
@@ -82,7 +85,9 @@ export default function PlayersPage() {
                   <td className="tabular-nums text-fg3">{i + 1}</td>
                   <td>
                     <span className="flex items-center gap-2.5">
-                      <InitialAvatar name={p.name} />
+                      <UserHoverCard id={p.user_id}>
+                        <InitialAvatar name={p.name} />
+                      </UserHoverCard>
                       <span>{p.name}</span>
                     </span>
                   </td>

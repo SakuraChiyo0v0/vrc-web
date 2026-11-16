@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, send } from '../api.js';
+import { useDrawer } from '../components/drawers.jsx';
 
 const TYPE_LABEL = {
   invite: '邀请',
@@ -14,6 +15,7 @@ const TYPE_LABEL = {
 
 export default function NotificationsPage() {
   const qc = useQueryClient();
+  const { openFriend } = useDrawer();
   const [unread, setUnread] = useState(false);
   const [type, setType] = useState('');
 
@@ -82,6 +84,16 @@ export default function NotificationsPage() {
                     {n.created_at ? new Date(n.created_at).toLocaleString('zh-CN', { hour12: false }) : ''}
                   </span>
                 </div>
+                {n.sender_user_id ? (
+                  <button
+                    className="mt-1 inline-flex items-center gap-1 text-[12px] hover:underline"
+                    style={{ color: 'var(--primary)', cursor: 'pointer' }}
+                    data-sender={n.sender_user_id}
+                    onClick={() => openFriend(n.sender_user_id)}
+                  >
+                    {n.sender_name ?? n.sender_user_id}
+                  </button>
+                ) : null}
                 <div className="mt-1 text-[12px]" style={n.seen ? { color: 'var(--content-tertiary)' } : undefined}>
                   {n.message ?? n.link ?? '—'}
                 </div>

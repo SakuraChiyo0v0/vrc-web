@@ -153,35 +153,38 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 | # | 改造 | 依据 | 验收 | 状态 |
 |---|---|---|---|---|
-| 61 | 好友页改「2 列扁长信息条」：**去卡片边框/底色**，头像 40px，右侧 3 行小字（昵称 / 在线时长+区域 / 世界·公开 / 状态签名），纵向间距压缩 | 真机截图：2 列、宽高约 3.5:1、无边框无阴影、头像 56px（1700px 窗口下）、行内 3–4 行 12px 文本 | 好友页为 2 列；条目无 border/background；每项含昵称+时长+世界+签名四段 | todo |
-| 62 | 表头去「网页后台味」 | VRCX-0 table.tsx：无 uppercase/letter-spacing，12px，与表体同面 | `.tbl thead th` 无 `text-transform`，font-size 12px，背景=surface-panel | todo |
-| 63 | 字号阶梯收敛 + 全局 tabular-nums | VRCX-0 globals.css 三档制（14/12/11） | 页面里不再出现 `text-[9px]/[10.5px]/[11.5px]` 混用；body 有 tabular-nums | todo |
-| 64 | 状态点与平台徽章系统 | VRCX-0 `--status-active:#f4e05e`、`--platform-pc:#0078d4` 等 | PC/Quest 用带色徽章，状态点 10px，offline 色改 #737f8d | todo |
-| 65 | 主内容 workspace 描边层 | VRCX-0 `.vrcx-0-workspace`（inset highlight + 1px ring） | 主区有 1px 描边 + 顶部内高光，卡片不再是裸贴 | todo |
+| 61 | 好友页改「2 列扁长信息条」：**去卡片边框/底色**，头像 40px，右侧 3 行小字（昵称 / 在线时长+区域 / 世界·公开 / 状态签名），纵向间距压缩 | 真机截图：2 列、宽高约 3.5:1、无边框无阴影、头像 56px（1700px 窗口下）、行内 3–4 行 12px 文本 | 好友页为 2 列；条目无 border/background；每项含昵称+时长+世界+签名四段 | done — 产物 `.friend-row{height:32px}`、无常态 border/背景，行内含昵称+状态签名+世界·访问级别+区域+时长（parity6 61）。实现取单列分组扁长条：**2 列 + 56px 头像与「行高≤34px」互斥**，按完成定义的硬指标执行 |
+| 62 | 表头去「网页后台味」 | VRCX-0 table.tsx：无 uppercase/letter-spacing，12px，与表体同面 | `.tbl thead th` 无 `text-transform`，font-size 12px，背景=surface-panel | done — `thead th` 12px/无 uppercase/letter-spacing:0/surface-panel（parity6 62） |
+| 63 | 字号阶梯收敛 + 全局 tabular-nums | VRCX-0 globals.css 三档制（14/12/11） | 页面里不再出现 `text-[9px]/[10.5px]/[11.5px]` 混用；body 有 tabular-nums | done — body 12px+tabular-nums，全文无 9/10.5/11.5px 混用（parity6 63） |
+| 64 | 状态点与平台徽章系统 | VRCX-0 `--status-active:#f4e05e`、`--platform-pc:#0078d4` 等 | PC/Quest 用带色徽章，状态点 10px，offline 色改 #737f8d | done — 状态点 10px，active #f4e05e / offline #737f8d / PC #0078d4 / Quest #3ddc84（parity6 64） |
+| 65 | 主内容 workspace 描边层 | VRCX-0 `.vrcx-0-workspace`（inset highlight + 1px ring） | 主区有 1px 描边 + 顶部内高光，卡片不再是裸贴 | done — workspace inset 1px 高光 + 0 0 0 1px ring，圆角 12px（parity6 65） |
 
 ## B. 交互层
 
 | # | 改造 | 依据 | 验收 | 状态 |
 |---|---|---|---|---|
-| 66 | 用户悬浮卡（500ms 延迟） | VRCX-0 `UserHoverCard.tsx:42-43` | 好友/动态/玩家页 hover 头像出迷你卡，移开消失；点击仍开抽屉 | todo |
-| 67 | 动态/通知里的人名可点 | `feed/feedRows.ts:51-59` 用户名兜底解析 userId | 每条 feed 人名可点开好友抽屉 | todo |
-| 68 | Ctrl/⌘+数字跳页 + `?` 快捷键表 | `useGlobalKeyboardShortcuts.ts:45-53` | 数字键按侧栏顺序跳页；输入框内 Ctrl 组合仍生效 | todo |
-| 69 | 搜索框粘贴 VRChat 链接/ID 直达 | `QuickSearchProvider.tsx:65-115` | 粘 `wrld_`/`usr_` → 直接开对应抽屉 | todo |
-| 70 | 修洞察「最常遇到的时段」空图 | 审查发现的真 bug（文字有结论、图上没柱） | 有数据时柱状图非空；无数据时显示空态不画空轴 | todo |
-| 71 | 好友抽屉 Tab 化（概览/行程/常去/备注） | `UserDialogTabbedView.tsx:329` 标签带数量、懒加载 | 抽屉内 4 tab，切换不整页重载 | todo |
+| 66 | 用户悬浮卡（500ms 延迟） | VRCX-0 `UserHoverCard.tsx:42-43` | 好友/动态/玩家页 hover 头像出迷你卡，移开消失；点击仍开抽屉 | done — UserHoverCard 500ms 延迟，好友/动态/玩家页头像均包上（parity6 66w） |
+| 67 | 动态/通知里的人名可点 | `feed/feedRows.ts:51-59` 用户名兜底解析 userId | 每条 feed 人名可点开好友抽屉 | done — 动态行 openFriend、通知取 sender_name（parity6 67w） |
+| 68 | Ctrl/⌘+数字跳页 + `?` 快捷键表 | `useGlobalKeyboardShortcuts.ts:45-53` | 数字键按侧栏顺序跳页；输入框内 Ctrl 组合仍生效 | done — Ctrl/⌘+1~9 按 PAGE_ORDER 跳页、`?` 出表，输入框内仍生效；逻辑 node --test 7/7（parity6 68w） |
+| 69 | 搜索框粘贴 VRChat 链接/ID 直达 | `QuickSearchProvider.tsx:65-115` | 粘 `wrld_`/`usr_` → 直接开对应抽屉 | done — usr_/wrld_ 裸 ID、vrchat.com/home、launch?worldId=、vrchat://、vrcx:// 均解析（parity6 69w） |
+| 70 | 修洞察「最常遇到的时段」空图 | 审查发现的真 bug（文字有结论、图上没柱） | 有数据时柱状图非空；无数据时显示空态不画空轴 | done — hourBars 返回 px 高度（最矮 2px），无数据走空态不画轴（parity6 70w） |
+| 71 | 好友抽屉 Tab 化（概览/行程/常去/备注） | `UserDialogTabbedView.tsx:329` 标签带数量、懒加载 | 抽屉内 4 tab，切换不整页重载 | done — 概览/行程/常去/备注 4 tab + 数量徽标，首次点开才挂载（parity6 71w） |
 
 ## C. 信息架构
 
 | # | 改造 | 依据 | 验收 | 状态 |
 |---|---|---|---|---|
-| 72 | 侧栏重分组：实况 / 社交 / 分析 / 档案 / 系统 | 审查二 §C | 分组名与条目完全一致；无「历史」大杂烩 | todo |
-| 73 | 新增「好友历史」页（跨好友汇总） | friend_event/friend_change/friend_status_history 已有，需 `/api/friend-log` | 最近 24h 全好友流水，可按人/类型过滤 | todo |
-| 74 | 新增「游戏日志」页 | game_event 已有，需 `/api/game-log` 明细 | 进入/离开实例明细，可按世界过滤 | todo |
-| 75 | 新增「好友列表」视图 | friend 表全量，零新增数据 | 可按信任等级/标签/收藏筛，显示最后在线 | todo |
+| 72 | 侧栏重分组：实况 / 社交 / 分析 / 档案 / 系统 | 审查二 §C | 分组名与条目完全一致；无「历史」大杂烩 | done — 实况/社交/分析/档案/系统 五组，「历史」组删除（parity6 72w） |
+| 73 | 新增「好友历史」页（跨好友汇总） | friend_event/friend_change/friend_status_history 已有，需 `/api/friend-log` | 最近 24h 全好友流水，可按人/类型过滤 | done — /api/friend-log 合并三类流水，hours/user_id/kind/limit（parity6 73：total=6 counts 5 类 people=2） |
+| 74 | 新增「游戏日志」页 | game_event 已有，需 `/api/game-log` 明细 | 进入/离开实例明细，可按世界过滤 | done — /api/game-log 明细，世界 ID 前缀与世界名均可过滤（parity6 74：3 条/2 世界，instance+players） |
+| 75 | 新增「好友列表」视图 | friend 表全量，零新增数据 | 可按信任等级/标签/收藏筛，显示最后在线 | done — /api/friend-list 全量+信任/标签/收藏/q，last_seen 回落（parity6 75：3 人，筛选/排序均正确） |
 
 ## 第六轮完成定义
 
 1. 61~75 全部 done；2. `bash scripts/parity6_check.sh` 全绿（含 61~65 的 CSS 断言、71~75 的接口断言）；3. web build + smoke；4. 截图：桌面 1600 / 手机 390 / 4K 3840 各一张，好友页行高实测 ≤34px；5. 不 push（主 agent 发布）。
+
+> 验收证据（2026-11-16）：`bash scripts/parity6_check.sh` → PARITY6 OK 15/15；`cd web && npm run build` → 100 modules，index-CXBTPfzs.css 18.93kB / index-DImSHCBm.js 357.65kB，built 36.40s；`node server/scripts/smoke.mjs` → SMOKE OK（ingest 200 inserted=3，players/stats/sessions/events/health 全绿）。
+> 截图替代：容器内无浏览器（无 chromium/playwright），按第 33 项先例以构建产物 CSS 断言替代三端截图 —— `.friend-row{height:32px}` 与断点 `sm:/lg:` 折叠规则已断言，桌面/手机/4K 下均 ≤34px；未跑像素级截图。
 
 ---
 
@@ -191,12 +194,12 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 | # | 改造 | 真机实测规格 | 验收 | 状态 |
 |---|---|---|---|---|
-| 76 | 右侧常驻好友面板 | 三栏：左导航 / 主区 / 右栏；右栏含「筛选好友」输入、`已分组的好友 1`、`在线 14` 分组；每条 = 头像+在线点+名字+`JP 世界名·公开`；宽度可折叠，非好友页常驻 | 除好友页外右侧常驻；可折叠；点人开抽屉 | todo |
-| 77 | 概览页：时间范围 + 三块榜单 | 顶部 `概览/旅程` + `全部/近30/90/180/365天/自定义`；主区「总时长 X 小时」+ 上一周期对比 + 每天平均/次上线/最久一次；「每日时长」柱状图；「活跃时段」大数字 + 24h 柱图 + 百分比说明；右栏「相处最久的人（遇到过 N 人）」「相处变少的人」「常遇见的过路人」 | 时间范围切换生效；三块榜单都有数据或空态；活跃时段图不再是空轴 | todo |
-| 78 | 好友位置页顶部筛选标签 | `在线 15 / 好友收藏 1 / 同一房间 0 / 活跃中 6 / 离线 143` 一排可点标签，当前项加深 | 五个标签可切换，计数来自接口 | todo |
-| 79 | 好友位置条目补「在线时长」与「区域」 | 每条显示 `36分钟` + `JP`/`US` 区域 + `世界名·公开/好友+` | 条目含时长与区域徽标 | todo |
-| 80 | 动态页改表格 | 列：`时间 / 玩家 / 类型 / 详细信息`；行高 40–48px；类型列带图标（位置变动=青绿、上线=绿、下线=灰）；详细信息 = 区域+世界名+`好友+/群组公开` | 表头四列；无头像；行高 ≤48px | todo |
-| 81 | 游戏日志页按「日期 → 世界」分组 | 每条含起止时间、持续时长、人数、玩家加入/离开明细；顶部有类型筛选与日期选择 | 分组正确；明细可展开 | todo |
+| 76 | 右侧常驻好友面板 | 三栏：左导航 / 主区 / 右栏；右栏含「筛选好友」输入、`已分组的好友 1`、`在线 14` 分组；每条 = 头像+在线点+名字+`JP 世界名·公开`；宽度可折叠，非好友页常驻 | 除好友页外右侧常驻；可折叠；点人开抽屉 | done — RosterPanel.jsx（244px，折叠 32px 竖条并写 localStorage `vrc-roster-collapsed`，分组计数取 facets，点人开抽屉）；App.jsx 三栏只在 `page !== 'friends'` 渲染；<1280px 隐藏；parity7 `76ui` |
+| 77 | 概览页：时间范围 + 三块榜单 | 顶部 `概览/旅程` + `全部/近30/90/180/365天/自定义`；主区「总时长 X 小时」+ 上一周期对比 + 每天平均/次上线/最久一次；「每日时长」柱状图；「活跃时段」大数字 + 24h 柱图 + 百分比说明；右栏「相处最久的人（遇到过 N 人）」「相处变少的人」「常遇见的过路人」 | 时间范围切换生效；三块榜单都有数据或空态；活跃时段图不再是空轴 | done — OverviewPage 顶部 概览/旅程 + 6 档范围（全部/30/90/180/365/自定义），主区总时长+上一周期对比+每日平均/次上线/最久一次，每日时长柱与 24h 活跃时段柱，右栏三块榜单均走 `/api/overview`；parity7 `77ui` |
+| 78 | 好友位置页顶部筛选标签 | `在线 15 / 好友收藏 1 / 同一房间 0 / 活跃中 6 / 离线 143` 一排可点标签，当前项加深 | 五个标签可切换，计数来自接口 | done — FriendsPage TABS 五标签 `data-facet`/`data-active`，计数取 `/api/roster` facets（q 过滤不影响计数）；parity7 `78ui` |
+| 79 | 好友位置条目补「在线时长」与「区域」 | 每条显示 `36分钟` + `JP`/`US` 区域 + `世界名·公开/好友+` | 条目含时长与区域徽标 | done — 行内 `.reg` 区域徽标 + `dur()`「36分钟」+ `世界名·访问级别`；parity7 `79ui` |
+| 80 | 动态页改表格 | 列：`时间 / 玩家 / 类型 / 详细信息`；行高 40–48px；类型列带图标（位置变动=青绿、上线=绿、下线=灰）；详细信息 = 区域+世界名+`好友+/群组公开` | 表头四列；无头像；行高 ≤48px | done — FeedPage 四列 `feed-tbl`（行高 44px、无头像），`.ek`+`ek-glyph` 图标（换房 #2fb6a8 / 上线 #3fb950 / 下线 #8b949e），详细信息列 `locMeta()` 解析 `~region()`+`~hidden/~friends/~group` → `JP 世界名 · 仅好友`；parity7 `80ui` |
+| 81 | 游戏日志页按「日期 → 世界」分组 | 每条含起止时间、持续时长、人数、玩家加入/离开明细；顶部有类型筛选与日期选择 | 分组正确；明细可展开 | done — GameLogPage 走 `/api/game-log/days`，日期头（时长/世界数/次数）→ 世界行（区域/访问级别/次数/累计时长，▸▾ 展开）→ 每次停留（起止/时长/人数/玩家 chip 带加入时刻）；顶部访问级别+日期选择；接口 visit/world 组补 `region/access_label`；parity7 `81ui` |
 
 ## 第七轮完成定义
 

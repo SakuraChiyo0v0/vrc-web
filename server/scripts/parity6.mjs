@@ -109,6 +109,8 @@ try {
 
   await ins(`insert into friend_tag (id, user_id, tag, created_at) values (?,?,?,?)`, ['tag_1', 'usr_alice', '老友', at(now - 5 * HOUR)]);
   await ins(`insert into friend_note (user_id, note, updated_at) values (?,?,?)`, ['usr_alice', '一起玩很久了', at(now)]);
+  await ins(`insert into notification (id, type, sender_user_id, message, link, created_at, seen) values (?,?,?,?,?,?,?)`,
+    ['nt_1', 'invite', 'usr_alice', 'Alice 邀请你去 Alpha Club', null, at(now - 30 * 60_000), 0]);
 
   const evs = [
     ['usr_alice', 'Alice', 'online', 'wrld_a:1~region(jp)', 'wrld_a', 'Alpha Club', now - 4 * HOUR],
@@ -120,8 +122,7 @@ try {
     await ins(`insert into friend_event (user_id, display_name, kind, location, world_id, world_name, at)
                values (?,?,?,?,?,?,?)`, [uid, name, kind, loc, wid, wname, at(ms)]);
   }
-  await ins(`insert into friend_change (user_id, field, old_value, new_value, at) values (?,?,?,?,?)`,
-    ['usr_alice', 'display_name', 'Alice', 'Alice2', at(now - 5 * HOUR)]);
+  await ins(`insert into friend_change (user_id, field, old_value, new_value, at) values (?,?,?,?,?)`,    ['usr_alice', 'display_name', 'Alice', 'Alice2', at(now - 5 * HOUR)]);
   await ins(`insert into friend_status_history (user_id, status, description, at) values (?,?,?,?)`,
     ['usr_alice', 'active', 'gaming', at(now - 30 * 60_000)]);
 
@@ -151,7 +152,14 @@ try {
     // 只断好友列表块：今日摘要之类的小卡片用 grid 不算「3 列卡片网格」
     must(!/grid-cols-[23]/.test(src), '好友页仍在用 grid-cols-2/3 卡片网格');
     must(/friend-row/.test(src), '好友页没接 friend-row');
-    return '行高 32px ≤34，无 grid-cols-2/3';
+    // 每行四段信息：昵称 / 状态签名 / 世界·访问级别 / 在线时长（+区域徽标）
+    for (const seg of ['display_name', 'status_description', 'world_name', 'access_label', 'dur(']) {
+      must(src.includes(seg), `好友行缺「${seg}」段`);
+    }
+    // 手机 640 以下只剩昵称，640/1024 以上逐列展开（构建产物里是 min-width 数值断点）
+    must(/@media\s*\(min-width:\s*640px\)/.test(css), '缺少 640px 断点');
+    must(/@media\s*\(min-width:\s*1024px\)/.test(css), '缺少 1024px 断点');
+    return '行高 32px ≤34，无 grid-cols-2/3，四段信息齐全';
   });
 
   // —— 62 表头去后台味 ——
@@ -215,6 +223,56 @@ try {
       must(js.includes(token), `构建产物缺「${token}」`);
     }
     return '实况/社交/分析/档案/系统，三页已接路由与侧栏';
+  });
+
+  // —— 66w 用户悬浮卡（500ms 延迟） ——
+  await check('66w', '头像悬停 500ms 出迷你卡', async () => {
+    const card = read('web/src/components/UserHoverCard.jsx');
+    must(/HOVER_DELAY_MS = 500/.test(card), '延迟不是 500ms');
+    must(/setTimeout\(/.test(card) && /clearTimeout/.test(card), '没有延迟/移开取消');
+    must(/onMouseEnter/.test(card) && /onMouseLeave/.test(card), '缺 hover 进/出');
+    must(/pointer-events-none/.test(card), '迷你卡应不挡鼠标（否则移开不消失）');
+    for (const p of ['FriendsPage', 'FeedPage', 'PlayersPage']) {
+      must(/UserHoverCard/.test(read(`web/src/pages/${p}.jsx`)), `${p} 没接悬浮卡`);
+    }
+    must(js.includes('data-hovercard') || js.includes('hovercard'), '构建产物没打进去');
+    return '好友/动态/玩家页头像悬停 500ms 出卡，移开消失';
+  });
+
+  // —— 71w 抽屉 Tab 化：四个 tab + 数量 + 懒加载 ——
+  await check('71w', '好友抽屉 4 tab + 数量 + 懒加载', async () => {
+    const src = read('web/src/components/FriendDrawer.jsx');
+    for (const [key, label] of [['overview', '概览'], ['trips', '行程'], ['worlds', '常去'], ['notes', '备注']]) {
+      must(src.includes(`['${key}', '${label}']`), `抽屉缺 tab「${label}」`);
+    }
+    must(/data-tab=/.test(src) && /role="tab"/.test(src), 'tab 没留 role/data-tab（不好验证）');
+    must(/counts\[key\]/.test(src) && /data\?\.counts\?\.events/.test(src), 'tab 徽标没接接口 counts');
+    must(/seen\.has\('trips'\)/.test(src) && /setSeen/.test(src), '面板没有懒加载（一次全挂）');
+    must(/hidden=\{tab !== 'notes'\}/.test(src), '面板切换不是隐藏而是重挂');
+
+    const a = await get('/api/friend/usr_alice');
+    must(a.status === 200, `HTTP ${a.status}`);
+    must(a.json.counts && a.json.counts.events === 3 && a.json.counts.worlds === 2 && a.json.counts.tags === 1,
+      `alice counts=${JSON.stringify(a.json.counts)}`);
+    const b2 = await get('/api/friend/usr_bob');
+    must(b2.json.counts?.sessions === 1, `bob sessions=${b2.json.counts?.sessions}`);
+    return '概览/行程/常去/备注 + 数量（events=3 worlds=2 tags=1），首次点开才挂载';
+  });
+
+  // —— 67w 动态/通知人名可点 ——
+  await check('67w', '动态行与通知发件人名可点开抽屉', async () => {
+    const feed = read('web/src/pages/FeedPage.jsx');
+    must(/onClick=\{\(\) => \(e\.user_id \? openFriend\(e\.user_id\)/.test(feed), '动态页人名没接 openFriend');
+    must(/UserHoverCard id=\{e\.user_id\}/.test(feed), '动态页人名没接悬浮卡');
+    const notif = read('web/src/pages/NotificationsPage.jsx');
+    must(/openFriend/.test(notif) && /sender_user_id/.test(notif), '通知页发件人不可点');
+    must(/data-sender=/.test(notif), '发件人按钮没留 data-sender（不好验证）');
+    const r = await get('/api/notifications?unread=1');
+    must(r.status === 200, `HTTP ${r.status}`);
+    const n = r.json.notifications?.[0];
+    must(n && n.sender_user_id === 'usr_alice', `sender_user_id=${n?.sender_user_id}`);
+    must(n.sender_name === 'Alice', `sender_name=${n?.sender_name}`);
+    return '动态行 openFriend + 通知发件人 Alice（sender_name 取自 friend 表）';
   });
 
   // —— 68w 快捷键：Ctrl/⌘+数字跳页 + ? 表 ——
@@ -340,7 +398,7 @@ try {
 const ok = results.filter((r) => r.ok).length;
 for (const r of results) console.log(`${r.ok ? 'ok  ' : 'FAIL'} ${r.id} ${r.name}${r.detail ? ` — ${r.detail}` : ''}`);
 const fail = results.filter((r) => !r.ok).length;
-const EXPECTED = 12;
+const EXPECTED = 15;
 console.log(fail === 0 && results.length === EXPECTED ? `PARITY6 OK ${ok}/${results.length}` : `PARITY6 FAIL ${ok}/${results.length}`);
 if (fail === 0 && results.length === EXPECTED) exitCode = 0;
 process.exit(exitCode);

@@ -17,12 +17,15 @@ import CalendarPage from './pages/CalendarPage.jsx';
 import FriendListPage from './pages/FriendListPage.jsx';
 import FriendLogPage from './pages/FriendLogPage.jsx';
 import GameLogPage from './pages/GameLogPage.jsx';
+import OverviewPage from './pages/OverviewPage.jsx';
 import CommandPalette from './components/CommandPalette.jsx';
 import ShortcutHelp from './components/ShortcutHelp.jsx';
 import { DrawerProvider } from './components/drawers.jsx';
+import RosterPanel from './components/RosterPanel.jsx';
 import { resolveShortcut } from './lib/shortcuts.js';
 
 const PAGES = {
+  overview: OverviewPage,
   friends: FriendsPage,
   feed: FeedPage,
   notifications: NotificationsPage,
@@ -40,6 +43,7 @@ const PAGES = {
 };
 
 const TITLES = {
+  overview: ['概览', '总时长、每日与活跃时段，三块榜单'],
   friends: ['好友位置', '谁在线、在哪个世界'],
   feed: ['动态', '好友状态 / 位置 / 资料变更'],
   notifications: ['通知', '邀请 / 好友请求 / 群公告'],
@@ -66,12 +70,31 @@ function useTheme() {
 }
 
 export default function App() {
-  const [page, setPage] = useState('friends');
+  // 页面来自地址栏 #hash（可深链、可截图/验收直开某页），无 hash 时默认好友位置
+  const readHash = () => {
+    const h = (typeof window !== 'undefined' ? window.location.hash : '').replace(/^#\/?/, '');
+    return PAGES[h] ? h : null;
+  };
+  const [page, setPage] = useState(() => readHash() ?? 'friends');
   const [nav, setNav] = useState(false);
   const [palette, setPalette] = useState(false);
   const [help, setHelp] = useState(false);
   const [theme, toggleTheme] = useTheme();
   const Page = PAGES[page] ?? FriendsPage;
+
+  // hash ⇄ page 双向同步
+  useEffect(() => {
+    const want = `#/${page}`;
+    if (window.location.hash !== want) window.history.replaceState(null, '', want);
+  }, [page]);
+  useEffect(() => {
+    const onHash = () => {
+      const h = readHash();
+      if (h) setPage(h);
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
   // 状态必须自动刷新：否则采集器重连后页面还挂着「离线」，看着像故障
   const { data: status } = useQuery({ queryKey: ['status'], queryFn: () => api('status'), refetchInterval: 15_000, refetchOnWindowFocus: true });
 
@@ -142,6 +165,9 @@ export default function App() {
             <Page onNavigate={setPage} />
           </div>
         </main>
+
+        {/* 76 右栏常驻好友面板：好友页自身已经是全量列表，不重复显示 */}
+        {page !== 'friends' ? <RosterPanel /> : null}
       </div>
 
       <CommandPalette

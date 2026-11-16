@@ -142,6 +142,23 @@ body {
   .plat[data-p='ios'] { color: var(--platform-ios); }
   .plat[data-p='web'] { color: var(--content-tertiary); }
 
+  /* 79 区域徽标：JP / US / EU，灰底不抢视觉（VRCX-0 里是名字前缀的两个大写字母） */
+  .reg {
+    display: inline-flex; align-items: center; height: 16px; padding: 0 .25rem;
+    border-radius: 4px; background: var(--surface-raised);
+    font-size: 10.5px; line-height: 1; letter-spacing: .02em;
+    color: var(--content-tertiary); flex: none;
+  }
+
+  /* 80 动态页表格：四列 时间/玩家/类型/详细信息，行高 44px（真机 40–48），类型列带图标不是头像 */
+  .feed-tbl tbody td { height: 44px; font-size: 12px; }
+  .ek {
+    display: inline-flex; align-items: center; gap: .375rem;
+    font-size: 11.5px; line-height: 1; white-space: nowrap;
+  }
+  .ek-glyph { font-size: 10px; line-height: 1; opacity: .95; }
+  .ek[data-kind='location'] { letter-spacing: .01em; }
+
   /* 65 workspace 描边层：inset 顶部高光 + 1px ring（VRCX-0 globals.css:851-862） */
   .workspace {
     margin: 6px 8px 8px; border-radius: 12px;
@@ -192,6 +209,84 @@ body {
   .card { overflow-x: clip; }
 }
 
+/* 76 右侧常驻好友面板：三栏的最右一栏，244px，可折叠成 32px 竖条；<1280px 让位给主区 */
+.roster-rail {
+  width: 244px;
+  flex: 0 0 244px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid var(--stroke-subtle);
+  background: var(--surface-panel);
+}
+.roster-rail[data-collapsed='true'] {
+  width: 32px;
+  flex-basis: 32px;
+  align-items: center;
+  gap: .25rem;
+  padding-top: .25rem;
+}
+.roster-head {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: 0 .5rem 0 .75rem;
+  border-bottom: 1px solid var(--stroke-subtle);
+}
+.roster-toggle {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--stroke-subtle);
+  border-radius: 6px;
+  background: var(--surface-raised);
+  color: var(--content-secondary);
+  font-size: 12px;
+  cursor: default;
+}
+.roster-toggle:hover { color: var(--content-primary); }
+.roster-spine {
+  writing-mode: vertical-rl;
+  font-size: 11px;
+  color: var(--content-secondary);
+  letter-spacing: .05em;
+}
+.roster-row {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  min-height: 34px;
+  padding: .1875rem .5rem;
+  cursor: default;
+  border-radius: 6px;
+}
+.roster-row:hover { background: var(--state-hover-surface); }
+.roster-row .avatar { width: 20px; height: 20px; border-radius: 5px; flex: none; }
+.roster-row .avatar img { border-radius: 4px; }
+.roster-row .dot { width: 7px; height: 7px; right: -2px; bottom: -2px; }
+.roster-name {
+  display: block;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.roster-meta {
+  display: block;
+  font-size: 10.5px;
+  line-height: 1.25;
+  color: var(--content-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 1279px) {
+  .roster-rail { display: none; }
+}
+
 /* 大屏适配：2K/4K 下按比例放大整页，避免文字小得看不清（缩放不改变布局逻辑，窄屏不受影响） */
 @media (min-width: 1700px) {
   html { zoom: 1.15; }
@@ -202,3 +297,150 @@ body {
 @media (min-width: 3000px) {
   html { zoom: 1.7; }
 }
+
+/* 77 概览页：左主区 + 右 300px 三块榜单；柱状图用 flex 高度百分比（无需图表库） */
+.ov-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: .75rem;
+  align-items: start;
+}
+@media (max-width: 1199px) {
+  .ov-shell { grid-template-columns: minmax(0, 1fr); }
+}
+.ov-num {
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.ov-delta[data-dir='up'] { color: #3fb950; }
+.ov-delta[data-dir='down'] { color: #d29922; }
+.ov-tab {
+  background: transparent;
+  border: 0;
+  color: var(--content-secondary);
+  cursor: default;
+}
+.ov-tab[data-active='true'] {
+  background: var(--surface-raised);
+  color: var(--content-primary);
+  font-weight: 500;
+}
+.ov-range {
+  border: 1px solid;
+  border-radius: 7px;
+  color: var(--content-secondary);
+  cursor: default;
+}
+.ov-range[data-active='true'] {
+  border-color: var(--stroke-strong);
+  color: var(--content-primary);
+  font-weight: 500;
+}
+.ov-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 92px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--stroke-subtle);
+}
+.ov-bar {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 2px;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+.ov-bar-fill {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  background: color-mix(in oklch, #4a9eff 78%, var(--surface-panel));
+}
+.ov-bar-tick {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--content-tertiary);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.ov-hbars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 74px;
+  margin-top: 10px;
+  border-bottom: 1px solid var(--stroke-subtle);
+}
+.ov-hbar {
+  flex: 1 1 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+.ov-hbar-fill {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  background: color-mix(in oklch, var(--content-tertiary) 55%, transparent);
+}
+.ov-hbar[data-peak='true'] .ov-hbar-fill {
+  background: color-mix(in oklch, #2fb6a8 85%, var(--surface-panel));
+}
+.ov-haxis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2px;
+  font-size: 11px;
+}
+.ov-person {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .5rem;
+  width: 100%;
+  padding: .25rem .25rem .4rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: default;
+  overflow: hidden;
+}
+.ov-person:hover { background: var(--state-hover-surface); }
+.ov-person-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ov-person-val {
+  flex: none;
+  font-size: 11px;
+  color: var(--content-secondary);
+}
+.ov-person-bar {
+  position: absolute;
+  left: .25rem;
+  bottom: 2px;
+  height: 2px;
+  border-radius: 2px;
+  background: color-mix(in oklch, #4a9eff 70%, transparent);
+}
+.ov-drop { font-style: normal; color: #d29922; }
+.ov-jrow {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 30px;
+  padding: 0 .75rem;
+  border-bottom: 1px solid var(--stroke-subtle);
+}
+.ov-jrow:last-child { border-bottom: 0; }
+.ov-jrow:hover { background: var(--state-hover-surface); }

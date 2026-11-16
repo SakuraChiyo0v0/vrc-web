@@ -159,9 +159,24 @@ export function registerRound2Routes(app, { db, T, iso }) {
       [id],
     );
     const worlds = [...byWorld.values()].sort((a, b) => b.meets - a.meets).slice(0, 10);
+    // 71 抽屉 Tab 上的数量：一次查完，前端切换 tab 不再多打接口
+    const [tabCounts] = await db.query(
+      `select (select count(*) from ${T('friend_event')} where user_id = ?) as events,
+              (select count(*) from ${T('friend_session')} where user_id = ?) as sessions,
+              (select count(distinct coalesce(world_name, world_id)) from ${T('friend_event')}
+                where user_id = ? and coalesce(world_name, world_id) is not null) as worlds,
+              (select count(*) from ${T('friend_tag')} where user_id = ?) as tags`,
+      [id, id, id, id],
+    );
 
     return {
       ok: true,
+      counts: {
+        events: Number(tabCounts?.events ?? 0),
+        sessions: Number(tabCounts?.sessions ?? 0),
+        worlds: Number(tabCounts?.worlds ?? 0),
+        tags: Number(tabCounts?.tags ?? 0),
+      },
       profile: f
         ? {
             ...f,

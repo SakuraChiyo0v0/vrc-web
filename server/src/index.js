@@ -14,6 +14,7 @@ import { registerRound3Routes } from './routes/round3.js';
 import { registerRound4Routes } from './routes/round4.js';
 import { registerRound5Routes } from './routes/round5.js';
 import { registerRound6Routes } from './routes/round6.js';
+import { registerRound7Routes } from './routes/round7.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_DIST = process.env.VRC_WEB_DIST || path.join(__dirname, '../../web/dist');
@@ -22,12 +23,22 @@ const db = await openDb(dbUrl());
 const T = (n) => db.tbl(n);
 const iso = (v) => (v instanceof Date ? v.toISOString() : v);
 
-const app = Fastify({ logger: false });
+const app = Fastify({
+  logger: false,
+  // 直连（不经 nginx）时前端会把 API 也带上 /vrc/ 前缀：路由前统一剥掉，
+  // 否则 /vrc/assets/* 能开、/vrc/api/* 全 404，页面永远停在「读取中」。
+  rewriteUrl: (req) => (req.url?.startsWith('/vrc/') ? req.url.slice(4) || '/' : req.url),
+});
 // index.html 不能长缓存：每次发版 JS/CSS 文件名都会变，缓存旧的 index 会指向已删除的 asset（白屏）
 const staticOpts = { root: WEB_DIST };
 // 公网隧道访问的口令门：只有 Host 命中隧道域名时才校验，内网/中继（已自带登录）不受影响
 const PUBLIC_TOKEN = process.env.VRC_PUBLIC_TOKEN || '';
 const PUBLIC_HOST_HINTS = (process.env.VRC_PUBLIC_HOSTS || 'trycloudflare.com').split(',');
+// 直连（不经 nginx）时前端会把 API 也带上 /vrc/ 前缀：统一在这里剥掉，
+// 否则 /vrc/assets/* 能开、/vrc/api/* 全 404，页面永远停在「读取中」。
+app.addHook('onRequest', async (req) => {
+  if (req.raw.url?.startsWith('/vrc/')) req.raw.url = req.raw.url.slice(4) || '/';
+});
 app.addHook('onRequest', async (req, reply) => {
   if (!PUBLIC_TOKEN) return;
   const host = String(req.headers.host || '');
@@ -69,6 +80,7 @@ registerRound3Routes(app, { db, T, iso });
 registerRound4Routes(app, { db, T, iso });
 registerRound5Routes(app, { db, T, iso });
 registerRound6Routes(app, { db, T, iso });
+registerRound7Routes(app, { db, T, iso });
 
 app.get('/api/health', async () => {
   const [s] = await db.query(
@@ -127,11 +139,15 @@ app.get('/api/events', async (req) => {
   if (req.query.until) { where.push('e.at < ?'); params.push(String(req.query.until)); }
   if (req.query.user_id) { where.push('e.user_id = ?'); params.push(String(req.query.user_id)); }
   const rows = await db.query(
-    `select e.id, e.user_id, coalesce(e.display_name, f.display_name) as display_name,
-            f.icon_url, e.kind, e.location, e.world_id,
+    `select e.id, coalesce(e.user_id, fn.user_id) as user_id,
+            coalesce(e.display_name, f.display_name) as display_name,
+            coalesce(f.icon_url, fn.icon_url) as icon_url, e.kind, e.location, e.world_id,
             coalesce(e.world_name, w.name) as world_name, e.at
        from ${T('friend_event')} e
        left join ${T('friend')} f on f.user_id = e.user_id
+       -- 67 历史事件可能只存了名字（采集器早期版本/事件先于好友表）：按名字兜底解析成 userId，
+       -- 这样动态里的每条人名都能点开好友抽屉，而不是死文本
+       left join ${T('friend')} fn on fn.display_name = e.display_name and e.user_id is null
        left join ${T('world')} w on w.id = e.world_id
       ${where.length ? `where ${where.join(' and ')}` : ''}
       order by e.at desc limit ? offset ?`,
@@ -203,6 +219,15 @@ app.get('/api/notifications', async (req) => {
     params,
   );
   const [un] = await db.query(`select count(*) as n from ${T('notification')} where seen = ?`, [false]);
+  const senders = [...new Set(rows.map((r) => r.sender_user_id).filter(Boolean))];
+  const nameMap = new Map();
+  if (senders.length) {
+    const names = await db.query(
+      `select user_id, display_name from ${T('friend')} where user_id in (${senders.map(() => '?').join(',')})`,
+      senders,
+    );
+    for (const r of names) nameMap.set(r.user_id, r.display_name);
+  }
   return {
     returned: rows.length,
     unread_count: Number(un?.n ?? 0),
@@ -211,6 +236,7 @@ app.get('/api/notifications', async (req) => {
       ...r,
       kind: r.type,
       seen: !!Number(r.seen),
+      sender_name: r.sender_user_id ? (nameMap.get(r.sender_user_id) ?? null) : null,
       created_at: iso(r.created_at),
     })),
   };
