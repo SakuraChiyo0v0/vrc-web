@@ -204,3 +204,31 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 ## 第七轮完成定义
 
 1. 76~81 全部 done；2. `scripts/parity7_check.sh` 全绿；3. build + smoke；4. 三端截图（桌面/手机/4K）；5. 不 push。
+
+## 第七轮验收证据（2026-11-16 17:22）
+
+- `cd web && npm run build` → 102 modules，`index-DNwvQYJj.js` 374.59 kB / `index-ZPbOvBkH.css` 23.65 kB，built 11.83s
+- `bash scripts/parity7_check.sh` → PARITY7 OK 9/9（76api/77/81api + 76ui/77ui/78ui/79ui/80ui/81ui）
+- `node server/scripts/smoke.mjs` → SMOKE OK（health/db 全绿）
+- 三端截图（PC Chrome headless + CDP，容器 demo 8899 经 ssh -R 18899 反代）：
+  `docs/screenshots/round7-{desktop-overview,desktop-friends,desktop-feed,desktop-gamelog,desktop-gamelog-open,mobile-overview,4k-overview}.png`
+  1600×1000 / 390×844 dpr2 / 3840×2160，全部 over=false、无 4xx 子请求（仅演示库假头像 id 的 /api/img 403 已降噪）、正文 311–774 字。
+  内容实测（CDP innerText）：概览「总时长 10.4小时 / 每天平均 1小时29分 / 次上线 10 次 / 最久一次 2小时·Alpha Club / 每日时长峰值 2小时41分 / 活跃时段 14:00前后 61% / 相处最久 Alice 37分钟 / 过路人 Dave 10 次」，24h 柱 67 个 rect；游戏日志 7 个日期头各带世界行；动态 16 行四列表格。
+
+> demo 空态的坑已修：`server/scripts/demo.mjs` 改成「先建库+种子、后起服务」，并把「子进程退出 / roster.total=0 / 种子全空」都变成非零退出 —— 之前先起服务再种子会撞 SQLite `database is locked`，子服务死掉但探活打到残留旧进程上，接口全空、截图全是空态。
+
+### 逐图目视复核（2026-11-16 17:26，非 CDP 文本，直接看图）
+
+- `desktop-overview`：三栏完整（左导航/中主区/右栏好友常驻），总时长 10.4 小时 + 每天平均 1小时29分 + 10 次 + 最久一次；7 根每日柱、24h 柱、右栏三榜单（相处最久 Alice 37分钟 / 过路人 Dave 10 次；相处变少为空态文案）均无重叠溢出。
+- `desktop-friends`：顶部五标签带计数（在线 2 / 好友收藏 1 / 同一房间 1 / 活跃中 2 / 离线 1），每条含 `JP` 区域徽标 + `38分钟` + `Alpha Club · 仅好友`。
+- `desktop-feed`：表头恰为 时间/玩家/类型/详细信息 四列，主表无头像列，行高统一紧凑，类型列图标+文字对齐，无换行堆叠。
+- `desktop-gamelog`：日期头（时长/世界数/次数）→ 世界行（区域/访问级别/次数/时长）两级分组，7 天全在。
+- `desktop-gamelog-open`（本轮新增）：展开后两次停留 `14:20–15:20 · 1小时 · 1人同房 · 公开` / `15:40–17:23 · 1小时43分 · 2人同房 · 公开`，玩家 chip `Dave 14:25`、`Dave 16:20`、`Alice 16:30` —— 81 的明细层首次有像素证据（此前只有折叠态）。
+- `mobile-overview`（390×844 dpr2）：无横向溢出、卡片不裁切、筛选按钮换行不挤压；侧栏收成汉堡抽屉。
+- `4k-overview`（3840×2160）：无横向滚动，三栏按比例撑开。
+
+> shoot.mjs 增 `post` 参数（截图前执行一段 JS），81 的展开态即用 `document.querySelector('.card button[data-open]').click()` 验证可点性 + 出图，一次性把「能不能展开」也测了。
+
+### 回归（本轮复跑）
+
+`parity_check` 12/12、`parity2_check` 14/14、`parity3_check` 7/7、`parity4_check` 10/10、`parity5_check` 9/9、`parity6_check` 15/15 —— 全部 OK。

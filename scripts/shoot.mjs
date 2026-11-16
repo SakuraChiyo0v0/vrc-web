@@ -51,7 +51,7 @@ const evalJs = async (expression) => {
 /** 等「加载中」消失，最多 ms 毫秒。 */
 async function waitLoaded(ms = 15000) {
   for (let t = 0; t < ms; t += 500) {
-    if (!(await evalJs(`document.body.innerText.includes('加载中')`))) return true;
+    if (!(await evalJs(`/加载中|读取中/.test(document.body.innerText)`))) return true;
     await sleep(500);
   }
   return false;
@@ -62,7 +62,7 @@ const clickByText = (label) => `(() => {
   if (!b) return 'miss'; b.click(); return 'ok';
 })()`;
 
-async function shoot(name, width, height, dpr, mobile, clicks) {
+async function shoot(name, width, height, dpr, mobile, clicks, post) {
   await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: dpr, mobile });
   await send('Page.navigate', { url: APP });
   await sleep(2500);
@@ -73,16 +73,34 @@ async function shoot(name, width, height, dpr, mobile, clicks) {
     await sleep(1500);
     await waitLoaded();
   }
+  if (post) {
+    const out = await evalJs(post);
+    if (out !== 'ok') throw new Error(`${name}: 后置动作失败（${out}）`);
+    await sleep(800);
+  }
   const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
   const file = path.join(OUT, `round7-${name}.png`);
   fs.writeFileSync(file, Buffer.from(shot.data, 'base64'));
-  const info = await evalJs(`JSON.stringify({ title: document.title, w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight, over: document.documentElement.scrollWidth > innerWidth, text: document.body.innerText.replace(/\\s+/g, ' ').slice(0, 120) })`);
+  const info = await evalJs(`JSON.stringify({ title: document.title, w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight, over: document.documentElement.scrollWidth > innerWidth, text: document.body.innerText.replace(/\\s+/g, ' ').slice(0, 260), len: document.body.innerText.replace(/\\s+/g, '').length, stuck: /读取中|加载中/.test(document.body.innerText), bad: performance.getEntriesByType('resource').filter((r) => r.responseStatus >= 400).map((r) => r.name.replace(origin, '') + ':' + r.responseStatus) })`);
   console.log(`${name} ${width}x${height}dpr${dpr} -> ${file} ${info}`);
+  // 空态图不算验收：页面必须有正文、不在「读取中」、且没有 4xx 子请求
+  // /api/img 例外：演示库的头像 id 是假值（av_1），代理按白名单回 403，<img> 已降级隐藏，图仍可用
+  const meta = JSON.parse(info);
+  const badHard = meta.bad.filter((x) => !x.startsWith('/vrc/api/img') && !x.startsWith('/api/img'));
+  if (meta.stuck) throw new Error(`${name}: 停在「读取中/加载中」，出图作废`);
+  if (meta.len < 300) throw new Error(`${name}: 正文只有 ${meta.len} 字，疑似空态/白屏`);
+  if (badHard.length) throw new Error(`${name}: 子请求失败 ${badHard.join(', ')}`);
+  if (meta.bad.length) console.log(`  (忽略头像代理：${meta.bad.length} 个 /api/img 假 id)`);
   return file;
 }
 
 await shoot('desktop-overview', 1600, 1000, 1, false, ['概览']);
 await shoot('desktop-friends', 1600, 1000, 1, false, ['好友位置']);
+await shoot('desktop-feed', 1600, 1000, 1, false, ['动态']);
+await shoot('desktop-gamelog', 1600, 1000, 1, false, ['游戏日志']);
+// 81 的明细（起止/时长/人数/玩家）在展开态才可见，单独出一张，否则截图只证明到分组层
+await shoot('desktop-gamelog-open', 1600, 1000, 1, false, ['游戏日志'],
+  `(() => { const b = document.querySelector('.card button[data-open]'); if (!b) return 'miss'; b.click(); return 'ok'; })()`);
 await shoot('mobile-overview', 390, 844, 2, true, ['概览']);
 await shoot('4k-overview', 3840, 2160, 1, false, ['概览']);
 
