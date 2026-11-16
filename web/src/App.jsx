@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from './api.js';
 import Sidebar from './components/Sidebar.jsx';
 import StatusBar from './components/StatusBar.jsx';
-import PhonePreview from './components/PhonePreview.jsx';
+import PhoneFrame from './components/PhoneFrame.jsx';
 import FeedPage from './pages/FeedPage.jsx';
 import FriendsPage from './pages/FriendsPage.jsx';
 import StatsPage from './pages/StatsPage.jsx';
@@ -115,10 +115,11 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, [palette, help]);
 
+  // ?phone=1：整页换成 390×844 的同源 iframe（媒体查询才真的按手机宽度算）
+  if (new URLSearchParams(location.search).get('phone') === '1') return <PhoneFrame />;
+
   return (
     <DrawerProvider>
-      {/* 手机预览：给 #root 套 390×844 的设备框（不影响真实窄屏），桌面也能看手机版 */}
-      <PhonePreview />
       <div className="flex h-full" style={{ background: 'var(--surface-canvas)' }}>
         {/* 33 <768px：侧栏收成抽屉，页头汉堡开，选完页面自动关 */}
         {nav ? (
