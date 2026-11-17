@@ -262,3 +262,25 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 - `cd web && npm run build` → 102 modules，`index-CYNztDjy.css 24.56 kB` / `index-BhEMQdXS.js 374.79 kB`，built 1m44s
 - 回归：`node server/scripts/smoke.mjs` → SMOKE OK；`parity6_check` 15/15、`parity7_check` 9/9 仍全绿（friend-row 改 grid 后 61 的 `height:32px` 断言未破）
 - 构建产物实测：`.friend-row{display:grid;grid-template-columns:22px minmax(0,1fr) 16% 26% 40px 44px 72px;height:32px…}`、`.st[data-s=active]{color:var(--status-active)}`、`.summary-empty{…}` 均在 dist CSS 里
+
+---
+
+# 第九轮：继续贴近 VRCX-0（2026-11-17 起）
+
+主人反馈「和 vrcx-0 还是有差距」。这轮只做真机上看得见的差距，不再加新数据源。
+验收：`scripts/parity9_check.sh`。
+
+| # | 差距 | 真机依据 | 验收 | 状态 |
+|---|---|---|---|---|
+| 92 | 概览/旅程双视图 | 真机概览页顶部有 `概览 / 旅程` 两个 tab，旅程是按月的长时间轴 | 两个 tab 可切；旅程按月分组显示每日时长 | todo |
+| 93 | 右栏好友面板可折叠 + 拖宽 | 真机三栏右栏常驻，宽度可拖并记忆 | 拖动改宽并持久化；可折叠成 40px 竖条 | todo |
+| 94 | 好友日志时间轴 | 真机「游戏日志」按日期分组、粘性表头、世界内再分玩家加入/离开 | 日期头粘性；进入/离开按世界嵌套 | todo |
+| 95 | 粘性分组头 + 行 hover | 真机长列表滚动时分组标题贴顶 | 滚动 500px 后分组头仍可见 | todo |
+| 96 | 键盘上下选择 | VRCX-0 支持方向键在列表内移动 + Enter 打开 | ↑↓ 移动高亮，Enter 开抽屉，Esc 关 | todo |
+| 97 | 条目右键菜单 | VRCX-0 有右键上下文菜单 | 右键好友行出现菜单（复制名字/打开资料/加收藏） | todo |
+| 98 | 空态组件统一 | 真机各页空态都是「小图标 + 一行说明」 | 全站空态使用同一 `<Empty>`，无裸文字 | todo |
+| 99 | 首屏加载骨架 | 真机列表加载时显示占位行而不是空白 | 首屏 300ms 内有骨架行 | todo |
+
+## 第九轮完成定义
+
+1. 92~99 全 done；2. `parity9_check.sh` 全绿；3. build+smoke；4. 桌面/手机/4K 截图；5. 不 push。
