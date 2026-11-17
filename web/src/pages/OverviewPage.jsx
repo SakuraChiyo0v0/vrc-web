@@ -103,6 +103,96 @@ function People({ rows, empty, suffix, onClick }) {
   );
 }
 
+const WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+/**
+ * 92 旅程：按「月 → 日」分组的长时间轴（真机概览页第二个 tab）。
+ * 每月一行统计，下面是当天总时长 + 时长条；点一天展开当天的逐次停留。
+ */
+function Journey({ days, openWorld }) {
+  const [open, setOpen] = useState(null);
+
+  const months = useMemo(() => {
+    const m = new Map();
+    for (const d of days) {
+      const key = String(d.date).slice(0, 7);
+      if (!m.has(key)) m.set(key, { key, days: [], minutes: 0 });
+      const g = m.get(key);
+      g.days.push(d);
+      g.minutes += Number(d.minutes ?? 0);
+    }
+    return [...m.values()]
+      .sort((a, b) => b.key.localeCompare(a.key))
+      .map((g) => {
+        g.days.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+        g.max = Math.max(1, ...g.days.map((d) => Number(d.minutes ?? 0)));
+        return g;
+      });
+  }, [days]);
+
+  if (!months.length) {
+    return <p className="px-3 py-4 text-[12px] text-fg3">这个范围内没有停留记录</p>;
+  }
+
+  return (
+    <div className="jm-wrap" data-journey="months">
+      {months.map((g) => (
+        <section key={g.key} className="card overflow-hidden" data-month={g.key}>
+          <div className="jm-head">
+            <span className="text-[12px] font-medium tabular-nums">
+              {g.key.slice(0, 4)} 年 {Number(g.key.slice(5, 7))} 月
+            </span>
+            <span className="text-[11px] text-fg3 tabular-nums">
+              {g.days.length} 天 · {dur(g.minutes)}
+            </span>
+          </div>
+          {g.days.map((d) => {
+            const date = new Date(`${d.date}T12:00:00+08:00`);
+            const rows = [];
+            for (const w of d.worlds ?? []) {
+              for (const v of w.visits ?? []) rows.push({ ...v, world_name: w.world_name, world_id: w.world_id });
+            }
+            rows.sort((a, b) => String(b.start_at).localeCompare(String(a.start_at)));
+            const isOpen = open === d.date;
+            return (
+              <div key={d.date} className="jm-day" data-day={d.date}>
+                <button
+                  className="jm-dayrow"
+                  data-open={isOpen ? 'true' : 'false'}
+                  onClick={() => setOpen(isOpen ? null : d.date)}
+                  title={`${d.date} · ${rows.length} 次停留`}
+                >
+                  <span className="w-[46px] shrink-0 text-[11px] tabular-nums">{md(d.date)}</span>
+                  <span className="w-[34px] shrink-0 text-[11px] text-fg3">{WEEK[date.getDay()]}</span>
+                  <span className="jm-daybar">
+                    <span style={{ width: `${Math.round((Number(d.minutes ?? 0) / g.max) * 100)}%` }} />
+                  </span>
+                  <span className="w-[70px] shrink-0 text-right text-[11px] tabular-nums">{dur(d.minutes)}</span>
+                  <span className="w-[44px] shrink-0 text-right text-[11px] text-fg3 tabular-nums">{rows.length} 次</span>
+                </button>
+                {isOpen ? (
+                  <div className="jm-visits">
+                    {rows.map((v, i) => (
+                      <div key={`${v.start_at}-${i}`} className="ov-jrow">
+                        <span className="w-[92px] shrink-0 text-[11px] text-fg3 tabular-nums">{hm(v.start_at)} – {hm(v.end_at)}</span>
+                        <button className="min-w-0 flex-1 truncate text-left text-[12px]" onClick={() => openWorld?.(v.world_id)} title={v.world_name}>
+                          {v.world_name}
+                        </button>
+                        <span className="w-[64px] shrink-0 text-right text-[11px] tabular-nums">{dur(v.minutes)}</span>
+                        <span className="w-[52px] shrink-0 text-right text-[11px] text-fg3 tabular-nums">{(v.players ?? []).length} 人</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
+        </section>
+      ))}
+    </div>
+  );
+}
+
 export default function OverviewPage() {
   const [tab, setTab] = useState('overview');
   const [range, setRange] = useState('all');
@@ -119,9 +209,11 @@ export default function OverviewPage() {
   const qs = days ? `overview?range=${days}${until ? `&until=${encodeURIComponent(until)}` : ''}` : 'overview?range=all';
 
   const { data, isLoading } = useQuery({ queryKey: ['overview', qs], queryFn: () => api(qs) });
+  // 92 旅程跟同一时间范围：全部 → 3650 天（后端上限），否则按所选天数
+  const jDays = range === 'all' ? 3650 : Math.max(1, Number(days) || 30);
   const { data: log } = useQuery({
-    queryKey: ['game-log-days'],
-    queryFn: () => api('game-log/days?days=180'),
+    queryKey: ['game-log-days', jDays],
+    queryFn: () => api(`game-log/days?days=${jDays}`),
     enabled: tab === 'journey'
   });
 
@@ -130,17 +222,6 @@ export default function OverviewPage() {
   const hasHourly = hourlyTotal > 0;
   const delta = data?.previous?.delta_pct;
   const selStyle = { borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' };
-
-  const visits = useMemo(() => {
-    if (tab !== 'journey') return [];
-    const out = [];
-    for (const d of log?.days ?? []) {
-      for (const w of d.worlds ?? []) {
-        for (const v of w.visits ?? []) out.push({ ...v, date: d.date, world_name: w.world_name, world_id: w.world_id });
-      }
-    }
-    return out.sort((a, b) => String(b.start_at).localeCompare(String(a.start_at))).slice(0, 120);
-  }, [tab, log]);
 
   return (
     <div className="p-4">
@@ -288,28 +369,7 @@ export default function OverviewPage() {
         </div>
       ) : null}
 
-      {tab === 'journey' ? (
-        <div className="card overflow-hidden">
-          <div className="flex items-baseline justify-between border-b px-3 py-2" style={{ borderColor: 'var(--stroke-subtle)' }}>
-            <span className="label-xs">逐次停留</span>
-            <span className="text-[11px] text-fg3 tabular-nums">最近 {visits.length} 次</span>
-          </div>
-          {!visits.length ? <p className="px-3 py-4 text-[12px] text-fg3">这个范围内没有停留记录</p> : null}
-          <div className="ov-journey">
-            {visits.map((v, i) => (
-              <div key={`${v.start_at}-${i}`} className="ov-jrow">
-                <span className="w-[74px] shrink-0 text-[11px] text-fg3 tabular-nums">{md(v.date)}</span>
-                <span className="w-[92px] shrink-0 text-[11px] text-fg3 tabular-nums">{hm(v.start_at)} – {hm(v.end_at)}</span>
-                <button className="min-w-0 flex-1 truncate text-left text-[12px]" onClick={() => openWorld?.(v.world_id)} title={v.world_name}>
-                  {v.world_name}
-                </button>
-                <span className="w-[64px] shrink-0 text-right text-[11px] tabular-nums">{dur(v.minutes)}</span>
-                <span className="w-[52px] shrink-0 text-right text-[11px] text-fg3 tabular-nums">{(v.players ?? []).length} 人</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : null}
+      {tab === 'journey' ? <Journey days={log?.days ?? []} openWorld={openWorld} /> : null}
     </div>
   );
 }

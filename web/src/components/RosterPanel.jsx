@@ -1,8 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 import UserHoverCard from '../components/UserHoverCard.jsx';
+
+const MIN_W = 200;
+const MAX_W = 420;
+const DEF_W = 244;
+const W_KEY = 'vrc-roster-w';
 
 const STATUS_COLOR = {
   active: 'var(--status-active)',
@@ -68,8 +73,37 @@ function Row({ f }) {
 export default function RosterPanel() {
   const [q, setQ] = useState('');
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem('vrc-roster-collapsed') === '1');
+  // 93 宽度记忆：默认 244，可拖到 200–420，双击复位
+  const [w, setW] = useState(() => {
+    const v = Number(localStorage.getItem(W_KEY));
+    return Number.isFinite(v) && v >= MIN_W && v <= MAX_W ? v : DEF_W;
+  });
+  const wRef = useRef(w);
+  wRef.current = w;
+  const [dragging, setDragging] = useState(false);
   const { data } = useQuery({ queryKey: ['roster'], queryFn: () => api('roster'), refetchInterval: 30_000 });
   const facets = data?.facets ?? {};
+
+  // 往左拖变宽：width = 视口右边缘 − 指针 x；松手才落 localStorage（避免每帧写盘）
+  useEffect(() => {
+    if (!dragging) return;
+    const move = (e) => setW(Math.min(MAX_W, Math.max(MIN_W, window.innerWidth - e.clientX)));
+    const up = () => {
+      setDragging(false);
+      localStorage.setItem(W_KEY, String(Math.round(wRef.current)));
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up, { once: true });
+    return () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+  }, [dragging]);
+
+  const resetW = () => {
+    setW(DEF_W);
+    localStorage.setItem(W_KEY, String(DEF_W));
+  };
 
   const toggle = () => {
     setCollapsed((v) => {
@@ -107,7 +141,25 @@ export default function RosterPanel() {
   }
 
   return (
-    <aside className="roster-rail" data-collapsed="false" data-testid="roster-rail">
+    <aside
+      className="roster-rail"
+      data-collapsed="false"
+      data-testid="roster-rail"
+      data-width={w}
+      style={{ width: `${w}px`, flexBasis: `${w}px` }}
+    >
+      {/* 93 左边缘拖宽手柄（双击复位 244） */}
+      <div
+        className="roster-resize"
+        data-testid="roster-resize"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="拖动调整好友面板宽度"
+        title="拖动改宽 · 双击复位"
+        onPointerDown={(e) => { e.preventDefault(); setDragging(true); }}
+        onDoubleClick={resetW}
+        data-dragging={dragging ? 'true' : 'false'}
+      />
       <div className="roster-head">
         <span className="text-[12px] font-medium">好友</span>
         <span className="tabular-nums text-[11px] text-fg3">在线 {facets.online ?? 0}</span>

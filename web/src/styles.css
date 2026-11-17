@@ -300,23 +300,35 @@ body {
   .friend-row > .fr-reg, .friend-row > .fr-plat { display: none; }
 }
 
-/* 76 右侧常驻好友面板：三栏的最右一栏，244px，可折叠成 32px 竖条；<1280px 让位给主区 */
+/* 76/93 右侧常驻好友面板：三栏的最右一栏，默认 244px，可拖 200–420 并记忆，折叠成 40px 竖条；<1280px 让位给主区 */
 .roster-rail {
   width: 244px;
   flex: 0 0 244px;
   display: flex;
   flex-direction: column;
   min-height: 0;
+  position: relative;
   border-left: 1px solid var(--stroke-subtle);
   background: var(--surface-panel);
 }
 .roster-rail[data-collapsed='true'] {
-  width: 32px;
-  flex-basis: 32px;
+  width: 40px;
+  flex-basis: 40px;
   align-items: center;
   gap: .25rem;
   padding-top: .25rem;
 }
+.roster-resize {
+  position: absolute;
+  left: -3px;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 3;
+  touch-action: none;
+}
+.roster-resize:hover, .roster-resize[data-dragging='true'] { background: color-mix(in oklch, #4a9eff 45%, transparent); }
 .roster-head {
   height: 32px;
   display: flex;
@@ -542,6 +554,34 @@ body {
 }
 .ov-jrow:last-child { border-bottom: 0; }
 .ov-jrow:hover { background: var(--state-hover-surface); }
+
+/* 92 旅程：月分组 + 每日时长条（month → day 两级长时间轴） */
+.jm-wrap { display: flex; flex-direction: column; gap: .75rem; }
+.jm-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .5rem;
+  height: 30px; padding: 0 .75rem;
+  border-bottom: 1px solid var(--stroke-subtle);
+  background: var(--surface-panel);
+  position: sticky; top: 0; z-index: 2;
+}
+.jm-day { border-bottom: 1px solid var(--stroke-subtle); }
+.jm-day:last-child { border-bottom: 0; }
+.jm-dayrow {
+  display: flex; align-items: center; gap: .5rem;
+  width: 100%; min-height: 30px; padding: 0 .75rem;
+  border: 0; background: transparent; color: inherit;
+  font-size: 12px; text-align: left; cursor: default;
+}
+.jm-dayrow:hover { background: var(--state-hover-surface); }
+.jm-dayrow[data-open='true'] { background: var(--state-hover-surface); }
+.jm-daybar {
+  flex: 1; min-width: 0; height: 6px; border-radius: 3px;
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+  overflow: hidden;
+}
+.jm-daybar > span { display: block; height: 100%; border-radius: 3px; background: color-mix(in oklch, #4a9eff 75%, transparent); }
+.jm-visits { padding-bottom: .25rem; background: color-mix(in oklch, var(--foreground) 3%, transparent); }
+.jm-visits .ov-jrow { padding-left: 1.6rem; }
 
 /* 手机预览：?phone=1 时把整个应用装进 390×844 设备框（桌面端也能看手机版） */
 html[data-phone='1'] body {
