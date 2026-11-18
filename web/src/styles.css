@@ -87,6 +87,33 @@ body {
   .tbl tbody td { height: 40px; padding: 0 .75rem; border-bottom: 1px solid var(--stroke-subtle); }
   .tbl tbody tr:last-child td { border-bottom: 0; }
   .tbl tbody tr:hover td { background: var(--state-hover-surface); }
+  /* 107 分组头：行高与表格行一致，弱底色把组分开 */
+  .tbl tbody tr.group-row td {
+    height: 26px; font-size: 11px; letter-spacing: .02em;
+    color: var(--content-secondary); background: var(--surface-sunken, var(--state-hover-surface));
+    border-bottom: 1px solid var(--stroke-subtle);
+  }
+  .tbl tbody tr.group-row:hover td { background: var(--surface-sunken, var(--state-hover-surface)); }
+
+  /* 101 可点排序：表格表头与列表列头共用一套按钮，箭头表示当前方向 */
+  .sort-btn {
+    display: inline-flex; align-items: center; gap: .25rem;
+    width: 100%; padding: 0; border: 0; background: none;
+    color: inherit; font: inherit; text-align: left; cursor: pointer;
+  }
+  .sort-btn:hover { color: var(--content-primary); }
+  .sort-btn[data-active='true'] { color: var(--content-primary); font-weight: 500; }
+  .sort-arrow { font-size: 9px; color: var(--content-tertiary); }
+  .sort-btn[data-active='true'] .sort-arrow { color: var(--primary); }
+  /* 列表页列头：与 .friend-row 共用 grid，高度与 26px 分组头一致 */
+  .list-head { height: 26px; padding: 0 .5rem; color: var(--content-tertiary); font-size: 11px; }
+  .list-head .sort-btn { color: inherit; }
+  .list-head .sort-btn[data-active='true'] { color: var(--content-primary); }
+  .world-head {
+    display: flex; align-items: center; gap: 1rem; height: 26px;
+    padding: 0 .25rem; color: var(--content-tertiary); font-size: 11px;
+  }
+  .world-head .sort-btn { width: auto; }
 
   .chip {
     display: inline-flex; align-items: center; gap: .375rem;
@@ -298,6 +325,9 @@ body {
   .friend-row > .fr-world { grid-area: world; font-size: 11px; }
   .friend-row > .fr-status { grid-area: status; font-size: 11px; text-align: right; }
   .friend-row > .fr-reg, .friend-row > .fr-plat { display: none; }
+  /* 手机端行内列宽重排后列头不再对齐，直接隐藏（排序状态仍然保留） */
+  .list-head { display: none; }
+  .world-head .sort-btn { font-size: 11px; }
 }
 
 /* 76/93 右侧常驻好友面板：三栏的最右一栏，默认 244px，可拖 200–420 并记忆，折叠成 40px 竖条；<1280px 让位给主区 */

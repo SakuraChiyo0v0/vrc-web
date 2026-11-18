@@ -1,9 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { api, BASE, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 import UserHoverCard from '../components/UserHoverCard.jsx';
 import Skeleton from '../components/Skeleton.jsx';
+import { SortCol } from '../components/SortHead.jsx';
+import { csvFilename, downloadCsv, toCsv } from '../lib/csv.js';
+import { matchText } from '../lib/pinyin.js';
+import { usePref, useSort } from '../lib/prefs.js';
+import { SORT_COLUMNS, sortRows } from '../lib/sort.js';
 
 const STATUS_COLOR = {
   active: 'var(--status-active)',
@@ -111,8 +116,10 @@ function TodaySummary() {
  * 数据走 roster（与右栏同一份来源），不再另外算一遍。
  */
 export default function FriendsPage() {
-  const [tab, setTab] = useState('online');
-  const [q, setQ] = useState('');
+  // 102 标签 / 搜索词 / 排序都记在 localStorage，刷新后保持
+  const [tab, setTab] = usePref('friends:tab', 'online');
+  const [q, setQ] = usePref('friends:q', '');
+  const [sort, onSort] = useSort('friends', 'name');
   const { openFriend } = useDrawer();
   const { data, isLoading } = useQuery({
     queryKey: ['roster'],
@@ -123,7 +130,7 @@ export default function FriendsPage() {
   const facets = data?.facets ?? {};
   const groups = useMemo(() => {
     const list = (data?.friends ?? []).filter((f) => {
-      if (q && !(f.display_name ?? '').toLowerCase().includes(q.toLowerCase())) return false;
+      if (!matchText(f.display_name, q)) return false;
       if (tab === 'offline') return !f.online;
       if (tab === 'online') return f.online;
       if (tab === 'favorite') return f.favorite;
@@ -132,13 +139,27 @@ export default function FriendsPage() {
       return true;
     });
     const map = new Map();
-    for (const f of list) {
+    for (const f of sortRows(list, SORT_COLUMNS.friends, sort.key, sort.dir)) {
       const k = locLabel(f);
       if (!map.has(k)) map.set(k, []);
       map.get(k).push(f);
     }
     return [...map.entries()].sort((a, b) => b[1].length - a[1].length);
-  }, [data, q, tab]);
+  }, [data, q, tab, sort]);
+
+  // 103 导出行 = 页面上这几行（同一份 groups 展开），不另外请求接口
+  const shown = groups.flatMap(([, people]) => people);
+  const exportNow = () => {
+    const { text, rows } = toCsv([
+      { key: 'display_name', label: '名字' },
+      { key: 'status', label: '状态' },
+      { key: 'world_name', label: '所在世界' },
+      { key: 'online_minutes', label: '在线时长(分)' },
+      { key: 'user_id', label: 'user_id' }
+    ], shown);
+    downloadCsv(csvFilename(`friends-${tab}`), text);
+    return rows;
+  };
 
   return (
     <div className="p-4">
@@ -157,7 +178,17 @@ export default function FriendsPage() {
             {label} <span className="tabular-nums opacity-70">{facets[key] ?? 0}</span>
           </button>
         ))}
-        <a className="chip ml-auto" href={`${BASE}api/export/friends.csv`} download>导出 CSV</a>
+        {/* 103 导出跟随当前 tab + 搜索 + 排序 */}
+        <button
+          className="chip ml-auto"
+          data-export="friends"
+          data-export-rows={shown.length}
+          disabled={shown.length === 0}
+          onClick={exportNow}
+          style={shown.length === 0 ? { opacity: 0.5, cursor: 'default' } : undefined}
+        >
+          导出 CSV
+        </button>
       </div>
 
       <div className="mb-3 flex items-center gap-2">
@@ -168,10 +199,23 @@ export default function FriendsPage() {
           className="h-8 min-w-0 flex-1 rounded-lg border px-2.5 text-[12px] outline-none sm:w-60 sm:flex-none"
           style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)', color: 'var(--content-primary)' }}
         />
-        <span className="text-[12px] text-fg3">{data?.returned ?? 0} / {data?.total ?? 0} 人</span>
+        <span className="text-[12px] text-fg3" data-count="filtered">
+          {shown.length} / {data?.total ?? 0} 人
+        </span>
       </div>
 
       {isLoading ? <Skeleton rows={6} cols={3} /> : null}
+
+      {/* 101 列头即排序：名字 / 状态 / 世界 / 在线时长，箭头指示方向（手机端隐藏，排序仍生效） */}
+      <div className="friend-row list-head" data-sort-head="friends">
+        <span />
+        <SortCol section="friends" col="name" sort={sort} onSort={onSort} />
+        <SortCol section="friends" col="status" sort={sort} onSort={onSort} />
+        <SortCol section="friends" col="world" sort={sort} onSort={onSort} />
+        <span />
+        <span />
+        <SortCol section="friends" col="duration" sort={sort} onSort={onSort} className="justify-end" />
+      </div>
 
       {/* 61 单列 32px 行列表（VRCX-0 compact 档），不再三列卡片网格 */}
       <div className="flex flex-col gap-2">

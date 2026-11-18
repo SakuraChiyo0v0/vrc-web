@@ -239,8 +239,11 @@ try {
 
   await check('25w', '导出按钮', async () => {
     const f = src('web/src/pages/FriendsPage.jsx');
-    must(/export\/friends\.csv/.test(f), '好友页没有导出链接');
-    must(/export\//.test(src('web/src/pages/PlayersPage.jsx')), '玩家页没有导出链接');
+    // 现在导出走前端生成 CSV（跟着当前 tab/搜索/排序），不再直链 /api/export/friends.csv
+    must(/export\/friends\.csv/.test(f) || /downloadCsv|toCsv/.test(f), '好友页没有导出能力');
+    // 第十轮起玩家页同样改成前端生成 CSV（跟随当前排序/筛选），不再直链 /api/export
+    const pl = src('web/src/pages/PlayersPage.jsx');
+    must(/export\//.test(pl) || (/downloadCsv|toCsv/.test(pl) && /data-export="players"/.test(pl)), '玩家页没有导出按钮');
     must(/export\/events\.csv/.test(src('web/src/pages/FeedPage.jsx')), '动态页没有导出链接');
     return '好友/玩家/动态三页各带导出';
   });

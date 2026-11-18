@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 import UserHoverCard from '../components/UserHoverCard.jsx';
+import { matchText } from '../lib/pinyin.js';
 
 const MIN_W = 200;
 const MAX_W = 420;
@@ -115,7 +116,7 @@ export default function RosterPanel() {
   // 一人只出现在一个分组：收藏优先，其次在线，再按状态/离线
   const sections = useMemo(() => {
     const friends = (data?.friends ?? []).filter((f) =>
-      !q ? true : (f.display_name ?? '').toLowerCase().includes(q.toLowerCase()));
+      matchText(f.display_name, q));
     const taken = new Set();
     const match = (key, f) => {
       if (key === 'favorite') return f.favorite;

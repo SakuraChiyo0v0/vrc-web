@@ -31,7 +31,8 @@ export const PG = [
   `create index if not exists friend_event_user_idx on vrc.friend_event (user_id, at desc)`,
   `create table if not exists vrc.world (
      id text primary key, name text, author_id text, author_name text,
-     capacity int, thumbnail text, updated_at timestamptz not null default now()
+     capacity int, thumbnail text, updated_at timestamptz not null default now(),
+     visits_total bigint, favorites int, popularity int
    )`,
   `create table if not exists vrc.notification (
      id text primary key, type text, sender_user_id text, message text,
@@ -129,6 +130,10 @@ export const PG = [
   `alter table vrc.friend_event add column if not exists icon_url text`,
   `alter table vrc.friend add column if not exists tags text`,
   `alter table vrc.friend add column if not exists trust_rank int`,
+  // 106 世界详情：官方访问量/收藏数/热度（collector 拉到就写，拉不到留空）
+  `alter table vrc.world add column if not exists visits_total bigint`,
+  `alter table vrc.world add column if not exists favorites int`,
+  `alter table vrc.world add column if not exists popularity int`,
 ];
 
 export const SQLITE = [
@@ -157,7 +162,8 @@ export const SQLITE = [
   `create index if not exists friend_event_user_idx on friend_event (user_id, at desc)`,
   `create table if not exists world (
      id text primary key, name text, author_id text, author_name text,
-     capacity integer, thumbnail text, updated_at text not null default (datetime('now'))
+     capacity integer, thumbnail text, updated_at text not null default (datetime('now')),
+     visits_total integer, favorites integer, popularity integer
    )`,
   `create table if not exists notification (
      id text primary key, type text, sender_user_id text, message text,
@@ -244,6 +250,9 @@ export const SQLITE = [
   `create index if not exists friend_avatar_user_idx on friend_avatar_history (user_id, at desc)`,
   `alter table friend add column tags text`,
   `alter table friend add column trust_rank integer`,
+  `alter table world add column visits_total integer`,
+  `alter table world add column favorites integer`,
+  `alter table world add column popularity integer`,
 ];
 
 export function ddlFor(dialect) {

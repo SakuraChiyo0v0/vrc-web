@@ -148,18 +148,25 @@ async function pipelineToken() {
 /** 从 location 拆 world id（实现见 lib/behavior.js，第五轮起两处共用一份） */
 export { worldIdOf };
 
+/** 106 世界官方统计：数字或 null（0 也算有效值，不能被 falsy 吃掉） */
+const num = (v) => (v === null || v === undefined || v === '' ? null : (Number.isFinite(Number(v)) ? Number(v) : null));
+
 async function upsertWorld(worldId) {
   if (!worldId || worldCache.has(worldId)) return worldCache.get(worldId) ?? null;
   try {
     const w = await api(`/worlds/${worldId}`);
     worldCache.set(worldId, w.name ?? null);
     await db.query(
-      `insert into ${T('world')} (id, name, author_id, author_name, capacity, thumbnail, updated_at)
-       values (?,?,?,?,?,?,?)
+      `insert into ${T('world')} (id, name, author_id, author_name, capacity, thumbnail, updated_at, visits_total, favorites, popularity)
+       values (?,?,?,?,?,?,?,?,?,?)
        on conflict (id) do update set name = excluded.name, author_id = excluded.author_id,
          author_name = excluded.author_name, capacity = excluded.capacity,
-         thumbnail = excluded.thumbnail, updated_at = excluded.updated_at`,
-      [worldId, w.name, w.authorId, w.authorName, w.capacity, w.thumbnailImageUrl, new Date()],
+         thumbnail = excluded.thumbnail, updated_at = excluded.updated_at,
+         visits_total = coalesce(excluded.visits_total, ${T('world')}.visits_total),
+         favorites = coalesce(excluded.favorites, ${T('world')}.favorites),
+         popularity = coalesce(excluded.popularity, ${T('world')}.popularity)`,
+      [worldId, w.name, w.authorId, w.authorName, w.capacity, w.thumbnailImageUrl, new Date(),
+        num(w.visits), num(w.favorites), num(w.popularity)],
     );
     return w.name ?? null;
   } catch (e) {

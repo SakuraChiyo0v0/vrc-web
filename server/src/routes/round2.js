@@ -12,31 +12,31 @@ function parseTags(v) {
   } catch { return []; }
 }
 
+import { matchText } from '../../../web/src/lib/pinyin.js';
+
 export function registerRound2Routes(app, { db, T, iso }) {
   const ONLINE = `location is not null and location not in ('offline','private','traveling')`;
+  /** 105 拼音搜索在 JS 里过滤，线上判断用同一套语义 */
+  const ONLINE_TEST = (f) => !!f.location && !['offline', 'private', 'traveling'].includes(String(f.location));
 
   /** 21 全局搜索：好友 / 世界 / 同房玩家，各取前 8 条 */
   app.get('/api/search', async (req) => {
     const q = String(req.query.q ?? '').trim();
     if (!q) return { q, friends: [], worlds: [], players: [], total: 0 };
-    const like = `%${q.toLowerCase()}%`;
-
-    const friends = await db.query(
+    const friends = (await db.query(
       `select user_id, display_name, icon_url, status, location, world_id, world_name
-         from ${T('friend')} where lower(display_name) like ?
-        order by case when ${ONLINE} then 0 else 1 end, display_name limit 8`,
-      [like],
-    );
-    const worlds = await db.query(
-      `select id, name, author_name, thumbnail from ${T('world')} where lower(name) like ?
-        order by name limit 8`,
-      [like],
-    );
-    const rows = await db.query(
+         from ${T('friend')} limit 2000`,
+    ))
+      .filter((f) => matchText(f.display_name, q))
+      .sort((a, b) => (ONLINE_TEST(a) === ONLINE_TEST(b) ? 0 : ONLINE_TEST(a) ? -1 : 1))
+      .slice(0, 8);
+    const worlds = (await db.query(
+      `select id, name, author_name, thumbnail from ${T('world')} limit 2000`,
+    )).filter((w) => matchText(w.name, q) || matchText(w.author_name, q)).slice(0, 8);
+    const rows = (await db.query(
       `select display_name, user_id, world_name, at from ${T('game_event')}
-        where kind = 'room_join' and lower(display_name) like ? order by at desc limit 200`,
-      [like],
-    );
+        where kind = 'room_join' order by at desc limit 2000`,
+    )).filter((r) => matchText(r.display_name, q));
     const map = new Map();
     for (const r of rows) {
       const key = r.user_id ?? r.display_name;
@@ -60,7 +60,9 @@ export function registerRound2Routes(app, { db, T, iso }) {
   app.get('/api/world/:id', async (req, reply) => {
     const id = String(req.params.id);
     let [w] = await db.query(
-      `select id, name, author_id, author_name, capacity, thumbnail, updated_at from ${T('world')} where id = ?`,
+      `select id, name, author_id, author_name, capacity, thumbnail, updated_at,
+              visits_total, favorites, popularity
+         from ${T('world')} where id = ?`,
       [id],
     );
     if (!w) {
@@ -70,7 +72,7 @@ export function registerRound2Routes(app, { db, T, iso }) {
         [id],
       );
       if (!e?.name) return reply.code(404).send({ ok: false, error: '没有这个世界' });
-      w = { id, name: e.name, author_id: null, author_name: null, capacity: null, thumbnail: null, updated_at: null };
+      w = { id, name: e.name, author_id: null, author_name: null, capacity: null, thumbnail: null, updated_at: null, visits_total: null, favorites: null, popularity: null };
     }
 
     const onlineFriends = await db.query(
@@ -100,6 +102,14 @@ export function registerRound2Routes(app, { db, T, iso }) {
       [w.name],
     );
 
+    /** 106 好友侧到访：这个世界被好友去过多少次 / 去过的人有几个（世界 id 缺失时退回按名字匹配） */
+    const [fv] = await db.query(
+      `select count(*) as n, count(distinct user_id) as people, min(started_at) as first_at
+         from ${T('friend_world_visit')}
+        where world_id = ? or (world_id is null and world_name = ?)`,
+      [id, w.name],
+    );
+
     /** 35 复制实例链接用：随便取一个当前在这个世界里的好友 location（离线/私密的不算） */
     const [inst] = await db.query(
       `select location from ${T('friend')} where world_id = ? and ${ONLINE}
@@ -112,10 +122,23 @@ export function registerRound2Routes(app, { db, T, iso }) {
 
     return {
       ok: true,
-      world: { ...w, capacity: w.capacity === null ? null : Number(w.capacity), updated_at: w.updated_at ? iso(w.updated_at) : null },
+      world: {
+        ...w,
+        capacity: w.capacity === null ? null : Number(w.capacity),
+        visits_total: w.visits_total === null || w.visits_total === undefined ? null : Number(w.visits_total),
+        favorites: w.favorites === null || w.favorites === undefined ? null : Number(w.favorites),
+        popularity: w.popularity === null || w.popularity === undefined ? null : Number(w.popularity),
+        updated_at: w.updated_at ? iso(w.updated_at) : null,
+      },
       instance,
       online: onlineFriends.length,
+      friends_online_count: onlineFriends.length,
+      friends_online: onlineFriends.map((f) => f.display_name ?? f.user_id),
       online_friends: onlineFriends,
+      friend_visits: Number(fv?.n ?? 0),
+      friends_visited: Number(fv?.people ?? 0),
+      friends_first_at: fv?.first_at ? iso(fv.first_at) : null,
+      first_at: mine.length ? iso(mine[0].at) : null,
       visits: mine.length,
       minutes,
       last_at: mine.length ? iso(mine[mine.length - 1].at) : null,

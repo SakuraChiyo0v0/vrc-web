@@ -15,6 +15,8 @@ import { registerRound4Routes } from './routes/round4.js';
 import { registerRound5Routes } from './routes/round5.js';
 import { registerRound6Routes } from './routes/round6.js';
 import { registerRound7Routes } from './routes/round7.js';
+import { aggregateNotifications } from './lib/notif.js';
+import { matchText } from '../../web/src/lib/pinyin.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_DIST = process.env.VRC_WEB_DIST || path.join(__dirname, '../../web/dist');
@@ -118,6 +120,8 @@ app.get('/api/status', async () => {
 
 app.get('/api/friends', async (req) => {
   const only = req.query.online === '1';
+  /** 105 搜索：与前端同一份 matchText（拼音首字母 / 子串 / 中英混排），服务端也认 q */
+  const q = String(req.query.q ?? '').trim();
   const rows = await db.query(
     `select f.user_id, f.display_name, f.status, f.status_description, f.location,
             f.world_id, coalesce(w.name, f.world_name) as world_name, f.platform, f.icon_url, f.updated_at
@@ -126,7 +130,8 @@ app.get('/api/friends', async (req) => {
       order by case when f.location is null or f.location in ('offline','private','traveling') then 1 else 0 end,
                f.display_name`,
   );
-  return { total: rows.length, friends: rows.map((r) => ({ ...r, updated_at: iso(r.updated_at) })) };
+  const list = q ? rows.filter((r) => matchText(r.display_name, q) || matchText(r.world_name, q)) : rows;
+  return { total: list.length, friends: list.map((r) => ({ ...r, updated_at: iso(r.updated_at) })) };
 });
 
 app.get('/api/events', async (req) => {
@@ -228,17 +233,39 @@ app.get('/api/notifications', async (req) => {
     );
     for (const r of names) nameMap.set(r.user_id, r.display_name);
   }
+  const items = rows.map((r) => ({
+    ...r,
+    kind: r.type,
+    seen: !!Number(r.seen),
+    sender_name: r.sender_user_id ? (nameMap.get(r.sender_user_id) ?? null) : null,
+    created_at: iso(r.created_at),
+  }));
+
+  /**
+   * 104 通知同类聚合：同 type 且距该组最新一条 <24h 的合并成一条。
+   *   group=0 关掉（调试/老调用方），默认聚合。
+   * 每条带 count / ids / items（组内原文，按时间倒序），标已读一次带走整组。
+   */
+  const grouped = req.query.group !== '0';
+  if (!grouped) {
+    return {
+      returned: items.length,
+      unread_count: Number(un?.n ?? 0),
+      types: [...new Set(items.map((r) => r.type).filter(Boolean))],
+      grouped: false,
+      notifications: items,
+    };
+  }
+
+  const groups = aggregateNotifications(items);
+
   return {
-    returned: rows.length,
+    returned: items.length,
+    groups: groups.length,
     unread_count: Number(un?.n ?? 0),
-    types: [...new Set(rows.map((r) => r.type).filter(Boolean))],
-    notifications: rows.map((r) => ({
-      ...r,
-      kind: r.type,
-      seen: !!Number(r.seen),
-      sender_name: r.sender_user_id ? (nameMap.get(r.sender_user_id) ?? null) : null,
-      created_at: iso(r.created_at),
-    })),
+    types: [...new Set(items.map((r) => r.type).filter(Boolean))],
+    grouped: true,
+    notifications: groups,
   };
 });
 

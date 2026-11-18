@@ -4,6 +4,14 @@ import { api, imgUrl } from '../api.js';
 import { useDrawer } from './drawers.jsx';
 
 const fmt = (v) => (v ? new Date(v).toLocaleString('zh-CN', { hour12: false }) : '—');
+/** 官方大数字：12.3 万 / 4.5 亿，避免 8 位数横排溢出 */
+const compact = (n) => {
+  const v = Number(n);
+  if (!Number.isFinite(v)) return '—';
+  if (v >= 1e8) return `${(v / 1e8).toFixed(1)} 亿`;
+  if (v >= 1e4) return `${(v / 1e4).toFixed(1)} 万`;
+  return String(v);
+};
 
 /** 35 复制：clipboard 不可用（http 内网/旧浏览器）时退回 textarea + execCommand */
 async function copyText(text) {
@@ -85,23 +93,28 @@ export default function WorldDrawer({ id, onClose }) {
               <img src={imgUrl(data.world.thumbnail)} alt="" className="w-full rounded-[10px] border" style={{ borderColor: 'var(--stroke-subtle)' }} />
             ) : null}
 
-            <div className="grid grid-cols-3 gap-2">
+            {/* 106 世界详情四格：官方访问量拉不到就显 — ，不拿本地数字冒充 */}
+            <div className="grid grid-cols-2 gap-2">
               {[
-                ['在线好友', data.online],
-                ['我去过', `${data.visits} 次`],
-                ['累计停留', `${data.minutes} 分`]
-              ].map(([k, v]) => (
-                <div key={k} className="card px-3 py-2">
+                ['世界访问', data.world.visits_total === null || data.world.visits_total === undefined ? '—' : compact(data.world.visits_total), 'visits_total'],
+                ['在线好友', data.friends_online_count ?? data.online ?? 0, 'online'],
+                ['我去过', `${data.visits ?? 0} 次`, 'visits'],
+                ['圈内到访', `${data.friend_visits ?? 0} 次 · ${data.friends_visited ?? 0} 人`, 'friend_visits']
+              ].map(([k, v, key]) => (
+                <div key={k} className="card px-3 py-2" data-world-stat={key}>
                   <div className="label-xs">{k}</div>
-                  <div className="mt-0.5 text-[14px] tabular-nums">{v ?? 0}</div>
+                  <div className="mt-0.5 text-[14px] tabular-nums">{v}</div>
                 </div>
               ))}
             </div>
 
             <div className="card px-3 py-2 text-[12px] leading-relaxed">
-              <div className="flex justify-between gap-3"><span className="text-fg3">作者</span><span className="truncate">{data.world.author_name ?? '—'}</span></div>
-              <div className="mt-1 flex justify-between gap-3"><span className="text-fg3">容量</span><span className="tabular-nums">{data.world.capacity ?? '—'}</span></div>
+              <div className="flex justify-between gap-3" data-world-stat="author"><span className="text-fg3">作者</span><span className="truncate">{data.world.author_name ?? '—'}</span></div>
+              <div className="mt-1 flex justify-between gap-3" data-world-stat="capacity"><span className="text-fg3">容量</span><span className="tabular-nums">{data.world.capacity ?? '—'}</span></div>
+              <div className="mt-1 flex justify-between gap-3" data-world-stat="favorites"><span className="text-fg3">收藏</span><span className="tabular-nums">{data.world.favorites === null || data.world.favorites === undefined ? '—' : compact(data.world.favorites)}</span></div>
               <div className="mt-1 flex justify-between gap-3"><span className="text-fg3">同房见过</span><span className="tabular-nums">{data.meets ?? 0} 人</span></div>
+              <div className="mt-1 flex justify-between gap-3"><span className="text-fg3">累计停留</span><span className="tabular-nums">{data.minutes ?? 0} 分</span></div>
+              <div className="mt-1 flex justify-between gap-3"><span className="text-fg3">首次到访</span><span>{data.first_at ? fmt(data.first_at) : fmt(data.friends_first_at)}</span></div>
               <div className="mt-1 flex justify-between gap-3"><span className="text-fg3">最近一次</span><span>{fmt(data.last_at)}</span></div>
             </div>
 

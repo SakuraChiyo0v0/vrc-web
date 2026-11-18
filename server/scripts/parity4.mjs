@@ -294,8 +294,10 @@ try {
     must(/id: 'worlds'/.test(src('web/src/components/Sidebar.jsx')), '侧栏没有世界库入口');
     const page = src('web/src/pages/WorldsPage.jsx');
     must(/api\(`worlds\?q=/.test(page), 'WorldsPage 没调 /api/worlds');
-    must(/sort=\$\{sort\}/.test(page) && /offset=\$\{offset\}/.test(page), 'WorldsPage 没传 sort/offset');
-    must(/data-active=\{sort === 'visits'\}/.test(page), '没有「访问次数」排序按钮');
+    // 排序参数由 sort.key/dir 拼（支持表头升降序），不再固定单值
+    must(/sort=\$\{sort\.(key|dir)\}/.test(page) && /offset=\$\{offset\}/.test(page), 'WorldsPage 没传 sort/offset');
+    // 第十轮起表头排序走统一 SortCol（col="visits"），不再手写单值按钮
+    must(/data-active=\{sort === 'visits'\}/.test(page) || /col="visits"/.test(page), '没有「访问次数」排序按钮');
     must(/openWorld\(w\.id\)/.test(page), '世界行没接详情抽屉');
     const js = asset('.js');
     must(/worlds\?q=/.test(js), '构建产物里没有 worlds?q=');

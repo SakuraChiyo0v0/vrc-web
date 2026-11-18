@@ -164,12 +164,14 @@ try {
   /* ───── 85 概览页空数据不画空轴 ───── */
   await check(85, '概览页 0 数据出空态文案，不画空柱/空轴', async () => {
     const src = read('web/src/pages/OverviewPage.jsx');
-    must(js.includes('ov-empty'), '构建产物缺 .ov-empty 空态');
+    // 第九轮 98 把空态统一成 <Empty> 组件，概览空态不再直接用 .ov-empty class
+    // 第九轮 98 把空态统一成 <Empty>（.empty / .empty-compact），不再直接用 .ov-empty
+    must(js.includes('empty-compact') || js.includes('data-empty'), '构建产物缺空态实现');
     must(css.includes('.ov-empty'), 'CSS 缺 .ov-empty');
     must(js.includes('这个范围内还没有停留时长'), '每日时长空态文案没进构建产物');
     must(js.includes('这个范围内还没有活跃时段数据'), '活跃时段空态文案没进构建产物');
     for (const fn of ['DailyBars', 'HourBars']) {
-      must(new RegExp(`function ${fn}\\([^)]*\\)\\s*\\{[\\s\\S]{0,260}total === 0[\\s\\S]{0,120}ov-empty`).test(src),
+      must(new RegExp(`function ${fn}\\([^)]*\\)\\s*\\{[\\s\\S]{0,260}total === 0[\\s\\S]{0,120}(?:ov-empty|<Empty)`).test(src),
         `${fn} 没有「全 0 → 空态」早返回`);
     }
     const axis = src.indexOf('ov-haxis');

@@ -27,9 +27,20 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 // 同一个 SQLite 文件会撞 "database is locked"，子服务直接退出、种子落进没人读的库。
 const db = await openDb(dbUrl);
 const ins = (sql, p) => db.query(sql, p);
-await ins(`insert into world (id, name) values (?,?)`, ['wrld_a', 'Alpha Club']);
-await ins(`insert into world (id, name) values (?,?)`, ['wrld_b', 'Beta Lounge']);
-await ins(`insert into world (id, name) values (?,?)`, ['wrld_c', '夜の喫茶店']);
+// 106 世界详情要作者/容量/官方访问量：演示库也给全，抽屉四格才有真数字可看
+const world106 = [
+  ['wrld_a', 'Alpha Club', 'yuina', 32, 128450, 9821, 3.4],
+  ['wrld_b', 'Beta Lounge', 'chill_room', 24, 9870, 412, 1.2],
+  ['wrld_c', '夜の喫茶店', 'kissa_ten', 16, 45210, 2604, 2.8],
+];
+for (const [id, name, author, cap, visits, favs, pop] of world106) {
+  await ins(`insert into world (id, name, author_name, capacity, visits_total, favorites, popularity)
+             values (?,?,?,?,?,?,?)`, [id, name, author, cap, visits, favs, pop]);
+}
+// 105 拼音搜索：中文名好友，用来截「xh → 小红」
+await ins(`insert into friend (user_id, display_name, trust_level, platform, status, location, world_id, world_name, icon_url, is_favorite, updated_at)
+           values (?,?,?,?,?,?,?,?,?,?,?)`,
+  ['usr_xiaohong', '小红', 'system_trust_known', 'standalonewindows', 'active', 'wrld_c:1~region(jp)', 'wrld_c', '夜の喫茶店', 'av_4', 0, at(now - MIN)]);
 await ins(`insert into friend (user_id, display_name, trust_level, platform, status, status_description, location, world_id, world_name, icon_url, is_favorite, updated_at)
            values (?,?,?,?,?,?,?,?,?,?,?,?)`,
   ['usr_alice', 'Alice', 'system_trust_trusted', 'standalonewindows', 'active', '画图', 'wrld_a:1~hidden(usr_me)~region(jp)', 'wrld_a', 'Alpha Club', 'av_1', 1, at(now - MIN)]);
@@ -102,6 +113,17 @@ await ev('profile', 'usr_carol', 'Carol', null, null, null, 30);
 await ev('online', 'usr_carol', 'Carol', 'wrld_b:2~region(us)~friends(usr_me)', 'wrld_b', 'Beta Lounge', 20);
 await ev('offline', 'usr_bob', 'Bob', 'offline', null, null, 18);
 await ev('location', 'usr_dave', 'Dave', 'wrld_c:4~region(jp)', 'wrld_c', '夜の喫茶店', 8);
+// 104 通知聚合：两条 invite 在 24h 内应合成一条带 ×2，另有一条 friend_request 单独成条
+const notif104 = [
+  ['n_inv_1', 'invite', 'usr_alice', 'Alice 邀请你去 Alpha Club', 10, 0],
+  ['n_inv_2', 'invite', 'usr_carol', 'Carol 邀请你去 Beta Lounge', 95, 1],
+  ['n_req_1', 'friend_request', 'usr_dave', 'Dave 想加你为好友', 40, 0],
+  ['n_inv_3', 'invite', 'usr_xiaohong', '小红 邀请你去 夜の喫茶店', 60 * 30, 1],
+];
+for (const [id, type, uid, msg, mins, seen] of notif104) {
+  await ins(`insert into notification (id, type, sender_user_id, message, created_at, seen) values (?,?,?,?,?,?)`,
+    [id, type, uid, msg, at(now - mins * MIN), seen]);
+}
 const counts = (await db.query(`select
   (select count(*) from friend) as friends,
   (select count(*) from self_event) as self_events,

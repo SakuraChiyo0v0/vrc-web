@@ -4,6 +4,10 @@ import { api, imgUrl } from '../api.js';
 import Empty from '../components/Empty.jsx';
 import Skeleton from '../components/Skeleton.jsx';
 import { useDrawer } from '../components/drawers.jsx';
+import { SortCol } from '../components/SortHead.jsx';
+import { csvFilename, downloadCsv, toCsv } from '../lib/csv.js';
+import { usePref, useSort } from '../lib/prefs.js';
+import { SORT_COLUMNS, sortRows } from '../lib/sort.js';
 
 const KIND_LABEL = {
   online: '上线',
@@ -26,8 +30,10 @@ const fg = (iso) => {
  * 89 打磨：倒序流水 + 类型多选 + 游标分页（每页 100，按 at|id 游标翻页，不重复）。
  */
 export default function FriendLogPage() {
-  const [hours, setHours] = useState(24);
-  const [kinds, setKinds] = useState([]);
+  // 102 时间窗 / 类型多选 / 排序都存 localStorage，刷新后保持
+  const [hours, setHours] = usePref('friendlog:hours', 24);
+  const [kinds, setKinds] = usePref('friendlog:kinds', []);
+  const [sort, onSort] = useSort('friendlog', 'at');
   const [userId, setUserId] = useState('');
   const { openFriend } = useDrawer();
 
@@ -67,16 +73,46 @@ export default function FriendLogPage() {
   const total = pages[0]?.total ?? 0;
   const toggleKind = (k) => setKinds((cur) => (cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k]));
 
-  // 95 按日分组（+08 切日），日期头粘顶
+  // 103 导出跟随筛选：同一套 hours/kinds/user_id 一页页翻到底（不导出没加载的部分），
+  // 行数 = 顶部「N 条」。
+  const [exporting, setExporting] = useState(false);
+  const exportNow = async () => {
+    setExporting(true);
+    try {
+      const all = [];
+      let cursor = null;
+      for (let i = 0; i < 100; i += 1) {
+        const page = await api(`friend-log?${baseParams}${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}`);
+        all.push(...(page.items ?? []));
+        cursor = page.next_cursor ?? null;
+        if (!cursor) break;
+      }
+      const { text } = toCsv([
+        { get: (r) => r.at, label: '时间' },
+        { key: 'display_name', label: '好友' },
+        { get: (r) => KIND_LABEL[r.kind] ?? r.kind, label: '类型' },
+        { key: 'text', label: '内容' },
+        { key: 'user_id', label: 'user_id' }
+      ], all);
+      downloadCsv(csvFilename('friendlog'), text);
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  // 95 按日分组（+08 切日），日期头粘顶；101 组内按列头排序
   const groups = useMemo(() => {
     const map = new Map();
-    for (const i of items) {
+    for (const i of sortRows(items, SORT_COLUMNS.friendlog, sort.key, sort.dir)) {
       const key = new Date(i.at).toLocaleDateString('sv-SE', { timeZone: 'Asia/Shanghai' });
       if (!map.has(key)) map.set(key, []);
       map.get(key).push(i);
     }
-    return [...map].map(([key, list]) => ({ key, items: list }));
-  }, [items]);
+    const out = [...map].map(([key, list]) => ({ key, items: list }));
+    // 时间升序时日期组也跟着倒过来，否则组内升序、组间降序会读着别扭
+    if (sort.key === 'at' && sort.dir === 'asc') out.reverse();
+    return out;
+  }, [items, sort]);
 
   const dayLabel = (key) => {
     const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Shanghai' });
@@ -108,6 +144,9 @@ export default function FriendLogPage() {
         {kinds.length ? (
           <button className="chip" data-reset="1" onClick={() => setKinds([])}>清空类型</button>
         ) : null}
+        <button className="chip ml-auto" data-export="friendlog" onClick={exportNow} disabled={exporting || total === 0}>
+          {exporting ? '导出中…' : '导出 CSV'}
+        </button>
       </div>
 
       {/* 89 类型多选：计数取整段时间窗（不受勾选影响），点一下加一项 */}
@@ -136,6 +175,14 @@ export default function FriendLogPage() {
         <Empty icon="clock" title={'这个时间窗里没有记录'} hint={'放大时间窗或取消筛选再看看。'} />
       ) : (
         <div>
+          {/* 101 好友历史列头：好友 / 类型 / 内容 / 时间（手机端隐藏） */}
+          <div className="friend-row list-head" data-sort-head="friendlog">
+            <span />
+            <SortCol section="friendlog" col="name" sort={sort} onSort={onSort} className="w-24 shrink-0" />
+            <SortCol section="friendlog" col="kind" sort={sort} onSort={onSort} className="w-14 shrink-0" />
+            <SortCol section="friendlog" col="text" sort={sort} onSort={onSort} className="min-w-0 flex-1" />
+            <SortCol section="friendlog" col="at" sort={sort} onSort={onSort} className="justify-end" />
+          </div>
           {groups.map((g) => (
             <div key={g.key} className="mb-2">
               <div className="group-head dayhead" data-day={g.key}>

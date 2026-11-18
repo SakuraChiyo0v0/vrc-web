@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 import { useHashState } from '../lib/hashQuery.js';
+import { GROUP_MODES, groupFriends } from '../lib/group.js';
 import Skeleton from '../components/Skeleton.jsx';
 
 const TRUST_NAME = { 1: '新用户', 2: '基本用户', 3: '已知用户', 4: '可信用户' };
@@ -34,14 +35,15 @@ function Platform({ p }) {
 /** 75 好友列表：friend 表全量，按信任等级 / 标签 / 收藏筛，显示最后在线 */
 export default function FriendListPage() {
   // 86 筛选状态进地址栏（#/friendlist?trust=4&fav=1），刷新与深链都能还原
-  const [f, setF] = useHashState({ q: '', trust: '', tag: '', fav: false, sort: 'last_seen' });
-  const { q, trust, tag, fav, sort } = f;
+  const [f, setF] = useHashState({ q: '', trust: '', tag: '', fav: false, sort: 'last_seen', group: 'none' });
+  const { q, trust, tag, fav, sort, group } = f;
   const setQ = (q) => setF({ q });
   const setTrust = (trust) => setF({ trust });
   const setTag = (tag) => setF({ tag });
   const setFav = (fn) => setF({ fav: typeof fn === 'function' ? fn(fav) : fn });
   const setSort = (sort) => setF({ sort });
-  const active = [q, trust, tag, fav ? '1' : '', sort !== 'last_seen' ? '1' : ''].filter(Boolean).length;
+  const setGroup = (group) => setF({ group });
+  const active = [q, trust, tag, fav ? '1' : '', sort !== 'last_seen' ? '1' : '', group !== 'none' ? '1' : ''].filter(Boolean).length;
   const { openFriend } = useDrawer();
 
   const params = new URLSearchParams({ limit: '2000', sort });
@@ -87,6 +89,19 @@ export default function FriendListPage() {
           <option value="name">按名字</option>
           <option value="trust">按信任等级</option>
         </select>
+        {/* 107 分组：世界 / 收藏 / 信任等级，组头带计数 */}
+        <select
+          className="h-8 rounded-lg border px-2 text-[12px]"
+          value={group}
+          onChange={(e) => setGroup(e.target.value)}
+          data-group={group}
+          aria-label="分组方式"
+          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' }}
+        >
+          {Object.entries(GROUP_MODES).map(([k, label]) => (
+            <option key={k} value={k}>{label}</option>
+          ))}
+        </select>
         <span className="text-[12px] text-fg3" data-count="1">
           {data?.returned ?? 0} / {data?.total ?? 0} 人 · 在线 {data?.online ?? 0}
           {active ? ` · 已筛 ${active} 项` : ''}
@@ -118,7 +133,16 @@ export default function FriendListPage() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((f) => (
+              {groupFriends(rows, group).map((g) => [
+                g.label ? (
+                  <tr key={`grp-${g.key}`} className="group-row" data-group-key={g.key} data-group-count={g.count}>
+                    <td colSpan={5}>
+                      <span className="font-medium">{g.label}</span>
+                      <span className="ml-2 tabular-nums text-fg3">{g.count} 人</span>
+                    </td>
+                  </tr>
+                ) : null,
+                ...g.rows.map((f) => (
                 <tr key={f.user_id} onClick={() => openFriend(f.user_id)} className="cursor-pointer">
                   <td>
                     <span className="flex min-w-0 items-center gap-2">
@@ -138,7 +162,8 @@ export default function FriendListPage() {
                   <td><Platform p={f.platform} /></td>
                   <td className="text-[12px] tabular-nums text-fg3">{f.online ? '现在' : ago(f.last_seen)}</td>
                 </tr>
-              ))}
+                ))
+              ])}
             </tbody>
           </table>
         </div>

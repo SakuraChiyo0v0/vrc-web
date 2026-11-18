@@ -48,6 +48,9 @@ export function resolveShortcut(e) {
 
   if (!mod) return null;
 
+  // ⌘/Ctrl + / 直接开快捷键表（VRCX 没有，但面板里自己写着，得真生效）
+  if (key === '/') return { type: 'help' };
+
   // 输入框里 Ctrl/⌘+数字 仍生效（VRCX useGlobalKeyboardShortcuts 同款）
   if (/^[1-9]$/.test(key)) {
     const page = PAGE_ORDER[Number(key) - 1];
@@ -55,3 +58,32 @@ export function resolveShortcut(e) {
   }
   return null;
 }
+
+/**
+ * 108 `?` 面板的分组清单：只列**真的实现了**的键，按用途分组。
+ * 纯数据，node 可直接测条数与分组。
+ */
+export const SHORTCUT_GROUPS = [
+  {
+    name: '跳页',
+    hint: '按侧栏顺序',
+    items: PAGE_ORDER.slice(0, 9).map((id, i) => ({ label: PAGE_LABEL[id] ?? id, keys: [`⌘/Ctrl ${i + 1}`] }))
+  },
+  {
+    name: '搜索',
+    items: [
+      { label: '全局搜索', keys: ['⌘/Ctrl K'] },
+      { label: '搜索框粘贴 usr_ / wrld_ 直达', keys: ['Enter'] },
+      { label: '命令面板上下选择', keys: ['↑', '↓'] },
+      { label: '命令面板打开首条', keys: ['Enter'] }
+    ]
+  },
+  {
+    name: '浮层',
+    items: [
+      { label: '打开 / 关闭快捷键表', keys: ['?'] },
+      { label: '打开快捷键表（另一个入口）', keys: ['⌘/Ctrl /'] },
+      { label: '关闭快捷键表 / 命令面板 / 抽屉', keys: ['Esc'] }
+    ]
+  }
+];

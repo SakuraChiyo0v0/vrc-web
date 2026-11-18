@@ -6,6 +6,7 @@
  * 日期切分统一按 +08:00，和前端显示对得上。
  */
 import crypto from 'node:crypto';
+import { matchText } from '../../../web/src/lib/pinyin.js';
 
 const TZ = 8 * 3600_000;
 const DAY = 86400_000;
@@ -19,11 +20,16 @@ export function registerRound4Routes(app, { db, T, iso }) {
 
   /**
    * 41 世界库：world 表 + 只在事件里出现过的世界，附我的到访次数/最近一次。
-   * sort=recent（最近活跃，默认）| visits（访问次数）
+   * sort=recent（最近活跃，默认）| visits（访问次数）| name（世界名）| author（作者）
+   * 101 表头排序：dir=asc|desc，缺省按列语义（名字/作者升序，次数/时间降序）
    */
   app.get('/api/worlds', async (req) => {
     const q = String(req.query.q ?? '').trim();
-    const sort = req.query.sort === 'visits' ? 'visits' : 'recent';
+    const sortKey = ['visits', 'name', 'author', 'recent'].includes(String(req.query.sort))
+      ? String(req.query.sort)
+      : 'recent';
+    const defDir = sortKey === 'name' || sortKey === 'author' ? 'asc' : 'desc';
+    const dir = req.query.dir === 'asc' || req.query.dir === 'desc' ? String(req.query.dir) : defDir;
     const limit = Math.min(Math.max(Number(req.query.limit ?? 50) || 50, 1), 200);
     const offset = Math.max(Number(req.query.offset ?? 0) || 0, 0);
 
@@ -75,11 +81,16 @@ export function registerRound4Routes(app, { db, T, iso }) {
     }
 
     let list = [...map.values()];
-    if (q) list = list.filter((w) => lower(w.name).includes(lower(q)) || lower(w.author_name).includes(lower(q)));
-    list.sort((a, b) => {
-      if (sort === 'visits') return b.visits - a.visits || cmpLast(a, b);
-      return cmpLast(a, b);
-    });
+    if (q) list = list.filter((w) => matchText(w.name, q) || matchText(w.author_name, q));
+    const sorters = {
+      recent: (a, b) => cmpLast(a, b),
+      visits: (a, b) => b.visits - a.visits || cmpLast(a, b),
+      name: (a, b) => lower(a.name).localeCompare(lower(b.name), 'zh-Hans-CN') || lower(a.id).localeCompare(lower(b.id)),
+      author: (a, b) => lower(a.author_name).localeCompare(lower(b.author_name), 'zh-Hans-CN')
+        || lower(a.name).localeCompare(lower(b.name), 'zh-Hans-CN'),
+    };
+    const cmp = sorters[sortKey] ?? sorters.recent;
+    list.sort((a, b) => (dir === 'asc' ? -cmp(a, b) : cmp(a, b)));
 
     const total = list.length;
     const page = list.slice(offset, offset + limit);
@@ -90,7 +101,8 @@ export function registerRound4Routes(app, { db, T, iso }) {
       offset,
       has_more: offset + page.length < total,
       q,
-      sort,
+      sort: sortKey,
+      dir,
       worlds: page,
     };
   });

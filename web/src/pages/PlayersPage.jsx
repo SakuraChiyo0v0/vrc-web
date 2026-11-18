@@ -1,10 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { api, BASE } from '../api.js';
+import { api } from '../api.js';
 import UserHoverCard from '../components/UserHoverCard.jsx';
 import Empty from '../components/Empty.jsx';
 import { useDrawer } from '../components/drawers.jsx';
 import RowMenu, { Hint, friendItems, useHint, useRowMenu } from '../components/RowMenu.jsx';
+import { SortTh } from '../components/SortHead.jsx';
 import { useListNav } from '../lib/listnav.js';
+import { csvFilename, downloadCsv, toCsv } from '../lib/csv.js';
+import { useSort } from '../lib/prefs.js';
+import { SORT_COLUMNS, sortRows } from '../lib/sort.js';
 
 function InitialAvatar({ name }) {
   const ch = (name ?? '?').trim().charAt(0).toUpperCase();
@@ -22,7 +26,9 @@ function InitialAvatar({ name }) {
 
 export default function PlayersPage() {
   const { data } = useQuery({ queryKey: ['players'], queryFn: () => api('players') });
-  const rows = data?.players ?? [];
+  // 101/102 表头排序，排序记在 localStorage（默认同房次数多→少）
+  const [sort, onSort] = useSort('players', 'meets');
+  const rows = sortRows(data?.players ?? [], SORT_COLUMNS.players, sort.key, sort.dir);
   const { openFriend, close } = useDrawer();
   const { hint, say } = useHint();
   const menu = useRowMenu();
@@ -36,11 +42,23 @@ export default function PlayersPage() {
   });
   const rowMenu = (ev, p) =>
     menu.open(ev, friendItems({ id: p.user_id, name: p.name, openFriend, say }));
+  // 103 导出 = 表里这几行（同一份 rows，同序），行数和页面计数一致
+  const exportNow = () => {
+    const { text } = toCsv([
+      { key: 'name', label: '玩家' },
+      { key: 'meets', label: '共处次数' },
+      { key: 'last_seen', label: '最近一次' },
+      { key: 'last_world', label: '世界' },
+      { key: 'user_id', label: 'user_id' }
+    ], rows);
+    downloadCsv(csvFilename('players'), text);
+  };
   return (
     <div className="p-4">
       <div className="mb-3 flex items-center gap-2">
         <span className="text-[12px] text-fg3">来自游戏内日志（PC 端 log-agent）。</span>
-        <a className="chip ml-auto" href={`${BASE}api/export/players.csv`} download>导出 CSV</a>
+        <span className="chip ml-auto" data-count={rows.length}>共 {rows.length} 位</span>
+        <button className="chip" data-export="players" onClick={exportNow} disabled={rows.length === 0}>导出 CSV</button>
       </div>
       {rows.length === 0 ? (
         <Empty icon="users" title={'还没有同房记录'} hint={'在 PC 上启动 log-agent 后才有数据。'} />
@@ -49,10 +67,10 @@ export default function PlayersPage() {
           <table className="tbl">
             <thead>
               <tr>
-                <th>玩家</th>
-                <th style={{ width: 90 }}>同房</th>
-                <th style={{ width: 170 }}>最近一次</th>
-                <th>当时的世界</th>
+                <SortTh section="players" col="name" sort={sort} onSort={onSort} />
+                <SortTh section="players" col="meets" sort={sort} onSort={onSort} style={{ width: 90 }} />
+                <SortTh section="players" col="last_seen" sort={sort} onSort={onSort} style={{ width: 170 }} />
+                <SortTh section="players" col="world" sort={sort} onSort={onSort} />
               </tr>
             </thead>
             <tbody>
