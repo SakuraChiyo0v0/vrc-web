@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api.js';
 import { hourBars, BAR_AREA_PX } from '../lib/viz.js';
+import Empty from '../components/Empty.jsx';
 
 function shortTime(iso) {
   if (!iso) return '—';
@@ -23,10 +24,6 @@ function Card({ title, hint, children }) {
   );
 }
 
-function Empty({ children }) {
-  return <div className="p-2 text-[12px] text-fg3">{children}</div>;
-}
-
 /** 常一起玩 / 渐行渐远 / 最常遇到的时段，数据来自 /api/insights */
 export default function InsightsPage() {
   const { data, isLoading } = useQuery({ queryKey: ['insights'], queryFn: () => api('insights') });
@@ -42,7 +39,7 @@ export default function InsightsPage() {
   return (
     <div className="grid gap-3 p-4 lg:grid-cols-2">
       <Card title="常一起玩" hint={`近 ${data?.range?.days ?? 90} 天 · ${events} 次同房`}>
-        {companions.length === 0 && <Empty>还没有足够数据</Empty>}
+        {companions.length === 0 && <Empty icon="users" title={'还没有足够数据'} compact />}
         {companions.map((p) => (
           <div
             key={p.user_id ?? p.name}
@@ -57,7 +54,7 @@ export default function InsightsPage() {
       </Card>
 
       <Card title="渐行渐远" hint="以前常见，最近 21 天没遇到">
-        {fading.length === 0 && <Empty>暂时没有这样的人</Empty>}
+        {fading.length === 0 && <Empty icon="users" title={'暂时没有这样的人'} compact />}
         {fading.map((p) => (
           <div
             key={p.user_id ?? p.name}
@@ -73,7 +70,7 @@ export default function InsightsPage() {
 
       <Card title="最常遇到的时段" hint={peak === null || peak === undefined ? '暂无数据' : `${String(peak).padStart(2, '0')}:00 附近最多`}>
         {bars.empty ? (
-          <Empty>这段时间还没有同房记录，等采集器攒够数据再画。</Empty>
+          <Empty icon="users" title={'这段时间还没有同房记录，等采集器攒够数据再画。'} compact />
         ) : (
           <>
             <div className="flex items-end gap-[3px] px-2 pb-1 pt-3" style={{ height: BAR_AREA_PX + 12 }}>
@@ -104,7 +101,7 @@ export default function InsightsPage() {
       </Card>
 
       <Card title="待补" hint="后续观察项">
-        <Empty>共同世界、聊天热度等指标等数据够了再加，避免用样本不足的数字下结论。</Empty>
+        <Empty icon="users" title={'共同世界、聊天热度等指标等数据够了再加，避免用样本不足的数字下结论。'} compact />
       </Card>
     </div>
   );

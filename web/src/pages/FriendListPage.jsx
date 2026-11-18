@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 import { useHashState } from '../lib/hashQuery.js';
+import Skeleton from '../components/Skeleton.jsx';
 
 const TRUST_NAME = { 1: '新用户', 2: '基本用户', 3: '已知用户', 4: '可信用户' };
 const STATUS_COLOR = {
@@ -97,7 +98,7 @@ export default function FriendListPage() {
         ) : null}
       </div>
 
-      {isLoading ? <div className="text-[12px] text-fg3">加载中…</div> : null}
+      {isLoading ? <Skeleton rows={8} cols={5} /> : null}
 
       {!isLoading && rows.length === 0 ? (
         <div className="card p-10 text-center">

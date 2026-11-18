@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { api, BASE, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 import UserHoverCard from '../components/UserHoverCard.jsx';
+import Skeleton from '../components/Skeleton.jsx';
 
 const STATUS_COLOR = {
   active: 'var(--status-active)',
@@ -170,7 +171,7 @@ export default function FriendsPage() {
         <span className="text-[12px] text-fg3">{data?.returned ?? 0} / {data?.total ?? 0} 人</span>
       </div>
 
-      {isLoading && <div className="text-[12px] text-fg3">加载中…</div>}
+      {isLoading ? <Skeleton rows={6} cols={3} /> : null}
 
       {/* 61 单列 32px 行列表（VRCX-0 compact 档），不再三列卡片网格 */}
       <div className="flex flex-col gap-2">

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, send, shareUrl, imgUrl } from '../api.js';
+import Empty from '../components/Empty.jsx';
 
 const KIND_LABEL = { world: '世界', friend: '好友' };
 
@@ -230,12 +231,7 @@ export default function FavoritesPage() {
           ))}
         </div>
       ) : shown.length === 0 ? (
-        <div className="card p-10 text-center">
-          <div className="text-[14px]">{kindRows.length ? '这个分组还是空的' : `还没有收藏的${KIND_LABEL[tab] ?? '项目'}`}</div>
-          <div className="mt-1 text-[12px] text-fg3">
-            {kindRows.length ? '把收藏项分到这个分组后就会显示。' : '在上面填世界 / 用户 ID 加一条，或从收藏的收藏里固定到侧栏。'}
-          </div>
-        </div>
+        <Empty icon="star" title={kindRows.length ? '这个分组还是空的' : `还没有收藏的${KIND_LABEL[tab] ?? '项目'}`} hint={kindRows.length ? '把收藏项分到这个分组后就会显示。' : '在上面填世界 / 用户 ID 加一条，或从收藏的收藏里固定到侧栏。'} />
       ) : (
         <div className="card overflow-hidden">
           <table className="tbl">

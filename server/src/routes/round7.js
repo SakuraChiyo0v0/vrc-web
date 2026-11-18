@@ -275,12 +275,13 @@ export function registerRound7Routes(app, { db, T, iso }) {
     const selfRows = await db.query(`select kind, location, world_id, at from ${T('self_event')} order by at`);
     const visits = myIntervals(selfRows, now).filter((iv) => iv.end > since);
 
-    // 同房玩家明细：game_event.room_join 落在某次停留区间里（按世界名兜底匹配）
-    const joins = await db.query(
-      `select display_name, user_id, world_name, at from ${T('game_event')}
-        where kind = 'room_join' and at >= ? order by at`,
+    // 同房玩家明细：game_event 的 room_join / room_leave 落在某次停留区间里（按世界名兜底匹配）
+    const roomRows = await db.query(
+      `select kind, display_name, user_id, world_name, at from ${T('game_event')}
+        where kind in ('room_join', 'room_leave') and at >= ? order by at`,
       [new Date(since).toISOString()],
     );
+    const joins = roomRows.filter((r) => r.kind === 'room_join');
     const worldNames = new Map((await db.query(`select id, name from ${T('world')}`)).map((w) => [w.id, w.name]));
 
     const days = new Map();
@@ -289,12 +290,21 @@ export function registerRound7Routes(app, { db, T, iso }) {
       const start = Math.max(iv.start, since);
       const dk = dateKey(start);
       const worldName = worldNames.get(iv.world_id) ?? iv.world_id;
+      const inVisit = (j) => {
+        const ms = new Date(isoOf(j.at)).getTime();
+        return ms >= iv.start && ms <= iv.end && (j.world_name === worldName || j.world_name == null);
+      };
       const players = joins
-        .filter((j) => {
-          const ms = new Date(isoOf(j.at)).getTime();
-          return ms >= iv.start && ms <= iv.end && (j.world_name === worldName || j.world_name == null);
-        })
+        .filter(inVisit)
         .map((j) => ({ name: j.display_name ?? j.user_id, user_id: j.user_id ?? null, at: at(j.at) }));
+      // 94 时间轴：同一停留里按时间排「加入 / 离开」，真机在世界内再分进出
+      const events = roomRows
+        .filter(inVisit)
+        .map((j) => {
+          const name = j.display_name ?? j.user_id;
+          return { kind: j.kind === 'room_leave' ? 'leave' : 'join', name, user_id: j.user_id ?? null, at: at(j.at) };
+        })
+        .sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : a.kind === 'leave' ? -1 : 1));
 
       if (!days.has(dk)) days.set(dk, { date: dk, minutes: 0, worlds: new Map() });
       const day = days.get(dk);
@@ -318,6 +328,8 @@ export function registerRound7Routes(app, { db, T, iso }) {
         access: iv.access ?? 'public',
         access_label: ACCESS_LABEL[iv.access ?? 'public'],
         players,
+        events,
+        event_count: events.length,
         player_count: players.length,
       });
     }

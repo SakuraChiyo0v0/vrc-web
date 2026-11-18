@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api.js';
+import Empty from '../components/Empty.jsx';
 
 const DAYS = [7, 30];
 
 /** 24 小时 × N 天热力图：颜色按该窗口最大值归一 */
 function Heatmap({ dates, hourly, max }) {
-  if (!dates?.length || !hourly?.length) return <div className="p-4 text-[12px] text-fg3">暂无数据</div>;
+  if (!dates?.length || !hourly?.length) return <div className="p-4"><Empty icon="inbox" title={'暂无数据'} hint={'采集器有数据后这里会出图。'} /></div>;
   return (
     <div className="overflow-x-auto p-4">
       <div className="min-w-[560px]">
@@ -88,7 +89,7 @@ export default function StatsPage() {
             <span className="text-[12px] text-fg3">{total}</span>
           </div>
           <div className="p-4">
-            {byKind.length === 0 && <div className="text-[12px] text-fg3">暂无数据</div>}
+            {byKind.length === 0 && <Empty icon="inbox" title={'暂无数据'} compact />}
             {byKind.map((k) => (
               <div key={k.kind} className="mb-2.5 flex items-center gap-3 text-[12px]">
                 <span className="w-24 text-fg2">{k.kind}</span>
@@ -106,7 +107,7 @@ export default function StatsPage() {
             最热闹的世界
           </div>
           <div className="p-2">
-            {worlds.length === 0 && <div className="p-2 text-[12px] text-fg3">暂无数据</div>}
+            {worlds.length === 0 && <Empty icon="inbox" title={'暂无数据'} compact />}
             {worlds.map((w) => (
               <div key={w.world} className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-[var(--state-hover-surface)]">
                 <span className="truncate text-[12px]">{w.world ?? '未知'}</span>

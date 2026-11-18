@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
+import Empty from '../components/Empty.jsx';
 
 /**
  * 77 概览：顶部「概览 / 旅程」+ 时间范围切换（规格取自 VRCX-0 真机截图）。
@@ -45,7 +46,7 @@ const ymd = (d) => {
 function DailyBars({ daily }) {
   const total = daily.reduce((s, d) => s + Number(d.minutes ?? 0), 0);
   if (!daily.length || total === 0) {
-    return <p className="ov-empty">这个范围内还没有停留时长，暂时画不出每日柱</p>;
+    return <Empty icon="clock" title={'这个范围内还没有停留时长，暂时画不出每日柱'} compact />;
   }
   const max = Math.max(1, ...daily.map((d) => d.minutes));
   const thin = daily.length > 60;
@@ -66,7 +67,7 @@ function HourBars({ hourly }) {
   const buckets = hourly?.buckets ?? [];
   const total = buckets.reduce((s, m) => s + Number(m ?? 0), 0);
   if (!buckets.length || total === 0) {
-    return <p className="ov-empty">这个范围内还没有活跃时段数据</p>;
+    return <Empty icon="clock" title={'这个范围内还没有活跃时段数据'} compact />;
   }
   const max = Math.max(1, ...buckets);
   const peak = hourly?.peak_hour ?? 0;

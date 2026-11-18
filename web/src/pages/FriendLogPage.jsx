@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { api, imgUrl } from '../api.js';
+import Empty from '../components/Empty.jsx';
+import Skeleton from '../components/Skeleton.jsx';
 import { useDrawer } from '../components/drawers.jsx';
 
 const KIND_LABEL = {
@@ -65,6 +67,26 @@ export default function FriendLogPage() {
   const total = pages[0]?.total ?? 0;
   const toggleKind = (k) => setKinds((cur) => (cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k]));
 
+  // 95 按日分组（+08 切日），日期头粘顶
+  const groups = useMemo(() => {
+    const map = new Map();
+    for (const i of items) {
+      const key = new Date(i.at).toLocaleDateString('sv-SE', { timeZone: 'Asia/Shanghai' });
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(i);
+    }
+    return [...map].map(([key, list]) => ({ key, items: list }));
+  }, [items]);
+
+  const dayLabel = (key) => {
+    const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Shanghai' });
+    if (key === today) return '今天';
+    const d = new Date(`${key}T00:00:00+08:00`);
+    const wd = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][d.getDay()];
+    const diff = Math.round((new Date(`${today}T00:00:00+08:00`) - d) / 86400000);
+    return `${diff === 1 ? '昨天 · ' : ''}${d.getMonth() + 1}月${d.getDate()}日 ${wd}`;
+  };
+
   return (
     <div className="p-4">
       <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -108,29 +130,37 @@ export default function FriendLogPage() {
         })}
       </div>
 
-      {q.isLoading ? <div className="text-[12px] text-fg3">加载中…</div> : null}
+      {q.isLoading ? <Skeleton rows={8} cols={3} /> : null}
 
       {!q.isLoading && items.length === 0 ? (
-        <div className="card p-10 text-center">
-          <div className="text-[14px]">这个时间窗里没有记录</div>
-          <div className="mt-1 text-[12px] text-fg3">放大时间窗或取消筛选再看看。</div>
-        </div>
+        <Empty icon="clock" title={'这个时间窗里没有记录'} hint={'放大时间窗或取消筛选再看看。'} />
       ) : (
-        <div className="card overflow-hidden">
-          <div className="flex flex-col p-1">
-            {items.map((i) => (
-              <div key={i.id} className="friend-row" onClick={() => openFriend(i.user_id)} data-id={i.id}>
-                <span className="avatar">
-                  {i.icon_url ? <img src={imgUrl(i.icon_url)} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} /> : null}
-                </span>
-                <span className="w-24 shrink-0 truncate">{i.display_name ?? i.user_id}</span>
-                <span className="w-14 shrink-0 text-[11px] text-fg3">{KIND_LABEL[i.kind] ?? i.kind}</span>
-                <span className="min-w-0 flex-1 truncate text-fg2">{i.text ?? ''}</span>
-                <span className="shrink-0 tabular-nums text-[11px] text-fg3">{fg(i.at)}</span>
+        <div>
+          {groups.map((g) => (
+            <div key={g.key} className="mb-2">
+              <div className="group-head dayhead" data-day={g.key}>
+                <span className="font-medium text-fg1">{dayLabel(g.key)}</span>
+                <span className="text-fg3">·</span>
+                <span className="text-fg3">{g.items.length} 条</span>
               </div>
-            ))}
-          </div>
-          <div className="flex items-center gap-2 border-t px-3 py-2 text-[11px] text-fg3" style={{ borderColor: 'var(--stroke-subtle)' }}>
+              <div className="card overflow-hidden">
+                <div className="flex flex-col p-1">
+                  {g.items.map((i) => (
+                    <div key={i.id} className="friend-row" onClick={() => openFriend(i.user_id)} data-id={i.id}>
+                      <span className="avatar">
+                        {i.icon_url ? <img src={imgUrl(i.icon_url)} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} /> : null}
+                      </span>
+                      <span className="w-24 shrink-0 truncate">{i.display_name ?? i.user_id}</span>
+                      <span className="w-14 shrink-0 text-[11px] text-fg3">{KIND_LABEL[i.kind] ?? i.kind}</span>
+                      <span className="min-w-0 flex-1 truncate text-fg2">{i.text ?? ''}</span>
+                      <span className="shrink-0 tabular-nums text-[11px] text-fg3">{fg(i.at)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className="flex items-center gap-2 px-1 py-2 text-[11px] text-fg3">
             <span>已显示 {items.length} / {total} 条</span>
             {q.hasNextPage ? (
               <button

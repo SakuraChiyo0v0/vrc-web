@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, send } from '../api.js';
+import Empty from '../components/Empty.jsx';
 import { useDrawer } from '../components/drawers.jsx';
 
 const TYPE_LABEL = {
@@ -60,12 +61,7 @@ export default function NotificationsPage() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="card p-10 text-center">
-          <div className="text-[14px]">{unread || type ? '这个筛选下没有通知' : '暂无通知'}</div>
-          <div className="mt-1 text-[12px] text-fg3">
-            {unread || type ? '换个类型或看全部通知。' : '邀请、好友请求、群公告会出现在这里。'}
-          </div>
-        </div>
+        <Empty icon="bell" title={unread || type ? '这个筛选下没有通知' : '暂无通知'} hint={unread || type ? '换个类型或看全部通知。' : '邀请、好友请求、群公告会出现在这里。'} />
       ) : (
         <div className="flex flex-col gap-2">
           {rows.map((n) => (

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, imgUrl } from '../api.js';
+import Empty from '../components/Empty.jsx';
 import { useDrawer } from '../components/drawers.jsx';
 
 const fmt = (v) => (v ? new Date(v).toLocaleString('zh-CN', { hour12: false }) : '—');
@@ -58,10 +59,7 @@ export default function WorldsPage() {
       {isLoading ? (
         <div className="text-[12px] text-fg3">加载中…</div>
       ) : rows.length === 0 ? (
-        <div className="card p-10 text-center">
-          <div className="text-[14px]">还没有去过的世界</div>
-          <div className="mt-1 text-[12px] text-fg3">采集器记录到自己进出世界后会出现在这里。</div>
-        </div>
+        <Empty icon="star" title={'还没有去过的世界'} hint={'采集器记录到自己进出世界后会出现在这里。'} />
       ) : (
         <div className="world-grid">
           {rows.map((w) => (

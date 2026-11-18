@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api.js';
+import Empty from '../components/Empty.jsx';
 import { useDrawer } from '../components/drawers.jsx';
 
 /**
@@ -90,17 +91,12 @@ export default function GameLogPage() {
       {isLoading ? <div className="text-[12px] text-fg3">加载中…</div> : null}
 
       {!isLoading && !shown.length ? (
-        <div className="card p-10 text-center">
-          <div className="text-[14px]">还没有游戏日志</div>
-          <div className="mt-1 text-[12px] text-fg3">
-            {access || date ? '这个筛选下没有记录，换个类型或日期。' : '采集器记到自己的进出实例后会出现。'}
-          </div>
-        </div>
+        <Empty icon="clock" title={'还没有游戏日志'} hint={access || date ? '这个筛选下没有记录，换个类型或日期。' : '采集器记到自己的进出实例后会出现。'} />
       ) : null}
 
       {shown.map((d) => (
         <div key={d.date} className="mb-3">
-          <div className="group-head" style={{ height: 28 }}>
+          <div className="group-head gl-dayhead" data-date={d.date}>
             <span className="font-medium text-fg1">{md(d.date)}</span>
             <span className="text-fg3">·</span>
             <span className="text-fg3">{dur(d.minutes)}</span>
@@ -153,7 +149,17 @@ export default function GameLogPage() {
                             <span className="text-fg3">{v.player_count} 人同房</span>
                             {v.access_label ? <span className="text-[11px] text-fg3">· {v.access_label}</span> : null}
                           </div>
-                          {v.players?.length ? (
+                          {v.events?.length ? (
+                            <div className="gl-evlist">
+                              {v.events.map((ev, j) => (
+                                <div key={`${ev.kind}-${ev.user_id ?? ev.name}-${j}`} className="gl-ev" data-k={ev.kind}>
+                                  <span className="gl-ev-at tabular-nums">{hm(ev.at)}</span>
+                                  <span className="gl-ev-k">{ev.kind === 'leave' ? '离开' : '加入'}</span>
+                                  <span className="min-w-0 flex-1 truncate">{ev.name}</span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : v.players?.length ? (
                             <div className="mt-1 flex flex-wrap gap-1">
                               {v.players.map((p, j) => (
                                 <span

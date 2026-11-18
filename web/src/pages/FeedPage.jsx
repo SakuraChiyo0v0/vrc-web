@@ -1,8 +1,12 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, BASE } from '../api.js';
+import Empty from '../components/Empty.jsx';
+import Skeleton from '../components/Skeleton.jsx';
 import { useDrawer } from '../components/drawers.jsx';
+import RowMenu, { Hint, friendItems, useHint, useRowMenu } from '../components/RowMenu.jsx';
 import UserHoverCard from '../components/UserHoverCard.jsx';
+import { useListNav } from '../lib/listnav.js';
 
 /**
  * 80 动态页改表格（规格取自 VRCX-0 真机截图）：
@@ -78,7 +82,9 @@ function Detail({ e }) {
 export default function FeedPage() {
   const [kind, setKind] = useState('');
   const [range, setRange] = useState('');
-  const { openFriend } = useDrawer();
+  const { openFriend, close } = useDrawer();
+  const { hint, say } = useHint();
+  const menu = useRowMenu();
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['events', kind, range],
@@ -89,6 +95,16 @@ export default function FeedPage() {
   });
 
   const events = (data?.pages ?? []).flatMap((p) => p.events ?? []);
+  const nav = useListNav({
+    count: events.length,
+    onEnter: (i) => {
+      const e = events[i];
+      if (e?.user_id) openFriend(e.user_id);
+    },
+    onEscape: close,
+  });
+  const rowMenu = (ev, e) =>
+    menu.open(ev, friendItems({ id: e.user_id, name: e.display_name ?? e.user_id, openFriend, say }));
 
   const toolbar = (
     <div className="mb-3 flex flex-wrap items-center gap-1.5">
@@ -109,18 +125,19 @@ export default function FeedPage() {
     </div>
   );
 
-  if (isLoading) return <div className="p-4 text-[12px] text-fg3">加载中…</div>;
+  if (isLoading)
+    return (
+      <div className="p-4">
+        {toolbar}
+        <Skeleton rows={8} cols={4} />
+      </div>
+    );
 
   if (!events.length) {
     return (
       <div className="p-4">
         {toolbar}
-        <div className="card p-10 text-center">
-          <div className="text-[14px]">{kind || range ? '这个筛选下没有事件' : '还没有事件'}</div>
-          <div className="mt-1 text-[12px] text-fg3">
-            {kind || range ? '换个事件类型或时间范围试试。' : '采集器连上 pipeline 后，好友上下线和换房会实时出现在这里。'}
-          </div>
-        </div>
+        <Empty icon="inbox" title={kind || range ? '这个筛选下没有事件' : '还没有事件'} hint={kind || range ? '换个事件类型或时间范围试试。' : '采集器连上 pipeline 后，好友上下线和换房会实时出现在这里。'} />
       </div>
     );
   }
@@ -139,10 +156,16 @@ export default function FeedPage() {
             </tr>
           </thead>
           <tbody>
-            {events.map((e) => {
+            {events.map((e, i) => {
               const [label, glyph] = KIND[e.kind] ?? [e.kind, '·'];
               return (
-                <tr key={e.id} className="feed-row">
+                <tr
+                  key={e.id}
+                  className="feed-row"
+                  data-nav-idx={i}
+                  data-nav-active={nav.active === i}
+                  onContextMenu={(ev) => rowMenu(ev, e)}
+                >
                   <td className="tabular-nums text-[12px] text-fg3">{stamp(e.at)}</td>
                   <td className="truncate text-[12px]">
                     <UserHoverCard id={e.user_id}>
@@ -180,6 +203,8 @@ export default function FeedPage() {
           <span className="text-[11px] text-fg3">共 {events.length} 条，到底了</span>
         )}
       </div>
+      <RowMenu menu={menu.menu} onClose={menu.close} />
+      <Hint text={hint} />
     </div>
   );
 }

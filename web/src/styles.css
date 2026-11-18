@@ -583,6 +583,44 @@ body {
 .jm-visits { padding-bottom: .25rem; background: color-mix(in oklch, var(--foreground) 3%, transparent); }
 .jm-visits .ov-jrow { padding-left: 1.6rem; }
 
+/* 95 长列表粘性日期分组头（好友日志等）：滚动时贴顶 */
+.dayhead {
+  position: sticky; top: 0; z-index: 3;
+  background: var(--surface-canvas);
+  border-bottom: 1px solid var(--stroke-subtle);
+}
+
+/* 98 统一空态：小图标 + 一行说明（真机各页同形） */
+.empty {
+  display: flex; flex-direction: column; align-items: center; gap: .3rem;
+  padding: 2.4rem 1rem; text-align: center;
+  border: 1px solid var(--stroke-subtle); border-radius: 12px;
+  background: var(--surface-panel); color: var(--content-secondary);
+}
+.empty > svg { opacity: .55; margin-bottom: .1rem; }
+.empty-title { font-size: 13px; color: var(--content-primary); }
+.empty-hint { font-size: 12px; color: var(--content-secondary); max-width: 34rem; }
+.empty-compact { border: 0; background: transparent; padding: .9rem .5rem; gap: .15rem; }
+.empty-compact > svg { width: 18px; height: 18px; }
+.empty-compact .empty-title { font-size: 12px; color: var(--content-secondary); }
+
+/* 94 游戏日志时间轴（真机：日期头粘顶，世界内再分玩家加入/离开） */
+.gl-dayhead {
+  position: sticky; top: 0; z-index: 3; height: 28px;
+  background: var(--surface-canvas);
+  border-bottom: 1px solid var(--stroke-subtle);
+}
+.gl-evlist { margin-top: .25rem; border-left: 1px solid var(--stroke-subtle); }
+.gl-ev {
+  display: flex; align-items: center; gap: .4rem;
+  height: 20px; padding-left: .4rem; font-size: 11px;
+}
+.gl-ev:hover { background: var(--state-hover-surface); }
+.gl-ev-at { flex: none; width: 38px; color: var(--content-secondary); }
+.gl-ev-k { flex: none; width: 28px; font-size: 10px; }
+.gl-ev[data-k='join'] .gl-ev-k { color: #3fb950; }
+.gl-ev[data-k='leave'] .gl-ev-k { color: var(--content-secondary); }
+
 /* 手机预览：?phone=1 时把整个应用装进 390×844 设备框（桌面端也能看手机版） */
 html[data-phone='1'] body {
   background: color-mix(in oklch, var(--foreground) 8%, var(--surface-canvas));
@@ -598,3 +636,49 @@ html[data-phone='1'] #root {
   box-shadow: 0 0 0 1px var(--stroke-default), 0 24px 60px -24px rgb(0 0 0 / .35);
   background: var(--surface-canvas);
 }
+
+/* 96 键盘上下选择：高亮行 = 选中底色 + 左侧主色竖条（hover 之上，看得见键盘走到哪） */
+.tbl tbody tr[data-nav-active='true'] td { background: var(--state-selected-surface); }
+.tbl tbody tr[data-nav-active='true'] td:first-child { box-shadow: inset 2px 0 0 var(--primary); }
+
+/* 97 右键菜单：跟随指针、贴边翻转、Esc/点外部关闭 */
+.rowmenu {
+  position: fixed; z-index: 60; padding: .25rem;
+  display: flex; flex-direction: column; gap: 1px;
+  border-radius: 8px; border: 1px solid var(--stroke-default);
+  background: var(--surface-raised);
+  box-shadow: 0 12px 32px -12px rgb(0 0 0 / .45);
+}
+.rowmenu-item {
+  display: flex; align-items: center; gap: .45rem;
+  height: 28px; padding: 0 .5rem; border-radius: 6px;
+  font-size: 12px; text-align: left; color: var(--content-primary);
+}
+.rowmenu-item:hover { background: var(--state-hover-surface); }
+.rowmenu-glyph { width: 12px; flex: none; font-size: 11px; color: var(--content-secondary); }
+.rowhint {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 70;
+  padding: .35rem .7rem; border-radius: 999px; font-size: 12px;
+  background: var(--surface-raised); border: 1px solid var(--stroke-default);
+  color: var(--content-primary); box-shadow: 0 8px 24px -12px rgb(0 0 0 / .4);
+}
+
+/* 99 首屏骨架：44px 占位行 + 微光扫过（数据回来不跳高），减动效系统下静止 */
+.sk-wrap { overflow: hidden; }
+.sk-row {
+  display: flex; align-items: center; gap: 1rem;
+  height: 44px; padding: 0 .75rem;
+  border-bottom: 1px solid var(--stroke-subtle);
+}
+.sk-row:last-child { border-bottom: 0; }
+.sk-bar {
+  height: 8px; border-radius: 4px;
+  background: linear-gradient(90deg, var(--state-hover-surface) 25%, var(--state-pressed-surface) 37%, var(--state-hover-surface) 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease infinite;
+}
+@keyframes sk-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) { .sk-bar { animation: none; } }

@@ -132,8 +132,54 @@ const round8 = [
   ['4k-worlds', 3840, 2160, 1, false, ['世界库']]                        // 90 密度
 ];
 
+
+/* 第九轮：92 旅程 / 93 右栏拖宽 / 94 日志时间轴 / 95 粘性分组头 / 96 键盘高亮 / 97 右键菜单 */
+const dragRoster = `(() => {
+  const h = document.querySelector('.roster-resize');
+  if (!h) return 'miss';
+  const r = h.getBoundingClientRect();
+  const fire = (t, x) => h.dispatchEvent(new PointerEvent(t, { bubbles: true, clientX: x, clientY: 400, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
+  fire('pointerdown', r.x + 2);
+  window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: innerWidth - 360, clientY: 400, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
+  window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: innerWidth - 360, clientY: 400, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
+  return 'ok';
+})()`;
+
+const pressDown = (n) => `(() => {
+  for (let i = 0; i < ${n}; i++) window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+  return 'ok';
+})()`;
+
+const rightClickRow = `(() => {
+  const row = document.querySelector('tr[data-nav-idx], .friend-row, tbody tr');
+  if (!row) return 'miss';
+  const r = row.getBoundingClientRect();
+  row.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, clientX: r.x + 120, clientY: r.y + 14 }));
+  return 'ok';
+})()`;
+
+// 滚动：优先找可滚容器，找不到就滚窗口；两者都没有可滚内容也算 ok（列表短就是没有可截的粘性位）
+const scrollLog = `(() => {
+  const box = [...document.querySelectorAll('div')].find((d) => d.scrollHeight > d.clientHeight + 200 && getComputedStyle(d).overflowY !== 'visible');
+  if (box) { box.scrollTop = 420; return 'ok'; }
+  window.scrollTo(0, 420);
+  return 'ok';
+})()`;
+
+const round9 = [
+  ['desktop-journey', 1600, 1000, 1, false, ['概览', '旅程']],                    // 92
+  ['desktop-roster-drag', 1600, 1000, 1, false, ['概览'], dragRoster],            // 93
+  ['desktop-gamelog-timeline', 1600, 1000, 1, false, ['游戏日志'],
+    `(() => { const b = document.querySelector('.card button[data-open]'); if (!b) return 'miss'; b.click(); return 'ok'; })()`], // 94
+  ['desktop-friendlog-sticky', 1600, 1000, 1, false, ['好友历史'], scrollLog],    // 95
+  ['desktop-feed-kbd', 1600, 1000, 1, false, ['动态'], pressDown(3)],             // 96
+  ['desktop-feed-rowmenu', 1600, 1000, 1, false, ['动态'], rightClickRow],        // 97
+  ['mobile-journey', 390, 844, 2, true, ['概览', '旅程']],                        // 92 手机
+  ['4k-journey', 3840, 2160, 1, false, ['概览', '旅程']]                          // 92 4K
+];
+
 const only = (process.env.SHOOT_ONLY ?? '').split(',').filter(Boolean);
-for (const s of ({ round7, round8 }[SET] ?? round7)) {
+for (const s of ({ round7, round8, round9 }[SET] ?? round7)) {
   if (only.length && !only.includes(s[0])) continue;
   await shoot(...s);
 }

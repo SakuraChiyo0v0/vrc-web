@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api.js';
+import Empty from '../components/Empty.jsx';
 
 export default function SessionsPage() {
   const { data } = useQuery({ queryKey: ['my-sessions'], queryFn: () => api('my-sessions') });
@@ -13,10 +14,7 @@ export default function SessionsPage() {
         <span className="chip">{total >= 60 ? `合计 ${Math.floor(total / 60)} 小时 ${total % 60} 分` : `合计 ${total} 分钟`}</span>
       </div>
       {rows.length === 0 ? (
-        <div className="card p-10 text-center">
-          <div className="text-[14px]">还没有行程记录</div>
-          <div className="mt-1 text-[12px] text-fg3">下次进 VRChat 换世界时会自动记录。</div>
-        </div>
+        <Empty icon="clock" title={'还没有行程记录'} hint={'下次进 VRChat 换世界时会自动记录。'} />
       ) : (
         <div className="card overflow-hidden">
           <table className="tbl">
@@ -42,10 +40,7 @@ export default function SessionsPage() {
 
       <div className="label-xs mt-5 mb-2">时间线</div>
       {rows.length === 0 ? (
-        <div className="card p-10 text-center">
-          <div className="text-[14px]">暂无时间线数据</div>
-          <div className="mt-1 text-[12px] text-fg3">有行程记录后会在这里按时间展示。</div>
-        </div>
+        <Empty icon="clock" title={'暂无时间线数据'} hint={'有行程记录后会在这里按时间展示。'} />
       ) : (
         <div className="card p-4">
           <div className="relative pl-5">
