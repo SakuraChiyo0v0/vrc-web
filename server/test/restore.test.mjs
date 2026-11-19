@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { openDb } from '../src/db/index.js';
-import { restoreBackup, normalizeBackup } from '../src/lib/restore.js';
+import { restoreBackup, restoreFullBackup, normalizeBackup, normalizeFullBackup } from '../src/lib/restore.js';
 
 /** 内存 SQLite，跑真 SQL（表由 openDb 的 DDL 建，和线上同结构） */
 async function fresh() {
@@ -79,4 +79,49 @@ test('坏输入抛错：非对象 / 没有可导入的键', async () => {
   assert.throws(() => normalizeBackup([]), /不是 JSON 对象/);
   assert.throws(() => normalizeBackup({ friends: [], worlds: [] }), /没有备注\/标签\/收藏/);
   await assert.rejects(() => restoreBackup(null, (n) => n, { friends: [] }), /没有备注/);
+});
+
+test('全量导入：空库恢复好友/世界/动态/备注，第二次幂等', async () => {
+  const { db, T } = await fresh();
+  const r = await restoreFullBackup(db, T, backup);
+  assert.equal(r.full, true);
+  assert.deepEqual(r.friends, { inserted: 1, skipped: 0 });
+  assert.deepEqual(r.worlds, { inserted: 1, skipped: 0 });
+  assert.deepEqual(r.events, { inserted: 1, skipped: 0 });
+  assert.equal(r.notes, 1);
+
+  const f = await db.query(`select display_name from ${T('friend')}`);
+  assert.equal(f.length, 1);
+  const w = await db.query(`select name from ${T('world')}`);
+  assert.equal(w.length, 1);
+  const ev = await db.query(`select kind, at from ${T('friend_event')}`);
+  assert.equal(ev.length, 1);
+
+  const again = await restoreFullBackup(db, T, backup);
+  assert.deepEqual(again.friends, { inserted: 0, skipped: 1 }, '已在库里的好友不重复插');
+  assert.deepEqual(again.events, { inserted: 0, skipped: 1 }, '同一事件不重复插');
+  assert.equal((await db.query(`select * from ${T('friend_event')}`)).length, 1);
+  await db.close();
+});
+
+test('全量导入只补缺，不覆盖线上已有好友资料', async () => {
+  const { db, T } = await fresh();
+  await db.query(
+    `insert into ${T('friend')} (user_id, display_name, updated_at) values (?,?,?)`,
+    ['usr_a', '线上新名字', '2026-11-19T00:00:00.000Z'],
+  );
+  const r = await restoreFullBackup(db, T, backup);
+  assert.deepEqual(r.friends, { inserted: 0, skipped: 1 });
+  const [row] = await db.query(`select display_name from ${T('friend')} where user_id = ?`, ['usr_a']);
+  assert.equal(row.display_name, '线上新名字');
+  await db.close();
+});
+
+test('全量模式接受只有事件的备份；默认模式仍然拒绝', async () => {
+  assert.throws(() => normalizeBackup({ events: [{ kind: 'online', at: '2026-11-18T00:00:00.000Z' }] }), /没有备注/);
+  const { db, T } = await fresh();
+  const r = await restoreFullBackup(db, T, { events: [{ kind: 'online', at: '2026-11-18T00:00:00.000Z' }] });
+  assert.equal(r.events.inserted, 1);
+  assert.throws(() => normalizeFullBackup({ friends: [{}] }), /没有可导入/);
+  await db.close();
 });

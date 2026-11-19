@@ -185,7 +185,9 @@ try {
       const r = await s1.get(`/api/export/${name}.csv`);
       must(r.status === 200, `${name}.csv ${r.status}`);
       must(/text\/csv/.test(r.headers.get('content-type') ?? ''), `${name} content-type 不是 csv`);
-      must(r.text.startsWith('\ufeff'), `${name} 缺 UTF-8 BOM（Excel 中文会乱码）`);
+      // fetch 的 text() 会把 BOM 吃掉，这里看原始字节
+      const raw = new Uint8Array(await (await fetch(`${s1.base}/api/export/${name}.csv`)).arrayBuffer());
+      must(raw[0] === 0xef && raw[1] === 0xbb && raw[2] === 0xbf, `${name} 缺 UTF-8 BOM（Excel 中文会乱码）`);
       const rows = parseCsv(r.text);
       must(rows.length === SEED[name] + 1, `${name} 行数 ${rows.length - 1}，种子 ${SEED[name]}`);
       must(rows[0].join(',') === TABLES[name].cols.join(','), `${name} 表头与定义不一致：${rows[0].join(',')}`);
@@ -252,7 +254,8 @@ try {
     must(imp.json.events.inserted === SEED.events, `动态导入 ${imp.json.events?.inserted}`);
 
     const idx = await s2.get('/api/export/index.json');
-    for (const name of ['friends', 'worlds', 'events', 'players', 'notes', 'tags', 'favorites']) {
+    // backup.json 的 6 个键：好友/世界/事件/收藏/备注/标签（players 由 game_event 聚合，备份不含）
+    for (const name of ['friends', 'worlds', 'events', 'notes', 'tags', 'favorites']) {
       const t = idx.json.tables.find((x) => x.name === name);
       const want = SEED[name];
       must(Number(t.rows) === want, `导入后 ${name}=${t.rows}，源库 ${want}`);
@@ -272,7 +275,7 @@ try {
     must(n3.find((x) => x.name === 'friends').rows === 0, '默认模式不该写好友');
     must(n3.find((x) => x.name === 'events').rows === 0, '默认模式不该写事件流');
     must(n3.find((x) => x.name === 'notes').rows === 1, '默认模式应写备注');
-    return `恢复 friends=${SEED.friends} worlds=${SEED.worlds} events=${SEED.events}，重复导入 0 新增；默认模式仍只写个人数据`;
+    return `恢复 friends=${SEED.friends} worlds=${SEED.worlds} events=${SEED.events} notes/tags/favorites 各就位，重复导入 0 新增；默认模式仍只写个人数据`;
   });
 
   /* ───── 155 设置页接线 ───── */

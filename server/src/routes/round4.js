@@ -6,7 +6,7 @@
  * 日期切分统一按 +08:00，和前端显示对得上。
  */
 import crypto from 'node:crypto';
-import { restoreBackup } from '../lib/restore.js';
+import { restoreBackup, restoreFullBackup } from '../lib/restore.js';
 import { filterWorlds } from '../lib/worldFilter.js';
 
 const TZ = 8 * 3600_000;
@@ -310,11 +310,12 @@ export function registerRound4Routes(app, { db, T, iso }) {
     return payload;
   });
 
-  /** 113 备份导入：补备注/标签/收藏，不碰事件流 */
+  /** 113 备份导入：默认补备注/标签/收藏；?mode=full 时额外补好友/世界/动态（只补缺） */
   app.post('/api/import/backup', { bodyLimit: 32 * 1024 * 1024 }, async (req, reply) => {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    const full = req.query?.mode === 'full';
     try {
-      const r = await restoreBackup(db, T, body);
+      const r = full ? await restoreFullBackup(db, T, body) : await restoreBackup(db, T, body);
       return { ok: true, ...r };
     } catch (e) {
       reply.code(400);

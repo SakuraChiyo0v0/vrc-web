@@ -13,6 +13,7 @@ function parseTags(v) {
 }
 
 import { matchText } from '../lib/pinyin.js';
+import { buildCsv, exportIndex, isExportName, TABLES, toCsv } from '../lib/exportTables.js';
 
 /**
  * 搜索热缓存：三份全量列表（好友/世界/同房玩家）60 秒重建一次，
@@ -249,52 +250,19 @@ export function registerRound2Routes(app, { db, T, iso }) {
     };
   });
 
-  /** 25 CSV 导出：friends / events / players */
-  const csvCell = (v) => {
-    if (v === null || v === undefined) return '';
-    const s = String(v);
-    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-  };
-  const toCsv = (cols, rows) =>
-    [cols.join(','), ...rows.map((r) => cols.map((c) => csvCell(r[c])).join(','))].join('\n') + '\n';
+  /** 第十五轮：CSV 表清单（设置页与脚本都读这份，行数实时算） */
+  app.get('/api/export/index.json', async () => {
+    const tables = await exportIndex(db, T);
+    return { ok: true, count: tables.length, tables };
+  });
 
+  /** 25 CSV 多表导出：friends / worlds / events / players / sessions / favorites / notes / tags / game-events / self-events */
   app.get('/api/export/:name', async (req, reply) => {
     const name = String(req.params.name).replace(/\.csv$/i, '');
-    let cols;
-    let rows;
-    if (name === 'friends') {
-      cols = ['user_id', 'display_name', 'status', 'location', 'world_name', 'platform', 'updated_at'];
-      rows = (await db.query(
-        `select user_id, display_name, status, location, world_name, platform, updated_at
-           from ${T('friend')} order by display_name`,
-      )).map((r) => ({ ...r, updated_at: iso(r.updated_at) }));
-    } else if (name === 'events') {
-      cols = ['at', 'kind', 'user_id', 'display_name', 'world_name', 'location'];
-      rows = (await db.query(
-        `select at, kind, user_id, display_name, world_name, location
-           from ${T('friend_event')} order by at desc limit 20000`,
-      )).map((r) => ({ ...r, at: iso(r.at) }));
-    } else if (name === 'players') {
-      cols = ['user_id', 'name', 'meets', 'last_seen', 'worlds'];
-      const raw = await db.query(
-        `select display_name, user_id, world_name, at from ${T('game_event')}
-          where kind = 'room_join' order by at desc limit 20000`,
-      );
-      const map = new Map();
-      for (const r of raw) {
-        const key = r.user_id ?? r.display_name;
-        const cur = map.get(key) ?? { user_id: r.user_id ?? '', name: r.display_name ?? key, meets: 0, last_seen: iso(r.at), worlds: [] };
-        cur.meets += 1;
-        if (r.world_name && !cur.worlds.includes(r.world_name)) cur.worlds.push(r.world_name);
-        map.set(key, cur);
-      }
-      rows = [...map.values()]
-        .sort((a, b) => b.meets - a.meets)
-        .map((r) => ({ ...r, worlds: r.worlds.join(' / ') }));
-    } else {
-      return reply.code(404).send({ ok: false, error: '不支持的导出' });
+    if (!isExportName(name)) {
+      return reply.code(404).send({ ok: false, error: '不支持的导出', supported: Object.keys(TABLES) });
     }
-
+    const { cols, rows } = await buildCsv(name, db, T, iso);
     reply
       .header('content-type', 'text/csv; charset=utf-8')
       .header('content-disposition', `attachment; filename="vrc-${name}.csv"`);

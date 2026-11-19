@@ -348,3 +348,21 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 1. 121~126 全 done；2. `parity12_check.sh` 全绿（含性能断言）——2026-11-19 14:47 复跑 PARITY12 OK 6/6（search 7/3/3ms、friend-log 44/22/21ms）；3. build+smoke（done：dist index-DwmBnwP7.js 437.74 kB / index-BjV8n9kW.css；SMOKE OK / npm test 18 pass）；4. 抽屉截图 done：`docs/screenshots/round12-desktop-friend-drawer{,-trips,-data}.png` + `round12-mobile-friend-drawer.png`（2026-11-19 14:56 重拍，80px 头像/在线点/PC 徽章、三键操作行、四 tab、足迹展开刚好 10 条、只显示单个面板）；5. 自动发布。
 
 > 实拍发现并修掉的真 bug：tab 面板用 `hidden` 属性切显隐，被 Tailwind 的 `.flex` 顶掉 → 四个面板同时铺开（截图里概览和足迹叠在一起）。`styles.css` 加全局 `[hidden]{display:none!important}`，parity12 #123 一并断言该兜底在位。另：头像 403（演示库假 id）时降级为首字母块，不再露破图图标。
+---
+
+# 第十五轮：数据导出（2026-11-19 起）
+
+VRCX-0 的「导出 / 迁移」在 Web 端的对应物：CSV 多表导出、全量备份导入、导出快照分享链接。
+验收：`scripts/parity15_check.sh`（临时 SQLite，不碰线上）。
+
+| # | 功能 | 验收 | 状态 |
+|---|---|---|---|
+| 151 | CSV 多表导出：10 张表（好友/世界/动态/同房玩家/在线区间/收藏/备注/标签/游戏日志/自己的足迹） | `/api/export/index.json` 列 10 表且行数与库一致；设置页按清单生成下载入口 | done（parity15 #151） |
+| 152 | CSV 质量：UTF-8 BOM、表头与定义同源、逗号/引号/换行转义 | 每张表首行=定义列、行数=库内行数；含逗号/引号的名字往返一致 | done（parity15 #152） |
+| 153 | 导出快照分享链接 | `POST /api/shares {kind:'export',targetId}` → `/s/:id` 只读表格页 + `/s/:id/export.csv`；后续写库不改快照 | done（parity15 #153） |
+| 154 | 全量备份导入 | `POST /api/import/backup?mode=full` 用 `backup.json` 恢复好友/世界/动态/备注/标签/收藏；只补缺不覆盖；重复导入 0 新增 | done（parity15 #154） |
+| 155 | 设置页接线 | CSV 清单、分享按钮、全量导入入口在源码与构建产物里都在 | done（parity15 #155） |
+
+## 第十五轮完成定义
+
+1. 151~155 全 done；2. `bash scripts/parity15_check.sh` 全绿（2026-11-19 PARITY15 OK 5/5）；3. build + smoke（SMOKE OK / npm test 21 pass / parity2 回归 14/14）；4. 不 push（主 agent 统一发布）。
