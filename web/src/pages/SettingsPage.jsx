@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { api, BASE, send } from '../api.js';
+import { api, BASE, send, shareUrl } from '../api.js';
 
 /**
  * 36 采集健康：collector 活着没 / 24h 事件速率 / 最近错误。
@@ -23,9 +23,26 @@ function Stat({ label, value, hint, muted }) {
 export default function SettingsPage() {
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState(null);
+  const [shareTable, setShareTable] = useState('events');
+  const [shareLink, setShareLink] = useState(null);
+  const [sharing, setSharing] = useState(false);
+
+  /** 导出快照分享：POST /api/shares { kind:'export' }，成功后把绝对地址显示出来 */
+  const onShareExport = async () => {
+    setSharing(true);
+    setShareLink(null);
+    try {
+      const r = await send('shares', 'POST', { kind: 'export', targetId: shareTable, title: `导出 ${shareTable}` });
+      setShareLink(shareUrl(r.id));
+    } catch (err) {
+      setShareLink(`失败：${err.message}`);
+    } finally {
+      setSharing(false);
+    }
+  };
 
   /** 113 选文件 → 解析 → POST /api/import/backup，结果显示在按钮右边 */
-  const onPickBackup = async (e) => {
+  const onPickBackup = async (e, full = false) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
@@ -33,10 +50,12 @@ export default function SettingsPage() {
     setImportResult(null);
     try {
       const payload = JSON.parse(await file.text());
-      const r = await send('import/backup', 'POST', payload);
+      const r = await send(`import/backup${full ? '?mode=full' : ''}`, 'POST', payload);
       setImportResult({
         ok: true,
-        text: `已导入 备注 ${r.notes} · 标签 ${r.tags} · 收藏 ${r.favorites}（好友/世界/事件 ${r.skipped?.events ?? 0} 条不导入）`,
+        text: full
+          ? `全量导入：好友 +${r.friends?.inserted ?? 0}(已有 ${r.friends?.skipped ?? 0}) · 世界 +${r.worlds?.inserted ?? 0}(已有 ${r.worlds?.skipped ?? 0}) · 动态 +${r.events?.inserted ?? 0}(已有 ${r.events?.skipped ?? 0}) · 备注 ${r.notes} · 标签 ${r.tags} · 收藏 ${r.favorites}`
+          : `已导入 备注 ${r.notes} · 标签 ${r.tags} · 收藏 ${r.favorites}（好友/世界/事件 ${r.skipped?.events ?? 0} 条不导入）`,
       });
     } catch (err) {
       setImportResult({ ok: false, text: `导入失败：${err.message}` });
@@ -49,6 +68,13 @@ export default function SettingsPage() {
     queryKey: ['diagnostics'],
     queryFn: () => api('diagnostics'),
     refetchInterval: 30_000,
+  });
+
+  /** 第十五轮：CSV 多表清单（行数由服务端实时算，和下载内容同源） */
+  const { data: exp } = useQuery({
+    queryKey: ['export-index'],
+    queryFn: () => api('export/index.json'),
+    staleTime: 60_000,
   });
 
   const c = data?.collector;
@@ -119,6 +145,44 @@ export default function SettingsPage() {
             collector 常驻在 NAS，往 pipeline 推消息；这里只读，不会触发采集。
           </div>
 
+          <div className="label-xs mt-5 mb-2">CSV 多表导出</div>
+          <div className="card px-3 py-2.5" data-export-list>
+            <div className="mb-2 text-[12px] text-fg3">
+              每张表一个 CSV（UTF-8 BOM，Excel 直接开）；行数是当前库里的真实条数。
+            </div>
+            {exp?.tables?.length ? (
+              <div className="flex flex-wrap gap-1.5">
+                {exp.tables.map((t) => (
+                  <a key={t.name} className="chip" data-export={t.name} href={`${BASE}${t.file}`} download title={`${t.label} · ${t.rows} 行`}>
+                    {t.label}
+                    <span className="ml-1 tabular-nums opacity-60">{t.rows}</span>
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <span className="text-[11px] text-fg3">读取表清单…</span>
+            )}
+            <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t pt-2" style={{ borderColor: 'var(--line, #2a2f3a)' }}>
+              <span className="text-[11px] text-fg3">生成只读分享链接</span>
+              <select
+                className="chip bg-transparent"
+                value={shareTable}
+                onChange={(e) => setShareTable(e.target.value)}
+                data-share-select
+              >
+                {(exp?.tables ?? []).map((t) => (
+                  <option key={t.name} value={t.name}>{t.label}</option>
+                ))}
+              </select>
+              <button className="chip" onClick={onShareExport} disabled={sharing} data-share-export>
+                {sharing ? '生成中…' : '生成链接'}
+              </button>
+              {shareLink ? (
+                <span className="min-w-0 break-all text-[11px]" data-share-link>{shareLink}</span>
+              ) : null}
+            </div>
+          </div>
+
           <div className="label-xs mt-5 mb-2">数据备份</div>
           <div className="card flex flex-wrap items-center gap-2 px-3 py-2.5">
             <span className="min-w-0 flex-1 text-[12px] text-fg3">
@@ -140,7 +204,18 @@ export default function SettingsPage() {
                 disabled={importing}
                 className="hidden"
                 data-import-input="backup"
-                onChange={onPickBackup}
+                onChange={(e) => onPickBackup(e, false)}
+              />
+            </label>
+            <label className="chip" title="空库时恢复整份备份；已有数据只补缺，不覆盖" style={importing ? { opacity: 0.6, cursor: 'default' } : undefined}>
+              {importing ? '导入中…' : '全量导入'}
+              <input
+                type="file"
+                accept="application/json,.json"
+                disabled={importing}
+                className="hidden"
+                data-import-input="backup-full"
+                onChange={(e) => onPickBackup(e, true)}
               />
             </label>
             {importResult ? (
