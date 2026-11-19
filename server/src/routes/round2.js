@@ -71,7 +71,10 @@ export function registerRound2Routes(app, { db, T, iso }) {
     const q = String(req.query.q ?? '').trim();
     const limit = Math.min(Math.max(Number(req.query.limit ?? 8) || 8, 1), 50);
     if (!q) return { q, friends: [], worlds: [], players: [], counts: { friends: 0, worlds: 0, players: 0 }, total: 0 };
-    if (Date.now() - searchCache.at > CACHE_TTL_MS * 3) await rebuildSearchCache();
+    // 冷启动/刚写入时缓存可能还是空的（预热早于采集入库），先补建再过滤，
+    // 否则部署后头 60 秒搜索全空
+    if (!searchCache.friends.length && !searchCache.worlds.length) await rebuildSearchCache();
+    else if (Date.now() - searchCache.at > CACHE_TTL_MS * 3) await rebuildSearchCache();
 
     const friendsAll = searchCache.friends
       .filter((f) => matchText(f.display_name, q))
