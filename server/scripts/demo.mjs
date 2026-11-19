@@ -218,7 +218,9 @@ const srv = spawn(process.execPath, ['src/index.js'], {
 let childDead = null;
 srv.on('exit', (code) => { childDead = code; });
 let up = false;
-for (let i = 0; i < 100; i++) {
+// 负载高时（NAS 上并行跑批量任务，load avg >10）子服务首启实测 >20s，
+// 20s 判死会误杀：给到 60s。
+for (let i = 0; i < 300; i++) {
   if (childDead !== null) {
     console.error(`[demo] 子服务退出 code=${childDead}（端口 ${port} 被占用？先杀掉残留 demo/服务进程）`);
     process.exit(1);
