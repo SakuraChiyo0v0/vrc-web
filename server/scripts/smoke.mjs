@@ -38,14 +38,16 @@ let exitCode = 1;
 
 try {
   let ready = false;
-  for (let i = 0; i < 150; i++) {
+  // 90s：src/index.js 在 listen 之前要跑搜索缓存预热（warmSearchCache），
+  // 机器忙时（并行 build/多份 demo 服务）能拖到 30s 以上，30s 预算会误报「api 未启动」。
+  for (let i = 0; i < 450; i++) {
     if (exited) break;
     try {
       if ((await fetch(`${base}/api/health`)).ok) { ready = true; break; }
     } catch {}
     await wait(200);
   }
-  if (!ready) throw new Error(`api 未启动（${exited ?? 'timeout 30s'}）:\n${log}`);
+  if (!ready) throw new Error(`api 未启动（${exited ?? 'timeout 90s，子进程日志见下'}）:\n${log || '（子进程还没有任何输出：多半卡在 listen 前的搜索缓存预热）'}`);
 
   const now = Date.now();
   const at = (m) => new Date(now - m * 60000).toISOString();

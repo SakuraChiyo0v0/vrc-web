@@ -6,8 +6,8 @@
  * 日期切分统一按 +08:00，和前端显示对得上。
  */
 import crypto from 'node:crypto';
-import { matchText } from '../lib/pinyin.js';
 import { restoreBackup } from '../lib/restore.js';
+import { filterWorlds } from '../lib/worldFilter.js';
 
 const TZ = 8 * 3600_000;
 const DAY = 86400_000;
@@ -33,6 +33,10 @@ export function registerRound4Routes(app, { db, T, iso }) {
     const dir = req.query.dir === 'asc' || req.query.dir === 'desc' ? String(req.query.dir) : defDir;
     const limit = Math.min(Math.max(Number(req.query.limit ?? 50) || 50, 1), 200);
     const offset = Math.max(Number(req.query.offset ?? 0) || 0, 0);
+    // 114 世界库筛选：收藏 / 去过次数 / 容量，可组合
+    const favOnly = req.query.fav === '1' || req.query.fav === 'true';
+    const minVisits = Math.max(Number(req.query.min_visits ?? 0) || 0, 0);
+    const capacity = String(req.query.capacity ?? 'any');
 
     const base = await db.query(
       `select id, name, author_name, capacity, thumbnail from ${T('world')}`,
@@ -81,8 +85,12 @@ export function registerRound4Routes(app, { db, T, iso }) {
       map.set(r.world_id, cur);
     }
 
-    let list = [...map.values()];
-    if (q) list = list.filter((w) => matchText(w.name, q) || matchText(w.author_name, q));
+    // 收藏标记：一次查全量收藏，拼到每行上，前端只读 fav 布尔
+    const favs = await db.query(`select target_id from ${T('favorite')} where kind = 'world'`).catch(() => []);
+    const favSet = new Set(favs.map((r) => r.target_id));
+    for (const w of map.values()) w.fav = favSet.has(w.id);
+
+    let list = filterWorlds([...map.values()], { q, fav: favOnly, minVisits, capacity });
     const sorters = {
       recent: (a, b) => cmpLast(a, b),
       visits: (a, b) => b.visits - a.visits || cmpLast(a, b),
@@ -104,6 +112,7 @@ export function registerRound4Routes(app, { db, T, iso }) {
       q,
       sort: sortKey,
       dir,
+      filters: { fav: favOnly, min_visits: minVisits, capacity },
       worlds: page,
     };
   });

@@ -1,0 +1,21 @@
+// 探针：开页面 dump 侧栏按钮与正文，用于排查截图 click 失败
+const CDP = process.env.CDP ?? 'http://127.0.0.1:9222';
+const APP = process.env.APP ?? 'http://127.0.0.1:18899/';
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const res = await fetch(`${CDP}/json/new?about:blank`, { method: 'PUT' });
+const target = await res.json();
+const ws = new WebSocket(target.webSocketDebuggerUrl);
+await new Promise((r, j) => { ws.onopen = r; ws.onerror = j; });
+let seq = 0; const pending = new Map();
+ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) { const { r, j } = pending.get(m.id); pending.delete(m.id); m.error ? j(new Error(m.error.message)) : r(m.result); } };
+const send = (method, params = {}) => new Promise((r, j) => { const id = ++seq; pending.set(id, { r, j }); ws.send(JSON.stringify({ id, method, params })); });
+await send('Page.enable'); await send('Runtime.enable');
+const evalJs = async (expression) => { const r = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true }); if (r.exceptionDetails) throw new Error(r.exceptionDetails.text); return r.result?.value; };
+await send('Page.navigate', { url: APP });
+await sleep(3500);
+console.log('TITLE', await evalJs('document.title'));
+console.log('URL', await evalJs('location.href'));
+console.log('BUTTONS', await evalJs(`JSON.stringify([...document.querySelectorAll('button,a')].map(b=>b.textContent.replace(/\\s+/g,'').slice(0,20)).slice(0,40))`));
+console.log('TEXT', await evalJs('document.body.innerText.replace(/\\s+/g," ").slice(0,500)'));
+console.log('ROWS', await evalJs(`document.querySelectorAll('table tbody tr').length`));
+ws.close(); process.exit(0);

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { ErrorCard } from '../components/ErrorBoundary.jsx';
 import { useState } from 'react';
 import { api, imgUrl } from '../api.js';
 import Empty from '../components/Empty.jsx';
@@ -31,13 +32,21 @@ export default function WorldsPage() {
   const [q, setQ] = usePref('worlds:q', '');
   const [sort, onSort] = useSort('worlds', 'recent');
   const [offset, setOffset] = useState(0);
+  // 114 三个筛选项，和搜索/排序一起进 queryKey，刷新后保持
+  const [fav, setFav] = usePref('worlds:fav', false);
+  const [minVisits, setMinVisits] = usePref('worlds:minVisits', 0);
+  const [capacity, setCapacity] = usePref('worlds:capacity', 'any');
   const changeSort = (key) => { onSort(key); setOffset(0); };
   const { openWorld } = useDrawer();
   const LIMIT = 50;
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['worlds', q, sort.key, sort.dir, offset],
-    queryFn: () => api(`worlds?q=${encodeURIComponent(q)}&sort=${sort.key}&dir=${sort.dir}&limit=${LIMIT}&offset=${offset}`),
+  const filterQs = (extra = '') =>
+    `q=${encodeURIComponent(q)}&sort=${sort.key}&dir=${sort.dir}&fav=${fav ? 1 : 0}` +
+    `&min_visits=${Number(minVisits) || 0}&capacity=${encodeURIComponent(capacity)}${extra}`;
+
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['worlds', q, sort.key, sort.dir, fav, minVisits, capacity, offset],
+    queryFn: () => api(`worlds?${filterQs(`&limit=${LIMIT}&offset=${offset}`)}`),
   });
 
   const rows = data?.worlds ?? [];
@@ -50,7 +59,7 @@ export default function WorldsPage() {
     try {
       const all = [];
       for (let off = 0; off < 5000; off += 200) {
-        const page = await api(`worlds?q=${encodeURIComponent(q)}&sort=${sort.key}&dir=${sort.dir}&limit=200&offset=${off}`);
+        const page = await api(`worlds?${filterQs(`&limit=200&offset=${off}`)}`);
         all.push(...(page.worlds ?? []));
         if (!page.has_more) break;
       }
@@ -79,6 +88,40 @@ export default function WorldsPage() {
           className="h-8 min-w-0 flex-1 rounded-lg border px-2.5 text-[12px] outline-none sm:w-64 sm:flex-none"
           style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)', color: 'var(--content-primary)' }}
         />
+        <button
+          className="chip"
+          data-filter="fav"
+          data-active={fav ? 'true' : 'false'}
+          onClick={() => { setFav(!fav); setOffset(0); }}
+          title="只看收藏过的世界"
+        >
+          {fav ? '只看收藏' : '收藏'}
+        </button>
+        <select
+          className="chip"
+          data-filter="visits"
+          value={String(minVisits)}
+          onChange={(e) => { setMinVisits(Number(e.target.value)); setOffset(0); }}
+          title="按我的到访次数筛选"
+        >
+          <option value="0">次数不限</option>
+          <option value="1">去过 ≥1 次</option>
+          <option value="3">去过 ≥3 次</option>
+          <option value="10">去过 ≥10 次</option>
+        </select>
+        <select
+          className="chip"
+          data-filter="capacity"
+          value={capacity}
+          onChange={(e) => { setCapacity(e.target.value); setOffset(0); }}
+          title="按世界容量筛选"
+        >
+          <option value="any">容量不限</option>
+          <option value="small">≤8 人</option>
+          <option value="mid">9–16 人</option>
+          <option value="large">17–32 人</option>
+          <option value="huge">33 人以上</option>
+        </select>
         <span className="chip sm:ml-auto" data-count={data?.total ?? 0}>共 {data?.total ?? 0} 个世界</span>
         <button className="chip" data-export="worlds" onClick={exportNow} disabled={exporting || !data?.total}>
           {exporting ? '导出中…' : '导出 CSV'}
@@ -95,6 +138,9 @@ export default function WorldsPage() {
 
       {isLoading ? (
         <div className="text-[12px] text-fg3">加载中…</div>
+      ) : isError && rows.length === 0 ? (
+        // 接口挂了不能显示「还没有去过的世界」——那是在骗人说库是空的
+        <ErrorCard title="世界库读不出来" error={error} onRetry={() => refetch()} />
       ) : rows.length === 0 ? (
         <Empty icon="star" title={'还没有去过的世界'} hint={'采集器记录到自己进出世界后会出现在这里。'} />
       ) : (
@@ -103,7 +149,7 @@ export default function WorldsPage() {
             <div key={w.id} className="world-card" onClick={() => openWorld(w.id)} title={w.name}>
               <Thumb w={w} />
               <div className="wc-body">
-                <div className="wc-name">{w.name}</div>
+                <div className="wc-name">{w.fav ? <span data-fav="1" title="已收藏">★ </span> : null}{w.name}</div>
                 <div className="wc-meta">
                   <span>{w.author_name ?? '未知作者'}</span>
                   <span>{w.visits} 次 · {w.friends_seen} 人</span>

@@ -143,7 +143,7 @@ export default function FriendListPage() {
                   </tr>
                 ) : null,
                 ...g.rows.map((f) => (
-                <tr key={f.user_id} onClick={() => openFriend(f.user_id)} className="cursor-pointer">
+                <tr key={f.user_id} data-uid={f.user_id} onClick={() => openFriend(f.user_id)} className="cursor-pointer">
                   <td>
                     <span className="flex min-w-0 items-center gap-2">
                       <span className="avatar">

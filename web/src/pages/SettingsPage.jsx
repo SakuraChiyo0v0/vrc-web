@@ -89,7 +89,11 @@ export default function SettingsPage() {
             <Stat label="追踪好友" value={data?.friendsTracked ?? '—'} hint="friend 表行数" />
             <Stat label="追踪世界" value={data?.worldsTracked ?? '—'} hint="world 表行数" />
             <Stat label="累计消息" value={c?.msgCount ?? '—'} hint="collector 收到过的消息数" />
-            <Stat label="图片缓存" value={data?.cache?.files ?? '—'} hint={data?.cache?.dir ?? ''} />
+            <Stat
+              label="图片缓存"
+              value={data?.cache ? `${data.cache.files} 张 · ${data.cache.human}` : '—'}
+              hint={data?.cache ? `上限 ${data.cache.maxHuman}，超出自动删最旧（${data.cache.dir}）` : ''}
+            />
           </div>
 
           <div className="label-xs mt-5 mb-2">采集状态</div>

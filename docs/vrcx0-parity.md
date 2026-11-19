@@ -317,9 +317,9 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 | 111 | 独立搜索页（好友/世界/玩家分区） | `/vrc/#/search?q=` 三区结果分区展示，点进抽屉 | done — SearchPage.jsx 三段 data-zone + counts，点条目开 Friend/World 抽屉，构建产物含 data-zone（parity11 待跑） |
 | 112 | PWA：可加到手机主屏 | manifest + 图标 + 主题色，Lighthouse 可安装 | done — manifest.webmanifest（standalone/图标/maskable）+ sw.js + apple-touch-icon，dist 内均在 |
 | 113 | 备份导入（JSON 恢复备注/标签/收藏） | 上传备份文件后备注/标签/收藏恢复，不覆盖事件 | done |
-| 114 | 世界库筛选（收藏/去过次数/容量） | 三个筛选项可组合，计数正确 | todo |
+| 114 | 世界库筛选（收藏/去过次数/容量） | 三个筛选项可组合，计数正确 | done — lib/worldFilter.js + /api/worlds fav&min_visits&capacity + WorldsPage 三控件，单测 6/6（含组合真路由断言） |
 | 115 | 错误边界与重试 | 接口失败显示重试卡，不白屏；离线提示 | done — ErrorBoundary(整页渲染兜底)+ErrorCard(动态页重试)+OfflineBanner，dist 含文案，测试 31/31 |
-| 116 | 图片缓存上限与清理 | 超过 200MB 自动删最旧；设置页显示占用 | todo |
+| 116 | 图片缓存上限与清理 | 超过 200MB 自动删最旧；设置页显示占用 | done — lib/imgCache.js（200MB 默认，按 mtime 删最旧）+ 图片代理接入 + 设置页占用显示，单测 4/4 |
 | 117 | 通知页按类型分组折叠 | 同类型折叠成组，可展开 | done — lib/notifGroups.js + NotificationsPage 分组头/折叠，单测 4 条全过 |
 | 118 | 时间线「今天/昨天/更早」分段 | 动态与好友历史分段表头 | done — lib/timeSections.js 分段 + FeedPage 段头行（data-day），好友历史原日期段头，单测 3 条全过 |
 
@@ -336,13 +336,13 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 | # | 改造 | 验收 | 状态 |
 |---|---|---|---|
-| 121 | 抽屉头部：80px 头像 + 名字 + 在线状态点 + 平台/信任徽章 | 头像 ≥72px；徽章带色；不再打印 `standalonewindows` 原文 | todo |
-| 122 | 操作行：复制主页链接 / 收藏 / 复制世界链接 | 三个按钮可用，剪贴板有内容 | todo |
-| 123 | 四个真实 tab：概览 / 足迹 / 数据 / 备注 | 切换时 DOM 内容不同；概览不再塞事件流 | todo |
-| 124 | 去重：足迹只显示最近 10 条且可折叠 | 默认折叠；与动态页不重复展示同一批 | todo |
-| 125 | 性能断言进 parity：搜索 <100ms、friend-log <200ms | 连续 3 次均达标 | todo |
-| 126 | 索引随代码落地（migrate 里建） | 新库自动建 7 个索引 | todo |
+| 121 | 抽屉头部：80px 头像 + 名字 + 在线状态点 + 平台/信任徽章 | 头像 ≥72px；徽章带色；不再打印 `standalonewindows` 原文 | done（parity12 #121） |
+| 122 | 操作行：复制主页链接 / 收藏 / 复制世界链接 | 三个按钮可用，剪贴板有内容 | done（parity12 #122） |
+| 123 | 四个真实 tab：概览 / 足迹 / 数据 / 备注 | 切换时 DOM 内容不同；概览不再塞事件流 | done（parity12 #123） |
+| 124 | 去重：足迹只显示最近 10 条且可折叠 | 默认折叠；与动态页不重复展示同一批 | done（parity12 #124） |
+| 125 | 性能断言进 parity：搜索 <100ms、friend-log <200ms | 连续 3 次均达标 | done（perf12：search 16/8/7ms、friend-log 36/24/25ms） |
+| 126 | 索引随代码落地（migrate 里建） | 新库自动建 7 个索引 | done（新库 indexes=20，7 个目标索引齐） |
 
 ## 第十二轮完成定义
 
-1. 121~126 全 done；2. `parity12_check.sh` 全绿（含性能断言）；3. build+smoke；4. 抽屉截图对比 VRCX-0；5. 自动发布。
+1. 121~126 全 done；2. `parity12_check.sh` 全绿（含性能断言）；3. build+smoke（done：dist index-DM4v8Dad.js / SMOKE OK）；4. 抽屉截图对比 VRCX-0（待出：PC 侧 headless Chrome 连不上 127.0.0.1:18899 隧道，见 STATE）；5. 自动发布。

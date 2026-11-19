@@ -11,9 +11,8 @@
  */
 import crypto from 'node:crypto';
 import fs from 'node:fs';
-import fsp from 'node:fs/promises';
-import path from 'node:path';
 import { checkCollectorStale } from '../lib/alerts.js';
+import { createImgCache } from '../lib/imgCache.js';
 
 const VRCHAT_HOST = /^([a-z0-9-]+\.)*vrchat\.cloud$/i;
 const UA = 'vrc-web/0.1 (self-hosted)';
@@ -49,29 +48,12 @@ function cookieFor(host) {
 
 export function registerRound3Routes(app, { db, T, iso }) {
   const cacheDir = process.env.VRC_IMG_CACHE || '/opt/data/state/vrc-web/img-cache';
-  fs.mkdirSync(cacheDir, { recursive: true });
+  // 116 缓存上限：默认 200MB，写满就删最旧（VRC_IMG_CACHE_MAX_MB 可调）
+  const maxMb = Number(process.env.VRC_IMG_CACHE_MAX_MB ?? 200) || 200;
+  const cache = createImgCache(cacheDir, { maxBytes: maxMb * 1024 * 1024 });
   const extra = extraHosts();
 
   const keyOf = (u) => crypto.createHash('sha256').update(u).digest('hex');
-  const binPath = (k) => path.join(cacheDir, `${k}.bin`);
-  const metaPath = (k) => path.join(cacheDir, `${k}.json`);
-
-  async function readCache(key) {
-    try {
-      const meta = JSON.parse(await fsp.readFile(metaPath(key), 'utf8'));
-      const buf = await fsp.readFile(binPath(key));
-      return { buf, ...meta };
-    } catch {
-      return null;
-    }
-  }
-
-  async function writeCache(key, url, ct, buf) {
-    const tmp = `${binPath(key)}.${process.pid}.tmp`;
-    await fsp.writeFile(tmp, buf);
-    await fsp.rename(tmp, binPath(key));
-    await fsp.writeFile(metaPath(key), JSON.stringify({ url, ct, at: new Date().toISOString(), bytes: buf.length }));
-  }
 
   /** 逐跳跟重定向：每一跳都过 allowlist，最多 MAX_HOPS 跳 */
   async function fetchImage(url) {
@@ -108,7 +90,7 @@ export function registerRound3Routes(app, { db, T, iso }) {
       return reply.code(403).send({ ok: false, error: '只允许 vrchat.cloud 的图片地址' });
     }
     const key = keyOf(raw);
-    const hit = await readCache(key);
+    const hit = await cache.get(key);
     if (hit) {
       return reply
         .header('content-type', hit.ct)
@@ -118,7 +100,7 @@ export function registerRound3Routes(app, { db, T, iso }) {
     }
     try {
       const { ct, buf } = await fetchImage(raw);
-      await writeCache(key, raw, ct, buf);
+      await cache.put(key, raw, ct, buf);
       return reply
         .header('content-type', ct)
         .header('x-img-cache', 'miss')
@@ -167,10 +149,7 @@ export function registerRound3Routes(app, { db, T, iso }) {
       },
       friendsTracked,
       worldsTracked,
-      cache: {
-        dir: cacheDir,
-        files: fs.readdirSync(cacheDir).filter((f) => f.endsWith('.bin')).length,
-      },
+      cache: await cache.stats(),
     };
   });
 }

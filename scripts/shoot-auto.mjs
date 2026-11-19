@@ -35,8 +35,17 @@ if (!up) {
   demo.kill('SIGTERM');
   process.exit(1);
 }
-// 种子写库在 DEMO READY 之后才算完：等它打日志，再等一拍
-for (let i = 0; i < 40 && !demoLog.includes('DEMO READY'); i++) await wait(250);
+// 种子写库在 DEMO READY 之后才算完：等它打日志，再等一拍。
+// 注意：负载高时演示服务起得慢（实测 >20s），等不到就出图会拍到「接口未就绪」的空页面，
+// 那种截图看着像 bug 其实是假象 —— 等不到就报错退出，不要静默拍空图。
+let ready = false;
+for (let i = 0; i < 240 && !demoLog.includes('DEMO READY'); i++) await wait(500);
+if (demoLog.includes('DEMO READY')) ready = true;
+if (!ready) {
+  console.error('演示服务 120s 内没打 DEMO READY，拒绝出图（否则全是空态截图）\n' + demoLog);
+  demo.kill('SIGTERM');
+  process.exit(1);
+}
 await wait(500);
 
 const shoot = spawn(process.execPath, ['scripts/shoot.mjs'], {

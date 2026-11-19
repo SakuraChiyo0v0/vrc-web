@@ -9,6 +9,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
+import net from 'node:net';
 import { openDb } from '../src/db/index.js';
 
 const ROOT = new URL('../../', import.meta.url).pathname;
@@ -23,6 +24,19 @@ const daysAgo = (n) => now - n * 86400_000;
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// 端口预检：上一轮残留的 demo/index 进程会占着 8899，子服务 bind 失败但旧实例照样回 200，
+// 截出来的图全是旧库（第十二轮就踩过：roster.total=4 让探活蒙过去）。宁可起不来也别截错库。
+const probePort = () => new Promise((resolve) => {
+  const s = net.connect({ host: '127.0.0.1', port });
+  s.once('connect', () => { s.destroy(); resolve(true); });
+  s.once('error', () => resolve(false));
+  setTimeout(() => { s.destroy(); resolve(false); }, 800);
+});
+if (await probePort()) {
+  console.error(`[demo] 端口 ${port} 已被占用（残留 demo 进程），先跑：pkill -f 'demo[.]mjs ${port}'`);
+  process.exit(1);
+}
+
 // 顺序很重要：先建库+种子，再起服务。以前是先起服务再种子，两者同时初始化
 // 同一个 SQLite 文件会撞 "database is locked"，子服务直接退出、种子落进没人读的库。
 const db = await openDb(dbUrl);
@@ -36,6 +50,18 @@ const world106 = [
 for (const [id, name, author, cap, visits, favs, pop] of world106) {
   await ins(`insert into world (id, name, author_name, capacity, visits_total, favorites, popularity)
              values (?,?,?,?,?,?,?)`, [id, name, author, cap, visits, favs, pop]);
+}
+// 114 世界库筛选：两个小容量世界 + 都收藏、都去过≥3 次，组合筛选（收藏 + ≥3 次 + ≤8 人）才有行可看，
+// 否则截图只剩空态（第十一轮截图曾因演示库没有小世界而 total=0）
+const world114 = [
+  ['wrld_d', 'Cube Garden', 'pico', 8, 31200, 1900, 1.8],
+  ['wrld_e', 'Tiny Studio', 'mika', 6, 8700, 640, 0.9],
+];
+for (const [id, name, author, cap, visits, favs, pop] of world114) {
+  await ins(`insert into world (id, name, author_name, capacity, visits_total, favorites, popularity)
+             values (?,?,?,?,?,?,?)`, [id, name, author, cap, visits, favs, pop]);
+  await ins(`insert into favorite (id, kind, target_id, sort_order) values (?,?,?,?)`,
+    [`fav_${id}`, 'world', id, 0]);
 }
 // 105 拼音搜索：中文名好友，用来截「xh → 小红」
 await ins(`insert into friend (user_id, display_name, trust_level, platform, status, location, world_id, world_name, icon_url, is_favorite, updated_at)
@@ -60,6 +86,42 @@ await ins(`insert into friend_session (id, user_id, started_at, ended_at, minute
            values (?,?,?,?,?,?,?,?,?)`,
   ['s_bob', 'usr_bob', at(now - 90 * MIN), at(now - 60 * MIN), 30, 'wrld_a:1', 'wrld_a', 'Alpha Club', 'active']);
 
+// 124 足迹：抽屉「足迹」tab 要能看到「默认折叠 + 展开只取最近 10 条」。
+// friend_event（上线/下线/换房）在足迹里被过滤掉，所以这里只种会话/到访/状态/资料变更：
+// 12 次到访 + 4 段历史会话 + 2 条状态 + 2 条资料变更 = 20 条非事件项，展开后应只出现 10 条。
+const aliceVisits = [
+  [1, 'wrld_a', 'Alpha Club', 'wrld_a:1~region(jp)', 74],
+  [2, 'wrld_c', '夜の喫茶店', 'wrld_c:2~region(jp)', 41],
+  [3, 'wrld_a', 'Alpha Club', 'wrld_a:2~region(jp)', 128],
+  [4, 'wrld_b', 'Beta Lounge', 'wrld_b:1~region(us)', 22],
+  [5, 'wrld_c', '夜の喫茶店', 'wrld_c:1~region(jp)', 96],
+  [6, 'wrld_a', 'Alpha Club', 'wrld_a:1~region(jp)', 55],
+  [7, 'wrld_d', 'Cube Garden', 'wrld_d:1~region(jp)', 18],
+  [8, 'wrld_b', 'Beta Lounge', 'wrld_b:3~region(us)', 63],
+  [9, 'wrld_c', '夜の喫茶店', 'wrld_c:2~region(jp)', 87],
+  [10, 'wrld_a', 'Alpha Club', 'wrld_a:1~region(jp)', 112],
+  [11, 'wrld_c', '夜の喫茶店', 'wrld_c:1~region(jp)', 34],
+  [12, 'wrld_a', 'Alpha Club', 'wrld_a:2~region(jp)', 149]
+];
+for (const [d, wid, wname, loc, mins] of aliceVisits) {
+  await ins(`insert into friend_world_visit (id, user_id, world_id, world_name, location, started_at, ended_at, minutes)
+             values (?,?,?,?,?,?,?,?)`,
+    [`v_alice_${d}`, 'usr_alice', wid, wname, loc, at(now - d * 86400_000 - mins * MIN), at(now - d * 86400_000), mins]);
+}
+for (const [d, mins, wid, wname] of [[2, 46, 'wrld_c', '夜の喫茶店'], [4, 78, 'wrld_a', 'Alpha Club'], [6, 31, 'wrld_b', 'Beta Lounge'], [9, 64, 'wrld_a', 'Alpha Club']]) {
+  await ins(`insert into friend_session (id, user_id, started_at, ended_at, minutes, location, world_id, world_name, status)
+             values (?,?,?,?,?,?,?,?,?)`,
+    [`s_alice_d${d}`, 'usr_alice', at(now - d * 86400_000 - mins * MIN), at(now - d * 86400_000), mins, `${wid}:1`, wid, wname, 'active']);
+}
+for (const [d, st, desc] of [[1, 'busy', '在剪视频'], [3, 'active', '画图']]) {
+  await ins(`insert into friend_status_history (user_id, status, description, at) values (?,?,?,?)`,
+    ['usr_alice', st, desc, at(now - d * 86400_000 - 5 * MIN)]);
+}
+for (const [d, field, oldV, newV] of [[2, 'display_name', 'Alice.', 'Alice'], [5, 'bio', '旧签名', '今晚 VR 见']]) {
+  await ins(`insert into friend_change (user_id, field, old_value, new_value, at) values (?,?,?,?,?)`,
+    ['usr_alice', field, oldV, newV, at(now - d * 86400_000 - 8 * MIN)]);
+}
+
 // 动态页（80）需要 friend_event：上线 / 换房 / 活跃 / 下线各来几条，带区域与访问级别
 const feed = [
   ['usr_alice', 'Alice', 'location', 'wrld_a:1~hidden(usr_me)~region(jp)', 'wrld_a', 'Alpha Club', 4],
@@ -83,6 +145,11 @@ const plan = [
   [3, 'wrld_c', '夜の喫茶店', 55], [2, 'wrld_a', 'Alpha Club', 80],
   [1, 'wrld_b', 'Beta Lounge', 45], [1, 'wrld_a', 'Alpha Club', 30],
   [0, 'wrld_a', 'Alpha Club', 60],
+  // 114 截图用：两个小世界各去 3+ 次，配合上面的收藏，「收藏+≥3次+≤8人」才有非空结果
+  [4, 'wrld_e', 'Tiny Studio', 25], [3, 'wrld_e', 'Tiny Studio', 20],
+  [2, 'wrld_e', 'Tiny Studio', 35], [1, 'wrld_e', 'Tiny Studio', 30],
+  [3, 'wrld_d', 'Cube Garden', 40], [2, 'wrld_d', 'Cube Garden', 35],
+  [0, 'wrld_d', 'Cube Garden', 30],
 ];
 for (const [d, wid, wname, mins] of plan) {
   // myIntervals 语义：相邻两条 location 事件之间算一次停留 → 进入写世界，退出写 offline
@@ -113,6 +180,11 @@ await ev('profile', 'usr_carol', 'Carol', null, null, null, 30);
 await ev('online', 'usr_carol', 'Carol', 'wrld_b:2~region(us)~friends(usr_me)', 'wrld_b', 'Beta Lounge', 20);
 await ev('offline', 'usr_bob', 'Bob', 'offline', null, null, 18);
 await ev('location', 'usr_dave', 'Dave', 'wrld_c:4~region(jp)', 'wrld_c', '夜の喫茶店', 8);
+// 118 动态分段：昨天 / 更早各来两条，截图才能看到「今天/昨天/更早」三个段头
+await ev('online', 'usr_bob', 'Bob', 'wrld_b:1~region(us)', 'wrld_b', 'Beta Lounge', 26 * 60);
+await ev('offline', 'usr_alice', 'Alice', 'offline', null, null, 28 * 60);
+await ev('location', 'usr_carol', 'Carol', 'wrld_c:2~region(jp)', 'wrld_c', '夜の喫茶店', 52 * 60);
+await ev('active', 'usr_dave', 'Dave', 'wrld_c:3~region(jp)', 'wrld_c', '夜の喫茶店', 76 * 60);
 // 104 通知聚合：两条 invite 在 24h 内应合成一条带 ×2，另有一条 friend_request 单独成条
 const notif104 = [
   ['n_inv_1', 'invite', 'usr_alice', 'Alice 邀请你去 Alpha Club', 10, 0],
@@ -156,6 +228,12 @@ for (let i = 0; i < 100; i++) {
     if (r.ok) {
       const probe = await r.json();
       if (!probe.total) { console.error('[demo] 端口上跑的是别的实例（roster.total=0），种子没被读到'); process.exit(1); }
+      // 指纹：第十二轮种子给 Alice 造了 12 次到访，端口上的库读不到就是旧实例
+      const tl = await (await fetch(`http://127.0.0.1:${port}/api/friend/usr_alice/timeline?limit=60`)).json();
+      if ((tl.counts?.visit ?? 0) < 12) {
+        console.error(`[demo] 端口 ${port} 上的库没有本轮种子（visit=${tl.counts?.visit ?? 0}），疑似旧实例`);
+        process.exit(1);
+      }
       up = true;
       break;
     }

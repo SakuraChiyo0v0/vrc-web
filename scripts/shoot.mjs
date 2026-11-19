@@ -43,6 +43,7 @@ const send = (method, params = {}) => new Promise((r, j) => {
 
 await send('Page.enable');
 await send('Runtime.enable');
+await send('Network.enable');
 
 const evalJs = async (expression) => {
   const r = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
@@ -64,14 +65,17 @@ const clickByText = (label) => `(() => {
   if (!b) return 'miss'; b.click(); return 'ok';
 })()`;
 
-async function shoot(name, width, height, dpr, mobile, clicks, post, reload) {
+async function shoot(name, width, height, dpr, mobile, clicks, post, reload, offline = false) {
   await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: dpr, mobile });
   // 每张图从干净状态起：上一张留下的搜索词/筛选/排序会经 localStorage 串到下一张
   // （102 的持久化本来就是这个行为），截图要各证各的，所以先清 local_storage。
   await send('Storage.clearDataForOrigin', { origin: new URL(APP).origin, storageTypes: 'local_storage' });
-  await send('Page.navigate', { url: APP });
+  // 每次强制一次真文档加载：仅 hash 变化时 Chrome 走同文档导航，上一张的页面状态会残留
+  await send('Page.navigate', { url: `${APP}${APP.includes('?') ? '&' : '?'}s=${Date.now()}` });
   await sleep(2500);
   await waitLoaded();
+  // 115 离线态：页面先正常载入，再断网点导航，接口失败应出重试卡而不是白屏
+  if (offline) await send('Network.emulateNetworkConditions', { offline: true, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
   for (const label of clicks) {
     const out = await evalJs(clickByText(label));
     if (out !== 'ok') throw new Error(`点不到「${label}」（${out}）`);
@@ -91,6 +95,7 @@ async function shoot(name, width, height, dpr, mobile, clicks, post, reload) {
     await sleep(800);
   }
   const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
+  if (offline) await send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
   const file = path.join(OUT, `${PREFIX}-${name}.png`);
   fs.writeFileSync(file, Buffer.from(shot.data, 'base64'));
   const info = await evalJs(`JSON.stringify({ title: document.title, w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight, over: document.documentElement.scrollWidth > innerWidth, text: document.body.innerText.replace(/\\s+/g, ' ').slice(0, 260), len: document.body.innerText.replace(/\\s+/g, '').length, stuck: /读取中|加载中/.test(document.body.innerText), bad: performance.getEntriesByType('resource').filter((r) => r.responseStatus >= 400).map((r) => r.name.replace(origin, '') + ':' + r.responseStatus) })`);
@@ -246,8 +251,76 @@ const round10 = [
   ['4k-worlds-sort', 3840, 2160, 1, false, ['世界库'], sortDesc('worlds', 'visits')]                // 101 4K
 ];
 
+/* 第十一轮：111 搜索页 / 114 世界库筛选 / 115 离线重试 / 116 缓存占用 / 117 通知分组 / 118 动态分段 */
+const setSearch = (v) => `(() => {
+  const i = [...document.querySelectorAll('input')].find((x) => x.placeholder && x.placeholder.includes('搜好友、世界、玩家'));
+  if (!i) return 'miss';
+  const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+  set.call(i, ${JSON.stringify(v)});
+  i.dispatchEvent(new Event('input', { bubbles: true }));
+  return 'ok';
+})()`;
+
+const filterWorlds = `(async () => {
+  const setSel = (attr, val) => {
+    const s = document.querySelector('[data-filter="' + attr + '"]');
+    if (!s) return 'miss';
+    const set = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+    set.call(s, val); s.dispatchEvent(new Event('change', { bubbles: true }));
+    return 'ok';
+  };
+  const fav = document.querySelector('[data-filter="fav"]');
+  if (!fav) return 'miss'; fav.click();
+  await new Promise((r) => setTimeout(r, 200));
+  if (setSel('visits', '3') !== 'ok') return 'miss';
+  await new Promise((r) => setTimeout(r, 200));
+  if (setSel('capacity', 'small') !== 'ok') return 'miss';
+  return 'ok';
+})()`;
+
+const foldFirstGroup = `(() => { const b = document.querySelector('[data-group-toggle]'); if (!b) return 'miss'; b.click(); return 'ok'; })()`;
+
+const round11 = [
+  ['desktop-search', 1600, 1000, 1, false, ['搜索'], setSearch('a')],                 // 111 三区
+  ['desktop-worlds-filter', 1600, 1000, 1, false, ['世界库'], filterWorlds],          // 114 组合筛选
+  ['desktop-feed-offline', 1600, 1000, 1, false, ['动态'], null, false, true],        // 115 断网重试卡
+  ['desktop-settings-cache', 1600, 1000, 1, false, ['设置']],                         // 116 缓存占用
+  ['desktop-notif-group', 1600, 1000, 1, false, ['通知'], foldFirstGroup],            // 117 分组折叠
+  ['desktop-feed-sections', 1600, 1000, 1, false, ['动态']],                          // 118 今天/昨天/更早
+  ['mobile-search', 390, 844, 2, true, ['搜索'], setSearch('a')],                     // 111 手机
+  ['mobile-worlds-filter', 390, 844, 2, true, ['世界库'], filterWorlds],              // 114 手机
+  ['4k-worlds-filter', 3840, 2160, 1, false, ['世界库'], filterWorlds]                // 114 4K
+];
+
+/* 第十二轮：121~124 好友详情抽屉（80px 头像/徽章、操作行、四 tab、足迹折叠） */
+// 好友列表每行 onClick 就开抽屉；tab 是 [data-tab]，足迹折叠按钮在 [data-footprints] 里
+const drawerPost = (tab) => `(async () => {
+  const waitFor = async (sel, ms) => {
+    for (let t = 0; t < ms; t += 200) { const el = document.querySelector(sel); if (el) return el; await new Promise((r) => setTimeout(r, 200)); }
+    return null;
+  };
+  // 首屏冷启动（新浏览器进程首次导航）比 warm 慢很多，固定 1.2s 会误判 miss-row
+  // 选种子里有足迹数据的好友（usr_alice），否则足迹 tab 全是空态，124 拍不出东西
+  const target = document.querySelector('table tbody tr[data-uid="usr_alice"]');
+  const tr = target ?? (await waitFor('table tbody tr', ${tab ? 12000 : 8000}));
+  if (!tr) return 'miss-row';
+  tr.click();
+  await new Promise((r) => setTimeout(r, 1200));
+  if (!(await waitFor('[data-head]', 6000))) return 'no-drawer';
+  ${tab ? `const b = document.querySelector('[data-tab="${tab}"]'); if (!b) return 'no-tab'; b.click(); await new Promise((r) => setTimeout(r, 800));` : ''}
+  ${tab === 'trips' ? `const exp = document.querySelector('[data-footprints] button[aria-expanded]'); if (exp && exp.getAttribute('aria-expanded') === 'false') { exp.click(); await new Promise((r) => setTimeout(r, 600)); }` : ''}
+  return 'ok';
+})()`;
+
+const round12 = [
+  ['desktop-friend-drawer', 1600, 1000, 1, false, ['好友列表'], drawerPost('overview')],   // 121/122/123 概览
+  ['desktop-friend-drawer-trips', 1600, 1000, 1, false, ['好友列表'], drawerPost('trips')], // 123/124 足迹展开
+  ['desktop-friend-drawer-data', 1600, 1000, 1, false, ['好友列表'], drawerPost('data')],   // 123 数据
+  ['mobile-friend-drawer', 390, 844, 2, true, ['好友列表'], drawerPost('overview')]         // 121 手机
+];
+
 const only = (process.env.SHOOT_ONLY ?? '').split(',').filter(Boolean);
-for (const s of ({ round7, round8, round9, round10 }[SET] ?? round7)) {
+for (const s of ({ round7, round8, round9, round10, round11, round12 }[SET] ?? round7)) {
   if (only.length && !only.includes(s[0])) continue;
   await shoot(...s);
 }

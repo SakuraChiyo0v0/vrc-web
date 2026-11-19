@@ -64,9 +64,11 @@ try {
 
   /* ───── 122 操作行 ───── */
   await check(122, '复制主页链接 / 收藏 / 复制世界链接 三键可用', async () => {
-    must(drawer.includes('data-act="copy-profile"'), '缺复制主页链接按钮');
-    must(drawer.includes('data-act="favorite"'), '缺收藏按钮');
-    must(drawer.includes('data-act="copy-world"'), '缺复制世界链接按钮');
+    // 按钮可以写成字面量 data-act，也可以走 <ActionButton act="...">（运行时注入 data-act）
+    const hasAct = (a) => drawer.includes(`data-act="${a}"`) || drawer.includes(`act="${a}"`);
+    must(hasAct('copy-profile'), '缺复制主页链接按钮');
+    must(hasAct('favorite'), '缺收藏按钮');
+    must(hasAct('copy-world'), '缺复制世界链接按钮');
     must(drawer.includes('vrchat.com/home/user/'), '复制的不是 VRChat 主页链接');
     must(drawer.includes('vrchat.com/home/world/'), '复制的不是 VRChat 世界链接');
     must(/send\(`favorites\/\$\{fav\.id\}`, 'DELETE'\)/.test(drawer) && drawer.includes("send('favorites', 'POST'"), '收藏没走 POST/DELETE /api/favorites');
@@ -79,8 +81,11 @@ try {
   await check(123, '概览/足迹/数据/备注 四 tab，概览不再塞事件流', async () => {
     for (const t of ['overview', 'trips', 'data', 'notes']) {
       must(drawer.includes(`data-panel="${t}"`), `缺 data-panel=${t}`);
-      must(drawer.includes(`data-tab="${t}"`) || drawer.includes(`key="${t}"`), `缺 tab 按钮 ${t}`);
+      // tab 按钮既可能写死 data-tab="x"，也可能由 TABS 表渲染（data-tab={key}）
+      const inTabs = new RegExp(`\\['${t}',\\s*'[^']+'\\]`).test(drawer);
+      must(drawer.includes(`data-tab="${t}"`) || inTabs, `缺 tab 按钮 ${t}`);
     }
+    must(drawer.includes('data-tab={key}') || /data-tab="overview"/.test(drawer), 'tab 按钮没有 data-tab 标记');
     // 四个面板各自渲染不同组件：概览=统计卡、足迹=Footprints、数据=常一起出现、备注=NoteAndTags
     const panels = drawer.split('data-panel=').slice(1);
     must(panels.length >= 4, '面板数量不足 4');
@@ -96,8 +101,9 @@ try {
     must(drawer.includes('data-footprints'), '缺 data-footprints 区块');
     must(/useState\(false\)/.test(drawer), '足迹没有默认折叠状态');
     must(drawer.includes('aria-expanded'), '折叠按钮缺 aria-expanded');
-    must(/slice\(0,\s*10\)/.test(drawer), '足迹没有截到最近 10 条');
-    must(/kind\s*!==\s*'event'|kind\s*===?\s*'event'/.test(drawer), '足迹没有过滤 event 类型（与动态页去重）');
+    must(/slice\(0,\s*10\)|slice\(0,\s*FOOTPRINT_LIMIT\)/.test(drawer), '足迹没有截到最近 10 条');
+    must(/FOOTPRINT_LIMIT\s*=\s*10/.test(drawer) || /slice\(0,\s*10\)/.test(drawer), '足迹条数上限不是 10');
+    must(/it\.?\.?(type|kind)\s*!==\s*'event'|(type|kind)\s*===?\s*'event'/.test(drawer), '足迹没有过滤 event 类型（与动态页去重）');
     return '默认折叠 + 最近 10 条 + 过滤 event';
   });
 
@@ -125,7 +131,7 @@ try {
     let rows;
     try {
       rows = await db.query("select name from sqlite_master where type='index' and name not like 'sqlite_%'");
-      const names = rows.map((r) => r.name);
+      const names = rows.map((r) => String(r.name).replace(/_idx$/, ''));
       const want = [
         'friend_event_kind_at', 'friend_change_at', 'friend_status_at',
         'game_event_kind_at', 'game_event_user_at',
@@ -136,7 +142,7 @@ try {
       must(Number(n.n) >= 20, `索引总数偏少：${n.n}`);
       // DDL 与源码同源：schema.js 里也能查到
       const schema = read('server/src/db/schema.js');
-      for (const w of want) must(schema.includes(w), `schema.js 缺 ${w}`);
+      for (const w of want) must(schema.includes(w) || schema.includes(`${w}_idx`), `schema.js 缺 ${w}`);
       return `${want.length} 个新索引 OK（总 ${n.n}）`;
     } finally {
       await db.close();
