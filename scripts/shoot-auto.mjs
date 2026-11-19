@@ -23,7 +23,8 @@ demo.stdout.on('data', (b) => { demoLog += b; });
 demo.stderr.on('data', (b) => { demoLog += b; });
 
 let up = false;
-for (let i = 0; i < 60; i++) {
+// 负载高时演示服务起得慢（实测 >20s），15s 就判死会误杀；给到 60s
+for (let i = 0; i < 240; i++) {
   try {
     if ((await fetch(`http://127.0.0.1:${PORT}/api/health`)).ok) { up = true; break; }
   } catch {}

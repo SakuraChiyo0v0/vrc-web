@@ -319,8 +319,15 @@ const round12 = [
   ['mobile-friend-drawer', 390, 844, 2, true, ['好友列表'], drawerPost('overview')]         // 121 手机
 ];
 
+/* 第十三轮：131 抽屉头部（状态色描边/底色、签名、三等分操作行）三端出图 */
+const round13 = [
+  ['desktop-friend-drawer-head', 1600, 1000, 1, false, ['好友列表'], drawerPost('overview')],
+  ['mobile-friend-drawer-head', 390, 844, 2, true, ['好友列表'], drawerPost('overview')],
+  ['4k-friend-drawer-head', 3840, 2160, 1, false, ['好友列表'], drawerPost('overview')]
+];
+
 const only = (process.env.SHOOT_ONLY ?? '').split(',').filter(Boolean);
-for (const s of ({ round7, round8, round9, round10, round11, round12 }[SET] ?? round7)) {
+for (const s of ({ round7, round8, round9, round10, round11, round12, round13 }[SET] ?? round7)) {
   if (only.length && !only.includes(s[0])) continue;
   await shoot(...s);
 }

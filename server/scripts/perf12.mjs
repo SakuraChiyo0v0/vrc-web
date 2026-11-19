@@ -99,7 +99,7 @@ let exitCode = 1;
 
 try {
   let ready = false;
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < 225; i++) {
     try { if ((await fetch(`${base}/api/health`)).ok) { ready = true; break; } } catch {}
     await wait(200);
   }

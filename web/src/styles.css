@@ -147,7 +147,19 @@ body {
 
   /* 121 好友详情抽屉头部：80px 头像 + 徽章；121 的徽章色与 --status-* 同源，不另起一套色 */
   .drawer-head { display: flex; align-items: flex-start; gap: .75rem; padding-bottom: .75rem; border-bottom: 1px solid var(--stroke-subtle); }
-  .drawer-avatar { width: 80px; height: 80px; border-radius: 14px; }
+  /* 131 头部随状态换色：--head-status 只由 data-s 决定，头像环、徽章、底色同源，不另起一套色 */
+  .drawer-head[data-s='active'] { --head-status: var(--status-active); }
+  .drawer-head[data-s='join me'] { --head-status: var(--status-joinme); }
+  .drawer-head[data-s='ask me'] { --head-status: var(--status-askme); }
+  .drawer-head[data-s='busy'] { --head-status: var(--status-busy); }
+  .drawer-head[data-s='offline'] { --head-status: var(--status-offline); }
+  /* 抽屉 aside 有 1rem 内边距；头部用负边距铺满整条，状态色只做很淡的一层，不抢名字 */
+  .drawer-head {
+    margin: -1rem -1rem .25rem;
+    padding: .875rem 1rem .75rem;
+    background: linear-gradient(180deg, color-mix(in oklch, var(--head-status, var(--stroke-subtle)) 13%, transparent), transparent);
+  }
+  .drawer-avatar { width: 80px; height: 80px; border-radius: 14px; box-shadow: 0 0 0 2px color-mix(in oklch, var(--head-status, var(--stroke-default)) 45%, transparent); }
   .drawer-avatar img { border-radius: 13px; }
   .drawer-avatar .avatar-fallback {
     position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
@@ -177,6 +189,15 @@ body {
   .badge[data-kind='trust'][data-rank='2'] { color: var(--status-joinme); }
   .badge[data-kind='trust'][data-rank='3'] { color: var(--status-active); }
   .badge[data-kind='trust'][data-rank='4'] { color: var(--status-askme); }
+  .badge[data-kind='group'] { max-width: 9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--content-tertiary); font-size: 10px; }
+  /* 131 状态文本：用户在 VRChat 写的签名，一行截断，hover 看 title */
+  .drawer-status-desc { margin-top: .375rem; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-size: 11.5px; line-height: 1.45; color: var(--content-secondary); }
+
+  /* 131 操作行：三等分，按钮撑满、文字居中，不再左对齐留半排空白 */
+  .drawer-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .375rem; }
+  .drawer-actions .chip { width: 100%; justify-content: center; }
+  .drawer-actions .chip[data-on='true'] { color: var(--status-active); border-color: color-mix(in oklch, var(--status-active) 45%, transparent); }
+  .drawer-actions .chip[data-act='favorite'] { font-variant-numeric: tabular-nums; }
 
   /* 123 数据 tab：2×3 数字格 */
   .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }

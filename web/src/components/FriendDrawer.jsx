@@ -420,7 +420,7 @@ export default function FriendDrawer({ id, onClose }) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* 121 抽屉头部：80px 头像 + 名字 + 在线状态点 + 平台/信任徽章 */}
-        <div className="drawer-head" data-head>
+        <div className="drawer-head" data-head data-s={s}>
           <span className="avatar drawer-avatar" style={{ width: 80, height: 80 }}>
             {icon ? <img src={icon} alt="" loading="lazy" onError={() => setIconFail(icon)} /> : null}
             {!icon || iconFail === icon ? (
@@ -431,7 +431,10 @@ export default function FriendDrawer({ id, onClose }) {
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <div className="truncate text-[16px] font-medium">{p?.display_name ?? id}</div>
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <span className="truncate text-[16px] font-medium">{p?.display_name ?? id}</span>
+                  {p?.group_name ? <span className="badge shrink-0" data-kind="group" title={p.group_name}>{p.group_name}</span> : null}
+                </div>
                 <div className="mt-0.5 truncate text-[12px] text-fg3">{locLabel(p)}</div>
               </div>
               <button className="chip" onClick={onClose}>关闭</button>
@@ -441,12 +444,13 @@ export default function FriendDrawer({ id, onClose }) {
               <span className="badge" data-kind="platform">{platLabel(p)}</span>
               <span className="badge" data-kind="trust" data-rank={String(trustRank(p))}>{trustLabel(p)}</span>
             </div>
+            {p?.status_description ? <div className="drawer-status-desc" title={p.status_description}>{p.status_description}</div> : null}
           </div>
         </div>
 
         {/* 122 操作行：复制主页链接 / 收藏 / 复制世界链接 */}
         {data ? (
-          <div className="flex flex-wrap gap-1.5" data-actions>
+          <div className="drawer-actions" data-actions>
             <ActionButton act="copy-profile" label="复制主页链接" value={profileLink} />
             <button
               className="chip"
@@ -457,7 +461,7 @@ export default function FriendDrawer({ id, onClose }) {
             >
               {fav ? '★ 已收藏' : '☆ 收藏'}
             </button>
-            {worldLink ? <ActionButton act="copy-world" label="复制世界链接" value={worldLink} /> : null}
+            {worldLink ? <ActionButton act="copy-world" label="复制世界链接" value={worldLink} /> : <span />}
           </div>
         ) : null}
 
