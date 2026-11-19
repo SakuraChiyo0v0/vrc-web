@@ -12,7 +12,7 @@ function parseTags(v) {
   } catch { return []; }
 }
 
-import { matchText } from '../../../web/src/lib/pinyin.js';
+import { matchText } from '../lib/pinyin.js';
 
 export function registerRound2Routes(app, { db, T, iso }) {
   const ONLINE = `location is not null and location not in ('offline','private','traveling')`;

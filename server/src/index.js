@@ -16,7 +16,7 @@ import { registerRound5Routes } from './routes/round5.js';
 import { registerRound6Routes } from './routes/round6.js';
 import { registerRound7Routes } from './routes/round7.js';
 import { aggregateNotifications } from './lib/notif.js';
-import { matchText } from '../../web/src/lib/pinyin.js';
+import { matchText } from './lib/pinyin.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_DIST = process.env.VRC_WEB_DIST || path.join(__dirname, '../../web/dist');

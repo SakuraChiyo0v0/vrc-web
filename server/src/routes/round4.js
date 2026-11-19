@@ -6,7 +6,7 @@
  * 日期切分统一按 +08:00，和前端显示对得上。
  */
 import crypto from 'node:crypto';
-import { matchText } from '../../../web/src/lib/pinyin.js';
+import { matchText } from '../lib/pinyin.js';
 
 const TZ = 8 * 3600_000;
 const DAY = 86400_000;
