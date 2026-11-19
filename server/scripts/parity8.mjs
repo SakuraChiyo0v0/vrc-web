@@ -167,7 +167,7 @@ try {
     // 第九轮 98 把空态统一成 <Empty> 组件，概览空态不再直接用 .ov-empty class
     // 第九轮 98 把空态统一成 <Empty>（.empty / .empty-compact），不再直接用 .ov-empty
     must(js.includes('empty-compact') || js.includes('data-empty'), '构建产物缺空态实现');
-    must(css.includes('.ov-empty'), 'CSS 缺 .ov-empty');
+
     must(js.includes('这个范围内还没有停留时长'), '每日时长空态文案没进构建产物');
     must(js.includes('这个范围内还没有活跃时段数据'), '活跃时段空态文案没进构建产物');
     for (const fn of ['DailyBars', 'HourBars']) {

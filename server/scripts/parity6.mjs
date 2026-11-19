@@ -282,7 +282,7 @@ try {
     // PAGE_ORDER 第九轮抽到 lib/shortcuts.js，面板只管渲染
     const help = read('web/src/components/ShortcutHelp.jsx');
     const sc = read('web/src/lib/shortcuts.js');
-    must(/PAGE_ORDER/.test(sc) && /键盘快捷键/.test(help), 'ShortcutHelp 缺快捷键表');
+    must(/SHORTCUT_GROUPS|PAGE_ORDER/.test(sc) && /键盘快捷键/.test(help), 'ShortcutHelp 缺快捷键表');
     for (const t of ['键盘快捷键', 'Ctrl K']) must(js.includes(t), `构建产物缺「${t}」`);
     for (const p of ['friendlog', 'gamelog', 'insights']) must(js.includes(`"${p}"`) || js.includes(`'${p}'`), `构建产物缺页面 id ${p}`);
     return '页面最前 9 项绑定 1~9 键，? 打开表（逻辑有 node 单测）';
