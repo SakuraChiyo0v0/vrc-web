@@ -314,14 +314,14 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 | # | 功能 | 验收 | 状态 |
 |---|---|---|---|
-| 111 | 独立搜索页（好友/世界/玩家分区） | `/vrc/#/search?q=` 三区结果分区展示，点进抽屉 | todo |
-| 112 | PWA：可加到手机主屏 | manifest + 图标 + 主题色，Lighthouse 可安装 | todo |
+| 111 | 独立搜索页（好友/世界/玩家分区） | `/vrc/#/search?q=` 三区结果分区展示，点进抽屉 | done — SearchPage.jsx 三段 data-zone + counts，点条目开 Friend/World 抽屉，构建产物含 data-zone（parity11 待跑） |
+| 112 | PWA：可加到手机主屏 | manifest + 图标 + 主题色，Lighthouse 可安装 | done — manifest.webmanifest（standalone/图标/maskable）+ sw.js + apple-touch-icon，dist 内均在 |
 | 113 | 备份导入（JSON 恢复备注/标签/收藏） | 上传备份文件后备注/标签/收藏恢复，不覆盖事件 | done |
 | 114 | 世界库筛选（收藏/去过次数/容量） | 三个筛选项可组合，计数正确 | todo |
-| 115 | 错误边界与重试 | 接口失败显示重试卡，不白屏；离线提示 | todo |
+| 115 | 错误边界与重试 | 接口失败显示重试卡，不白屏；离线提示 | done — ErrorBoundary(整页渲染兜底)+ErrorCard(动态页重试)+OfflineBanner，dist 含文案，测试 31/31 |
 | 116 | 图片缓存上限与清理 | 超过 200MB 自动删最旧；设置页显示占用 | todo |
-| 117 | 通知页按类型分组折叠 | 同类型折叠成组，可展开 | todo |
-| 118 | 时间线「今天/昨天/更早」分段 | 动态与好友历史分段表头 | todo |
+| 117 | 通知页按类型分组折叠 | 同类型折叠成组，可展开 | done — lib/notifGroups.js + NotificationsPage 分组头/折叠，单测 4 条全过 |
+| 118 | 时间线「今天/昨天/更早」分段 | 动态与好友历史分段表头 | done — lib/timeSections.js 分段 + FeedPage 段头行（data-day），好友历史原日期段头，单测 3 条全过 |
 
 ## 第十一轮完成定义
 

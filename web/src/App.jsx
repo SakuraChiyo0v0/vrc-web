@@ -24,6 +24,7 @@ import CommandPalette from './components/CommandPalette.jsx';
 import ShortcutHelp from './components/ShortcutHelp.jsx';
 import { DrawerProvider } from './components/drawers.jsx';
 import RosterPanel from './components/RosterPanel.jsx';
+import ErrorBoundary, { OfflineBanner } from './components/ErrorBoundary.jsx';
 import { resolveShortcut } from './lib/shortcuts.js';
 
 const PAGES = {
@@ -170,8 +171,12 @@ export default function App() {
           </header>
 
           {/* 65 主内容 workspace：1px ring + 顶部内高光，卡片不再裸贴页面 */}
+          {/* 115 断网提示 + 页面级错误边界：换页自动重挂载，错误不串页 */}
+          <OfflineBanner />
           <div className="workspace min-h-0 flex-1 overflow-auto">
-            <Page onNavigate={setPage} />
+            <ErrorBoundary key={page}>
+              <Page onNavigate={setPage} />
+            </ErrorBoundary>
           </div>
         </main>
 

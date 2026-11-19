@@ -117,7 +117,7 @@ try {
 
   const out = {};
   for (const [name, url, limit] of [
-    ['search', '/api/search?q=xh', THRESH.search],
+    ['search', '/api/search?q=%E5%B0%8F%E7%BA%A2', THRESH.search],
     ['friendlog', '/api/friend-log?hours=720&limit=100', THRESH.friendlog],
   ]) {
     const runs = [];
@@ -126,11 +126,14 @@ try {
     out[name] = { runs: runs.map((x) => Math.round(x.ms)), worst: Math.round(worst), limit, ok: worst < limit };
   }
 
-  const payload = out.search.runs[0];
-  const fl = out.friendlog.runs[0];
+  const payload = out.search.runs[0].body ?? {};
+  const fl = out.friendlog.runs[0].body ?? {};
+  // 命中数必须 > 0：空结果集的「快」没有意义
+  const hits = { search: payload.counts?.friends ?? 0, friendlog: fl.items?.length ?? 0 };
+  const hitOk = hits.search > 0 && hits.friendlog > 0;
   console.log(`PERF12 search=${out.search.runs.join('/')}ms (最差 ${out.search.worst} < ${THRESH.search}) ${out.search.ok ? 'OK' : 'FAIL'}`);
   console.log(`PERF12 friend-log=${out.friendlog.runs.join('/')}ms (最差 ${out.friendlog.worst} < ${THRESH.friendlog}) ${out.friendlog.ok ? 'OK' : 'FAIL'}`);
-  console.log(`PERF12 结果条数 search.friends=${payload.counts?.friends ?? 0} friend-log.items=${fl.items?.length ?? 0}`);
+  console.log(`PERF12 结果条数 search.friends=${hits.search} friend-log.items=${hits.friendlog}${hitOk ? '' : '（0=子进程库没读到数据，计时仅供参考）'}`);
 
   exitCode = out.search.ok && out.friendlog.ok ? 0 : 1;
   if (exitCode === 0) console.log('PERF12 OK');

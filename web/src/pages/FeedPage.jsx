@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { api, BASE } from '../api.js';
 import Empty from '../components/Empty.jsx';
 import Skeleton from '../components/Skeleton.jsx';
+import { ErrorCard } from '../components/ErrorBoundary.jsx';
 import { useDrawer } from '../components/drawers.jsx';
 import RowMenu, { Hint, friendItems, useHint, useRowMenu } from '../components/RowMenu.jsx';
 import UserHoverCard from '../components/UserHoverCard.jsx';
 import { useListNav } from '../lib/listnav.js';
+import { splitSections } from '../lib/timeSections.js';
 
 /**
  * 80 动态页改表格（规格取自 VRCX-0 真机截图）：
@@ -86,7 +88,7 @@ export default function FeedPage() {
   const { hint, say } = useHint();
   const menu = useRowMenu();
 
-  const { data, isLoading, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
+  const { data, isLoading, isFetching, isError, error, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['events', kind, range],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
@@ -95,6 +97,11 @@ export default function FeedPage() {
   });
 
   const events = (data?.pages ?? []).flatMap((p) => p.events ?? []);
+  // 118 今天/昨天/更早分段：段头整行跨列，段内保持时间倒序
+  const sections = splitSections(events, (e) => e.at).map((s) => ({
+    ...s,
+    rows: s.items.map((e) => ({ e, i: events.indexOf(e) }))
+  }));
   const nav = useListNav({
     count: events.length,
     onEnter: (i) => {
@@ -133,6 +140,15 @@ export default function FeedPage() {
       </div>
     );
 
+  if (!events.length && isError) {
+    return (
+      <div className="p-4">
+        {toolbar}
+        <ErrorCard title="动态读不出来" error={error} onRetry={() => refetch()} />
+      </div>
+    );
+  }
+
   if (!events.length) {
     return (
       <div className="p-4">
@@ -156,7 +172,14 @@ export default function FeedPage() {
             </tr>
           </thead>
           <tbody>
-            {events.map((e, i) => {
+            {sections.flatMap((s) => [
+              <tr key={`day-${s.key}`} className="feed-day" data-day={s.key}>
+                <td colSpan={4}>
+                  <span>{s.label}</span>
+                  <span className="tabular-nums text-fg3"> · {s.rows.length} 条</span>
+                </td>
+              </tr>,
+              ...s.rows.map(({ e, i }) => {
               const [label, glyph] = KIND[e.kind] ?? [e.kind, '·'];
               return (
                 <tr
@@ -189,7 +212,8 @@ export default function FeedPage() {
                   </td>
                 </tr>
               );
-            })}
+              })
+            ])}
           </tbody>
         </table>
       </div>

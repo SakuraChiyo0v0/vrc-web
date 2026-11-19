@@ -242,7 +242,7 @@ try {
   // —— 71w 抽屉 Tab 化：四个 tab + 数量 + 懒加载 ——
   await check('71w', '好友抽屉 4 tab + 数量 + 懒加载', async () => {
     const src = read('web/src/components/FriendDrawer.jsx');
-    for (const [key, label] of [['overview', '概览'], ['trips', '行程'], ['worlds', '常去'], ['notes', '备注']]) {
+    for (const [key, label] of [['overview', '概览'], ['trips', '足迹'], ['data', '数据'], ['notes', '备注']]) {
       must(src.includes(`['${key}', '${label}']`), `抽屉缺 tab「${label}」`);
     }
     must(/data-tab=/.test(src) && /role="tab"/.test(src), 'tab 没留 role/data-tab（不好验证）');

@@ -35,4 +35,9 @@ test('组头文案带组数与未读，聚合展开条数不同时补总条数',
   assert.equal(groupSummary(one, {}), 'message · 1 组');
 });
 
-test('空输入返回空数组，未知 type 归到 other')() => {};
+test('空输入返回空数组，未知 type 归到 other', () => {
+  assert.deepEqual(groupByType([]), []);
+  assert.deepEqual(groupByType(null), []);
+  const groups = groupByType([n('a', undefined), n('b', 'invite')]);
+  assert.deepEqual(groups.map((x) => x.type), ['other', 'invite']);
+});
