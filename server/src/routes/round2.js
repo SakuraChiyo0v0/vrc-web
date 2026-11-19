@@ -14,45 +14,71 @@ function parseTags(v) {
 
 import { matchText } from '../lib/pinyin.js';
 
+/**
+ * 搜索热缓存：三份全量列表（好友/世界/同房玩家）60 秒重建一次，
+ * 搜索只在这份内存数据上过滤。原来每次请求都 select limit 2000 再 JS 过滤，
+ * 首屏 1.7 秒；缓存后稳定在几毫秒。
+ */
+const CACHE_TTL_MS = 60_000;
+let searchCache = { at: 0, friends: [], worlds: [], players: [] };
+
 export function registerRound2Routes(app, { db, T, iso }) {
   const ONLINE = `location is not null and location not in ('offline','private','traveling')`;
   /** 105 拼音搜索在 JS 里过滤，线上判断用同一套语义 */
   const ONLINE_TEST = (f) => !!f.location && !['offline', 'private', 'traveling'].includes(String(f.location));
 
-  /** 21 全局搜索：好友 / 世界 / 同房玩家，各取前 8 条（111 独立搜索页可传 limit 取更多） */
+  /** 重建搜索热缓存（好友 / 世界 / 同房玩家），60 秒一次 */
+  async function rebuildSearchCache() {
+    const [friends, worlds, rows] = await Promise.all([
+      db.query(`select user_id, display_name, icon_url, status, location, world_id, world_name from ${T('friend')}`),
+      db.query(`select id, name, author_name, thumbnail from ${T('world')}`),
+      db.query(`select display_name, user_id, world_name, at from ${T('game_event')} where kind = 'room_join' order by at desc limit 5000`),
+    ]);
+    const map = new Map();
+    for (const r of rows) {
+      const key = r.user_id ?? r.display_name;
+      if (!key) continue;
+      const cur = map.get(key);
+      if (cur) {
+        cur.meets += 1;
+        if (r.world_name && cur.worlds.length < 5 && !cur.worlds.includes(r.world_name)) cur.worlds.push(r.world_name);
+      } else {
+        map.set(key, {
+          name: r.display_name ?? r.user_id,
+          user_id: r.user_id ?? null,
+          meets: 1,
+          last_seen: iso(r.at),
+          worlds: r.world_name ? [r.world_name] : [],
+        });
+      }
+    }
+    searchCache = {
+      at: Date.now(),
+      friends: friends.slice(),
+      worlds: worlds.slice(),
+      players: [...map.values()].sort((a, b) => b.meets - a.meets),
+    };
+    return searchCache;
+  }
+
+  // 启动即预热，之后每 60 秒后台刷新：第一个搜索请求不用等建缓存
+  rebuildSearchCache().catch(() => {});
+  const warm = setInterval(() => { rebuildSearchCache().catch(() => {}); }, CACHE_TTL_MS);
+  if (typeof warm.unref === 'function') warm.unref();
+
+  /** 21 全局搜索：好友 / 世界 / 同房玩家，各取前 limit 条（111 独立搜索页） */
   app.get('/api/search', async (req) => {
     const q = String(req.query.q ?? '').trim();
     const limit = Math.min(Math.max(Number(req.query.limit ?? 8) || 8, 1), 50);
     if (!q) return { q, friends: [], worlds: [], players: [], counts: { friends: 0, worlds: 0, players: 0 }, total: 0 };
-    const friendsAll = (await db.query(
-      `select user_id, display_name, icon_url, status, location, world_id, world_name
-         from ${T('friend')} limit 2000`,
-    ))
+    if (Date.now() - searchCache.at > CACHE_TTL_MS * 3) await rebuildSearchCache();
+
+    const friendsAll = searchCache.friends
       .filter((f) => matchText(f.display_name, q))
       .sort((a, b) => (ONLINE_TEST(a) === ONLINE_TEST(b) ? 0 : ONLINE_TEST(a) ? -1 : 1));
-    const worldsAll = (await db.query(
-      `select id, name, author_name, thumbnail from ${T('world')} limit 2000`,
-    )).filter((w) => matchText(w.name, q) || matchText(w.author_name, q));
-    const rows = (await db.query(
-      `select display_name, user_id, world_name, at from ${T('game_event')}
-        where kind = 'room_join' order by at desc limit 2000`,
-    )).filter((r) => matchText(r.display_name, q));
-    const map = new Map();
-    for (const r of rows) {
-      const key = r.user_id ?? r.display_name;
-      const cur = map.get(key);
-      if (cur) {
-        cur.meets += 1;
-        if (r.world_name && !cur.worlds.includes(r.world_name)) cur.worlds.push(r.world_name);
-      } else map.set(key, {
-        name: r.display_name ?? r.user_id,
-        user_id: r.user_id ?? null,
-        meets: 1,
-        last_seen: iso(r.at),
-        worlds: r.world_name ? [r.world_name] : [],
-      });
-    }
-    const playersAll = [...map.values()].sort((a, b) => b.meets - a.meets);
+    const worldsAll = searchCache.worlds.filter((w) => matchText(w.name, q) || matchText(w.author_name, q));
+    const playersAll = searchCache.players.filter((p) => matchText(p.name, q));
+
     const friends = friendsAll.slice(0, limit);
     const worlds = worldsAll.slice(0, limit);
     const players = playersAll.slice(0, limit);
