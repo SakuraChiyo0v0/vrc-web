@@ -61,8 +61,9 @@ export function registerRound2Routes(app, { db, T, iso }) {
     return searchCache;
   }
 
-  // 启动即预热，之后每 60 秒后台刷新：第一个搜索请求不用等建缓存
-  rebuildSearchCache().catch(() => {});
+  // 暴露给 index.js：启动时同步预热，避免重启后第一个搜索请求等 2 秒。
+  // 之后每 60 秒后台刷新，请求永远只读内存。
+  app.decorate('warmSearchCache', rebuildSearchCache);
   const warm = setInterval(() => { rebuildSearchCache().catch(() => {}); }, CACHE_TTL_MS);
   if (typeof warm.unref === 'function') warm.unref();
 

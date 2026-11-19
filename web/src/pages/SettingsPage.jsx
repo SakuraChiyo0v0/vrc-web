@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { api, BASE } from '../api.js';
+import { api, BASE, send } from '../api.js';
 
 /**
  * 36 采集健康：collector 活着没 / 24h 事件速率 / 最近错误。
@@ -20,6 +21,30 @@ function Stat({ label, value, hint, muted }) {
 }
 
 export default function SettingsPage() {
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState(null);
+
+  /** 113 选文件 → 解析 → POST /api/import/backup，结果显示在按钮右边 */
+  const onPickBackup = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setImporting(true);
+    setImportResult(null);
+    try {
+      const payload = JSON.parse(await file.text());
+      const r = await send('import/backup', 'POST', payload);
+      setImportResult({
+        ok: true,
+        text: `已导入 备注 ${r.notes} · 标签 ${r.tags} · 收藏 ${r.favorites}（好友/世界/事件 ${r.skipped?.events ?? 0} 条不导入）`,
+      });
+    } catch (err) {
+      setImportResult({ ok: false, text: `导入失败：${err.message}` });
+    } finally {
+      setImporting(false);
+    }
+  };
+
   const { data, isError, error } = useQuery({
     queryKey: ['diagnostics'],
     queryFn: () => api('diagnostics'),
@@ -96,6 +121,30 @@ export default function SettingsPage() {
               好友 / 世界 / 事件 / 收藏 / 备注 / 标签，一次导出成 JSON。
             </span>
             <a className="chip" href={`${BASE}api/export/backup.json`} download>导出备份 JSON</a>
+          </div>
+
+          {/* 113 备份导入：只补备注/标签/收藏，事件流一行不碰 */}
+          <div className="card mt-2 flex flex-wrap items-center gap-2 px-3 py-2.5" data-import="backup">
+            <span className="min-w-0 flex-1 text-[12px] text-fg3">
+              导入备份：备注 / 标签 / 收藏写回本地（备注以备份为准，标签收藏只补缺）；事件流不受影响。
+            </span>
+            <label className="chip" style={importing ? { opacity: 0.6, cursor: 'default' } : undefined}>
+              {importing ? '导入中…' : '选择备份 JSON'}
+              <input
+                type="file"
+                accept="application/json,.json"
+                disabled={importing}
+                className="hidden"
+                data-import-input="backup"
+                onChange={onPickBackup}
+              />
+            </label>
+            {importResult ? (
+              <span className="text-[11px]" data-import-result={importResult.ok ? 'ok' : 'error'}
+                style={{ color: importResult.ok ? 'var(--status-online)' : 'var(--status-busy)' }}>
+                {importResult.text}
+              </span>
+            ) : null}
           </div>
 
           {/* 手机版预览：桌面宽屏下把界面装进 390×844 框里看，状态进地址栏 */}

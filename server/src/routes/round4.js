@@ -7,6 +7,7 @@
  */
 import crypto from 'node:crypto';
 import { matchText } from '../lib/pinyin.js';
+import { restoreBackup } from '../lib/restore.js';
 
 const TZ = 8 * 3600_000;
 const DAY = 86400_000;
@@ -298,6 +299,18 @@ export function registerRound4Routes(app, { db, T, iso }) {
     };
     reply.header('content-disposition', `attachment; filename="vrc-backup-${dayKey(Date.now())}.json"`);
     return payload;
+  });
+
+  /** 113 备份导入：补备注/标签/收藏，不碰事件流 */
+  app.post('/api/import/backup', { bodyLimit: 32 * 1024 * 1024 }, async (req, reply) => {
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    try {
+      const r = await restoreBackup(db, T, body);
+      return { ok: true, ...r };
+    } catch (e) {
+      reply.code(400);
+      return { ok: false, error: e.message };
+    }
   });
 
   /** 46 告警事件列表（diagnostics 判 stale 时写入） */

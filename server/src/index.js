@@ -78,6 +78,8 @@ registerInsightRoutes(app, { db, T, iso });
 registerExtRoutes(app, { db, T, iso });
 registerShareRoutes(app, { db, T, iso });
 registerRound2Routes(app, { db, T, iso });
+// 搜索缓存启动即预热（2 秒左右），换取之后每次搜索都在 10ms 内
+try { await app.warmSearchCache(); } catch (e) { console.error('[search] 预热失败', e.message); }
 registerRound3Routes(app, { db, T, iso });
 registerRound4Routes(app, { db, T, iso });
 registerRound5Routes(app, { db, T, iso });

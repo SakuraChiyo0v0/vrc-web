@@ -125,6 +125,14 @@ export const PG = [
      at timestamptz not null default now()
    )`,
   `create index if not exists friend_avatar_user_idx on vrc.friend_avatar_history (user_id, at desc)`,
+  // 第十二轮 126：搜索/好友历史（friend-log）热路径缺的索引，新库建库即带
+  `create index if not exists friend_event_kind_at_idx on vrc.friend_event (kind, at desc)`,
+  `create index if not exists friend_change_at_idx on vrc.friend_change (at desc)`,
+  `create index if not exists friend_status_at_idx on vrc.friend_status_history (at desc)`,
+  `create index if not exists game_event_kind_at_idx on vrc.game_event (kind, at desc)`,
+  `create index if not exists game_event_user_at_idx on vrc.game_event (user_id, at desc)`,
+  `create index if not exists friend_session_started_idx on vrc.friend_session (started_at desc)`,
+  `create index if not exists friend_visit_started_idx on vrc.friend_world_visit (started_at desc)`,
   // 老库补列
   `alter table vrc.friend add column if not exists icon_url text`,
   `alter table vrc.friend_event add column if not exists icon_url text`,
@@ -248,6 +256,14 @@ export const SQLITE = [
      at text not null default (datetime('now'))
    )`,
   `create index if not exists friend_avatar_user_idx on friend_avatar_history (user_id, at desc)`,
+  // 第十二轮 126：与 PG 同一批 7 个索引（SQLite 新库同样建库即带）
+  `create index if not exists friend_event_kind_at_idx on friend_event (kind, at desc)`,
+  `create index if not exists friend_change_at_idx on friend_change (at desc)`,
+  `create index if not exists friend_status_at_idx on friend_status_history (at desc)`,
+  `create index if not exists game_event_kind_at_idx on game_event (kind, at desc)`,
+  `create index if not exists game_event_user_at_idx on game_event (user_id, at desc)`,
+  `create index if not exists friend_session_started_idx on friend_session (started_at desc)`,
+  `create index if not exists friend_visit_started_idx on friend_world_visit (started_at desc)`,
   `alter table friend add column tags text`,
   `alter table friend add column trust_rank integer`,
   `alter table world add column visits_total integer`,

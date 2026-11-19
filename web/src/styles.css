@@ -145,6 +145,37 @@ body {
   .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 7px; }
   .dot { position: absolute; right: -2px; bottom: -2px; width: 10px; height: 10px; border-radius: 999px; border: 2px solid var(--surface-panel); }
 
+  /* 121 好友详情抽屉头部：80px 头像 + 徽章；121 的徽章色与 --status-* 同源，不另起一套色 */
+  .drawer-head { display: flex; align-items: flex-start; gap: .75rem; padding-bottom: .75rem; border-bottom: 1px solid var(--stroke-subtle); }
+  .drawer-avatar { width: 80px; height: 80px; border-radius: 14px; }
+  .drawer-avatar img { border-radius: 13px; }
+  .drawer-dot { width: 14px; height: 14px; right: -3px; bottom: -3px; border-width: 3px; }
+  .drawer-dot[data-s='active'] { background: var(--status-active); }
+  .drawer-dot[data-s='join me'] { background: var(--status-joinme); }
+  .drawer-dot[data-s='ask me'] { background: var(--status-askme); }
+  .drawer-dot[data-s='busy'] { background: var(--status-busy); }
+  .drawer-dot[data-s='offline'] { background: var(--status-offline); }
+
+  .badge {
+    display: inline-flex; align-items: center; height: 20px; padding: 0 .45rem;
+    border-radius: 6px; border: 1px solid var(--stroke-subtle);
+    font-size: 10.5px; line-height: 1; color: var(--content-secondary);
+    background: var(--surface-raised);
+  }
+  .badge[data-kind='status'][data-s='active'] { color: var(--status-active); border-color: color-mix(in oklch, var(--status-active) 45%, transparent); }
+  .badge[data-kind='status'][data-s='join me'] { color: var(--status-joinme); border-color: color-mix(in oklch, var(--status-joinme) 45%, transparent); }
+  .badge[data-kind='status'][data-s='ask me'] { color: var(--status-askme); border-color: color-mix(in oklch, var(--status-askme) 45%, transparent); }
+  .badge[data-kind='status'][data-s='busy'] { color: var(--status-busy); border-color: color-mix(in oklch, var(--status-busy) 45%, transparent); }
+  .badge[data-kind='status'][data-s='offline'] { color: var(--status-offline); }
+  .badge[data-kind='platform'] { color: var(--platform-pc); }
+  .badge[data-kind='trust'][data-rank='1'] { color: var(--content-tertiary); }
+  .badge[data-kind='trust'][data-rank='2'] { color: var(--status-joinme); }
+  .badge[data-kind='trust'][data-rank='3'] { color: var(--status-active); }
+  .badge[data-kind='trust'][data-rank='4'] { color: var(--status-askme); }
+
+  /* 123 数据 tab：2×3 数字格 */
+  .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+
   .nav-item {
     display: flex; align-items: center; gap: .5rem; height: 32px; padding: 0 .5rem;
     border-radius: 7px; color: var(--content-secondary); font-size: 12.5px;
