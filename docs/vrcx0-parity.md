@@ -345,4 +345,6 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 ## 第十二轮完成定义
 
-1. 121~126 全 done；2. `parity12_check.sh` 全绿（含性能断言）——2026-11-19 14:47 复跑 PARITY12 OK 6/6（search 7/3/3ms、friend-log 44/22/21ms）；3. build+smoke（done：dist index-BbN31lwf.js 437.50 kB / SMOKE OK / npm test 18 pass）；4. 抽屉截图 done：`docs/screenshots/round12-desktop-friend-drawer{,-trips,-data}.png` + `round12-mobile-friend-drawer.png`（2026-11-19 14:45，80px 头像/在线点/PC 徽章、三键操作行、四 tab、足迹展开刚好 10 条）；5. 自动发布。
+1. 121~126 全 done；2. `parity12_check.sh` 全绿（含性能断言）——2026-11-19 14:47 复跑 PARITY12 OK 6/6（search 7/3/3ms、friend-log 44/22/21ms）；3. build+smoke（done：dist index-DwmBnwP7.js 437.74 kB / index-BjV8n9kW.css；SMOKE OK / npm test 18 pass）；4. 抽屉截图 done：`docs/screenshots/round12-desktop-friend-drawer{,-trips,-data}.png` + `round12-mobile-friend-drawer.png`（2026-11-19 14:56 重拍，80px 头像/在线点/PC 徽章、三键操作行、四 tab、足迹展开刚好 10 条、只显示单个面板）；5. 自动发布。
+
+> 实拍发现并修掉的真 bug：tab 面板用 `hidden` 属性切显隐，被 Tailwind 的 `.flex` 顶掉 → 四个面板同时铺开（截图里概览和足迹叠在一起）。`styles.css` 加全局 `[hidden]{display:none!important}`，parity12 #123 一并断言该兜底在位。另：头像 403（演示库假 id）时降级为首字母块，不再露破图图标。

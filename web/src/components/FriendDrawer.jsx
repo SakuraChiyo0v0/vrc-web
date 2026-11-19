@@ -382,6 +382,8 @@ export default function FriendDrawer({ id, onClose }) {
   const p = data?.profile;
   const [tab, setTab] = useState('overview');
   const [seen, setSeen] = useState(() => new Set(['overview']));
+  // 头像加载失败（演示库假 id / 代理 403）时降级成首字母块，不露破图图标
+  const [iconFail, setIconFail] = useState(null);
   const pick = (next) => {
     setTab(next);
     setSeen((s) => (s.has(next) ? s : new Set([...s, next])));
@@ -401,6 +403,7 @@ export default function FriendDrawer({ id, onClose }) {
   });
 
   const profileLink = `https://vrchat.com/home/user/${id}`;
+  const icon = p?.icon_url ? imgUrl(p.icon_url) : '';
   const s = statusKey(p);
   const inst = p?.location && String(p.location).includes(':')
     ? String(p.location).slice(String(p.location).indexOf(':') + 1)
@@ -419,7 +422,10 @@ export default function FriendDrawer({ id, onClose }) {
         {/* 121 抽屉头部：80px 头像 + 名字 + 在线状态点 + 平台/信任徽章 */}
         <div className="drawer-head" data-head>
           <span className="avatar drawer-avatar" style={{ width: 80, height: 80 }}>
-            {p?.icon_url ? <img src={imgUrl(p.icon_url)} alt="" loading="lazy" /> : null}
+            {icon ? <img src={icon} alt="" loading="lazy" onError={() => setIconFail(icon)} /> : null}
+            {!icon || iconFail === icon ? (
+              <span className="avatar-fallback" aria-hidden="true">{(p?.display_name ?? id ?? '?').slice(0, 1).toUpperCase()}</span>
+            ) : null}
             <span className="dot drawer-dot" data-s={s} />
           </span>
           <div className="min-w-0 flex-1">

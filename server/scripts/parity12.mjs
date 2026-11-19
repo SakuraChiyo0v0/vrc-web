@@ -93,7 +93,10 @@ try {
     must(/data-panel="trips"[\s\S]{0,300}<Footprints/.test(drawer), '足迹面板没渲染 Footprints');
     must(/data-panel="notes"[\s\S]{0,300}NoteAndTags/.test(drawer), '备注面板没渲染 NoteAndTags');
     must(drawer.includes('role="tablist"') && drawer.includes('role="tab"'), '缺 tablist/tab 无障碍角色');
-    return '四 panel 各自组件，overview 无 Footprints';
+    // 面板靠 hidden 属性切显隐；Tailwind 的 .flex 会压过 UA 的 [hidden]{display:none}，
+    // 少了这条全局兜底四个面板会同时铺开（第十二轮实拍发现的 bug）
+    must(/\[hidden\]\s*\{[^}]*display:\s*none\s*!important/.test(css), 'styles.css 缺 [hidden]{display:none!important} 兜底');
+    return '四 panel 各自组件，overview 无 Footprints，hidden 兜底在位';
   });
 
   /* ───── 124 去重 + 折叠 ───── */
