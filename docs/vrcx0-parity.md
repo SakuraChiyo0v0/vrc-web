@@ -345,4 +345,4 @@ PC 端 log-agent 未上线，`game_event` 为空，所以这一轮只做**用现
 
 ## 第十二轮完成定义
 
-1. 121~126 全 done；2. `parity12_check.sh` 全绿（含性能断言）；3. build+smoke（done：dist index-DM4v8Dad.js / SMOKE OK）；4. 抽屉截图对比 VRCX-0（待出：PC 侧 headless Chrome 连不上 127.0.0.1:18899 隧道，见 STATE）；5. 自动发布。
+1. 121~126 全 done；2. `parity12_check.sh` 全绿（含性能断言）——2026-11-19 14:47 复跑 PARITY12 OK 6/6（search 7/3/3ms、friend-log 44/22/21ms）；3. build+smoke（done：dist index-BbN31lwf.js 437.50 kB / SMOKE OK / npm test 18 pass）；4. 抽屉截图 done：`docs/screenshots/round12-desktop-friend-drawer{,-trips,-data}.png` + `round12-mobile-friend-drawer.png`（2026-11-19 14:45，80px 头像/在线点/PC 徽章、三键操作行、四 tab、足迹展开刚好 10 条）；5. 自动发布。
