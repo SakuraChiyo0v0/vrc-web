@@ -466,6 +466,18 @@ async function resolveWorlds() {
   }
 }
 
+function scheduleReconnect() {
+  const wait = backoff;
+  backoff = Math.min(backoff * 2, MAX_BACKOFF);
+  setTimeout(() => {
+    connect().catch((e) => {
+      // 重连失败（网络抖动/鉴权接口超时）不能变成未处理 rejection，否则整个进程退出
+      console.error('[ws] reconnect failed', e.message);
+      scheduleReconnect();
+    });
+  }, wait);
+}
+
 async function connect() {
   const token = await pipelineToken();
   ws = new WS(`wss://pipeline.vrchat.cloud/?auth=${encodeURIComponent(token)}`, {
@@ -514,8 +526,7 @@ async function connect() {
       try { await relogin(); } catch (e) { console.error('[auth] 刷新失败', e.message); }
     }
     await touchState({ connected: false, last_error: `closed ${code}` });
-    setTimeout(connect, backoff);
-    backoff = Math.min(backoff * 2, MAX_BACKOFF);
+    scheduleReconnect();
   });
 
   ws.on('error', (e) => console.error('[ws] error', e.message));
@@ -527,7 +538,10 @@ async function main() {
   await resolveWorlds();
   setInterval(resolveWorlds, 120_000).unref();
   setInterval(() => seedFriends().catch((e) => console.error('[seed]', e.message)), 3_600_000).unref();
-  await connect();
+  try { await connect(); } catch (e) {
+    console.error('[ws] initial connect failed', e.message);
+    scheduleReconnect();
+  }
   setInterval(() => {
     if (!ws || ws.readyState !== WS.OPEN) return;
     try { ws.ping(); } catch { /* ignore */ }
