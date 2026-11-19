@@ -749,3 +749,7 @@ html[data-phone='1'] #root {
   100% { background-position: 0 0; }
 }
 @media (prefers-reduced-motion: reduce) { .sk-bar { animation: none; } }
+
+/* 全局兜底：HTML `hidden` 属性必须压过 Tailwind 的 display 工具类（.flex/.grid 等），
+   否则 hidden={...} 的 tab 面板会被 .flex 顶成 display:flex，四个面板同时显示。 */
+[hidden] { display: none !important; }
