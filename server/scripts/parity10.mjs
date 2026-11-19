@@ -222,8 +222,10 @@ try {
       must(read(f).includes('matchText('), `${f} 没接拼音搜索`);
     }
     // 服务端全局搜索同一套语义（好友 / 世界 / 玩家）
+    // 后端只能 import server 自己的副本：镜像里没有 web/，跨目录 import 会让容器启动即崩
     const r2 = read('server/src/routes/round2.js');
-    must(r2.includes("from '../../../web/src/lib/pinyin.js'"), '全局搜索没复用 pinyin.js');
+    must(r2.includes("from '../lib/pinyin.js'"), '全局搜索没复用 pinyin.js（应取 server/src/lib/pinyin.js）');
+    must(!r2.includes('web/src/lib/pinyin.js'), '全局搜索跨目录 import 前端源码，镜像里不存在');
     must((r2.match(/matchText\(/g) ?? []).length >= 3, '全局搜索没对好友/世界/玩家都做拼音匹配');
     must(js.includes('matchText') || js.includes('codePointAt'), '构建产物缺拼音搜索');
     return '输入 xh 命中「小红」；中英混合名 amexh 也命中；服务端 /api/search 同步支持';
