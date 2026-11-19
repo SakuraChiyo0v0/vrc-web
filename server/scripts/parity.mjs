@@ -194,7 +194,7 @@ try {
   await check('5w', '收藏页接线', async () => {
     const app = fs.readFileSync(path.join(ROOT, 'web/src/App.jsx'), 'utf8');
     const page = fs.readFileSync(path.join(ROOT, 'web/src/pages/FavoritesPage.jsx'), 'utf8');
-    must(/favorites:\s*FavoritesPage/.test(app), 'App.jsx 没注册 favorites 路由');
+    must(/favorites:\s*lazy\(\(\) => import\('\.\/pages\/FavoritesPage\.jsx'\)\)/.test(app), 'App.jsx 没注册 favorites 路由');
     must(/send\('favorites'/.test(page) && /shares/.test(page), '页面没调 /api/favorites 与 /api/shares');
     must(/favorite-groups/.test(page), '页面没调分组接口');
     return 'FavoritesPage 已挂路由，读写 favorites/shares/groups';
@@ -213,7 +213,7 @@ try {
   await check('11w', '洞察页接线', async () => {
     const app = fs.readFileSync(path.join(ROOT, 'web/src/App.jsx'), 'utf8');
     const page = fs.readFileSync(path.join(ROOT, 'web/src/pages/InsightsPage.jsx'), 'utf8');
-    must(/insights:\s*InsightsPage/.test(app), 'App.jsx 没注册 insights 路由');
+    must(/insights:\s*lazy\(\(\) => import\('\.\/pages\/InsightsPage\.jsx'\)\)/.test(app), 'App.jsx 没注册 insights 路由');
     must(/api\('insights'\)/.test(page), '页面没调 /api/insights');
     must(/companions/.test(page) && /fading/.test(page) && /hours/.test(page), '页面没渲染三段洞察');
     return 'InsightsPage 已挂路由，渲染 companions/fading/hours';

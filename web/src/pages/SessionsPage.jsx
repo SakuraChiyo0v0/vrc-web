@@ -28,9 +28,9 @@ export default function SessionsPage() {
             <tbody>
               {rows.map((s, i) => (
                 <tr key={i}>
-                  <td>{s.world ?? s.location}</td>
-                  <td className="text-[12px] text-fg3">{new Date(s.start_at).toLocaleString('zh-CN', { hour12: false })}</td>
-                  <td className="text-fg2">{s.minutes != null ? `${s.minutes} 分钟` : '进行中'}</td>
+                  <td data-label="世界">{s.world ?? s.location}</td>
+                  <td className="text-[12px] text-fg3" data-label="进入">{new Date(s.start_at).toLocaleString('zh-CN', { hour12: false })}</td>
+                  <td className="text-fg2" data-label="停留">{s.minutes != null ? `${s.minutes} 分钟` : '进行中'}</td>
                 </tr>
               ))}
             </tbody>

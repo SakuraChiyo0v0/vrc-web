@@ -90,9 +90,10 @@ const dist = (rel) => src(path.join('web/dist', rel));
 const asset = (ext) => {
   const dir = path.join(ROOT, 'web/dist/assets');
   must(fs.existsSync(dir), 'web/dist 不存在（先跑 npm run build）');
-  const f = fs.readdirSync(dir).find((x) => x.endsWith(ext));
-  must(f, `web/dist/assets 里没有 ${ext}`);
-  return fs.readFileSync(path.join(dir, f), 'utf8');
+  const files = fs.readdirSync(dir).filter((x) => x.endsWith(ext));
+  if (!files.length) throw new Error(`web/dist/assets 里没有 ${ext}`);
+  // 134 起页面按路由分 chunk：断言在全部产物里找，只读第一个文件会漏
+  return files.map((f) => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n');
 };
 
 let exitCode = 1;
@@ -237,7 +238,7 @@ try {
     must(/rate24h|rate\?\./.test(s) && /lastError/.test(s), '设置页没展示速率/最近错误');
     must(/refetchInterval/.test(s), '设置页没有轮询刷新');
     const app = src('web/src/App.jsx');
-    must(/settings: SettingsPage/.test(app), 'App 没注册设置页');
+    must(/settings:\s*lazy\(\(\) => import\('\.\/pages\/SettingsPage\.jsx'\)\)/.test(app), 'App 没注册设置页');
     must(/settings: \['设置'/.test(app), '设置页没有标题');
     must(/id: 'settings'/.test(src('web/src/components/Sidebar.jsx')), '侧栏没有设置入口');
     const js = asset('.js');

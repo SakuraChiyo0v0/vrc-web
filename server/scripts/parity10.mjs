@@ -20,9 +20,10 @@ const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
 const distDir = path.join(ROOT, 'web/dist/assets');
 const asset = (ext) => {
   if (!fs.existsSync(distDir)) throw new Error('web/dist 不存在（先跑 cd web && npm run build）');
-  const f = fs.readdirSync(distDir).find((x) => x.endsWith(ext));
-  if (!f) throw new Error(`web/dist/assets 里没有 ${ext}`);
-  return fs.readFileSync(path.join(distDir, f), 'utf8');
+  // 134 起页面按路由分 chunk：断言要在全部产物里找，只读第一个文件会漏
+  const files = fs.readdirSync(distDir).filter((x) => x.endsWith(ext));
+  if (!files.length) throw new Error(`web/dist/assets 里没有 ${ext}`);
+  return files.map((f) => fs.readFileSync(path.join(distDir, f), 'utf8')).join('\n');
 };
 
 const results = [];
@@ -205,7 +206,7 @@ try {
     const page = read('web/src/pages/NotificationsPage.jsx');
     must(page.includes('data-agg={n.count}'), '通知卡没显示聚合计数');
     must(page.includes('data-agg-list'), '聚合卡不能展开看明细');
-    must(page.includes('ids: n.ids'), '标已读没带走整组');
+    must(page.includes('n.ids ?? [n.id]'), '标已读没带走整组');
     must(js.includes('data-agg'), '构建产物缺聚合计数');
     return '同 type 24h 合并、断开/异类不合并；卡片带 ×N 可展开；标已读一次带走整组';
   });

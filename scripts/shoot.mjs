@@ -98,15 +98,16 @@ async function shoot(name, width, height, dpr, mobile, clicks, post, reload, off
   if (offline) await send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
   const file = path.join(OUT, `${PREFIX}-${name}.png`);
   fs.writeFileSync(file, Buffer.from(shot.data, 'base64'));
-  const info = await evalJs(`JSON.stringify({ title: document.title, w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight, over: document.documentElement.scrollWidth > innerWidth, text: document.body.innerText.replace(/\\s+/g, ' ').slice(0, 260), len: document.body.innerText.replace(/\\s+/g, '').length, stuck: /读取中|加载中/.test(document.body.innerText), bad: performance.getEntriesByType('resource').filter((r) => r.responseStatus >= 400).map((r) => r.name.replace(origin, '') + ':' + r.responseStatus) })`);
+  const info = await evalJs(`JSON.stringify({ title: document.title, w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight, over: document.documentElement.scrollWidth > innerWidth, text: document.body.innerText.replace(/\\s+/g, ' ').slice(0, 260), len: document.body.innerText.replace(/\\s+/g, '').length, mainLen: (document.querySelector('main')?.innerText ?? '').replace(/\\s+/g, '').length, stuck: /读取中|加载中/.test(document.body.innerText), bad: performance.getEntriesByType('resource').filter((r) => r.responseStatus >= 400).map((r) => r.name.replace(origin, '') + ':' + r.responseStatus) })`);
   console.log(`${name} ${width}x${height}dpr${dpr} -> ${file} ${info}`);
   // 空态图不算验收：页面必须有正文、不在「读取中」、且没有 4xx 子请求
   // /api/img 例外：演示库的头像 id 是假值（av_1），代理按白名单回 403，<img> 已降级隐藏，图仍可用
   const meta = JSON.parse(info);
   const badHard = meta.bad.filter((x) => !x.startsWith('/vrc/api/img') && !x.startsWith('/api/img'));
   if (meta.stuck) throw new Error(`${name}: 停在「读取中/加载中」，出图作废`);
-  // 手机端导航收进抽屉，正文天然比桌面短；阈值 200 只拦白屏/空态
-  if (meta.len < 200) throw new Error(`${name}: 正文只有 ${meta.len} 字，疑似空态/白屏`);
+  // 手机端导航收进抽屉，整页文本里导航条就占 ~180 字，用它判空态没有区分度；
+  // 改看 <main> 区正文：≥20 字即认为有真内容（收藏页手机端仅 2 张世界卡，正文约 40 字）
+  if (meta.mainLen < 20) throw new Error(`${name}: 主区正文只有 ${meta.mainLen} 字，疑似空态/白屏`);
   if (badHard.length) throw new Error(`${name}: 子请求失败 ${badHard.join(', ')}`);
   if (meta.bad.length) console.log(`  (忽略头像代理：${meta.bad.length} 个 /api/img 假 id)`);
   return file;
@@ -326,8 +327,19 @@ const round13 = [
   ['4k-friend-drawer-head', 3840, 2160, 1, false, ['好友列表'], drawerPost('overview')]
 ];
 
+/* 第十四轮：134 移动端表格卡片化 / 路由懒加载 / 离线提示 —— 三端出图 */
+const round14 = [
+  ['mobile-players-cards', 390, 844, 2, true, ['玩家']],          // 卡片：标题=玩家名，下面「列名 值」
+  ['mobile-favorites-cards', 390, 844, 2, true, ['收藏']],
+  ['mobile-feed-cards', 390, 844, 2, true, ['动态']],             // 动态流：玩家名当标题、时间置底
+  ['mobile-sessions-cards', 390, 844, 2, true, ['我的行程']],
+  ['mobile-offline-banner', 390, 844, 2, true, ['动态'], null, false, true], // 145 断网提示条
+  ['desktop-players', 1600, 1000, 1, false, ['玩家']],             // 桌面仍是表格，对照卡片化没串味
+  ['4k-favorites', 3840, 2160, 1, false, ['收藏']]
+];
+
 const only = (process.env.SHOOT_ONLY ?? '').split(',').filter(Boolean);
-for (const s of ({ round7, round8, round9, round10, round11, round12, round13 }[SET] ?? round7)) {
+for (const s of ({ round7, round8, round9, round10, round11, round12, round13, round14 }[SET] ?? round7)) {
   if (only.length && !only.includes(s[0])) continue;
   await shoot(...s);
 }

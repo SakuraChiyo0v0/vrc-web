@@ -21,9 +21,10 @@ const src = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const asset = (ext) => {
   const dir = path.join(ROOT, 'web/dist/assets');
   must(fs.existsSync(dir), 'web/dist 不存在（先跑 cd web && npm run build）');
-  const f = fs.readdirSync(dir).find((x) => x.endsWith(ext));
-  must(f, `web/dist/assets 里没有 ${ext}`);
-  return fs.readFileSync(path.join(dir, f), 'utf8');
+  // 134 起页面按路由分 chunk：断言在全部产物里找
+  const files = fs.readdirSync(dir).filter((x) => x.endsWith(ext));
+  must(files.length, `web/dist/assets 里没有 ${ext}`);
+  return files.map((f) => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n');
 };
 const must = (cond, msg) => { if (!cond) throw new Error(msg); };
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));

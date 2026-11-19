@@ -59,9 +59,10 @@ const must = (cond, msg) => { if (!cond) throw new Error(msg); };
 const asset = (ext) => {
   const dir = path.join(ROOT, 'web/dist/assets');
   must(fs.existsSync(dir), 'web/dist 不存在（先跑 cd web && npm run build）');
-  const f = fs.readdirSync(dir).find((x) => x.endsWith(ext));
-  must(f, `web/dist/assets 里没有 ${ext}`);
-  return fs.readFileSync(path.join(dir, f), 'utf8');
+  const files = fs.readdirSync(dir).filter((x) => x.endsWith(ext));
+  if (!files.length) throw new Error(`web/dist/assets 里没有 ${ext}`);
+  // 134 起页面按路由分 chunk：断言在全部产物里找，只读第一个文件会漏
+  return files.map((f) => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n');
 };
 
 const TZ = 8 * 3600_000;

@@ -81,7 +81,7 @@ export default function PlayersPage() {
                   data-nav-active={nav.active === i}
                   onContextMenu={(ev) => rowMenu(ev, p)}
                 >
-                  <td>
+                  <td data-label="玩家">
                     <span className="flex items-center gap-2.5">
                       <UserHoverCard id={p.user_id}>
                         <InitialAvatar name={p.name} />
@@ -89,9 +89,9 @@ export default function PlayersPage() {
                       <span>{p.name}</span>
                     </span>
                   </td>
-                  <td className="tabular-nums text-fg2">{p.meets}</td>
-                  <td className="text-[12px] text-fg3">{new Date(p.last_seen).toLocaleString('zh-CN', { hour12: false })}</td>
-                  <td className="text-fg2">{p.last_world ?? '—'}</td>
+                  <td className="tabular-nums text-fg2" data-label="共处次数">{p.meets}</td>
+                  <td className="text-[12px] text-fg3" data-label="最近一次">{new Date(p.last_seen).toLocaleString('zh-CN', { hour12: false })}</td>
+                  <td className="text-fg2" data-label="世界">{p.last_world ?? '—'}</td>
                 </tr>
               ))}
             </tbody>
@@ -116,8 +116,8 @@ export default function PlayersPage() {
             <tbody>
               {[...rows].sort((a, b) => (b.meets ?? 0) - (a.meets ?? 0)).map((p, i) => (
                 <tr key={p.user_id ?? p.name}>
-                  <td className="tabular-nums text-fg3">{i + 1}</td>
-                  <td>
+                  <td className="tabular-nums text-fg3" data-label="#">{i + 1}</td>
+                  <td data-label="玩家">
                     <span className="flex items-center gap-2.5">
                       <UserHoverCard id={p.user_id}>
                         <InitialAvatar name={p.name} />
@@ -125,8 +125,8 @@ export default function PlayersPage() {
                       <span>{p.name}</span>
                     </span>
                   </td>
-                  <td className="tabular-nums text-fg2">{p.meets} 次</td>
-                  <td className="text-[12px] text-fg3">{new Date(p.last_seen).toLocaleString('zh-CN', { hour12: false })}</td>
+                  <td className="tabular-nums text-fg2" data-label="共处次数">{p.meets} 次</td>
+                  <td className="text-[12px] text-fg3" data-label="最近一次">{new Date(p.last_seen).toLocaleString('zh-CN', { hour12: false })}</td>
                 </tr>
               ))}
             </tbody>

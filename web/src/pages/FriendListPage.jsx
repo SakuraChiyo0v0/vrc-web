@@ -144,7 +144,7 @@ export default function FriendListPage() {
                 ) : null,
                 ...g.rows.map((f) => (
                 <tr key={f.user_id} data-uid={f.user_id} onClick={() => openFriend(f.user_id)} className="cursor-pointer">
-                  <td>
+                  <td data-label="好友">
                     <span className="flex min-w-0 items-center gap-2">
                       <span className="avatar">
                         {f.icon_url ? <img src={imgUrl(f.icon_url)} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} /> : null}
@@ -155,12 +155,12 @@ export default function FriendListPage() {
                       {f.online ? <span className="shrink-0 text-[11px] text-fg3">在线</span> : null}
                     </span>
                   </td>
-                  <td className="text-[12px] text-fg2">{TRUST_NAME[f.trust_rank] ?? '—'}</td>
-                  <td className="min-w-0 text-[12px] text-fg3">
+                  <td className="text-[12px] text-fg2" data-label="信任等级">{TRUST_NAME[f.trust_rank] ?? '—'}</td>
+                  <td className="min-w-0 text-[12px] text-fg3" data-label="标签">
                     {f.tags.length ? f.tags.join(' / ') : '—'}
                   </td>
-                  <td><Platform p={f.platform} /></td>
-                  <td className="text-[12px] tabular-nums text-fg3">{f.online ? '现在' : ago(f.last_seen)}</td>
+                  <td data-label="平台"><Platform p={f.platform} /></td>
+                  <td className="text-[12px] tabular-nums text-fg3" data-label="最后在线">{f.online ? '现在' : ago(f.last_seen)}</td>
                 </tr>
                 ))
               ])}

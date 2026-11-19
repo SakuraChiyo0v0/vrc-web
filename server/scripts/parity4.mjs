@@ -74,9 +74,10 @@ const src = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const asset = (ext) => {
   const dir = path.join(ROOT, 'web/dist/assets');
   must(fs.existsSync(dir), 'web/dist 不存在（先跑 npm run build）');
-  const f = fs.readdirSync(dir).find((x) => x.endsWith(ext));
-  must(f, `web/dist/assets 里没有 ${ext}`);
-  return fs.readFileSync(path.join(dir, f), 'utf8');
+  const files = fs.readdirSync(dir).filter((x) => x.endsWith(ext));
+  if (!files.length) throw new Error(`web/dist/assets 里没有 ${ext}`);
+  // 134 起页面按路由分 chunk：断言在全部产物里找，只读第一个文件会漏
+  return files.map((f) => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n');
 };
 
 // —— 时间基准：按 +08:00 切日，跟服务端一致 ——
@@ -289,18 +290,19 @@ try {
   // —— 44w 首页摘要卡片 + 41w/42w/43w 页面接线 ——
   await check('41w', '世界库页接线', async () => {
     const app = src('web/src/App.jsx');
-    must(/worlds: WorldsPage/.test(app), 'App 没注册世界库页');
+    must(/worlds:\s*lazy\(\(\) => import\('\.\/pages\/WorldsPage\.jsx'\)\)/.test(app), 'App 没注册世界库页');
     must(/worlds: \['世界库'/.test(app), '世界库页没有标题');
     must(/id: 'worlds'/.test(src('web/src/components/Sidebar.jsx')), '侧栏没有世界库入口');
     const page = src('web/src/pages/WorldsPage.jsx');
-    must(/api\(`worlds\?q=/.test(page), 'WorldsPage 没调 /api/worlds');
+    // 查询串由 filterQs 拼（q/sort/dir/fav/min_visits/capacity），不再写死 q=
+    must(/api\(`worlds\?\$\{filterQs\(/.test(page) && /`q=\$\{encodeURIComponent\(q\)\}/.test(page), 'WorldsPage 没调 /api/worlds');
     // 排序参数由 sort.key/dir 拼（支持表头升降序），不再固定单值
     must(/sort=\$\{sort\.(key|dir)\}/.test(page) && /offset=\$\{offset\}/.test(page), 'WorldsPage 没传 sort/offset');
     // 第十轮起表头排序走统一 SortCol（col="visits"），不再手写单值按钮
     must(/data-active=\{sort === 'visits'\}/.test(page) || /col="visits"/.test(page), '没有「访问次数」排序按钮');
     must(/openWorld\(w\.id\)/.test(page), '世界行没接详情抽屉');
     const js = asset('.js');
-    must(/worlds\?q=/.test(js), '构建产物里没有 worlds?q=');
+    must(/worlds\?\$\{/.test(js) && /min_visits=/.test(js), '构建产物里没有 worlds? 查询串');
     return 'App/侧栏注册世界库，页面传 q+sort+offset、有访问次数按钮、行可点开详情，已在构建产物里';
   });
 
@@ -317,7 +319,7 @@ try {
 
   await check('43w', '日历页接线', async () => {
     const app = src('web/src/App.jsx');
-    must(/calendar: CalendarPage/.test(app), 'App 没注册日历页');
+    must(/calendar:\s*lazy\(\(\) => import\('\.\/pages\/CalendarPage\.jsx'\)\)/.test(app), 'App 没注册日历页');
     must(/id: 'calendar'/.test(src('web/src/components/Sidebar.jsx')), '侧栏没有日历入口');
     const page = src('web/src/pages/CalendarPage.jsx');
     must(/api\(`calendar\?month=\$\{month\}`\)/.test(page), 'CalendarPage 没调 /api/calendar');

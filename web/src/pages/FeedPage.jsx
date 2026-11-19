@@ -189,8 +189,8 @@ export default function FeedPage() {
                   data-nav-active={nav.active === i}
                   onContextMenu={(ev) => rowMenu(ev, e)}
                 >
-                  <td className="tabular-nums text-[12px] text-fg3">{stamp(e.at)}</td>
-                  <td className="truncate text-[12px]">
+                  <td className="tabular-nums text-[12px] text-fg3" data-label="时间">{stamp(e.at)}</td>
+                  <td className="truncate text-[12px]" data-label="玩家">
                     <UserHoverCard id={e.user_id}>
                       <button
                         className="max-w-full truncate text-left hover:underline"
@@ -201,13 +201,13 @@ export default function FeedPage() {
                       </button>
                     </UserHoverCard>
                   </td>
-                  <td>
+                  <td data-label="类型">
                     <span className="ek" data-kind={e.kind}>
                       <span className="ek-glyph">{glyph}</span>
                       {label}
                     </span>
                   </td>
-                  <td className="min-w-0">
+                  <td className="min-w-0" data-label="详细">
                     <Detail e={e} />
                   </td>
                 </tr>

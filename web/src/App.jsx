@@ -1,25 +1,10 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from './api.js';
 import Sidebar from './components/Sidebar.jsx';
 import StatusBar from './components/StatusBar.jsx';
 import PhoneFrame from './components/PhoneFrame.jsx';
-import FeedPage from './pages/FeedPage.jsx';
-import FriendsPage from './pages/FriendsPage.jsx';
-import StatsPage from './pages/StatsPage.jsx';
-import SessionsPage from './pages/SessionsPage.jsx';
-import PlayersPage from './pages/PlayersPage.jsx';
-import NotificationsPage from './pages/NotificationsPage.jsx';
-import FavoritesPage from './pages/FavoritesPage.jsx';
-import InsightsPage from './pages/InsightsPage.jsx';
-import SettingsPage from './pages/SettingsPage.jsx';
-import WorldsPage from './pages/WorldsPage.jsx';
-import CalendarPage from './pages/CalendarPage.jsx';
-import FriendListPage from './pages/FriendListPage.jsx';
-import FriendLogPage from './pages/FriendLogPage.jsx';
-import GameLogPage from './pages/GameLogPage.jsx';
-import OverviewPage from './pages/OverviewPage.jsx';
-import SearchPage from './pages/SearchPage.jsx';
+import Skeleton from './components/Skeleton.jsx';
 import CommandPalette from './components/CommandPalette.jsx';
 import ShortcutHelp from './components/ShortcutHelp.jsx';
 import { DrawerProvider } from './components/drawers.jsx';
@@ -27,23 +12,25 @@ import RosterPanel from './components/RosterPanel.jsx';
 import ErrorBoundary, { OfflineBanner } from './components/ErrorBoundary.jsx';
 import { resolveShortcut } from './lib/shortcuts.js';
 
+// 134 路由级懒加载：16 个页面各自成 chunk，首屏只载入当前页那一个。
+// 手机上首屏 JS 少一大截（441 kB → 主包 + 单个页面块），换页时来回切热 chunk 不再重复下载。
 const PAGES = {
-  overview: OverviewPage,
-  search: SearchPage,
-  friends: FriendsPage,
-  feed: FeedPage,
-  notifications: NotificationsPage,
-  sessions: SessionsPage,
-  players: PlayersPage,
-  stats: StatsPage,
-  favorites: FavoritesPage,
-  insights: InsightsPage,
-  worlds: WorldsPage,
-  calendar: CalendarPage,
-  friendlist: FriendListPage,
-  friendlog: FriendLogPage,
-  gamelog: GameLogPage,
-  settings: SettingsPage
+  overview: lazy(() => import('./pages/OverviewPage.jsx')),
+  search: lazy(() => import('./pages/SearchPage.jsx')),
+  friends: lazy(() => import('./pages/FriendsPage.jsx')),
+  feed: lazy(() => import('./pages/FeedPage.jsx')),
+  notifications: lazy(() => import('./pages/NotificationsPage.jsx')),
+  sessions: lazy(() => import('./pages/SessionsPage.jsx')),
+  players: lazy(() => import('./pages/PlayersPage.jsx')),
+  stats: lazy(() => import('./pages/StatsPage.jsx')),
+  favorites: lazy(() => import('./pages/FavoritesPage.jsx')),
+  insights: lazy(() => import('./pages/InsightsPage.jsx')),
+  worlds: lazy(() => import('./pages/WorldsPage.jsx')),
+  calendar: lazy(() => import('./pages/CalendarPage.jsx')),
+  friendlist: lazy(() => import('./pages/FriendListPage.jsx')),
+  friendlog: lazy(() => import('./pages/FriendLogPage.jsx')),
+  gamelog: lazy(() => import('./pages/GameLogPage.jsx')),
+  settings: lazy(() => import('./pages/SettingsPage.jsx'))
 };
 
 const TITLES = {
@@ -86,7 +73,7 @@ export default function App() {
   const [palette, setPalette] = useState(false);
   const [help, setHelp] = useState(false);
   const [theme, toggleTheme] = useTheme();
-  const Page = PAGES[page] ?? FriendsPage;
+  const Page = PAGES[page] ?? PAGES.friends;
 
   // hash ⇄ page 双向同步
   useEffect(() => {
@@ -175,7 +162,9 @@ export default function App() {
           <OfflineBanner />
           <div className="workspace min-h-0 flex-1 overflow-auto">
             <ErrorBoundary key={page}>
-              <Page onNavigate={setPage} />
+              <Suspense fallback={<div className="p-4"><Skeleton rows={6} cols={4} /></div>}>
+                <Page onNavigate={setPage} />
+              </Suspense>
             </ErrorBoundary>
           </div>
         </main>

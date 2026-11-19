@@ -247,7 +247,7 @@ export default function FavoritesPage() {
             <tbody>
               {shown.map((f) => (
                 <tr key={f.id}>
-                  <td>
+                  <td data-label="名称">
                     <span className="flex items-center gap-2.5">
                       <Thumb row={f} />
                       <span className="min-w-0">
@@ -256,8 +256,8 @@ export default function FavoritesPage() {
                       </span>
                     </span>
                   </td>
-                  <td className="text-[12px] text-fg3">{KIND_LABEL[f.kind] ?? f.kind}</td>
-                  <td>
+                  <td className="text-[12px] text-fg3" data-label="类型">{KIND_LABEL[f.kind] ?? f.kind}</td>
+                  <td data-label="备注">
                     <input
                       className="inp w-full"
                       defaultValue={f.note ?? ''}
@@ -268,7 +268,7 @@ export default function FavoritesPage() {
                       }}
                     />
                   </td>
-                  <td>
+                  <td data-label="分组">
                     <select
                       className="inp w-full"
                       value={f.group_id ?? ''}
@@ -282,7 +282,7 @@ export default function FavoritesPage() {
                       ))}
                     </select>
                   </td>
-                  <td>
+                  <td data-label="操作">
                     <span className="flex gap-1.5">
                       {f.kind === 'world' && (
                         <button

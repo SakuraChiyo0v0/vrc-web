@@ -347,23 +347,75 @@ body {
   .vrc-sidebar-close { display: inline-flex; }
 
   /* 表格：表头隐藏，每行一张卡；单元格堆叠并允许长串换行 */
+  /* 134 表格卡片化：一行 = 一张卡，每格左侧是列名（data-label）、右侧是值，
+     列名在桌面端由 <th> 负责，移动端 from CSS 补，DOM 只留一份。 */
   .tbl thead { display: none; }
-  .tbl, .tbl tbody, .tbl tr, .tbl td { display: block; width: 100%; }
+  .tbl, .tbl tbody { display: block; width: 100%; }
   .tbl tbody tr {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
     margin: 0 0 .5rem;
-    padding: .25rem 0;
+    padding: .5rem .625rem;
     border: 1px solid var(--stroke-subtle);
     border-radius: var(--radius);
     background: var(--surface-panel);
   }
   .tbl tbody td {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .75rem;
+    width: 100%;
     height: auto;
-    padding: .1875rem .625rem;
+    min-height: 0;
+    padding: .125rem 0;
     border-bottom: 0;
     overflow-wrap: anywhere;
   }
-  .tbl tbody td:first-child { font-weight: 500; }
-  .tbl tbody tr:hover td { background: transparent; }
+  /* 列名：只给带 data-label 的格子（首格=标题行不给，分组/日期头也没有） */
+  .tbl tbody td[data-label]::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--content-tertiary);
+  }
+  /* 首格是卡片标题：不显示列名，字号加粗、下面留一条分隔 */
+  .tbl tbody td:first-child {
+    font-weight: 500;
+    padding-bottom: .3125rem;
+    margin-bottom: .125rem;
+    border-bottom: 1px solid var(--stroke-subtle);
+  }
+  .tbl tbody tr:hover td,
+  .tbl tbody tr[data-nav-active='true'] td { background: transparent; }
+  .tbl tbody tr[data-nav-active='true'] { border-color: var(--primary); }
+  .tbl tbody tr[data-nav-active='true'] td:first-child { box-shadow: none; }
+  /* 分组头 / 日期头仍是一整行：不套卡片内边距 */
+  .tbl tbody tr.group-row,
+  .tbl tbody tr.feed-day {
+    gap: 0;
+    padding: 0;
+    border-width: 0 0 1px;
+    border-radius: 0;
+    background: var(--surface-sunken, var(--state-hover-surface));
+  }
+  .tbl tbody tr.group-row td,
+  .tbl tbody tr.feed-day td {
+    padding: .25rem .75rem;
+    border-bottom: 0;
+    font-weight: 500;
+  }
+  .tbl tbody tr.group-row td::before,
+  .tbl tbody tr.feed-day td::before { content: none; }
+  /* 动态流：手机上玩家名当标题，时间挪到下面 */
+  .feed-tbl tbody tr.feed-row td[data-label='玩家'] { order: -2; font-weight: 500; font-size: 13px; }
+  .feed-tbl tbody tr.feed-row td[data-label='类型'] { order: -1; }
+  .feed-tbl tbody tr.feed-row td[data-label='时间'] { order: 1; }
+  .feed-tbl tbody tr.feed-row td[data-label='详细'] { order: 0; }
+  .feed-tbl tbody tr.feed-row td:first-child { border-bottom: 0; padding-bottom: 0; margin-bottom: 0; }
   /* 卡片列表外的容器别再横向滚动 */
   .card { overflow-x: clip; }
 

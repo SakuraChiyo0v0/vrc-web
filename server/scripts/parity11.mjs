@@ -20,9 +20,10 @@ const distDir = path.join(ROOT, 'web/dist');
 const distAssets = path.join(distDir, 'assets');
 function asset(ext) {
   if (!fs.existsSync(distAssets)) throw new Error('web/dist 不存在（先跑 cd web && npm run build）');
-  const f = fs.readdirSync(distAssets).find((x) => x.endsWith(ext));
-  if (!f) throw new Error(`web/dist/assets 里没有 ${ext}`);
-  return fs.readFileSync(path.join(distAssets, f), 'utf8');
+  // 134 起页面按路由分 chunk：断言在全部产物里找
+  const files = fs.readdirSync(distAssets).filter((x) => x.endsWith(ext));
+  if (!files.length) throw new Error(`web/dist/assets 里没有 ${ext}`);
+  return files.map((f) => fs.readFileSync(path.join(distAssets, f), 'utf8')).join('\n');
 }
 
 const results = [];
