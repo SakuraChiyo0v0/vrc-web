@@ -19,6 +19,7 @@ import FriendListPage from './pages/FriendListPage.jsx';
 import FriendLogPage from './pages/FriendLogPage.jsx';
 import GameLogPage from './pages/GameLogPage.jsx';
 import OverviewPage from './pages/OverviewPage.jsx';
+import SearchPage from './pages/SearchPage.jsx';
 import CommandPalette from './components/CommandPalette.jsx';
 import ShortcutHelp from './components/ShortcutHelp.jsx';
 import { DrawerProvider } from './components/drawers.jsx';
@@ -27,6 +28,7 @@ import { resolveShortcut } from './lib/shortcuts.js';
 
 const PAGES = {
   overview: OverviewPage,
+  search: SearchPage,
   friends: FriendsPage,
   feed: FeedPage,
   notifications: NotificationsPage,
@@ -45,6 +47,7 @@ const PAGES = {
 
 const TITLES = {
   overview: ['概览', '总时长、每日与活跃时段，三块榜单'],
+  search: ['搜索', '好友 / 世界 / 玩家一次搜完，可深链分享'],
   friends: ['好友位置', '谁在线、在哪个世界'],
   feed: ['动态', '好友状态 / 位置 / 资料变更'],
   notifications: ['通知', '邀请 / 好友请求 / 群公告'],

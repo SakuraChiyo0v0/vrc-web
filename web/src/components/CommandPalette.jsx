@@ -115,9 +115,20 @@ export default function CommandPalette({ open, onClose, onOpen, onNavigate }) {
             );
           })}
         </div>
-        <div className="flex items-center justify-between border-t px-3 py-1.5 text-[11px] text-fg3" style={{ borderColor: 'var(--stroke-subtle)' }}>
+        <div className="flex items-center justify-between gap-2 border-t px-3 py-1.5 text-[11px] text-fg3" style={{ borderColor: 'var(--stroke-subtle)' }}>
           <span>⌘K 打开 / 关闭</span>
-          <span>{items.length} 条结果</span>
+          <span className="flex items-center gap-2">
+            {q.trim() ? (
+              <button
+                className="chip"
+                data-palette-all="1"
+                onClick={() => { onClose?.(); location.hash = `#/search?q=${encodeURIComponent(q.trim())}`; }}
+              >
+                在搜索页查看全部 →
+              </button>
+            ) : null}
+            <span>{items.length} 条结果</span>
+          </span>
         </div>
       </div>
     </div>

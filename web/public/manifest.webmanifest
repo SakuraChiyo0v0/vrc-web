@@ -1,0 +1,21 @@
+{
+  "id": "/vrc/",
+  "name": "VRC 面板 · SakuraChiyoQAQ",
+  "short_name": "VRC",
+  "description": "自托管 VRChat 面板：好友位置、动态、世界库与行程",
+  "lang": "zh-CN",
+  "start_url": "/vrc/#/friends",
+  "scope": "/vrc/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0e1114",
+  "theme_color": "#141a22",
+  "categories": ["social", "utilities"],
+  "icons": [
+    { "src": "/vrc/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/vrc/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/vrc/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/vrc/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

@@ -19,20 +19,20 @@ export function registerRound2Routes(app, { db, T, iso }) {
   /** 105 拼音搜索在 JS 里过滤，线上判断用同一套语义 */
   const ONLINE_TEST = (f) => !!f.location && !['offline', 'private', 'traveling'].includes(String(f.location));
 
-  /** 21 全局搜索：好友 / 世界 / 同房玩家，各取前 8 条 */
+  /** 21 全局搜索：好友 / 世界 / 同房玩家，各取前 8 条（111 独立搜索页可传 limit 取更多） */
   app.get('/api/search', async (req) => {
     const q = String(req.query.q ?? '').trim();
-    if (!q) return { q, friends: [], worlds: [], players: [], total: 0 };
-    const friends = (await db.query(
+    const limit = Math.min(Math.max(Number(req.query.limit ?? 8) || 8, 1), 50);
+    if (!q) return { q, friends: [], worlds: [], players: [], counts: { friends: 0, worlds: 0, players: 0 }, total: 0 };
+    const friendsAll = (await db.query(
       `select user_id, display_name, icon_url, status, location, world_id, world_name
          from ${T('friend')} limit 2000`,
     ))
       .filter((f) => matchText(f.display_name, q))
-      .sort((a, b) => (ONLINE_TEST(a) === ONLINE_TEST(b) ? 0 : ONLINE_TEST(a) ? -1 : 1))
-      .slice(0, 8);
-    const worlds = (await db.query(
+      .sort((a, b) => (ONLINE_TEST(a) === ONLINE_TEST(b) ? 0 : ONLINE_TEST(a) ? -1 : 1));
+    const worldsAll = (await db.query(
       `select id, name, author_name, thumbnail from ${T('world')} limit 2000`,
-    )).filter((w) => matchText(w.name, q) || matchText(w.author_name, q)).slice(0, 8);
+    )).filter((w) => matchText(w.name, q) || matchText(w.author_name, q));
     const rows = (await db.query(
       `select display_name, user_id, world_name, at from ${T('game_event')}
         where kind = 'room_join' order by at desc limit 2000`,
@@ -52,8 +52,12 @@ export function registerRound2Routes(app, { db, T, iso }) {
         worlds: r.world_name ? [r.world_name] : [],
       });
     }
-    const players = [...map.values()].sort((a, b) => b.meets - a.meets).slice(0, 8);
-    return { q, friends, worlds, players, total: friends.length + worlds.length + players.length };
+    const playersAll = [...map.values()].sort((a, b) => b.meets - a.meets);
+    const friends = friendsAll.slice(0, limit);
+    const worlds = worldsAll.slice(0, limit);
+    const players = playersAll.slice(0, limit);
+    const counts = { friends: friendsAll.length, worlds: worldsAll.length, players: playersAll.length };
+    return { q, friends, worlds, players, counts, total: counts.friends + counts.worlds + counts.players };
   });
 
   /** 22 世界详情：作者 / 容量 / 在线好友 / 我去过几次 */

@@ -6,6 +6,7 @@ const GROUPS = [
     title: '实况',
     items: [
       { id: 'overview', label: '概览', icon: '◈' },
+      { id: 'search', label: '搜索', icon: '⌕' },
       { id: 'friends', label: '好友位置', icon: '◉' },
       { id: 'feed', label: '动态', icon: '≡' },
       { id: 'notifications', label: '通知', icon: '!' }
