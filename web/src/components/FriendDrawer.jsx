@@ -432,7 +432,7 @@ export default function FriendDrawer({ id, onClose }) {
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <div className="flex min-w-0 items-center gap-1.5">
-                  <span className="truncate text-[16px] font-medium">{p?.display_name ?? id}</span>
+                  <span className="truncate text-[14px] font-medium">{p?.display_name ?? id}</span>
                   {p?.group_name ? <span className="badge shrink-0" data-kind="group" title={p.group_name}>{p.group_name}</span> : null}
                 </div>
                 <div className="mt-0.5 truncate text-[12px] text-fg3">{locLabel(p)}</div>

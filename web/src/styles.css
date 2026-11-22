@@ -216,7 +216,7 @@ body {
     align-items: center;
     column-gap: .5rem;
     height: 32px; padding: 0 .5rem; border-radius: 7px;
-    border: 1px solid transparent; background: transparent;
+    border: 0; background: transparent;
     color: var(--content-primary); font-size: 12px; cursor: pointer;
   }
   .friend-row > * { min-width: 0; }

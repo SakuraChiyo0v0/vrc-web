@@ -1,0 +1,44 @@
+{
+  "_note": "VRCX-0 真机实测规格（1700x1040 窗口，来自 docs/ref 截图）。只记可量化的东西，避免主观打分。",
+  "measured_at": "2026-11-16",
+  "nav": {
+    "group_label_height": 24,
+    "item_height": 30,
+    "icon_size": 16,
+    "active_weight": 500
+  },
+  "feed_table": {
+    "columns": 4,
+    "column_names": ["时间", "玩家", "类型", "详细信息"],
+    "row_height": 44,
+    "has_avatar": false,
+    "header_height": 32,
+    "header_text_transform": "none"
+  },
+  "friends_locations": {
+    "columns": 2,
+    "card_height": 96,
+    "avatar_size": 56,
+    "card_border": "none",
+    "card_background": "transparent",
+    "lines_per_card": 4
+  },
+  "detail_panel": {
+    "width": 244,
+    "header_height": 32
+  },
+  "typography": {
+    "body_px": 14,
+    "meta_px": 12,
+    "row_px": 13,
+    "tabular_nums": true,
+    "px_sizes_allowed": [11, 12, 13, 14]
+  },
+  "tokens": {
+    "radius": 10,
+    "status_active": "#f4e05e",
+    "status_offline": "#737f8d",
+    "platform_pc": "#0078d4",
+    "platform_quest": "#3ddc84"
+  }
+}
