@@ -103,7 +103,7 @@ body {
   }
   .sort-btn:hover { color: var(--content-primary); }
   .sort-btn[data-active='true'] { color: var(--content-primary); font-weight: 500; }
-  .sort-arrow { font-size: 9px; color: var(--content-tertiary); }
+  .sort-arrow { font-size: 11px; color: var(--content-tertiary); }
   .sort-btn[data-active='true'] .sort-arrow { color: var(--primary); }
   /* 列表页列头：与 .friend-row 共用 grid，高度与 26px 分组头一致 */
   .list-head { height: 26px; padding: 0 .5rem; color: var(--content-tertiary); font-size: 11px; }

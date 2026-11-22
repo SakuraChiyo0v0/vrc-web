@@ -13,7 +13,7 @@ import path from 'node:path';
 import { chromium } from 'playwright';
 
 const BASE = process.argv[2] || 'http://localhost:8790';
-const ROOT = path.resolve(import.meta.dirname, '..');
+const ROOT = process.env.VRC_ROOT || path.resolve(import.meta.dirname, '..');
 const SPEC = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/ref/vrcx0-spec.json'), 'utf8'));
 const OUT = path.join(ROOT, 'docs/screenshots/compare');
 fs.mkdirSync(OUT, { recursive: true });
@@ -46,7 +46,10 @@ const measured = await p.evaluate(() => {
   const navItem = document.querySelector('aside button, nav button');
   const cs = row ? getComputedStyle(row) : null;
   const sizes = new Set();
-  document.querySelectorAll('*').forEach((el) => {
+  // 只统计可见的、有文字的节点：head/meta/script 的默认 16px 不算版面字号
+  document.querySelectorAll('body *').forEach((el) => {
+    if (!el.offsetParent && el.tagName !== 'BODY') return;
+    if (!(el.textContent || '').trim()) return;
     const px = parseFloat(getComputedStyle(el).fontSize);
     if (px > 0) sizes.add(Math.round(px));
   });
