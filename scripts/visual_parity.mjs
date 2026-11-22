@@ -31,6 +31,8 @@ const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbo
 async function shot(width, height, name) {
   const p = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
   await p.goto(BASE, { waitUntil: 'networkidle', timeout: 60000 });
+  // 等首屏列表出来再截图：容器刚重启时页面还是空壳，会把分数打到 50% 的假低
+  await p.waitForSelector('.friend-row, .card', { timeout: 25000 }).catch(() => {});
   await p.waitForTimeout(1200);
   const file = path.join(OUT, `${name}-${width}.png`);
   await p.screenshot({ path: file });
@@ -73,7 +75,8 @@ check('数字等宽', measured.tabular, 'tabular-nums', String(measured.tabular)
 
 // —— 动态页（表格四列）——
 await p.getByRole('button', { name: /动态/ }).first().click().catch(() => {});
-await p.waitForTimeout(1000);
+await p.waitForSelector('thead th', { timeout: 15000 }).catch(() => {});
+await p.waitForTimeout(800);
 await p.screenshot({ path: path.join(OUT, 'feed-1440.png') });
 const feed = await p.evaluate(() => {
   const ths = [...document.querySelectorAll('thead th')].map((t) => t.textContent.trim());
