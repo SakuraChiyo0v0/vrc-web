@@ -1,5 +1,5 @@
 {
-  "_note": "VRCX-0 真机实测规格（1700x1040 窗口，来自 docs/ref 截图）。只记可量化的东西，避免主观打分。",
+  "_note": "VRCX-0 真机实测规格（1700x1040 窗口，来自 docs/ref 截图）。只记可量化的东西，避免主观打分。 第十六轮补：概览/世界库/通知三页的密度与档位规则（按 VRCX-0 的设计语言推得：正文档位 11–14、卡片圆角 10、列表网格列数），不是逐像素实测。",
   "measured_at": "2026-11-16",
   "nav": {
     "group_label_height": 24,
@@ -62,5 +62,50 @@
     ],
     "badge_row": true,
     "header_px": 14
+  },
+  "overview": {
+    "_source": "design-derived",
+    "kpi_px_range": [
+      20,
+      32
+    ],
+    "daily_bars_min": 7,
+    "daily_bars_max": 31,
+    "hour_bars": 24,
+    "range_buttons": 6,
+    "range_labels": [
+      "全部",
+      "近30天",
+      "近90天",
+      "近180天",
+      "近365天",
+      "自定义"
+    ],
+    "tabs": [
+      "概览",
+      "旅程"
+    ]
+  },
+  "worlds": {
+    "_source": "design-derived",
+    "grid_columns": 3,
+    "grid_columns_md": 2,
+    "thumb_aspect": 1.78,
+    "head_columns": 4,
+    "min_cards": 3,
+    "decor_px_range": [
+      16,
+      20
+    ]
+  },
+  "notifications": {
+    "_source": "design-derived",
+    "min_chips": 5,
+    "default_filters": [
+      "全部",
+      "全部类型"
+    ],
+    "card_radius": 10,
+    "card_border": "1px"
   }
 }

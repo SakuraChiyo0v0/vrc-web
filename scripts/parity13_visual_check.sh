@@ -11,7 +11,7 @@ cp "$ROOT/scripts/visual_parity.mjs" "$TPL/.visual_parity.mjs" 2>/dev/null || tr
 
 out=$(cd "$TPL" && VRC_ROOT="$ROOT" node .visual_parity.mjs "$BASE" 2>&1)
 rc=$?
-echo "$out" | tail -20
+echo "$out" | grep -E '^DIFF' || true; echo "$out" | tail -3
 
 score=$(printf '%s' "$out" | grep -o '视觉相似度 [0-9]*%' | grep -o '[0-9]*')
 score=${score:-0}
