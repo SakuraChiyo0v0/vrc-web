@@ -32,7 +32,7 @@ async function shot(width, height, name) {
   const p = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
   await p.goto(BASE, { waitUntil: 'networkidle', timeout: 60000 });
   // 等首屏列表出来再截图：容器刚重启时页面还是空壳，会把分数打到 50% 的假低
-  await p.waitForSelector('.friend-row, .card', { timeout: 25000 }).catch(() => {});
+  await p.waitForSelector('.friend-row:not(.list-head), .card', { timeout: 25000 }).catch(() => {});
   await p.waitForTimeout(1200);
   const file = path.join(OUT, `${name}-${width}.png`);
   await p.screenshot({ path: file });
@@ -43,8 +43,8 @@ async function shot(width, height, name) {
 const p = await shot(1440, 960, 'friends');
 
 const measured = await p.evaluate(() => {
-  const row = document.querySelector('.friend-row');
-  const avatar = document.querySelector('.friend-row .avatar');
+  const row = document.querySelector('.friend-row:not(.list-head)');
+  const avatar = document.querySelector('.friend-row:not(.list-head) .avatar');
   const navItem = document.querySelector('aside button, nav button');
   const cs = row ? getComputedStyle(row) : null;
   const sizes = new Set();
@@ -94,6 +94,29 @@ check('动态列名', feed.columns, SPEC.feed_table.column_names.join('/'), feed
 check('动态行高', `${feed.rowHeight}px`, '≤48px', feed.rowHeight != null && feed.rowHeight <= 48);
 check('动态无头像', String(feed.hasAvatar), 'false', feed.hasAvatar === false);
 check('表头不大写', feed.headerTransform, 'none', feed.headerTransform === 'none');
+
+// —— 好友抽屉（先回好友位置页，再点第一个好友行）——
+await p.goto(BASE, { waitUntil: 'networkidle', timeout: 60000 });
+await p.waitForSelector('.friend-row:not(.list-head)', { timeout: 20000 }).catch(() => {});
+await p.waitForSelector('.friend-row:not(.list-head)', { timeout: 15000 }).catch(() => {});
+await p.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true }).catch(() => {});
+await p.waitForSelector('.drawer-avatar', { timeout: 12000 }).catch(() => {});
+await p.waitForTimeout(600);
+const drawer = await p.evaluate(() => {
+  const av = document.querySelector('.drawer-avatar, .drawer-head .avatar');
+  const tabs = [...document.querySelectorAll('[role="tab"]')].map((t) => t.textContent.trim());
+  const head = document.querySelector('.drawer-head');
+  return {
+    avatar: av ? Math.round(av.getBoundingClientRect().width) : null,
+    tabs: tabs.length,
+    hasBadge: !!document.querySelector('.badge, .chip[data-tone]'),
+    headerPx: head ? parseFloat(getComputedStyle(head).fontSize) : null,
+  };
+});
+check('抽屉头像', `${drawer.avatar}px`, '≥72px', drawer.avatar != null && drawer.avatar >= 72);
+check('抽屉 tab 数', drawer.tabs, '4', drawer.tabs === 4);
+await p.screenshot({ path: path.join(OUT, 'drawer-1440.png') }).catch(() => {});
+await p.keyboard.press('Escape').catch(() => {});
 
 // —— 三宽度截图（响应式）——
 for (const [w, h] of [[390, 844], [3840, 2160]]) {

@@ -9,7 +9,12 @@
   },
   "feed_table": {
     "columns": 4,
-    "column_names": ["时间", "玩家", "类型", "详细信息"],
+    "column_names": [
+      "时间",
+      "玩家",
+      "类型",
+      "详细信息"
+    ],
     "row_height": 44,
     "has_avatar": false,
     "header_height": 32,
@@ -32,7 +37,12 @@
     "meta_px": 12,
     "row_px": 13,
     "tabular_nums": true,
-    "px_sizes_allowed": [11, 12, 13, 14]
+    "px_sizes_allowed": [
+      11,
+      12,
+      13,
+      14
+    ]
   },
   "tokens": {
     "radius": 10,
@@ -40,5 +50,17 @@
     "status_offline": "#737f8d",
     "platform_pc": "#0078d4",
     "platform_quest": "#3ddc84"
+  },
+  "user_dialog": {
+    "avatar_size": 80,
+    "tab_count": 4,
+    "tab_labels": [
+      "概览",
+      "足迹",
+      "数据",
+      "备注"
+    ],
+    "badge_row": true,
+    "header_px": 14
   }
 }
