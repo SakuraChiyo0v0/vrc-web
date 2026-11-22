@@ -297,14 +297,36 @@ async function friendSessions() {
   return out;
 }
 
+/**
+ * 171 /api/sessions 是派生视图：2 万事件 → 1.3 万段，单次重算约 140ms。
+ * 缓存 15s，过期先返回旧值、后台刷新（stale-while-revalidate）：
+ * 只有进程启动后的第一个请求要等一次重算，之后 p95 落在个位数毫秒。
+ */
+const SESSION_TTL_MS = 15_000;
+const sessionCache = { at: 0, list: [], pending: null };
+function refreshSessions() {
+  if (sessionCache.pending) return sessionCache.pending;
+  sessionCache.pending = (async () => {
+    try {
+      const sessions = (await friendSessions()).sort((a, b) => (a.start_at < b.start_at ? 1 : -1));
+      const worlds = new Map((await db.query(`select id, name from ${T('world')}`)).map((w) => [w.id, w.name]));
+      sessionCache.list = sessions.map((s) => ({ ...s, world: worlds.get(s.world_id) ?? s.world_name ?? s.world_id }));
+      sessionCache.at = Date.now();
+    } finally {
+      sessionCache.pending = null;
+    }
+  })();
+  return sessionCache.pending;
+}
+
 app.get('/api/sessions', async (req) => {
   const limit = Math.min(Number(req.query.limit ?? 100), 500);
-  const sessions = (await friendSessions()).sort((a, b) => (a.start_at < b.start_at ? 1 : -1)).slice(0, limit);
-  const worlds = new Map((await db.query(`select id, name from ${T('world')}`)).map((w) => [w.id, w.name]));
-  return {
-    returned: sessions.length,
-    sessions: sessions.map((s) => ({ ...s, world: worlds.get(s.world_id) ?? s.world_name ?? s.world_id })),
-  };
+  if (!sessionCache.at) await refreshSessions(); // 冷进程：没有旧值可给，只能等
+  else if (Date.now() - sessionCache.at > SESSION_TTL_MS) {
+    refreshSessions().catch((e) => console.error('[sessions]', e.message)); // 过期：旧值先给，后台补
+  }
+  const sessions = sessionCache.list.slice(0, limit);
+  return { returned: sessions.length, sessions };
 });
 
 /** 我自己的行程：self_event 串区间 */

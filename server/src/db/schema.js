@@ -38,6 +38,9 @@ export const PG = [
      id text primary key, type text, sender_user_id text, message text,
      link text, created_at timestamptz, seen boolean default false, payload jsonb
    )`,
+  // 第十七轮 174：通知按时间倒序 + 未读计数，采集久了会到几万条
+  `create index if not exists notification_created_idx on vrc.notification (created_at desc)`,
+  `create index if not exists notification_seen_created_idx on vrc.notification (seen, created_at desc)`,
   `create table if not exists vrc.game_event (
      id bigserial primary key, kind text not null,
      display_name text, user_id text, location text, world_name text,
@@ -177,6 +180,9 @@ export const SQLITE = [
      id text primary key, type text, sender_user_id text, message text,
      link text, created_at text, seen integer default 0, payload text
    )`,
+  // 第十七轮 174：与 PG 同一批通知索引
+  `create index if not exists notification_created_idx on notification (created_at desc)`,
+  `create index if not exists notification_seen_created_idx on notification (seen, created_at desc)`,
   `create table if not exists game_event (
      id integer primary key autoincrement, kind text not null,
      display_name text, user_id text, location text, world_name text,

@@ -366,3 +366,22 @@ VRCX-0 的「导出 / 迁移」在 Web 端的对应物：CSV 多表导出、全�
 ## 第十五轮完成定义
 
 1. 151~155 全 done；2. `bash scripts/parity15_check.sh` 全绿（2026-11-19 PARITY15 OK 5/5）；3. build + smoke（SMOKE OK / npm test 21 pass / parity2 回归 14/14）；4. 不 push（主 agent 统一发布）。
+
+---
+
+# 第十七轮：性能与韧性（2026-11-22）
+
+收口「核心读接口 p95 / 错误边界 / 冷启动 / 索引随 migrate 落地」四项，附可重复的压测脚本。
+验收：`scripts/parity17_check.sh`（`node server/scripts/perf17.mjs` 起临时 SQLite 服务压测，不碰线上 PG / VRChat）。
+
+| # | 功能 | 验收 | 状态 |
+|---|---|---|---|
+| 171 | 核心接口 p95：health/status/friends/events/notifications/sessions/players/stats | perf17 每接口 20 次取样（丢弃预热）算 p95，全部 <100ms；搜索单列 100ms、friend-log 200ms | done（parity17 #171） |
+| 172 | 错误边界覆盖所有页面 | 16 个页面全部注册并统一包在 `<ErrorBoundary key={page}>`；`main.jsx` 根边界兜住外壳；转译后实测「抛错→兜底卡→重试清状态」 | done（parity17 #172） |
+| 173 | 冷启动 <3s | spawn → `/api/health` 首次 200 实测 396ms（含 DDL + 搜索缓存预热） | done（parity17 #173） |
+| 174 | 索引进 migrate | 空库建出 22 个索引、重复执行幂等；老库删除 3 个索引后跑 migrate 全部补回；PG/SQLite 同名；本轮新增通知表 `(created_at desc)`、`(seen, created_at desc)` | done（parity17 #174） |
+| 175 | parity14 回归 | `PARITY14 OK 5/5` | done（parity17 #175） |
+
+## 第十七轮完成定义
+
+1. 171~175 全 done；2. `bash scripts/parity17_check.sh` 全绿（PARITY17 OK 5/5）；3. server 21 测试 / web 31 测试全过，parity12 6/6、parity15 5/5 回归；4. 不 push（主 agent 统一发布）。

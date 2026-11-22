@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import './styles.css';
 
 const qc = new QueryClient({ defaultOptions: { queries: { refetchInterval: 15000, staleTime: 5000 } } });
@@ -16,7 +17,10 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={qc}>
-      <App />
+      {/* 172 外壳（侧栏/常驻面板/浮层）异常也不整页白屏：根边界兜底，页面级边界仍在其内 */}
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </QueryClientProvider>
   </React.StrictMode>
 );
