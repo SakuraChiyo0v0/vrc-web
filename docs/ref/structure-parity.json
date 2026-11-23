@@ -1,0 +1,198 @@
+{
+  "_note": "由 scripts/structure_parity.mjs 生成：spec.pages[*].structure（真机截图量测）vs 我们的 DOM",
+  "at": "2026-11-23T05:54:51.816Z",
+  "base": "http://127.0.0.1:8899",
+  "pass": 21,
+  "total": 27,
+  "rows": [
+    {
+      "page": "search",
+      "name": "主导航 tab 名",
+      "ours": "",
+      "want": "探索/玩家/世界/模型/群组",
+      "ok": false
+    },
+    {
+      "page": "search",
+      "name": "网格列数",
+      "ours": "null",
+      "want": "3",
+      "ok": false
+    },
+    {
+      "page": "sessions",
+      "name": "列数",
+      "ours": "4",
+      "want": "4",
+      "ok": true
+    },
+    {
+      "page": "sessions",
+      "name": "列名",
+      "ours": "时间/地区/房间名/时长",
+      "want": "时间/地区/房间名/时长",
+      "ok": true
+    },
+    {
+      "page": "sessions",
+      "name": "行距",
+      "ours": "39.5",
+      "want": "39.5",
+      "ok": true
+    },
+    {
+      "page": "sessions",
+      "name": "chip",
+      "ours": "true",
+      "want": "按日",
+      "ok": true
+    },
+    {
+      "page": "sessions",
+      "name": "左列表宽度",
+      "ours": "353",
+      "want": "353",
+      "ok": true
+    },
+    {
+      "page": "sessions",
+      "name": "详情空态标题",
+      "ours": "未选择房间",
+      "want": "未选择房间",
+      "ok": true
+    },
+    {
+      "page": "sessions",
+      "name": "详情空态正文",
+      "ours": "true",
+      "want": "选择一条房间记录以查看详情",
+      "ok": true
+    },
+    {
+      "page": "players",
+      "name": "空态文案",
+      "ours": "(无)",
+      "want": "VRChat 目前没有运行",
+      "ok": false
+    },
+    {
+      "page": "favorites",
+      "name": "网格列数",
+      "ours": "null",
+      "want": "2",
+      "ok": false
+    },
+    {
+      "page": "favorites",
+      "name": "收藏夹侧栏",
+      "ours": "false",
+      "want": "true",
+      "ok": false
+    },
+    {
+      "page": "insights",
+      "name": "tab 数",
+      "ours": "0",
+      "want": "0",
+      "ok": true
+    },
+    {
+      "page": "insights",
+      "name": "关系图画布",
+      "ours": "false",
+      "want": "圈子/最少连接数",
+      "ok": false
+    },
+    {
+      "page": "friendlist",
+      "name": "列数",
+      "ours": "9",
+      "want": "9",
+      "ok": true
+    },
+    {
+      "page": "friendlist",
+      "name": "列名",
+      "ours": "序号/模型/昵称/信誉等级/状态/语言/社交链接/一起玩的次数/一起玩过的时长",
+      "want": "序号/模型/昵称/信誉等级/状态/语言/社交链接/一起玩的次数/一起玩过的时长",
+      "ok": true
+    },
+    {
+      "page": "friendlist",
+      "name": "一屏行数",
+      "ours": "20",
+      "want": "≈20",
+      "ok": true
+    },
+    {
+      "page": "friendlog",
+      "name": "列数",
+      "ours": "4",
+      "want": "4",
+      "ok": true
+    },
+    {
+      "page": "friendlog",
+      "name": "列名",
+      "ours": "时间↓/类型↕/玩家↕/操作",
+      "want": "时间/类型/玩家/操作",
+      "ok": true
+    },
+    {
+      "page": "friendlog",
+      "name": "一屏行数",
+      "ours": "21",
+      "want": "≈19",
+      "ok": true
+    },
+    {
+      "page": "friendlog",
+      "name": "chip",
+      "ours": "true",
+      "want": "筛选",
+      "ok": true
+    },
+    {
+      "page": "gamelog",
+      "name": "列数",
+      "ours": "5",
+      "want": "5",
+      "ok": true
+    },
+    {
+      "page": "gamelog",
+      "name": "列名",
+      "ours": "时间/方向/玩家/人数/动作/时长",
+      "want": "时间/方向/玩家/人数/动作/时长",
+      "ok": true
+    },
+    {
+      "page": "gamelog",
+      "name": "一屏行数",
+      "ours": "21",
+      "want": "≈21",
+      "ok": true
+    },
+    {
+      "page": "settings",
+      "name": "子导航项数",
+      "ours": "10",
+      "want": "10",
+      "ok": true
+    },
+    {
+      "page": "settings",
+      "name": "子导航文字",
+      "ours": "系统/界面/社交/通知/VR/媒体/AI/集成/高级/反馈",
+      "want": "系统/界面/社交/通知/VR/媒体/AI/集成/高级/反馈",
+      "ok": true
+    },
+    {
+      "page": "settings",
+      "name": "分组标题",
+      "ours": "启动/窗口与托盘",
+      "want": "启动/窗口与托盘",
+      "ok": true
+    }
+  ]
+}

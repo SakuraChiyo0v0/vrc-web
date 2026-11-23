@@ -1,0 +1,208 @@
+{
+ "base": "http://127.0.0.1:8899",
+ "sizes": {
+  "desktop": {
+   "width": 1700,
+   "height": 1040
+  },
+  "mobile": {
+   "width": 390,
+   "height": 844
+  },
+  "4k": {
+   "width": 3840,
+   "height": 2160
+  }
+ },
+ "shots": {
+  "overview-desktop.png": {
+   "file": "docs/screenshots/tri/overview-desktop.png",
+   "bytes": 113661
+  },
+  "search-desktop.png": {
+   "file": "docs/screenshots/tri/search-desktop.png",
+   "bytes": 87873
+  },
+  "friends-desktop.png": {
+   "file": "docs/screenshots/tri/friends-desktop.png",
+   "bytes": 91118
+  },
+  "feed-desktop.png": {
+   "file": "docs/screenshots/tri/feed-desktop.png",
+   "bytes": 135413
+  },
+  "notifications-desktop.png": {
+   "file": "docs/screenshots/tri/notifications-desktop.png",
+   "bytes": 105932
+  },
+  "sessions-desktop.png": {
+   "file": "docs/screenshots/tri/sessions-desktop.png",
+   "bytes": 144738
+  },
+  "players-desktop.png": {
+   "file": "docs/screenshots/tri/players-desktop.png",
+   "bytes": 99460
+  },
+  "favorites-desktop.png": {
+   "file": "docs/screenshots/tri/favorites-desktop.png",
+   "bytes": 102583
+  },
+  "insights-desktop.png": {
+   "file": "docs/screenshots/tri/insights-desktop.png",
+   "bytes": 98414
+  },
+  "worlds-desktop.png": {
+   "file": "docs/screenshots/tri/worlds-desktop.png",
+   "bytes": 107170
+  },
+  "friendlist-desktop.png": {
+   "file": "docs/screenshots/tri/friendlist-desktop.png",
+   "bytes": 100841
+  },
+  "friendlog-desktop.png": {
+   "file": "docs/screenshots/tri/friendlog-desktop.png",
+   "bytes": 136964
+  },
+  "gamelog-desktop.png": {
+   "file": "docs/screenshots/tri/gamelog-desktop.png",
+   "bytes": 139715
+  },
+  "settings-desktop.png": {
+   "file": "docs/screenshots/tri/settings-desktop.png",
+   "bytes": 147024
+  },
+  "friend-drawer-desktop.png": {
+   "file": "docs/screenshots/tri/friend-drawer-desktop.png",
+   "bytes": 177763,
+   "drawer": true
+  },
+  "overview-mobile.png": {
+   "file": "docs/screenshots/tri/overview-mobile.png",
+   "bytes": 37356
+  },
+  "search-mobile.png": {
+   "file": "docs/screenshots/tri/search-mobile.png",
+   "bytes": 22834
+  },
+  "friends-mobile.png": {
+   "file": "docs/screenshots/tri/friends-mobile.png",
+   "bytes": 38081
+  },
+  "feed-mobile.png": {
+   "file": "docs/screenshots/tri/feed-mobile.png",
+   "bytes": 40307
+  },
+  "notifications-mobile.png": {
+   "file": "docs/screenshots/tri/notifications-mobile.png",
+   "bytes": 37836
+  },
+  "sessions-mobile.png": {
+   "file": "docs/screenshots/tri/sessions-mobile.png",
+   "bytes": 45823
+  },
+  "players-mobile.png": {
+   "file": "docs/screenshots/tri/players-mobile.png",
+   "bytes": 38724
+  },
+  "favorites-mobile.png": {
+   "file": "docs/screenshots/tri/favorites-mobile.png",
+   "bytes": 38673
+  },
+  "insights-mobile.png": {
+   "file": "docs/screenshots/tri/insights-mobile.png",
+   "bytes": 32492
+  },
+  "worlds-mobile.png": {
+   "file": "docs/screenshots/tri/worlds-mobile.png",
+   "bytes": 36755
+  },
+  "friendlist-mobile.png": {
+   "file": "docs/screenshots/tri/friendlist-mobile.png",
+   "bytes": 42638
+  },
+  "friendlog-mobile.png": {
+   "file": "docs/screenshots/tri/friendlog-mobile.png",
+   "bytes": 50757
+  },
+  "gamelog-mobile.png": {
+   "file": "docs/screenshots/tri/gamelog-mobile.png",
+   "bytes": 56736
+  },
+  "settings-mobile.png": {
+   "file": "docs/screenshots/tri/settings-mobile.png",
+   "bytes": 51306
+  },
+  "friend-drawer-mobile.png": {
+   "file": "docs/screenshots/tri/friend-drawer-mobile.png",
+   "bytes": 63972,
+   "drawer": true
+  },
+  "overview-4k.png": {
+   "file": "docs/screenshots/tri/overview-4k.png",
+   "bytes": 221990
+  },
+  "search-4k.png": {
+   "file": "docs/screenshots/tri/search-4k.png",
+   "bytes": 173993
+  },
+  "friends-4k.png": {
+   "file": "docs/screenshots/tri/friends-4k.png",
+   "bytes": 179298
+  },
+  "feed-4k.png": {
+   "file": "docs/screenshots/tri/feed-4k.png",
+   "bytes": 290877
+  },
+  "notifications-4k.png": {
+   "file": "docs/screenshots/tri/notifications-4k.png",
+   "bytes": 206342
+  },
+  "sessions-4k.png": {
+   "file": "docs/screenshots/tri/sessions-4k.png",
+   "bytes": 338498
+  },
+  "players-4k.png": {
+   "file": "docs/screenshots/tri/players-4k.png",
+   "bytes": 194928
+  },
+  "favorites-4k.png": {
+   "file": "docs/screenshots/tri/favorites-4k.png",
+   "bytes": 200402
+  },
+  "insights-4k.png": {
+   "file": "docs/screenshots/tri/insights-4k.png",
+   "bytes": 193659
+  },
+  "worlds-4k.png": {
+   "file": "docs/screenshots/tri/worlds-4k.png",
+   "bytes": 209007
+  },
+  "friendlist-4k.png": {
+   "file": "docs/screenshots/tri/friendlist-4k.png",
+   "bytes": 196473
+  },
+  "friendlog-4k.png": {
+   "file": "docs/screenshots/tri/friendlog-4k.png",
+   "bytes": 264156
+  },
+  "gamelog-4k.png": {
+   "file": "docs/screenshots/tri/gamelog-4k.png",
+   "bytes": 280252
+  },
+  "settings-4k.png": {
+   "file": "docs/screenshots/tri/settings-4k.png",
+   "bytes": 320637
+  },
+  "friend-drawer-4k.png": {
+   "file": "docs/screenshots/tri/friend-drawer-4k.png",
+   "bytes": 376128,
+   "drawer": true
+  }
+ },
+ "fails": [],
+ "summary": {
+  "total": 45,
+  "ok": 45,
+  "fails": 0
+ }
+}

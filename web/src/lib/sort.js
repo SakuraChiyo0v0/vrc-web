@@ -33,7 +33,7 @@ export const SORT_COLUMNS = {
     recent: { label: '最近活跃', dir: 'desc', type: 'time', get: (w) => time(w.last_at) }
   },
   friendlog: {
-    name: { label: '好友', dir: 'asc', type: 'text', get: (i) => i.display_name ?? i.user_id ?? '' },
+    name: { label: '玩家', dir: 'asc', type: 'text', get: (i) => i.display_name ?? i.user_id ?? '' },
     kind: { label: '类型', dir: 'asc', type: 'text', get: (i) => i.kind ?? '' },
     text: { label: '内容', dir: 'asc', type: 'text', get: (i) => i.text ?? '' },
     at: { label: '时间', dir: 'desc', type: 'time', get: (i) => time(i.at) }

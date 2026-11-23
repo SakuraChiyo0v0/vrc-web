@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { api, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 import { useHashState } from '../lib/hashQuery.js';
@@ -16,14 +17,13 @@ const STATUS_COLOR = {
 
 const PLAT = { standalonewindows: 'PC', android: 'Quest', ios: 'iOS', web: 'Web' };
 
-function ago(iso) {
-  if (!iso) return '—';
-  const diff = Date.now() - new Date(iso).getTime();
-  if (diff < 60_000) return '刚刚';
-  if (diff < 3600_000) return `${Math.floor(diff / 60_000)} 分钟前`;
-  if (diff < 86400_000) return `${Math.floor(diff / 3600_000)} 小时前`;
-  const d = Math.floor(diff / 86400_000);
-  return d === 1 ? '昨天' : `${d} 天前`;
+/** 一起玩过的时长：分钟 → 真机那种「12 小时 8 分」 */
+function dur(min) {
+  const n = Math.max(0, Number(min ?? 0));
+  if (!n) return '—';
+  if (n < 60) return `${n} 分`;
+  if (n < 1440) return `${Math.floor(n / 60)} 小时${n % 60 ? ` ${n % 60} 分` : ''}`;
+  return `${Math.floor(n / 1440)} 天 ${Math.floor((n % 1440) / 60)} 小时`;
 }
 
 function Platform({ p }) {
@@ -32,88 +32,115 @@ function Platform({ p }) {
   return <span className="plat" data-p={key}>{PLAT[p] ?? p}</span>;
 }
 
-/** 75 好友列表：friend 表全量，按信任等级 / 标签 / 收藏筛，显示最后在线 */
+/**
+ * 好友列表：按 docs/ref/vrcx0-friendlist.png 的真机表格重做。
+ *   工具栏：筛选 / 搜索好友 / 加载共同好友 / 拉取缺失的字段
+ *   列（9 条，顺序照截图）：序号 · 模型 · 昵称 · 信誉等级 · 状态 · 语言 · 社交链接 · 一起玩的次数 · 一起玩过的时长
+ *   每页 20 行，底部页码（真机 165 条 9 页）
+ */
+const COLS = [
+  { key: 'idx', label: '序号', w: 44 },
+  { key: 'avatar', label: '模型', w: 64 },
+  { key: 'name', label: '昵称', w: 0 },
+  { key: 'trust', label: '信誉等级', w: 96 },
+  { key: 'state', label: '状态', w: 88 },
+  { key: 'lang', label: '语言', w: 88 },
+  { key: 'links', label: '社交链接', w: 96 },
+  { key: 'meets', label: '一起玩的次数', w: 104 },
+  { key: 'mins', label: '一起玩过的时长', w: 120 },
+];
+const PAGE_SIZE = 20;
+
 export default function FriendListPage() {
   // 86 筛选状态进地址栏（#/friendlist?trust=4&fav=1），刷新与深链都能还原
-  const [f, setF] = useHashState({ q: '', trust: '', tag: '', fav: false, sort: 'last_seen', group: 'none' });
+  const [f, setF] = useHashState({
+    q: '', trust: '', tag: '', fav: false, sort: 'last_seen', group: 'none', page: 1, panel: false
+  });
   const { q, trust, tag, fav, sort, group } = f;
-  const setQ = (q) => setF({ q });
-  const setTrust = (trust) => setF({ trust });
-  const setTag = (tag) => setF({ tag });
-  const setFav = (fn) => setF({ fav: typeof fn === 'function' ? fn(fav) : fn });
-  const setSort = (sort) => setF({ sort });
-  const setGroup = (group) => setF({ group });
+  const page = Math.max(1, Number(f.page) || 1);
+  const panel = String(f.panel) === 'true' || f.panel === true;
+  const setQ = (v) => setF({ q: v, page: 1 });
+  const setTrust = (v) => setF({ trust: v, page: 1 });
+  const setTag = (v) => setF({ tag: v, page: 1 });
+  const setFav = (v) => setF({ fav: v, page: 1 });
+  const setSort = (v) => setF({ sort: v, page: 1 });
+  const setGroup = (v) => setF({ group: v, page: 1 });
+  const setPage = (v) => setF({ page: v });
   const active = [q, trust, tag, fav ? '1' : '', sort !== 'last_seen' ? '1' : '', group !== 'none' ? '1' : ''].filter(Boolean).length;
   const { openFriend } = useDrawer();
 
-  const params = new URLSearchParams({ limit: '2000', sort });
+  const params = new URLSearchParams({ limit: '2000', sort, page_size: String(PAGE_SIZE), page: String(page) });
   if (q) params.set('q', q);
   if (trust) params.set('trust', trust);
   if (tag) params.set('tag', tag);
   if (fav) params.set('favorite', '1');
   const { data, isLoading } = useQuery({
-    queryKey: ['friend-list', q, trust, tag, fav, sort],
+    queryKey: ['friend-list', q, trust, tag, fav, sort, page],
     queryFn: () => api(`friend-list?${params.toString()}`)
   });
 
   const rows = data?.friends ?? [];
   const tagOptions = data?.tags ?? [];
+  const pages = data?.pages ?? 1;
+  const base = (page - 1) * PAGE_SIZE;
 
   return (
     <div className="p-4">
+      {/* 真机工具栏：筛选 / 搜索好友 / 加载共同好友 / 拉取缺失的字段 */}
       <div className="mb-3 flex flex-wrap items-center gap-2">
+        <button
+          className="chip"
+          data-filter-toggle="1"
+          aria-pressed={panel}
+          onClick={() => setF({ panel: !panel })}
+          style={panel || active ? { borderColor: 'var(--stroke-strong)', color: 'var(--content-primary)' } : undefined}
+        >
+          筛选{active ? ` ${active}` : ''}
+        </button>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="搜索名字 / user id"
+          placeholder="搜索好友"
+          aria-label="搜索好友"
           className="h-8 min-w-0 flex-1 rounded-lg border px-2.5 text-[12px] outline-none sm:w-56 sm:flex-none"
           style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)', color: 'var(--content-primary)' }}
         />
-        <select className="h-8 rounded-lg border px-2 text-[12px]" value={trust} onChange={(e) => setTrust(e.target.value)} style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' }}>
-          <option value="">全部信任等级</option>
-          {[4, 3, 2, 1].map((r) => <option key={r} value={String(r)}>{TRUST_NAME[r]}</option>)}
-        </select>
-        <select className="h-8 max-w-[160px] rounded-lg border px-2 text-[12px]" value={tag} onChange={(e) => setTag(e.target.value)} style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' }}>
-          <option value="">全部标签</option>
-          {tagOptions.map((t) => <option key={t} value={t}>{t}</option>)}
-        </select>
-        <button
-          onClick={() => setFav((v) => !v)}
-          className="chip"
-          style={fav ? { borderColor: 'var(--stroke-strong)', color: 'var(--content-primary)' } : undefined}
-        >
-          {fav ? '★ 只看收藏' : '☆ 只看收藏'}
-        </button>
-        <select className="h-8 rounded-lg border px-2 text-[12px]" value={sort} onChange={(e) => setSort(e.target.value)} style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' }}>
-          <option value="last_seen">按最后在线</option>
-          <option value="name">按名字</option>
-          <option value="trust">按信任等级</option>
-        </select>
-        {/* 107 分组：世界 / 收藏 / 信任等级，组头带计数 */}
-        <select
-          className="h-8 rounded-lg border px-2 text-[12px]"
-          value={group}
-          onChange={(e) => setGroup(e.target.value)}
-          data-group={group}
-          aria-label="分组方式"
-          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' }}
-        >
-          {Object.entries(GROUP_MODES).map(([k, label]) => (
-            <option key={k} value={k}>{label}</option>
-          ))}
-        </select>
-        <span className="text-[12px] text-fg3" data-count="1">
-          {data?.returned ?? 0} / {data?.total ?? 0} 人 · 在线 {data?.online ?? 0}
-          {active ? ` · 已筛 ${active} 项` : ''}
+        <button className="chip" disabled title="VRCX-0 的「加载共同好友」需要 VRChat 好友关系接口，本站未接入">加载共同好友</button>
+        <button className="chip" disabled title="本站采集器只存已有字段，没有缺失字段可拉取">拉取缺失的字段</button>
+        <span className="ml-auto text-[12px] text-fg3" data-count="1">
+          {data?.matched ?? 0} / {data?.total ?? 0} 人 · 在线 {data?.online ?? 0}
         </span>
-        {active ? (
-          <button className="chip" data-reset="1" onClick={() => setF({ q: '', trust: '', tag: '', fav: false, sort: 'last_seen' })}>
-            清空筛选
-          </button>
-        ) : null}
       </div>
 
-      {isLoading ? <Skeleton rows={8} cols={5} /> : null}
+      {panel ? (
+        <div className="mb-3 flex flex-wrap items-center gap-2" data-filter-panel="1">
+          <select className="h-8 rounded-lg border px-2 text-[12px]" value={trust} onChange={(e) => setTrust(e.target.value)} style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' }}>
+            <option value="">全部信誉等级</option>
+            {[4, 3, 2, 1].map((r) => <option key={r} value={String(r)}>{TRUST_NAME[r]}</option>)}
+          </select>
+          <select className="h-8 max-w-[160px] rounded-lg border px-2 text-[12px]" value={tag} onChange={(e) => setTag(e.target.value)} style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' }}>
+            <option value="">全部标签</option>
+            {tagOptions.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+          <button onClick={() => setFav(!fav)} className="chip" style={fav ? { borderColor: 'var(--stroke-strong)', color: 'var(--content-primary)' } : undefined}>
+            {fav ? '★ 只看收藏' : '☆ 只看收藏'}
+          </button>
+          <select className="h-8 rounded-lg border px-2 text-[12px]" value={sort} onChange={(e) => setSort(e.target.value)} style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' }}>
+            <option value="last_seen">按最后在线</option>
+            <option value="name">按名字</option>
+            <option value="trust">按信誉等级</option>
+          </select>
+          {/* 107 分组：世界 / 收藏 / 信任等级，组头带计数 */}
+          <select className="h-8 rounded-lg border px-2 text-[12px]" value={group} onChange={(e) => setGroup(e.target.value)} data-group={group} aria-label="分组方式" style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' }}>
+            {Object.entries(GROUP_MODES).map(([k, label]) => <option key={k} value={k}>{label}</option>)}
+          </select>
+          {active ? (
+            <button className="chip" data-reset="1" onClick={() => setF({ q: '', trust: '', tag: '', fav: false, sort: 'last_seen', group: 'none', page: 1 })}>清空筛选</button>
+          ) : null}
+        </div>
+      ) : null}
+
+      {isLoading ? <Skeleton rows={8} cols={9} /> : null}
 
       {!isLoading && rows.length === 0 ? (
         <div className="card p-10 text-center">
@@ -122,52 +149,75 @@ export default function FriendListPage() {
         </div>
       ) : (
         <div className="card overflow-hidden">
-          <table className="tbl">
+          <table className="tbl fl-tbl">
             <thead>
               <tr>
-                <th>好友</th>
-                <th style={{ width: 96 }}>信任等级</th>
-                <th>标签</th>
-                <th style={{ width: 96 }}>平台</th>
-                <th style={{ width: 110 }}>最后在线</th>
+                {COLS.map((c) => (
+                  <th key={c.key} className="fl-th" style={c.w ? { width: c.w } : undefined}>{c.label}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {groupFriends(rows, group).map((g) => [
                 g.label ? (
                   <tr key={`grp-${g.key}`} className="group-row" data-group-key={g.key} data-group-count={g.count}>
-                    <td colSpan={5}>
+                    <td colSpan={COLS.length}>
                       <span className="font-medium">{g.label}</span>
                       <span className="ml-2 tabular-nums text-fg3">{g.count} 人</span>
                     </td>
                   </tr>
                 ) : null,
-                ...g.rows.map((f) => (
-                <tr key={f.user_id} data-uid={f.user_id} onClick={() => openFriend(f.user_id)} className="cursor-pointer">
-                  <td data-label="好友">
-                    <span className="flex min-w-0 items-center gap-2">
-                      <span className="avatar">
-                        {f.icon_url ? <img src={imgUrl(f.icon_url)} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} /> : null}
-                        <span className="dot" style={{ background: STATUS_COLOR[f.status] ?? 'var(--status-offline)' }} />
+                ...g.rows.map((f2, i) => (
+                  <tr key={f2.user_id} data-uid={f2.user_id} onClick={() => openFriend(f2.user_id)} className="cursor-pointer">
+                    <td className="tabular-nums text-[12px] text-fg3" data-label="序号">{base + i + 1}</td>
+                    <td data-label="模型">
+                      <span className="fl-av">
+                        {f2.avatar_thumb
+                          ? <img src={imgUrl(f2.avatar_thumb)} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} />
+                          : null}
                       </span>
-                      <span className="min-w-0 truncate">{f.display_name}</span>
-                      {f.favorite ? <span className="shrink-0 text-[11px]" style={{ color: 'var(--status-joinme)' }}>★</span> : null}
-                      {f.online ? <span className="shrink-0 text-[11px] text-fg3">在线</span> : null}
-                    </span>
-                  </td>
-                  <td className="text-[12px] text-fg2" data-label="信任等级">{TRUST_NAME[f.trust_rank] ?? '—'}</td>
-                  <td className="min-w-0 text-[12px] text-fg3" data-label="标签">
-                    {f.tags.length ? f.tags.join(' / ') : '—'}
-                  </td>
-                  <td data-label="平台"><Platform p={f.platform} /></td>
-                  <td className="text-[12px] tabular-nums text-fg3" data-label="最后在线">{f.online ? '现在' : ago(f.last_seen)}</td>
-                </tr>
+                    </td>
+                    <td className="min-w-0" data-label="昵称">
+                      <span className="flex min-w-0 items-center gap-2">
+                        <span className="avatar">
+                          {f2.icon_url ? <img src={imgUrl(f2.icon_url)} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} /> : null}
+                          <span className="dot" style={{ background: STATUS_COLOR[f2.status] ?? 'var(--status-offline)' }} />
+                        </span>
+                        <span className="min-w-0 truncate">{f2.display_name}</span>
+                        {f2.favorite ? <span className="shrink-0 text-[11px]" style={{ color: 'var(--status-joinme)' }}>★</span> : null}
+                        {f2.platform ? <Platform p={f2.platform} /> : null}
+                      </span>
+                    </td>
+                    <td className="text-[12px] text-fg2" data-label="信誉等级">{TRUST_NAME[f2.trust_rank] ?? '—'}</td>
+                    <td className="text-[12px]" data-label="状态">
+                      <span className="flex items-center gap-1.5">
+                        <span className="dot" style={{ background: STATUS_COLOR[f2.status] ?? 'var(--status-offline)' }} />
+                        {f2.state_label ?? (f2.online ? '在线' : '离线')}
+                      </span>
+                    </td>
+                    <td className="text-[12px] text-fg2" data-label="语言">{f2.language ?? '—'}</td>
+                    <td className="text-[12px] text-fg3" data-label="社交链接" title={f2.social_links ? undefined : '未采集 bio 链接'}>
+                      {f2.social_links ?? '—'}
+                    </td>
+                    <td className="tabular-nums text-[12px] text-fg2" data-label="一起玩的次数">{f2.together_count ?? 0}</td>
+                    <td className="tabular-nums text-[12px] text-fg3" data-label="一起玩过的时长">{dur(f2.together_minutes)}</td>
+                  </tr>
                 ))
               ])}
             </tbody>
           </table>
         </div>
       )}
+
+      {/* 底部页码：真机 165 条 / 每页 20 = 9 页 */}
+      {!isLoading && rows.length ? (
+        <div className="mt-3 flex items-center gap-2 text-[12px] text-fg3" data-pager="1" data-pages={pages} data-page-size={PAGE_SIZE}>
+          <button className="chip" data-page-prev="1" disabled={page <= 1} onClick={() => setPage(page - 1)}>上一页</button>
+          <span className="tabular-nums" data-page-now={page}>第 {page} / {pages} 页</span>
+          <button className="chip" data-page-next="1" disabled={page >= pages} onClick={() => setPage(page + 1)}>下一页</button>
+          <span className="ml-auto">每页 {PAGE_SIZE} 条</span>
+        </div>
+      ) : null}
     </div>
   );
 }

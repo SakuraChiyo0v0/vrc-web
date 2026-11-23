@@ -340,12 +340,18 @@ app.get('/api/my-sessions', async () => {
     const r = rows[i];
     if (r.kind !== 'location' || !r.location || String(r.location).startsWith('offline')) continue;
     const next = rows[i + 1];
+    const seconds = next ? Math.round((new Date(iso(next.at)) - new Date(iso(r.at))) / 1000) : null;
+    // location: wrld_xxx:inst~region(jp) → region 徽标（VRCX-0 房间历史行内显示 JP/US）
+    const region = /~region\(([a-z]{2})\)/i.exec(String(r.location))?.[1]?.toUpperCase() ?? null;
     out.push({
       world: worlds.get(r.world_id) ?? r.world_id,
+      world_id: r.world_id,
       location: r.location,
+      region,
       start_at: iso(r.at),
       end_at: next ? iso(next.at) : null,
-      minutes: next ? Math.round((new Date(iso(next.at)) - new Date(iso(r.at))) / 60000) : null,
+      minutes: seconds == null ? null : Math.round(seconds / 60),
+      seconds,
     });
   }
   const sessions = out.reverse();

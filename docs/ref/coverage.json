@@ -7,9 +7,9 @@
    "measured": true,
    "parity": true,
    "shots": {
-    "desktop": 6,
-    "mobile": 3,
-    "4k": 2
+    "desktop": 7,
+    "mobile": 4,
+    "4k": 3
    },
    "shots_missing": []
   },
@@ -19,13 +19,11 @@
    "measured": true,
    "parity": false,
    "shots": {
-    "desktop": 1,
-    "mobile": 1,
-    "4k": 0
+    "desktop": 2,
+    "mobile": 2,
+    "4k": 1
    },
-   "shots_missing": [
-    "4k"
-   ]
+   "shots_missing": []
   },
   "friends": {
    "ref": "docs/ref/vrcx0-locations.png",
@@ -33,9 +31,9 @@
    "measured": true,
    "parity": true,
    "shots": {
-    "desktop": 4,
-    "mobile": 2,
-    "4k": 1
+    "desktop": 5,
+    "mobile": 3,
+    "4k": 2
    },
    "shots_missing": []
   },
@@ -45,13 +43,11 @@
    "measured": true,
    "parity": true,
    "shots": {
-    "desktop": 7,
-    "mobile": 2,
-    "4k": 0
+    "desktop": 8,
+    "mobile": 3,
+    "4k": 1
    },
-   "shots_missing": [
-    "4k"
-   ]
+   "shots_missing": []
   },
   "notifications": {
    "ref": "docs/ref/vrcx0-notifications.png",
@@ -59,13 +55,11 @@
    "measured": true,
    "parity": true,
    "shots": {
-    "desktop": 1,
-    "mobile": 1,
-    "4k": 0
+    "desktop": 2,
+    "mobile": 2,
+    "4k": 1
    },
-   "shots_missing": [
-    "4k"
-   ]
+   "shots_missing": []
   },
   "sessions": {
    "ref": "docs/ref/vrcx0-roomhistory.png",
@@ -73,14 +67,11 @@
    "measured": true,
    "parity": false,
    "shots": {
-    "desktop": 0,
-    "mobile": 1,
-    "4k": 0
+    "desktop": 1,
+    "mobile": 2,
+    "4k": 1
    },
-   "shots_missing": [
-    "desktop",
-    "4k"
-   ]
+   "shots_missing": []
   },
   "players": {
    "ref": "docs/ref/vrcx0-players.png",
@@ -88,13 +79,11 @@
    "measured": true,
    "parity": false,
    "shots": {
-    "desktop": 1,
-    "mobile": 1,
-    "4k": 0
+    "desktop": 2,
+    "mobile": 2,
+    "4k": 1
    },
-   "shots_missing": [
-    "4k"
-   ]
+   "shots_missing": []
   },
   "stats": {
    "ref": null,
@@ -118,13 +107,11 @@
    "measured": true,
    "parity": false,
    "shots": {
-    "desktop": 0,
-    "mobile": 1,
-    "4k": 1
+    "desktop": 1,
+    "mobile": 2,
+    "4k": 2
    },
-   "shots_missing": [
-    "desktop"
-   ]
+   "shots_missing": []
   },
   "insights": {
    "ref": "docs/ref/vrcx0-insights.png",
@@ -132,15 +119,11 @@
    "measured": true,
    "parity": false,
    "shots": {
-    "desktop": 0,
-    "mobile": 0,
-    "4k": 0
+    "desktop": 1,
+    "mobile": 1,
+    "4k": 1
    },
-   "shots_missing": [
-    "desktop",
-    "mobile",
-    "4k"
-   ]
+   "shots_missing": []
   },
   "worlds": {
    "ref": "docs/ref/vrcx0-worlds.png",
@@ -148,9 +131,9 @@
    "measured": true,
    "parity": true,
    "shots": {
-    "desktop": 3,
-    "mobile": 1,
-    "4k": 2
+    "desktop": 4,
+    "mobile": 2,
+    "4k": 3
    },
    "shots_missing": []
   },
@@ -176,13 +159,11 @@
    "measured": true,
    "parity": false,
    "shots": {
-    "desktop": 4,
-    "mobile": 1,
-    "4k": 0
+    "desktop": 5,
+    "mobile": 2,
+    "4k": 1
    },
-   "shots_missing": [
-    "4k"
-   ]
+   "shots_missing": []
   },
   "friendlog": {
    "ref": "docs/ref/vrcx0-friendlog.png",
@@ -190,14 +171,11 @@
    "measured": true,
    "parity": false,
    "shots": {
-    "desktop": 4,
-    "mobile": 0,
-    "4k": 0
+    "desktop": 5,
+    "mobile": 1,
+    "4k": 1
    },
-   "shots_missing": [
-    "mobile",
-    "4k"
-   ]
+   "shots_missing": []
   },
   "gamelog": {
    "ref": "docs/ref/vrcx0-gamelog.png",
@@ -205,14 +183,11 @@
    "measured": true,
    "parity": false,
    "shots": {
-    "desktop": 5,
-    "mobile": 0,
-    "4k": 0
+    "desktop": 6,
+    "mobile": 1,
+    "4k": 1
    },
-   "shots_missing": [
-    "mobile",
-    "4k"
-   ]
+   "shots_missing": []
   },
   "settings": {
    "ref": "docs/ref/vrcx0-settings.png",
@@ -220,14 +195,11 @@
    "measured": true,
    "parity": false,
    "shots": {
-    "desktop": 1,
-    "mobile": 0,
-    "4k": 0
+    "desktop": 2,
+    "mobile": 1,
+    "4k": 1
    },
-   "shots_missing": [
-    "mobile",
-    "4k"
-   ]
+   "shots_missing": []
   }
  },
  "friend_modal": {
@@ -235,9 +207,9 @@
   "measured": true,
   "parity": false,
   "shots": {
-   "desktop": 7,
-   "mobile": 2,
-   "4k": 1
+   "desktop": 8,
+   "mobile": 3,
+   "4k": 2
   },
   "shots_missing": []
  },
@@ -246,8 +218,8 @@
   "ref": 14,
   "measured": 14,
   "parity": 5,
-  "shots3": 3,
+  "shots3": 14,
   "na": 2,
-  "todo": 11
+  "todo": 9
  }
 }

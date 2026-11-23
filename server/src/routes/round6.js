@@ -39,6 +39,42 @@ const TRUST_RANK = {
   'system_trust_intermediate': 4,
 };
 
+/** VRChat 好友 tags 里的 language_xxx → 显示名（只认截图/官方标签里出现的语言码） */
+const LANG_LABEL = {
+  eng: 'English', jpn: '日本語', zho: '中文', kor: '한국어', fra: 'Français',
+  deu: 'Deutsch', spa: 'Español', por: 'Português', rus: 'Русский', ita: 'Italiano',
+  tha: 'ไทย', vie: 'Tiếng Việt', ind: 'Bahasa', pol: 'Polski', nld: 'Nederlands',
+  swe: 'Svenska', dan: 'Dansk', nor: 'Norsk', ces: 'Čeština', tur: 'Türkçe',
+  ukr: 'Українська', hun: 'Magyar', ron: 'Română', ell: 'Ελληνικά', heb: 'עברית',
+  ara: 'العربية', hin: 'हिन्दी', fil: 'Filipino',
+};
+const languageOf = (tags) => {
+  const list = Array.isArray(tags) ? tags : parseJson(tags);
+  const code = (Array.isArray(list) ? list : []).map((t) => String(t).match(/^language_([a-z]{3})$/)).find(Boolean);
+  return code ? LANG_LABEL[code[1]] ?? code[1] : null;
+};
+
+/** self_event 的 location 行 → 我自己的停留区间（同 round7 的 myIntervals，按世界分组便于求交） */
+function myIntervalsByWorld(rows, now) {
+  const byWorld = new Map();
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    if (r.kind !== 'location') continue;
+    const loc = String(r.location ?? '');
+    const world_id = splitLocation(loc).world_id;
+    if (!world_id || !/^wrld_/.test(world_id)) continue;
+    const start = new Date(isoOf(r.at)).getTime();
+    const next = rows[i + 1];
+    const end = next ? new Date(isoOf(next.at)).getTime() : now;
+    if (!(end > start)) continue;
+    if (!byWorld.has(world_id)) byWorld.set(world_id, []);
+    byWorld.get(world_id).push({ start, end });
+  }
+  return byWorld;
+}
+
+const overlapMs = (a1, a2, b1, b2) => Math.max(0, Math.min(a2, b2) - Math.max(a1, b1));
+
 export function registerRound6Routes(app, { db, T, iso }) {
   const at = (v) => (v === null || v === undefined ? null : isoOf(iso(v)));
 
@@ -267,7 +303,7 @@ export function registerRound6Routes(app, { db, T, iso }) {
 
     const rows = await db.query(
       `select user_id, display_name, trust_level, trust_rank, platform, status, status_description,
-              location, world_id, world_name, icon_url, is_favorite, updated_at
+              location, world_id, world_name, icon_url, avatar_id, tags, is_favorite, updated_at
          from ${T('friend')}`,
     );
     const tagRows = await db.query(`select user_id, tag from ${T('friend_tag')} order by tag`);
@@ -286,14 +322,48 @@ export function registerRound6Routes(app, { db, T, iso }) {
     const notes = new Map(noteRows.map((r) => [r.user_id, r.note]));
     const ONLINE = (loc) => loc && !['offline', 'private', 'traveling'].includes(loc);
 
+    // 一起玩：自己的停留区间（self_event）与好友的世界到访（friend_world_visit）按世界求交。
+    // 没有交集就是 0 —— 宁可显示 0/— 也不拿「好友在线时长」冒充同房时长。
+    let visitRows = [];
+    let selfRows = [];
+    try {
+      visitRows = await db.query(
+        `select user_id, world_id, started_at, ended_at from ${T('friend_world_visit')} where world_id is not null`,
+      );
+      selfRows = await db.query(`select kind, location, at from ${T('self_event')} order by at`);
+    } catch { /* 老库没这两张表时按 0 显示，不让整页 500 */ }
+    const myByWorld = myIntervalsByWorld(selfRows, Date.now());
+    const together = new Map();
+    for (const v of visitRows) {
+      const win = myByWorld.get(v.world_id);
+      if (!win) continue;
+      const s = new Date(isoOf(v.started_at)).getTime();
+      const e = v.ended_at ? new Date(isoOf(v.ended_at)).getTime() : Date.now();
+      let ms = 0;
+      for (const iv of win) ms += overlapMs(iv.start, iv.end, s, e);
+      if (ms <= 0) continue;
+      const cur = together.get(v.user_id) ?? { count: 0, minutes: 0 };
+      cur.count += 1;
+      cur.minutes += Math.round(ms / 60000);
+      together.set(v.user_id, cur);
+    }
+
     let friends = rows.map((r) => {
       const rank = num(r.trust_rank) ?? TRUST_RANK[r.trust_level] ?? null;
       const online = ONLINE(r.location);
+      const inWorld = online && !['active', 'idle'].includes(String(r.location)) && /^wrld_/.test(String(r.location));
+      const tg = together.get(r.user_id);
       return {
         user_id: r.user_id,
         display_name: r.display_name ?? r.user_id,
         trust_level: r.trust_level ?? null,
         trust_rank: rank,
+        language: languageOf(r.tags),
+        avatar_thumb: /^https?:/.test(String(r.avatar_id ?? '')) ? r.avatar_id : null,
+        social_links: null, // 未采集 bio links：显示 —，不编造
+        together_count: tg?.count ?? 0,
+        together_minutes: tg?.minutes ?? 0,
+        state_label: inWorld ? '游戏中' : online ? '在线' : '离线',
         platform: r.platform ?? null,
         status: r.status ?? null,
         status_description: r.status_description ?? null,
@@ -325,13 +395,21 @@ export function registerRound6Routes(app, { db, T, iso }) {
     friends.sort(sorters[sort] ?? sorters.last_seen);
 
     const allTags = [...new Set(tagRows.map((r) => r.tag))];
+    // 真机好友列表是 20 行/页 + 底部页码（165 条 9 页）；limit 保留给其他调用方
+    const pageSize = clamp(Number(req.query.page_size ?? 0) || 0, 0, 500);
+    const page = pageSize ? clamp(Number(req.query.page ?? 1) || 1, 1, 9999) : 1;
+    const shown = pageSize ? friends.slice((page - 1) * pageSize, page * pageSize) : friends.slice(0, limit);
     return {
       total: rows.length,
-      returned: Math.min(friends.length, limit),
+      matched: friends.length,
+      returned: shown.length,
+      page: pageSize ? page : null,
+      page_size: pageSize || null,
+      pages: pageSize ? Math.max(1, Math.ceil(friends.length / pageSize)) : null,
       filters: { q, trust, tag, favorite, sort },
       online: friends.filter((f) => f.online).length,
       tags: allTags,
-      friends: friends.slice(0, limit),
+      friends: shown,
     };
   });
 }

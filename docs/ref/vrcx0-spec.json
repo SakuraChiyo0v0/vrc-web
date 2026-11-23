@@ -263,7 +263,28 @@
    },
    "nav_pill": null,
    "row_bands": 19,
-   "row_pitch": 46.25
+   "row_pitch": 46.25,
+   "structure": {
+    "_source": "docs/ref/crop-favorites-head.png（内容面板 283,47 起 1398×300 裁图）+ vision 逐字读 docs/ref/vrcx0-favorites.png；行数按行带计数",
+    "kind": "folder_cards",
+    "folder_sidebar": true,
+    "folders_nav": [
+     "好友收藏",
+     "群组收藏",
+     "世界收藏",
+     "模型收藏"
+    ],
+    "grid_columns": 2,
+    "folder_groups": [
+     "在线收藏夹",
+     "本地收藏夹"
+    ],
+    "counter_format": "n/150",
+    "toolbar": [
+     "按日期排序",
+     "搜索"
+    ]
+   }
   },
   "feed": {
    "_source": "measured docs/ref/vrcx0-feed.png（scripts/measure_ref_chrome.py）",
@@ -339,7 +360,33 @@
    },
    "nav_pill": null,
    "row_bands": 24,
-   "row_pitch": 35.5
+   "row_pitch": 35.5,
+   "structure": {
+    "_source": "docs/ref/crop-friendlist-head.png（内容面板 283,47 起 1398×300 裁图）+ vision 逐字读 docs/ref/vrcx0-friendlist.png；行数按行带计数",
+    "kind": "paged_table",
+    "columns_n": 9,
+    "columns": [
+     "序号",
+     "模型",
+     "昵称",
+     "信誉等级",
+     "状态",
+     "语言",
+     "社交链接",
+     "一起玩的次数",
+     "一起玩过的时长"
+    ],
+    "rows_visible": 20,
+    "page_size": 20,
+    "pages": 9,
+    "total": 165,
+    "toolbar": [
+     "筛选",
+     "搜索好友",
+     "加载共同好友",
+     "拉取缺失的字段"
+    ]
+   }
   },
   "friendlog": {
    "_source": "measured docs/ref/vrcx0-friendlog.png（scripts/measure_ref_chrome.py）",
@@ -377,7 +424,25 @@
    },
    "nav_pill": null,
    "row_bands": 24,
-   "row_pitch": 43.5
+   "row_pitch": 43.5,
+   "structure": {
+    "_source": "docs/ref/crop-friendlog-head.png（内容面板 283,47 起 1398×300 裁图）+ vision 逐字读 docs/ref/vrcx0-friendlog.png；行数按行带计数",
+    "kind": "table",
+    "chips": [
+     "筛选"
+    ],
+    "toolbar": [
+     "搜索好友日志"
+    ],
+    "columns": [
+     "时间",
+     "类型",
+     "玩家",
+     "操作"
+    ],
+    "columns_n": 4,
+    "rows_visible": 19
+   }
   },
   "gamelog": {
    "_source": "measured docs/ref/vrcx0-gamelog.png（scripts/measure_ref_chrome.py）",
@@ -415,7 +480,27 @@
    },
    "nav_pill": null,
    "row_bands": 23,
-   "row_pitch": 40.0
+   "row_pitch": 40.0,
+   "structure": {
+    "_source": "docs/ref/crop-gamelog-head.png（内容面板 283,47 起 1398×300 裁图）+ vision 逐字读 docs/ref/vrcx0-gamelog.png；行数按行带计数",
+    "kind": "grouped_rows",
+    "header_row": false,
+    "columns": [
+     "时间",
+     "方向",
+     "玩家/人数",
+     "动作",
+     "时长"
+    ],
+    "columns_n": 5,
+    "rows_visible": 21,
+    "toolbar": [
+     "类型",
+     "搜索"
+    ],
+    "group_head": "日期(2026年11月22日星期日)",
+    "instance_summary": true
+   }
   },
   "insights": {
    "_source": "measured docs/ref/vrcx0-insights.png（scripts/measure_ref_chrome.py）",
@@ -453,7 +538,17 @@
    },
    "nav_pill": null,
    "row_bands": 19,
-   "row_pitch": 43.75
+   "row_pitch": 43.75,
+   "structure": {
+    "_source": "docs/ref/crop-insights-head.png（内容面板 283,47 起 1398×300 裁图）+ vision 逐字读 docs/ref/vrcx0-insights.png；行数按行带计数",
+    "kind": "graph_canvas",
+    "tabs_n": 0,
+    "toolbar": [
+     "查找好友",
+     "再次拉取"
+    ],
+    "legend": "圈子"
+   }
   },
   "locations": {
    "_source": "measured docs/ref/vrcx0-locations.png（scripts/measure_ref_chrome.py）",
@@ -643,7 +738,14 @@
    },
    "nav_pill": null,
    "row_bands": 23,
-   "row_pitch": 43.5
+   "row_pitch": 43.5,
+   "structure": {
+    "_source": "docs/ref/crop-players-head.png（内容面板 283,47 起 1398×300 裁图）+ vision 逐字读 docs/ref/vrcx0-players.png；行数按行带计数",
+    "kind": "empty_state",
+    "columns_n": 0,
+    "empty_title": "VRChat 目前没有运行",
+    "empty_body": "启动 VRChat 并进入一个房间后，这里会显示同一房间的玩家；有人加入或离开时，列表也会自动更新。"
+   }
   },
   "roomhistory": {
    "_source": "measured docs/ref/vrcx0-roomhistory.png（scripts/measure_ref_chrome.py）",
@@ -719,7 +821,60 @@
    },
    "nav_pill": null,
    "row_bands": 21,
-   "row_pitch": 43.25
+   "row_pitch": 43.25,
+   "structure": {
+    "_source": "docs/ref/crop-search-head.png（内容面板 283,47 起 1398×300 裁图）+ vision 逐字读 docs/ref/vrcx0-search.png；行数按行带计数",
+    "kind": "card_grid",
+    "nav_tabs": [
+     "探索",
+     "玩家",
+     "世界",
+     "模型",
+     "群组"
+    ],
+    "sub_tabs": [
+     "热门",
+     "发现"
+    ],
+    "hero_cards": 1,
+    "grid_columns": 3,
+    "pager": false
+   }
+  },
+  "sessions": {
+   "structure": {
+    "_source": "docs/ref/vrcx0-roomhistory.png 像素量测（scripts/measure_ref_sessions.py）+ docs/ref/crop-sessions-head.png vision 逐字读",
+    "kind": "master_detail",
+    "left_list_w": 353,
+    "list_left_offset": 6,
+    "header_row": false,
+    "columns": [
+     "时间",
+     "地区",
+     "房间名",
+     "时长"
+    ],
+    "columns_n": 4,
+    "rows_visible": 20,
+    "chips": [
+     "按日"
+    ],
+    "toolbar": [
+     "自己",
+     "搜索",
+     "按日"
+    ],
+    "count_format": "N条房间访问记录",
+    "group_head": "日期（2026年11月22日星期日）+ 灰色小字",
+    "group_heads_visible": 0,
+    "detail_empty": [
+     "未选择房间",
+     "选择一条房间记录以查看详情"
+    ]
+   },
+   "_source": "measured docs/ref/vrcx0-roomhistory.png（scripts/measure_ref_sessions.py）",
+   "row_bands": 22,
+   "row_pitch": 39.5
   },
   "settings": {
    "_source": "measured docs/ref/vrcx0-settings.png（scripts/measure_ref_chrome.py）",
@@ -757,7 +912,32 @@
    },
    "nav_pill": null,
    "row_bands": 22,
-   "row_pitch": 42.0
+   "row_pitch": 42.0,
+   "structure": {
+    "_source": "docs/ref/crop-settings-head.png（内容面板 283,47 起 1398×300 裁图）+ vision 逐字读 docs/ref/vrcx0-settings.png；行数按行带计数",
+    "kind": "subnav_form",
+    "subnav_n": 10,
+    "subnav": [
+     "系统",
+     "界面",
+     "社交",
+     "通知",
+     "VR",
+     "媒体",
+     "AI",
+     "集成",
+     "高级",
+     "反馈"
+    ],
+    "groups": [
+     "启动",
+     "窗口与托盘"
+    ],
+    "single_column": true,
+    "toolbar": [
+     "搜索设置"
+    ]
+   }
   },
   "stats": {
    "_source": "measured docs/ref/vrcx0-stats.png（scripts/measure_ref_chrome.py）",

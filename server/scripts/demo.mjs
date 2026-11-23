@@ -63,6 +63,34 @@ for (const [id, name, author, cap, visits, favs, pop] of world114) {
   await ins(`insert into favorite (id, kind, target_id, sort_order) values (?,?,?,?)`,
     [`fav_${id}`, 'world', id, 0]);
 }
+// 对齐真机好友列表：20 行/页 + 9 列（序号/模型/昵称/信誉/状态/语言/社交链接/一起玩次数/时长）。
+// 这里补 16 个带 tags（language_*）与头像的好友，让演示库刚好一页 20 行。
+const extraFriends = [
+  ['usr_f01', 'Kirito', 'system_trust_trusted', 'eng', 'active', 'wrld_a:9~region(jp)', 'wrld_a', 'Alpha Club'],
+  ['usr_f02', 'さくら', 'system_trust_known', 'jpn', 'join me', 'wrld_c:5~region(jp)', 'wrld_c', '夜の喫茶店'],
+  ['usr_f03', 'Yuki', 'system_trust_basic', 'jpn', 'offline', null, null, null],
+  ['usr_f04', 'Momo', 'system_trust_known', 'zho', 'active', 'wrld_b:4~region(us)', 'wrld_b', 'Beta Lounge'],
+  ['usr_f05', 'Nova', 'system_trust_trusted', 'eng', 'busy', 'wrld_d:2~region(jp)', 'wrld_d', 'Cube Garden'],
+  ['usr_f06', 'あかり', 'system_trust_veteran', 'jpn', 'active', 'wrld_c:1~region(jp)', 'wrld_c', '夜の喫茶店'],
+  ['usr_f07', 'Lin', 'system_trust_basic', 'zho', 'offline', null, null, null],
+  ['usr_f08', 'Rin', 'system_trust_known', 'jpn', 'ask me', 'wrld_e:1~region(jp)', 'wrld_e', 'Tiny Studio'],
+  ['usr_f09', 'Kai', 'system_trust_known', 'eng', 'offline', null, null, null],
+  ['usr_f10', 'ひなた', 'system_trust_trusted', 'jpn', 'active', 'wrld_a:7~region(jp)', 'wrld_a', 'Alpha Club'],
+  ['usr_f11', 'Sora', 'system_trust_basic', 'jpn', 'offline', null, null, null],
+  ['usr_f12', 'Nia', 'system_trust_known', 'eng', 'join me', 'wrld_b:8~region(us)', 'wrld_b', 'Beta Lounge'],
+  ['usr_f13', '小雪', 'system_trust_trusted', 'zho', 'active', 'wrld_d:3~region(jp)', 'wrld_d', 'Cube Garden'],
+  ['usr_f14', 'Tsuki', 'system_trust_basic', 'jpn', 'offline', null, null, null],
+  ['usr_f15', 'Echo', 'system_trust_known', 'eng', 'active', 'wrld_e:2~region(jp)', 'wrld_e', 'Tiny Studio'],
+  ['usr_f16', 'みお', 'system_trust_trusted', 'jpn', 'offline', null, null, null],
+];
+for (const [uid, name, tl, lang, st, loc, wid, wname] of extraFriends) {
+  await ins(`insert into friend (user_id, display_name, trust_level, platform, status, location, world_id, world_name, icon_url, avatar_id, tags, is_favorite, updated_at)
+             values (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    [uid, name, tl, 'standalonewindows', st, loc, wid, wname, null,
+      `https://api.vrchat.cloud/api/1/image/file_${uid.slice(4)}_thumb/1/512`,
+      JSON.stringify([`language_${lang}`, 'system_trust_basic', 'system_trust_known']),
+      0, at(now - 3 * MIN)]);
+}
 // 105 拼音搜索：中文名好友，用来截「xh → 小红」
 await ins(`insert into friend (user_id, display_name, trust_level, platform, status, location, world_id, world_name, icon_url, is_favorite, updated_at)
            values (?,?,?,?,?,?,?,?,?,?,?)`,
@@ -158,6 +186,25 @@ for (const [d, wid, wname, mins] of plan) {
     ['location', `${wid}:1~region(jp)`, wid, at(start)]);
   await ins(`insert into self_event (kind, location, world_id, at) values (?,?,?,?)`,
     ['location', 'offline', null, at(start + mins * MIN)]);
+  // 81 游戏日志真机结构：每次停留里要有足够多的进出事件（真机一屏 ~21 行）
+  const crew = [
+    ['Dave', 'usr_dave'], ['Alice', 'usr_alice'], ['Bob', 'usr_bob'],
+    ['Carol', 'usr_carol'], ['Yu-V', 'usr_yuv'], ['pomelo0511', 'usr_pomelo'],
+    ['水果蘸水果', 'usr_fruit'], ['Mika', 'usr_mika']
+  ];
+  const step = Math.max(3, Math.floor(mins / 10));
+  for (let i = 0; i < crew.length; i += 1) {
+    const [name, uid] = crew[i];
+    const tJoin = start + (5 + i * step) * MIN;
+    if (tJoin >= start + mins * MIN) break;
+    await ins(`insert into game_event (kind, display_name, user_id, location, world_name, detail, at) values (?,?,?,?,?,?,?)`,
+      ['room_join', name, uid, null, wname, null, at(tJoin)]);
+    const tLeave = tJoin + 2 * MIN;
+    if (tLeave < start + mins * MIN) {
+      await ins(`insert into game_event (kind, display_name, user_id, location, world_name, detail, at) values (?,?,?,?,?,?,?)`,
+        ['room_leave', name, uid, null, wname, null, at(tLeave)]);
+    }
+  }
   await ins(`insert into game_event (kind, display_name, user_id, location, world_name, detail, at) values (?,?,?,?,?,?,?)`,
     ['room_join', 'Dave', 'usr_dave', null, wname, null, at(start + 5 * MIN)]);
 }
@@ -199,6 +246,23 @@ await ev('online', 'usr_bob', 'Bob', 'wrld_b:1~region(us)', 'wrld_b', 'Beta Loun
 await ev('offline', 'usr_alice', 'Alice', 'offline', null, null, 28 * 60);
 await ev('location', 'usr_carol', 'Carol', 'wrld_c:2~region(jp)', 'wrld_c', '夜の喫茶店', 52 * 60);
 await ev('active', 'usr_dave', 'Dave', 'wrld_c:3~region(jp)', 'wrld_c', '夜の喫茶店', 76 * 60);
+// 73 好友日志真机一屏 ~19 行：近 24h 再铺一批流水（不同类型混排）
+const log73 = [
+  ['online', 'usr_alice', 'Alice', 1], ['location', 'usr_bob', 'Bob', 3],
+  ['status', 'usr_carol', 'Carol', 7], ['online', 'usr_dave', 'Dave', 11],
+  ['profile', 'usr_alice', 'Alice', 15], ['location', 'usr_carol', 'Carol', 21],
+  ['offline', 'usr_bob', 'Bob', 27], ['online', 'usr_mika', 'Mika', 33],
+  ['status', 'usr_yuv', 'Yu-V', 40], ['location', 'usr_pomelo', 'pomelo0511', 47],
+  ['online', 'usr_fruit', '水果蘸水果', 55], ['profile', 'usr_dave', 'Dave', 63],
+  ['offline', 'usr_carol', 'Carol', 71], ['location', 'usr_alice', 'Alice', 79],
+  ['online', 'usr_bob', 'Bob', 88], ['status', 'usr_mika', 'Mika', 97]
+];
+for (const [kind, uid, name, mins] of log73) {
+  await ins(`insert into friend_event (user_id, display_name, kind, location, world_id, world_name, at)
+             values (?,?,?,?,?,?,?)`,
+    [uid, name, kind, kind === 'location' ? 'wrld_a:1~region(jp)' : null, kind === 'location' ? 'wrld_a' : null, kind === 'location' ? 'Alpha Club' : null, at(now - mins * MIN)]);
+}
+
 // 104 通知聚合：两条 invite 在 24h 内应合成一条带 ×2，另有一条 friend_request 单独成条
 const notif104 = [
   ['n_inv_1', 'invite', 'usr_alice', 'Alice 邀请你去 Alpha Club', 10, 0],

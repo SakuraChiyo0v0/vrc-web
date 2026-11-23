@@ -10,7 +10,12 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { chromium } from 'playwright';
+import { createRequire } from 'node:module';
+// playwright 不在本仓库依赖里（容器只有一份装在 hermes 模板目录），ESM 不吃 NODE_PATH，按路径 require
+const _req = createRequire(import.meta.url);
+let _pw;
+try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json')('playwright'); }
+const { chromium } = _pw;
 
 const BASE = process.argv[2] || 'http://localhost:8790';
 const ROOT = process.env.VRC_ROOT || path.resolve(import.meta.dirname, '..');
@@ -116,10 +121,10 @@ await open('friends', { ready: '.friend-row:not(.list-head)' });
 await p.locator('.friend-row[data-user="usr_alice"]').click({ timeout: 8000, force: true }).catch(async () => {
   await p.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true }).catch(() => {});
 });
-await p.waitForSelector('.drawer-avatar', { timeout: 12000 }).catch(() => {});
+await p.waitForSelector('.fd-card', { timeout: 12000 }).catch(() => {});
 await p.waitForTimeout(600);
 const drawer = await p.evaluate(() => {
-  const av = document.querySelector('.drawer-avatar, .drawer-head .avatar');
+  const av = document.querySelector('.fd-avatar, .fd-card .avatar');
   // tab 名要干净：徽章数字（概览309）不算名字
   const tabs = [...document.querySelectorAll('[role="tab"]')].map((t) => t.textContent.replace(/\d+/g, '').trim());
   const head = document.querySelector('.drawer-head');

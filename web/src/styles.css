@@ -144,6 +144,15 @@ body {
   }
   .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 7px; }
   .dot { position: absolute; right: -2px; bottom: -2px; width: 10px; height: 10px; border-radius: 999px; border: 2px solid var(--surface-panel); }
+  /* 好友列表「模型」列：真机放当前模型缩略图；没采集到 avatar 时留空槽，不用假图 */
+  .fl-av {
+    display: block; width: 36px; height: 28px; border-radius: 5px;
+    background: var(--surface-raised); border: 1px solid var(--stroke-subtle); overflow: hidden;
+  }
+  .fl-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* 好友列表 9 列：序号/模型/信誉/状态/语言/链接/次数/时长 全部收窄，昵称吃剩余宽度 */
+  .fl-tbl .fl-th { white-space: nowrap; }
+  .fl-tbl thead th:first-child { padding-right: 0; }
 
   /* 121 好友详情抽屉头部：80px 头像 + 徽章；121 的徽章色与 --status-* 同源，不另起一套色 */
   .drawer-head { display: flex; align-items: flex-start; gap: .75rem; padding-bottom: .75rem; border-bottom: 1px solid var(--stroke-subtle); }
@@ -587,7 +596,7 @@ body {
   border-radius: 8px;
   background: transparent;
   color: var(--content-tertiary);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1;
 }
 .roster-tab[data-active='true'] { background: var(--state-hover-surface); color: var(--content-primary); }
@@ -865,9 +874,39 @@ body {
 }
 .gl-ev:hover { background: var(--state-hover-surface); }
 .gl-ev-at { flex: none; width: 38px; color: var(--content-secondary); }
-.gl-ev-k { flex: none; width: 28px; font-size: 10px; }
+.gl-ev-k { flex: none; width: 28px; font-size: 11px; }
 .gl-ev[data-k='join'] .gl-ev-k { color: #3fb950; }
 .gl-ev[data-k='leave'] .gl-ev-k { color: var(--content-secondary); }
+
+
+/* 81 游戏日志：真机结构（日期头 → 实例摘要 → 无表头事件行 时间/方向/玩家人数/动作/时长，行距 40） */
+.gl-inst {
+  display: flex; align-items: center; gap: .5rem;
+  min-height: 36px; padding: 0 .625rem; font-size: 12px;
+  border-bottom: 1px solid var(--stroke-subtle);
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+.gl-row {
+  display: grid;
+  grid-template-columns: 56px 20px minmax(0, 1fr) 88px 72px;
+  align-items: center; gap: .5rem;
+  min-height: 40px; padding: 0 .625rem; font-size: 12px;
+}
+.gl-row + .gl-row { box-shadow: inset 0 1px 0 color-mix(in oklch, var(--foreground) 4%, transparent); }
+.gl-row:hover { background: var(--state-hover-surface); }
+.gl-row[data-kind='join'] .gl-dir { color: #3fb950; }
+.gl-c { min-width: 0; }
+@media (max-width: 767px) {
+  .gl-row { grid-template-columns: 44px 16px minmax(0, 1fr) 76px; }
+  .gl-row .gl-c:last-child { display: none; }
+}
+
+/* 73 好友日志：真机表格（列 时间/类型/玩家/操作，行距 43.5，筛选 chip 收在工具栏） */
+.flog-tbl th:nth-child(1) { width: 132px; }
+.flog-tbl th:nth-child(2) { width: 92px; }
+.flog-tbl th:nth-child(4) { width: 56px; }
+.flog-tbl td, .flog-tbl tbody tr { height: 43.5px; }
+.flog-tbl .flog-act { text-align: right; }
 
 /* 手机预览：?phone=1 时把整个应用装进 390×844 设备框（桌面端也能看手机版） */
 html[data-phone='1'] body {
@@ -948,7 +987,7 @@ html[data-phone='1'] #root {
 .dc-row-val { flex: 0 0 auto; font-size: 11px; color: var(--content-tertiary); }
 .jm-head-toggle { display: flex; align-items: center; gap: .35rem; width: 100%; border: 0; background: none; color: inherit; text-align: left; cursor: pointer; }
 .jm-head-toggle:hover { color: var(--content-primary); }
-.jm-caret { display: inline-block; width: 10px; font-size: 10px; color: var(--content-tertiary); transition: transform .12s ease; }
+.jm-caret { display: inline-block; width: 10px; font-size: 11px; color: var(--content-tertiary); transition: transform .12s ease; }
 .jm-caret[data-open='false'] { transform: rotate(-90deg); }
 
 /* ── 好友详情：VRCX-0 式大模态工作台（左资料栏 + 右 tab + 双列卡片） ───────── */
@@ -1023,7 +1062,7 @@ html[data-phone='1'] #root {
 .fd-panel.wide { grid-column: 1; }
 .fd-label { font-size: 11px; color: var(--content-tertiary); margin-bottom: 4px; }
 .fd-statusline { display: flex; align-items: center; gap: 8px; font-size: 12px; min-width: 0; }
-.fd-region { padding: 1px 5px; border-radius: 4px; background: var(--chip-bg, rgba(0, 0, 0, .06)); font-size: 10px; color: var(--content-secondary); }
+.fd-region { padding: 1px 5px; border-radius: 4px; background: var(--chip-bg, rgba(0, 0, 0, .06)); font-size: 11px; color: var(--content-secondary); }
 .fd-statusline b { font-weight: 600; }
 .fd-world { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0 8px; font-size: 12px; }
 .fd-world span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1062,7 +1101,58 @@ html[data-phone='1'] #root {
 .fd-none { color: var(--content-tertiary); font-size: 12px; }
 .fd-tabs button em {
   display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 4px;
-  border-radius: 8px; background: rgba(0, 0, 0, .06); font-size: 10px; color: var(--content-secondary);
+  border-radius: 8px; background: rgba(0, 0, 0, .06); font-size: 11px; color: var(--content-secondary);
 }
 .fd-tabs button[data-on='true'] em { background: rgba(0, 0, 0, .1); color: var(--content-primary); }
 .fd-namepill { padding-right: 4px; }
+
+/* ── 房间历史（VRCX-0 #/room-history）主从结构，量测见 spec.pages.sessions.structure ── */
+.sess-page { display: flex; height: 100%; min-height: 0; }
+.sess-list {
+  width: 353px; flex: none; display: flex; flex-direction: column; min-height: 0;
+}
+.sess-tools { height: 45px; flex: none; display: flex; align-items: center; gap: 8px; padding: 6px 6px 3px; }
+.sess-self {
+  flex: 1; min-width: 0; height: 33px; display: flex; align-items: center; gap: 6px; padding: 0 8px;
+  border: 1px solid var(--stroke-subtle); border-radius: 8px; background: var(--surface-raised);
+  color: var(--content-primary); font-size: 12px; cursor: default;
+}
+.sess-self-ico { font-size: 13px; color: var(--content-tertiary); }
+.sess-self-name { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sess-caret { font-size: 10px; color: var(--content-tertiary); }
+.sess-seg { flex: none; display: flex; height: 33px; padding: 2px; gap: 2px; border: 1px solid var(--stroke-subtle); border-radius: 8px; background: var(--surface-raised); }
+.sess-seg button { padding: 0 9px; border: 0; border-radius: 6px; background: transparent; color: var(--content-secondary); font-size: 11.5px; cursor: pointer; }
+.sess-seg button[data-active='true'] { background: var(--surface-panel); color: var(--content-primary); box-shadow: 0 0 0 1px var(--stroke-subtle); }
+.sess-search { flex: none; padding: 0 6px 4px; }
+.sess-search input { width: 100%; height: 30px; padding: 0 8px; border: 1px solid var(--stroke-subtle); border-radius: 8px; background: var(--surface-raised); color: var(--content-primary); font-size: 12px; }
+.sess-count { flex: none; height: 26px; display: flex; align-items: center; padding: 0 12px; font-size: 11px; color: var(--content-tertiary); }
+.sess-scroll { flex: 1; min-height: 0; overflow: auto; padding: 0 6px 8px; }
+.sess-group { height: 28px; display: flex; align-items: center; padding: 0 6px; font-size: 11px; color: var(--content-tertiary); }
+.sess-row {
+  width: 100%; height: 39.5px; display: flex; align-items: center; gap: 6px; padding: 0 6px;
+  border: 0; border-radius: 6px; background: transparent; color: var(--content-primary); text-align: left; cursor: pointer;
+}
+.sess-row:hover { background: var(--state-hover-surface); }
+.sess-row[data-active='true'] { background: var(--state-selected-surface); }
+.sess-time { flex: none; width: 38px; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--content-secondary); }
+.sess-reg {
+  flex: none; min-width: 20px; height: 14px; padding: 0 2px; display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--stroke-subtle); border-radius: 3px; font-size: 9px; line-height: 1; color: var(--content-tertiary);
+}
+.sess-reg[data-off='true'] { border-color: transparent; }
+.sess-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.sess-dur { flex: none; font-size: 11px; color: var(--content-tertiary); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sess-detail { flex: 1; min-width: 0; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.sess-detail-empty { text-align: center; }
+.sess-detail-title { font-size: 15px; color: var(--content-primary); }
+.sess-detail-hint { margin-top: 6px; font-size: 12px; color: var(--content-tertiary); }
+.sess-detail-in { width: 100%; max-width: 520px; align-self: flex-start; padding-top: 12px; }
+.sess-detail-world { font-size: 16px; font-weight: 500; }
+.sess-detail-meta { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: var(--content-secondary); }
+.sess-detail-loc { margin-top: 12px; font-size: 11px; color: var(--content-tertiary); word-break: break-all; }
+
+@media (max-width: 767px) {
+  .sess-page { flex-direction: column; }
+  .sess-list { width: 100%; flex: 1; }
+  .sess-detail { display: none; }
+}
