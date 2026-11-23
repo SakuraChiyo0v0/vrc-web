@@ -16,6 +16,8 @@
  *   5) 抽屉：默认移出视口；☰/✕/Esc/遮罩都能关；焦点陷阱；关闭后焦点回 ☰
  *   6) 内容区不被压成 0 宽；安全区（刘海/home 条）让位；命令面板按 --app-vh 算高
  *   7) 长列表滚动位置在抽屉开合/旋转后保持；极端数据（超长昵称/缺头像/空值）不撑破卡片
+ *   8) sessions 搜索模式：点「搜索」段后出框（16px/≥36 命中/中心可点/真过滤），键盘弹出后仍在可视区
+ *   9) 触控降档定档（13 页 @390）：<36 只允许出现在白名单（表格行内/分段按钮/二级导航/静态标签）
  *
  * 任一 FAIL 退出码 1；全部 PASS 打印 MOBILE OK。
  */
@@ -738,7 +740,23 @@ for (const [w, h, kb] of [[844, 390, 220], [932, 430, 240]]) {
   await tab.waitForTimeout(500);
   const g = await tab.evaluate(() => {
     const r = (s) => { const el = document.querySelector(s); const b = el?.getBoundingClientRect(); return b ? { top: Math.round(b.top), bottom: Math.round(b.bottom), h: Math.round(b.height) } : null; };
-    return { vvH: Math.round(window.visualViewport.height), appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(), topbar: r('#vrc-topbar'), sb: r('#vrc-statusbar'), main: r('main') };
+    const rows = [...document.querySelectorAll('tbody tr')];
+    const vvH = Math.round(window.visualViewport.height);
+    const vis = rows.filter((x) => { const b = x.getBoundingClientRect(); return b.height > 0 && b.top >= 0 && b.bottom <= vvH; });
+    const first = rows[0];
+    const firstTops = first ? [...new Set([...first.querySelectorAll('td')].map((td) => Math.round(td.getBoundingClientRect().top)))].length : null;
+    // 内容区自己的滚动容器（卡片列表）：还能不能往下滚看后面的搜索结果
+    const scroller = [...document.querySelectorAll('main *')].find((el) => /auto|scroll/.test(getComputedStyle(el).overflowY) && el.scrollHeight > el.clientHeight + 20);
+    let scrolled = null;
+    if (scroller) { scroller.scrollTop = 400; scrolled = Math.round(scroller.scrollTop); }
+    return {
+      vvH, appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(),
+      topbar: r('#vrc-topbar'), sb: r('#vrc-statusbar'), main: r('main'), toolbar: r('.feed-toolbar'),
+      rowH: first ? Math.round(first.getBoundingClientRect().height) : null,
+      rows: rows.length, rowsFullyVisible: vis.length, firstTops,
+      scrolled, scrollable: scroller ? scroller.scrollHeight > scroller.clientHeight + 20 : false,
+      search: r('[data-testid="feed-search"]'),
+    };
   });
   await tab.evaluate(() => document.querySelector('[aria-label="菜单"]')?.click());
   await tab.waitForTimeout(300);
@@ -756,6 +774,17 @@ for (const [w, h, kb] of [[844, 390, 220], [932, 430, 240]]) {
   check(tag, '外壳跟随可视高', `appVh=${g.appVh} vvH=${g.vvH}`, `${g.vvH}px`, g.appVh === `${g.vvH}px`);
   check(tag, '顶栏与状态栏都在可视区内', `topbar=${g.topbar?.h} sb.bottom=${g.sb?.bottom} 可视=${g.vvH}`, 'sb.bottom≤vvH', !!g.sb && g.sb.bottom <= g.vvH + 1 && !!g.topbar && g.topbar.top === 0);
   check(tag, '内容区未被压成 0', `main.h=${g.main?.h}`, '≥60', !!g.main && g.main.h >= 60);
+  // 键盘弹出期间的空间分配：顶栏 36、状态栏让位（visibility 只是装饰）、工具条只留搜索框，
+  // 保证「搜索结果显示得出来」——此前 44+35+58 吃光高度，表格区 33px、一张卡都看不全。
+  check(tag, '顶栏压到 36（让位给结果）', `topbar.h=${g.topbar?.h}`, '36', !!g.topbar && g.topbar.h === 36);
+  check(tag, '状态栏让出高度', `sb.h=${g.sb?.h}`, '0', !g.sb || g.sb.h === 0);
+  check(tag, '工具条只留搜索框', `toolbar.h=${g.toolbar?.h} 搜索框=${g.search?.h}px`, '≤48 且搜索框≥36',
+    (!g.toolbar || g.toolbar.h <= 48) && (!g.search || g.search.h >= 36));
+  check(tag, '至少一张卡片完整可见', `${g.rowsFullyVisible}/${g.rows} 张完整（卡片 ${g.rowH}px，可视 ${g.vvH}）`, '≥1',
+    g.rowsFullyVisible >= 1);
+  check(tag, '卡片压成两列（标题独占一行）', `首卡 ${g.firstTops} 行文本`, '≤4 行', g.firstTops == null || g.firstTops <= 4);
+  check(tag, '结果列表可继续下滚', g.scrolled == null ? 'n/a（未找到滚动容器）' : `scrollTop→${g.scrolled}`, '>0',
+    g.scrolled == null || g.scrolled > 0);
   check(tag, '抽屉在极矮可视区可滚到最后项', dr ? `n=${dr.n} client=${dr.client} scroll=${dr.scroll} lastBottom=${dr.lastBottom} scrollerBottom=${dr.scrollerBottom}` : 'n/a', '可滚且末项在容器内',
     !!dr && (dr.scroll <= dr.client + 2 || (dr.lastBottom != null && dr.lastBottom <= dr.scrollerBottom + 2)));
   await tab.close();
@@ -806,6 +835,110 @@ for (const [w, h] of [[320, 568], [360, 800], [390, 844]]) {
     !sb || sb.lastRight == null || sb.lastRight <= sb.barRight + 1);
   check(tag, '横向无不可滚溢出', sb ? `scrollW=${sb.scroll} clientW=${sb.client}` : 'n/a', '≤client+1', !sb || sb.scroll <= sb.client + 1);
   await tab.close();
+}
+
+// sessions 页搜索模式：默认「按日」不渲染输入框（探针 found:false 是页面默认态不是 bug）。
+// 点「搜索」段后：框 16px（iOS 不放大）、命中区 ≥36、中心点得到自己、真能过滤；
+// 键盘弹出（可视高 380）后输入框仍在可视区内、列表底部不越可视底、收起恢复。
+for (const [w, h] of [[390, 844], [360, 800], [844, 390]]) {
+  const tag = `sessions-search@${w}x${h}`;
+  const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  await tab.goto(`${BASE}#/sessions`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await tab.waitForTimeout(1500);
+  const before = await tab.evaluate(() => ({
+    inputs: document.querySelectorAll('.sess-search input').length,
+    rows: document.querySelectorAll('.sess-row').length,
+  }));
+  check(tag, '默认按日无搜索框', `输入框 ${before.inputs}`, '0', before.inputs === 0);
+
+  await tab.evaluate(() => [...document.querySelectorAll('.sess-seg button')].find((b) => b.textContent.trim() === '搜索')?.click());
+  await tab.waitForTimeout(300);
+  const m = await tab.evaluate(() => {
+    const inp = document.querySelector('.sess-search input');
+    if (!inp) return { found: false };
+    const r = inp.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const hit = document.elementFromPoint(cx, cy);
+    return {
+      found: true, h: Math.round(r.height), font: parseFloat(getComputedStyle(inp).fontSize),
+      hitSelf: !!hit && (hit === inp || inp.contains(hit)),
+      hitWhat: hit ? `${hit.tagName.toLowerCase()}.${(hit.className || '').toString().split(' ')[0]}` : null,
+    };
+  });
+  check(tag, '搜索段出「搜索房间」框', m.found ? `aria-label=${await tab.evaluate(() => document.querySelector('.sess-search input')?.getAttribute('aria-label'))}` : '未出现', '存在', !!m.found);
+  check(tag, '搜索框字号≥16', m.found ? `${m.font}px` : 'n/a', '≥16px', !m.found || m.font >= 16);
+  check(tag, '搜索框命中区≥36', m.found ? `${m.h}px` : 'n/a', '≥36px', !m.found || m.h >= 36);
+  check(tag, '搜索框中心可点', m.found ? `命中 ${m.hitWhat}` : 'n/a', 'input', !m.found || m.hitSelf);
+  // 真过滤：输入房名片段后行数减少且每行都含该片段
+  await tab.fill('.sess-search input', 'Alpha').catch(() => {});
+  await tab.waitForTimeout(400);
+  const filt = await tab.evaluate(() => {
+    const rows = [...document.querySelectorAll('.sess-row')];
+    const names = rows.map((r) => r.querySelector('.sess-name')?.textContent || '');
+    return { total: rows.length, miss: names.filter((n) => !/Alpha/i.test(n)).length };
+  });
+  check(tag, '输入即过滤（行数减少且全命中）', `${before.rows}→${filt.total} 行，未命中 ${filt.miss}`, '减少且 0 未命中',
+    before.rows === 0 || (filt.total < before.rows && filt.miss === 0));
+
+  // 键盘弹出：可视高 380
+  await tab.evaluate(() => {
+    const vv = window.visualViewport;
+    Object.defineProperty(vv, 'height', { configurable: true, get: () => 380 });
+    vv.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event('resize'));
+  });
+  await tab.waitForTimeout(500);
+  const kb = await tab.evaluate(() => {
+    const inp = document.querySelector('.sess-search input').getBoundingClientRect();
+    const list = document.querySelector('.sess-scroll').getBoundingClientRect();
+    return { vh: Math.round(window.visualViewport.height), appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(),
+      top: Math.round(inp.top), bottom: Math.round(inp.bottom), listBottom: Math.round(list.bottom) };
+  });
+  // 横屏 844×390 本身只有 390 高，压到 380 差 10px 不算键盘（阈值 120），不做外壳断言
+  if (h > 500) {
+    check(tag, '键盘弹出外壳跟随可视高', `${kb.appVh}`, '380px', kb.appVh === '380px');
+    check(tag, '键盘弹出输入框在可视区内', `框 ${kb.top}-${kb.bottom} 可视底=${kb.vh}`, `bottom≤${kb.vh}`, kb.bottom <= kb.vh + 1);
+    check(tag, '键盘弹出列表不越可视底', `列表底=${kb.listBottom}`, `≤${kb.vh}`, kb.listBottom <= kb.vh + 1);
+  }
+  await tab.evaluate(() => { const vv = window.visualViewport; delete vv.height; vv.dispatchEvent(new Event('resize')); window.dispatchEvent(new Event('resize')); });
+  await tab.waitForTimeout(400);
+  const back = await tab.evaluate(() => ({ appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(), shell: Math.round(document.querySelector('#vrc-shell')?.getBoundingClientRect().height ?? -1) }));
+  if (h > 500) check(tag, '收起键盘恢复原高', `${back.appVh} shell=${back.shell}`, `dvh / ${h}`, /dvh/.test(back.appVh) && back.shell === h);
+  await tab.close();
+}
+
+// 触控降档定档（13 页 @390）：低于 44 的一律走既定三档（顶栏/抽屉 44、chip/表单 36、行内/表格 32）。
+// 断言「<36 的控件只允许出现在白名单选择器里」——新增控件若偷偷缩到 32 以下会在这里报出来；
+// 同时把「二级导航 40」与「表格行内 ≥32」写成显式口径，避免以后被顺手抹平。
+{
+  const ALLOW = '[data-tab].ov-tab, .sess-seg button, .sess-row, .sess-self, [data-list-row] button, [data-list-row] a, .gl-inst button, .gl-inst a, [data-subnav-item], tbody td button, tbody td a, .vrc-sidebar .nav-sub .nav-item';
+  for (const page of PAGES) {
+    const tab = await open(page, 390, 844);
+    const r = await tab.evaluate((allowSel) => {
+      const below36 = [];
+      const below32 = [];
+      let navSubMin = null;
+      let cellMin = null;
+      document.querySelectorAll('button, a[href], [role="button"], input, select').forEach((el) => {
+        const b = el.getBoundingClientRect();
+        const cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden' || cs.display === 'none' || b.width <= 0 || b.height <= 0) return;
+        const label = (el.getAttribute('aria-label') || el.textContent || el.getAttribute('placeholder') || '').trim().slice(0, 12);
+        const hh = Math.round(b.height);
+        if (el.closest('.vrc-sidebar .nav-sub') && hh >= 24) navSubMin = navSubMin == null ? hh : Math.min(navSubMin, hh);
+        if (el.closest('tbody td')) cellMin = cellMin == null ? hh : Math.min(cellMin, hh);
+        if (hh < 32) below32.push(`${label}=${hh}`);
+        if (hh < 36 && !el.matches(allowSel)) below36.push(`${label}=${hh}`);
+      });
+      return { below36: below36.slice(0, 6), n36: below36.length, below32: below32.slice(0, 6), navSubMin, cellMin };
+    }, ALLOW);
+    const tag = `residue@${page}@390`;
+    check(tag, '<36 控件只在降档白名单内', r.n36 ? r.below36.join(' | ') : '0 个越界', '0', r.n36 === 0);
+    check(tag, '无 <32 控件', r.below32.length ? r.below32.join(' | ') : '0 个', '0', r.below32.length === 0);
+    if (r.navSubMin != null) check(tag, '抽屉二级导航 40 档', `${r.navSubMin}px`, '40–43px', r.navSubMin >= 40 && r.navSubMin <= 43);
+    if (r.cellMin != null) check(tag, '表格行内目标 32 档', `${r.cellMin}px`, '≥32px', r.cellMin >= 32);
+    await tab.close();
+  }
 }
 
 await browser.close();

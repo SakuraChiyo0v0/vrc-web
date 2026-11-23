@@ -277,6 +277,7 @@ export default function SettingsPage() {
         {SUBNAV.map((s) => (
           <button
             key={s}
+            data-subnav-item="true"
             data-active={s === tab ? 'true' : 'false'}
             onClick={() => setTab(s)}
             className="mb-0.5 w-full rounded-lg px-2.5 py-1.5 text-left text-[12px]"

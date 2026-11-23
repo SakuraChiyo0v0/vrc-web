@@ -1,6 +1,6 @@
 # 移动端验收基线（自动生成，勿手改）
 
-生成：2026-11-23 21:49:04 · 断言 932/932 PASS · 页面 13 × 视口 10
+生成：2026-11-23 22:19:21 · 断言 1011/1011 PASS · 页面 13 × 视口 10
 
 移动形态判据：宽 ≤1023 或高 ≤500（styles.css / tailwind md raw / Sidebar matchMedia 三处一致）。
 重新生成：`node scripts/mobile_parity.mjs`（脚本末尾自动写回本文件）。
@@ -118,7 +118,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=360 vw=360 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 360px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -129,7 +129,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=375 vw=375 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 375px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -140,10 +140,10 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=390 vw=390 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | chip 命中区≥36 | n/a | ≥36px | PASS |
 | 表单控件≥36 | n/a | ≥36px | PASS |
-| 行内/表格目标≥32 | 32px 概览(32) 旅程(32) 全部(32) | ≥32px | PASS |
+| 行内/表格目标≥32 | 36px 概览(36) 旅程(36) 全部(36) | ≥32px | PASS |
 | 表单控件中心可点（未被遮挡） | 0 处遮挡 | 0 | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 390px | >0 | PASS |
@@ -155,7 +155,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=414 vw=414 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 414px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -166,7 +166,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=430 vw=430 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 430px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -177,7 +177,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=844 vw=844 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 844px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -190,7 +190,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=932 vw=932 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 932px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -203,7 +203,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=768 vw=768 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 768px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -214,7 +214,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=820 vw=820 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 820px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -357,7 +357,7 @@
 | 触控目标≥32 | 32px | ≥32px | PASS |
 | chip 命中区≥36 | n/a | ≥36px | PASS |
 | 表单控件≥36 | 36px 类型(36) (36) 日期(36) | ≥36px | PASS |
-| 行内/表格目标≥32 | 32px ▤(32) ▦(32) Alice(32) | ≥32px | PASS |
+| 行内/表格目标≥32 | 32px Alice(32) Bob(32) Alpha Club(32) | ≥32px | PASS |
 | 表单控件中心可点（未被遮挡） | 0 处遮挡 | 0 | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 390px | >0 | PASS |
@@ -1606,7 +1606,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 1ms（20 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 0ms（20 行） | ≤300ms | PASS |
 
 ## scroll@feed@390
 
@@ -1614,7 +1614,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 0ms（36 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 1ms（36 行） | ≤300ms | PASS |
 
 ## extreme@friendlist@360
 
@@ -1640,8 +1640,8 @@
 | --- | --- | --- | --- |
 | 键盘弹出前搜索框点得到 | true | true | PASS |
 | 外壳高度跟随 visualViewport | 380px shell=380 | 380px / ≤381 | PASS |
-| 状态栏不被键盘盖住 | bottom=380 | ≤381 | PASS |
-| 聚焦输入框在可视区内 | bottom=135 | ≤381 | PASS |
+| 状态栏不被键盘盖住 | bottom=0 | ≤381 | PASS |
+| 聚焦输入框在可视区内 | bottom=77 | ≤381 | PASS |
 | 收起键盘恢复原高 | 100dvh shell=844 | dvh / 844 | PASS |
 
 ## keyboard@friends@390
@@ -1650,8 +1650,8 @@
 | --- | --- | --- | --- |
 | 键盘弹出前搜索框点得到 | true | true | PASS |
 | 外壳高度跟随 visualViewport | 380px shell=380 | 380px / ≤381 | PASS |
-| 状态栏不被键盘盖住 | bottom=380 | ≤381 | PASS |
-| 聚焦输入框在可视区内 | bottom=180 | ≤381 | PASS |
+| 状态栏不被键盘盖住 | bottom=0 | ≤381 | PASS |
+| 聚焦输入框在可视区内 | bottom=172 | ≤381 | PASS |
 | 收起键盘恢复原高 | 100dvh shell=844 | dvh / 844 | PASS |
 
 ## kb-offset@120
@@ -1659,8 +1659,8 @@
 | 断言 | 实测 | 期望 | 结果 |
 | --- | --- | --- | --- |
 | 顶栏落在可视区顶边（不被上卷顶出屏外） | topbar.top=120 vvTop=120 | ≈vvTop | PASS |
-| 状态栏不越出可视区底边 | sb.bottom=500 可视底=500 | ≤可视底 | PASS |
-| 内容区仍非零高 | main.h=301 | ≥100 | PASS |
+| 状态栏不越出可视区底边 | sb.bottom=0 可视底=500 | ≤可视底 | PASS |
+| 内容区仍非零高 | main.h=344 | ≥100 | PASS |
 | 收起键盘后位移归零 | shell.top=0 kb=null shift=none | top=0 无位移 | PASS |
 
 ## kb-offset@400
@@ -1668,8 +1668,8 @@
 | 断言 | 实测 | 期望 | 结果 |
 | --- | --- | --- | --- |
 | 顶栏落在可视区顶边（不被上卷顶出屏外） | topbar.top=400 vvTop=400 | ≈vvTop | PASS |
-| 状态栏不越出可视区底边 | sb.bottom=780 可视底=780 | ≤可视底 | PASS |
-| 内容区仍非零高 | main.h=301 | ≥100 | PASS |
+| 状态栏不越出可视区底边 | sb.bottom=0 可视底=780 | ≤可视底 | PASS |
+| 内容区仍非零高 | main.h=344 | ≥100 | PASS |
 | 收起键盘后位移归零 | shell.top=0 kb=null shift=none | top=0 无位移 | PASS |
 
 ## kb-landscape@844x390
@@ -1677,8 +1677,14 @@
 | 断言 | 实测 | 期望 | 结果 |
 | --- | --- | --- | --- |
 | 外壳跟随可视高 | appVh=170px vvH=170 | 170px | PASS |
-| 顶栏与状态栏都在可视区内 | topbar=44 sb.bottom=170 可视=170 | sb.bottom≤vvH | PASS |
-| 内容区未被压成 0 | main.h=91 | ≥60 | PASS |
+| 顶栏与状态栏都在可视区内 | topbar=36 sb.bottom=0 可视=170 | sb.bottom≤vvH | PASS |
+| 内容区未被压成 0 | main.h=134 | ≥60 | PASS |
+| 顶栏压到 36（让位给结果） | topbar.h=36 | 36 | PASS |
+| 状态栏让出高度 | sb.h=0 | 0 | PASS |
+| 工具条只留搜索框 | toolbar.h=46 搜索框=36px | ≤48 且搜索框≥36 | PASS |
+| 至少一张卡片完整可见 | 1/36 张完整（卡片 83px，可视 170） | ≥1 | PASS |
+| 卡片压成两列（标题独占一行） | 首卡 3 行文本 | ≤4 行 | PASS |
+| 结果列表可继续下滚 | scrollTop→400 | >0 | PASS |
 | 抽屉在极矮可视区可滚到最后项 | n=21 client=170 scroll=1040 lastBottom=158 scrollerBottom=170 | 可滚且末项在容器内 | PASS |
 
 ## kb-landscape@932x430
@@ -1686,8 +1692,14 @@
 | 断言 | 实测 | 期望 | 结果 |
 | --- | --- | --- | --- |
 | 外壳跟随可视高 | appVh=190px vvH=190 | 190px | PASS |
-| 顶栏与状态栏都在可视区内 | topbar=44 sb.bottom=190 可视=190 | sb.bottom≤vvH | PASS |
-| 内容区未被压成 0 | main.h=111 | ≥60 | PASS |
+| 顶栏与状态栏都在可视区内 | topbar=36 sb.bottom=0 可视=190 | sb.bottom≤vvH | PASS |
+| 内容区未被压成 0 | main.h=154 | ≥60 | PASS |
+| 顶栏压到 36（让位给结果） | topbar.h=36 | 36 | PASS |
+| 状态栏让出高度 | sb.h=0 | 0 | PASS |
+| 工具条只留搜索框 | toolbar.h=46 搜索框=36px | ≤48 且搜索框≥36 | PASS |
+| 至少一张卡片完整可见 | 1/36 张完整（卡片 83px，可视 190） | ≥1 | PASS |
+| 卡片压成两列（标题独占一行） | 首卡 3 行文本 | ≤4 行 | PASS |
+| 结果列表可继续下滚 | scrollTop→400 | >0 | PASS |
 | 抽屉在极矮可视区可滚到最后项 | n=21 client=190 scroll=1040 lastBottom=178 scrollerBottom=190 | 可滚且末项在容器内 | PASS |
 
 ## keyboard@desktop@1440
@@ -1716,3 +1728,150 @@
 | --- | --- | --- | --- |
 | 最后一段不被裁 | 4 段 lastRight=304 barRight=390 gap=12px | lastRight≤barRight | PASS |
 | 横向无不可滚溢出 | scrollW=390 clientW=390 | ≤client+1 | PASS |
+
+## sessions-search@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 默认按日无搜索框 | 输入框 0 | 0 | PASS |
+| 搜索段出「搜索房间」框 | aria-label=搜索房间 | 存在 | PASS |
+| 搜索框字号≥16 | 16px | ≥16px | PASS |
+| 搜索框命中区≥36 | 36px | ≥36px | PASS |
+| 搜索框中心可点 | 命中 input. | input | PASS |
+| 输入即过滤（行数减少且全命中） | 17→6 行，未命中 0 | 减少且 0 未命中 | PASS |
+| 键盘弹出外壳跟随可视高 | 380px | 380px | PASS |
+| 键盘弹出输入框在可视区内 | 框 81-117 可视底=380 | bottom≤380 | PASS |
+| 键盘弹出列表不越可视底 | 列表底=380 | ≤380 | PASS |
+| 收起键盘恢复原高 | 100dvh shell=844 | dvh / 844 | PASS |
+
+## sessions-search@360x800
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 默认按日无搜索框 | 输入框 0 | 0 | PASS |
+| 搜索段出「搜索房间」框 | aria-label=搜索房间 | 存在 | PASS |
+| 搜索框字号≥16 | 16px | ≥16px | PASS |
+| 搜索框命中区≥36 | 36px | ≥36px | PASS |
+| 搜索框中心可点 | 命中 input. | input | PASS |
+| 输入即过滤（行数减少且全命中） | 17→6 行，未命中 0 | 减少且 0 未命中 | PASS |
+| 键盘弹出外壳跟随可视高 | 380px | 380px | PASS |
+| 键盘弹出输入框在可视区内 | 框 81-117 可视底=380 | bottom≤380 | PASS |
+| 键盘弹出列表不越可视底 | 列表底=380 | ≤380 | PASS |
+| 收起键盘恢复原高 | 100dvh shell=800 | dvh / 800 | PASS |
+
+## sessions-search@844x390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 默认按日无搜索框 | 输入框 0 | 0 | PASS |
+| 搜索段出「搜索房间」框 | aria-label=搜索房间 | 存在 | PASS |
+| 搜索框字号≥16 | 16px | ≥16px | PASS |
+| 搜索框命中区≥36 | 36px | ≥36px | PASS |
+| 搜索框中心可点 | 命中 input. | input | PASS |
+| 输入即过滤（行数减少且全命中） | 17→6 行，未命中 0 | 减少且 0 未命中 | PASS |
+
+## residue@friends@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@overview@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@search@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@feed@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+| 表格行内目标 32 档 | 32px | ≥32px | PASS |
+
+## residue@sessions@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@players@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@moderation@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@favorites@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@insights@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@friendlist@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@friendlog@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+| 表格行内目标 32 档 | 36px | ≥32px | PASS |
+
+## residue@gamelog@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@settings@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
