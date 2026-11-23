@@ -870,6 +870,54 @@ for (const [w, h, kbH] of [[844, 390, 220], [932, 430, 240]]) {
   }
 }
 
+// 13 页 × 横屏+键盘矩阵：键盘弹起时外壳只剩 170/190px，此前只查了 feed/friendlist/sessions 三个搜索页，
+// 其余页面（overview/gamelog/settings/search/friends…）首屏内容被「页面留白 + 筛选行 + 标题说明」顶到可视区外。
+// 判据（每页每档两项）：主内容 ≥60px；「内容可用」= 至少一块完整可见 或 首块可见高 ≥60px。
+// 内容选择器见 CONTENT_SEL：列表页取行，面板页取整块（概览/图表/设置卡片天然高于 134px，不可能整块放下）。
+const CONTENT_SEL = {
+  overview: '.ov-shell > *', search: '.world-card', feed: 'tbody tr', sessions: '.sess-row',
+  players: '.empty, .card', moderation: 'tbody tr', favorites: '.fav-card', insights: '.graph-wrap',
+  friendlist: 'tbody tr', friendlog: 'tbody tr', gamelog: '.card', settings: '.card', friends: '.loc-group',
+};
+for (const [w, h, kbH] of [[844, 390, 220], [932, 430, 240]]) {
+  for (const page of PAGES) {
+    const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+    await tab.goto(`${BASE}#/${page}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await tab.waitForTimeout(1400);
+    await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
+    await tab.evaluate((hh) => {
+      const vv = window.visualViewport;
+      Object.defineProperty(vv, 'height', { configurable: true, get: () => hh });
+      vv.dispatchEvent(new Event('resize')); window.dispatchEvent(new Event('resize'));
+    }, h - kbH);
+    await tab.waitForTimeout(450);
+    const d = await tab.evaluate((sel) => {
+      const vvH = window.visualViewport.height;
+      const main = document.querySelector('main') || document.querySelector('#root > div > div:last-child');
+      const mb = main.getBoundingClientRect();
+      const els = [...document.querySelectorAll(sel)].filter((e) => {
+        const r = e.getBoundingClientRect();
+        return r.height > 0 && getComputedStyle(e).display !== 'none';
+      });
+      const rects = els.map((e) => { const r = e.getBoundingClientRect(); return { h: Math.round(r.height), top: Math.round(r.top), bottom: Math.round(r.bottom) }; });
+      const f = rects[0] || null;
+      return {
+        vvH: Math.round(vvH), mainH: Math.round(mb.height),
+        kb: document.documentElement.getAttribute('data-kb'),
+        n: rects.length,
+        fully: rects.filter((r) => r.top >= -1 && r.bottom <= vvH + 1).length,
+        first: f, vis: f ? Math.max(0, Math.min(Math.round(f.bottom), Math.round(vvH)) - Math.max(0, f.top)) : 0,
+      };
+    }, CONTENT_SEL[page]);
+    const tag = `kb-matrix@${page}@${w}x${h}`;
+    check(tag, '键盘弹起（data-kb=1）', `data-kb=${d.kb}`, '1', d.kb === '1');
+    check(tag, '主内容≥60', `main=${d.mainH} vv=${d.vvH}`, '≥60', d.mainH >= 60);
+    check(tag, '内容可用（完整一块 或 首块露出≥60）', d.first ? `${d.n} 块 完整=${d.fully} 首块 ${d.first.h}px top=${d.first.top} 露出=${d.vis}` : '未找到内容块', '完整≥1 或 露出≥60',
+      d.n > 0 && (d.fully >= 1 || d.vis >= 60));
+    await tab.close();
+  }
+}
+
 // 底部状态栏在极窄屏的信息完整性：320（iPhone SE 初代）曾把最右 SteamVR 段裁掉 17px 且滚不出来。
 // 判据：最后一段的右缘不越过状态栏右缘；横向无不可滚的溢出（scrollWidth ≤ clientWidth+1）。
 for (const [w, h] of [[320, 568], [360, 800], [390, 844]]) {

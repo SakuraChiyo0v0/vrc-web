@@ -64,7 +64,7 @@ export default function SearchPage() {
       </div>
 
       {/* 子 tab + 右端刷新 */}
-      <div className="mb-3 flex items-center gap-1.5">
+      <div className="mb-3 flex items-center gap-1.5" data-subtab-row>
         {SUBS.map((s) => (
           <button key={s} className="chip" data-subtab={s} data-active={sub === s} onClick={() => setSub(s)}>
             {s}

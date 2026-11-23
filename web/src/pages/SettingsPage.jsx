@@ -286,16 +286,17 @@ export default function SettingsPage() {
         ))}
       </div>
       <div className="min-w-0 flex-1 overflow-auto p-4">
-        <h1 className="text-[14px] font-medium">设置</h1>
-        <div className="mt-0.5 text-[12px] text-fg3">偏好设置、诊断与应用选项。</div>
+        <h1 className="text-[14px] font-medium" data-set-head>设置</h1>
+        <div className="mt-0.5 text-[12px] text-fg3" data-set-head>偏好设置、诊断与应用选项。</div>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="搜索设置"
+          data-set-search
           className="mt-3 h-8 w-full max-w-[360px] rounded-lg border px-2.5 text-[12px] outline-none"
           style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)' }}
         />
-        <div className="mt-4 max-w-[720px]">{body}</div>
+        <div className="mt-4 max-w-[720px]" data-set-body>{body}</div>
       </div>
     </div>
   );
