@@ -5,6 +5,17 @@
  * 这样两边不会各写一套然后慢慢跑偏。所有基准都来自 docs/ref/vrcx0-spec.json 的截图量测。
  */
 
+/**
+ * 数据相关分栏：真机基准截图里收藏桶有好友在线，账号没有收藏好友时不该要求「好友收藏」这栏。
+ * structure_parity / visual_parity 都走这里，保证口径一致。
+ */
+export function dataDependentWant(page, want, roster) {
+  if (page === 'locations' && want?.groups?.length && !(roster?.facets?.favorite > 0)) {
+    return { ...want, groups: want.groups.filter((g) => g !== '好友收藏') };
+  }
+  return want;
+}
+
 /** 只看内容面板（排除侧栏/右栏），避免把导航文字算成页面 tab */
 export const probeMain = (p) => p.evaluate(() => {
   const txt = (el) => (el?.textContent || '').replace(/\s+/g, ' ').trim();

@@ -11,7 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { probeMain, structureRows, STRUCT_PAGES, assertVrcServer } from './lib/page_structure.mjs';
+import { probeMain, structureRows, STRUCT_PAGES, assertVrcServer, dataDependentWant } from './lib/page_structure.mjs';
 // playwright 不在本仓库依赖里（容器只有一份装在 hermes 模板目录），ESM 不吃 NODE_PATH，按路径 require
 const _req = createRequire(import.meta.url);
 let _pw;
@@ -38,7 +38,7 @@ const check = (name, ours, want, ok) => {
 
 // 预检：baseUrl 不通、或是别人的服务（8899 上常驻图片墙）时整轮会量到空页面/别人的页面，
 // 给出假分数（曾对死端口跑出 95/166、对图片墙跑出全红），必须硬失败
-await assertVrcServer(BASE);
+const roster = await assertVrcServer(BASE);
 
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 
@@ -436,8 +436,9 @@ for (const page of STRUCT_PAGES) {
   CUR = page;
   const want = SPEC.pages?.[page]?.structure;
   if (!want) continue;
-  const [sp, got] = await openStruct(page, want);
-  rows.push(...structureRows(page, got, want, SPEC.pages?.[page]?.row_pitch).map((r) => ({ ...r, key: page })));
+  const w = dataDependentWant(page, want, roster);
+  const [sp, got] = await openStruct(page, w);
+  rows.push(...structureRows(page, got, w, SPEC.pages?.[page]?.row_pitch).map((r) => ({ ...r, key: page })));
   await sp.close().catch(() => {});
 }
 

@@ -1,8 +1,8 @@
 {
   "_note": "由 scripts/structure_parity.mjs 生成：spec.pages[*].structure（真机截图量测）vs 我们的 DOM",
-  "at": "2026-11-23T13:32:06.331Z",
-  "base": "http://vrc-web:8790",
-  "pass": 54,
+  "at": "2026-11-23T13:42:27.799Z",
+  "base": "http://172.17.0.1:8791",
+  "pass": 55,
   "total": 55,
   "rows": [
     {
@@ -43,9 +43,9 @@
     {
       "page": "feed",
       "name": "列宽",
-      "ours": "105/154/136",
+      "ours": "104/199/169",
       "want": "106/198/169",
-      "ok": false
+      "ok": true
     },
     {
       "page": "feed",
@@ -379,14 +379,14 @@
     {
       "page": "locations",
       "name": "卡片行数",
-      "ours": "3",
+      "ours": "4",
       "want": "1~4",
       "ok": true
     },
     {
       "page": "locations",
       "name": "分栏标题",
-      "ours": "JP KAAMOS Ice Fishing · 仅好友/JP SlashCo VR · 群组公开/其他在线好友/位于私人房间",
+      "ours": "其他在线好友/位于私人房间",
       "want": "其他在线好友/位于私人房间",
       "ok": true
     }

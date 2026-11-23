@@ -10,7 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { probeMain, structureRows, STRUCT_PAGES, PAGE_ROUTES, assertVrcServer } from './lib/page_structure.mjs';
+import { probeMain, structureRows, STRUCT_PAGES, PAGE_ROUTES, assertVrcServer, dataDependentWant } from './lib/page_structure.mjs';
 
 const req = createRequire(import.meta.url);
 let pw;
@@ -68,11 +68,8 @@ async function go(page, want = {}) {
 for (const page of STRUCT_PAGES) {
   const want = SPEC.pages?.[page]?.structure;
   if (!want) { rows.push({ page, name: '结构记录', ours: '无', want: 'spec.pages 有 structure', ok: true }); continue; }
-  // 空桶不出栏：真机基准截图里有收藏好友在线，账号没有收藏好友时不该要求「好友收藏」这栏
-  let w = want;
-  if (page === 'locations' && want.groups && !(roster.facets?.favorite > 0)) {
-    w = { ...want, groups: want.groups.filter((g) => g !== '好友收藏') };
-  }
+  // 空桶不出栏（规则见 lib/dataDependentWant，visual_parity 共用）
+  const w = dataDependentWant(page, want, roster);
   const got = await go(PAGE_ROUTES[page] || page, w);
   rows.push(...structureRows(page, got, w, SPEC.pages?.[page]?.row_pitch));
 }
