@@ -1528,4 +1528,20 @@ html[data-phone='1'] #root {
   html[data-kb='1'] .feed-tbl tbody tr.feed-row td[data-label='玩家'] { flex-basis: 100%; }
   html[data-kb='1'] .tbl tbody td[data-label]::before { min-width: 0; margin-right: .375rem; }
   html[data-kb='1'] .tbl tbody td:first-child { border-bottom: 0; padding-bottom: 0; margin-bottom: 0; }
+
+  /* 其他搜索页在矮视口+键盘下同样是「一条结果都看不全」：
+     · friendlist 一行 9 列在 844×390 卡片高 100px，主内容只剩 134（工具条 36），可视 69 → 0 张完整卡；
+       打字时只保留「昵称/模型/信誉/状态/次数/时长」，序号与语言/社交链接（多数是 —）先让位，头像缩到 20。
+     · sessions 头部的「自己」33 + 视图段 45 + 搜索框 40 + 计数 26 把首行挤到 175（可视只到 170）→
+       隐「自己」与计数、工具条压到 36，首行落回可视区。 */
+  html[data-kb='1'] .fl-tbl tbody td[data-label='序号'],
+  html[data-kb='1'] .fl-tbl tbody td[data-label='语言'],
+  html[data-kb='1'] .fl-tbl tbody td[data-label='社交链接'] { display: none; }
+  html[data-kb='1'] .fl-tbl .fl-av { width: 20px; height: 16px; }
+  html[data-kb='1'] .sess-self,
+  html[data-kb='1'] .sess-count { display: none; }
+  /* 分组头（「2026年11月23日周一」）28px：键盘弹起时只留结果行，否则首行仍差 8px 看不全 */
+  html[data-kb='1'] .sess-group { display: none; }
+  html[data-kb='1'] .sess-tools { height: 36px; padding: 2px 6px; justify-content: flex-end; }
+  html[data-kb='1'] .sess-search { padding: 0 6px 2px; }
 }

@@ -824,6 +824,52 @@ for (const [w, h, kb] of [[844, 390, 220], [932, 430, 240]]) {
   await tab.close();
 }
 
+// 其他搜索页在矮视口 + 键盘下也必须有「看得见的一条结果」：此前只有 feed 做了空间分配。
+// friendlist 一行 9 列在 844×390 卡片 100px、可视只剩 ~69 → 0 张完整卡；
+// sessions 的「自己」33 + 视图段 45 + 搜索框 40 + 计数 26 把首行挤到 175（可视只到 170）→ 一条都看不见。
+for (const [w, h, kbH] of [[844, 390, 220], [932, 430, 240]]) {
+  for (const [page, inputSel, rowSel, needSeg] of [
+    ['friendlist', 'input[placeholder="搜索好友"]', 'tbody tr', false],
+    ['sessions', 'input[aria-label="搜索房间"]', '.sess-row', true],
+  ]) {
+    const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+    await tab.goto(`${BASE}#/${page}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await tab.waitForTimeout(1400);
+    await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
+    if (needSeg) { await tab.click('.sess-seg button:first-child').catch(() => {}); await tab.waitForTimeout(400); }
+    const vis = await tab.locator(inputSel).first().isVisible().catch(() => false);
+    if (vis) { await tab.locator(inputSel).first().click({ timeout: 4000 }).catch(() => {}); await tab.waitForTimeout(150); }
+    await tab.evaluate((hh) => {
+      const vv = window.visualViewport;
+      Object.defineProperty(vv, 'height', { configurable: true, get: () => hh });
+      vv.dispatchEvent(new Event('resize'));
+      window.dispatchEvent(new Event('resize'));
+    }, h - kbH);
+    await tab.waitForTimeout(500);
+    const d = await tab.evaluate(([s, rs]) => {
+      const vvH = window.visualViewport.height;
+      const inp = document.querySelector(s);
+      const ib = inp ? inp.getBoundingClientRect() : null;
+      const hit = ib ? document.elementFromPoint(ib.left + ib.width / 2, ib.top + ib.height / 2) : null;
+      const rows = [...document.querySelectorAll(rs)].filter((r) => r.getBoundingClientRect().height > 0);
+      const fully = rows.filter((r) => { const b = r.getBoundingClientRect(); return b.top >= -1 && b.bottom <= vvH + 1; });
+      return {
+        vvH: Math.round(vvH), found: !!inp,
+        inp: ib ? { top: Math.round(ib.top), bottom: Math.round(ib.bottom), h: Math.round(ib.height) } : null,
+        inpHit: hit && hit === inp,
+        rows: rows.length, fully: fully.length,
+        rowH: rows[0] ? Math.round(rows[0].getBoundingClientRect().height) : null,
+        firstTop: rows[0] ? Math.round(rows[0].getBoundingClientRect().top) : null,
+      };
+    }, [inputSel, rowSel]);
+    const tag = `kb-search@${page}@${w}x${h}`;
+    check(tag, '搜索框完整落在可视区且中心可点', d.inp ? `top=${d.inp.top} bottom=${d.inp.bottom} 可视=${d.vvH} 命中=${d.inpHit}` : '未找到输入框', 'bottom≤可视 且 命中自己',
+      !!d.inp && d.inp.bottom <= d.vvH + 1 && d.inpHit === true);
+    check(tag, '至少一条结果完整可见', `${d.fully}/${d.rows} 条（行 ${d.rowH}px 首行 top=${d.firstTop}）`, '≥1', d.fully >= 1);
+    await tab.close();
+  }
+}
+
 // 底部状态栏在极窄屏的信息完整性：320（iPhone SE 初代）曾把最右 SteamVR 段裁掉 17px 且滚不出来。
 // 判据：最后一段的右缘不越过状态栏右缘；横向无不可滚的溢出（scrollWidth ≤ clientWidth+1）。
 for (const [w, h] of [[320, 568], [360, 800], [390, 844]]) {
