@@ -261,6 +261,62 @@ body {
   /* 91 收藏「分组」tab：分组卡网格，避免和世界/好友长表混排 */
   .fav-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .5rem; }
 
+  /* 收藏页按真机（docs/ref/vrcx0-favorites.png）：左收藏夹导航 236 + 右侧 2 列卡片网格。
+     左栏行高 30、选中浅灰底；上限 150 用小号数字贴右缘。 */
+  .fav-side {
+    width: 236px; flex: none; display: flex; flex-direction: column; gap: 2px;
+    padding-right: .625rem; border-right: 1px solid var(--stroke-subtle);
+  }
+  .fav-sec { display: flex; align-items: center; gap: .375rem; height: 27px; padding: 0 .375rem; font-size: 11px; color: var(--content-secondary); }
+  .fav-badge { margin-left: auto; font-size: 10px; color: var(--content-tertiary); }
+  .fav-folder-row { display: flex; align-items: center; }
+  .fav-folder-row .fav-folder { flex: 1; min-width: 0; }
+  .fav-folder {
+    display: flex; align-items: center; gap: .5rem; width: 100%; height: 30px;
+    padding: 0 .375rem; border-radius: 6px; font-size: 12px; text-align: left;
+    color: var(--content-primary);
+  }
+  .fav-folder:hover { background: var(--state-hover-surface); }
+  .fav-folder[data-active='true'] { background: var(--surface-raised); }
+  .fav-cap { margin-left: auto; flex: none; font-size: 10px; font-variant-numeric: tabular-nums; color: var(--content-tertiary); }
+  .fav-dots { width: 18px; flex: none; color: var(--content-tertiary); font-size: 12px; }
+  .fav-new { margin-top: .5rem; height: 30px; border-radius: 6px; font-size: 12px; color: var(--content-secondary); text-align: left; padding: 0 .375rem; }
+  .fav-new:hover { background: var(--state-hover-surface); color: var(--content-primary); }
+  .fav-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+  .fav-card {
+    display: flex; align-items: center; gap: .625rem; min-width: 0; cursor: pointer;
+    padding: .5rem .625rem; border: 1px solid var(--stroke-subtle); border-radius: var(--radius);
+    background: var(--surface-panel);
+  }
+  .fav-card:hover { border-color: var(--stroke-strong); }
+  .fav-ava {
+    display: grid; place-items: center; width: 34px; height: 34px; flex: none;
+    border-radius: 50%; overflow: hidden; background: var(--surface-raised); font-size: 12px; color: var(--content-tertiary);
+  }
+  .fav-ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @media (max-width: 767px) {
+    .fav-side { display: none; }
+    .fav-grid { grid-template-columns: 1fr; }
+  }
+
+  /* 好友关系图（真机 docs/ref/vrcx0-insights.png）：白色画布铺满 + 左下浮动图例卡 */
+  .graph-wrap {
+    position: relative; flex: 1; min-height: 420px; overflow: hidden;
+    border: 1px solid var(--stroke-subtle); border-radius: var(--radius); background: var(--surface-panel);
+  }
+  .graph-canvas { width: 100%; height: 100%; display: block; }
+  .graph-legend {
+    position: absolute; left: 10px; bottom: 10px; width: 232px; padding: .5rem .625rem;
+    border: 1px solid var(--stroke-subtle); border-radius: 8px;
+    background: color-mix(in oklch, var(--surface-panel) 92%, transparent);
+    backdrop-filter: blur(6px);
+  }
+  .graph-leg-row { display: flex; align-items: center; gap: .375rem; height: 17px; font-size: 10px; color: var(--content-secondary); }
+  .graph-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  @media (max-width: 767px) {
+    .graph-legend { position: static; width: auto; margin-top: .5rem; }
+  }
+
   /* 90 世界库缩略图网格：桌面 3 列、≤1023px 2 列，一屏至少 9 个（1080p 3×3） */
   .world-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .625rem; }
   @media (max-width: 1023px) { .world-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

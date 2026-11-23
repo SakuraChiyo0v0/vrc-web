@@ -17,7 +17,8 @@ const GROUPS = [
     items: [
       { id: 'friendlist', label: '好友列表', icon: '☷' },
       { id: 'friendlog', label: '好友历史', icon: '↺' },
-      { id: 'players', label: '玩家', icon: '☺' }
+      { id: 'players', label: '房内玩家', icon: '☺' },
+      { id: 'moderation', label: '玩家管理', icon: '▥' }
     ]
   },
   {

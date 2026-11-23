@@ -1,141 +1,69 @@
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../api.js';
-import UserHoverCard from '../components/UserHoverCard.jsx';
+import { api, imgUrl } from '../api.js';
 import Empty from '../components/Empty.jsx';
 import { useDrawer } from '../components/drawers.jsx';
-import RowMenu, { Hint, friendItems, useHint, useRowMenu } from '../components/RowMenu.jsx';
-import { SortTh } from '../components/SortHead.jsx';
-import { useListNav } from '../lib/listnav.js';
-import { csvFilename, downloadCsv, toCsv } from '../lib/csv.js';
-import { useSort } from '../lib/prefs.js';
-import { SORT_COLUMNS, sortRows } from '../lib/sort.js';
 
-function InitialAvatar({ name }) {
-  const ch = (name ?? '?').trim().charAt(0).toUpperCase();
-  return (
-    <span className="avatar">
-      <span
-        className="flex h-full w-full items-center justify-center text-[11px] font-medium"
-        style={{ color: 'var(--content-tertiary)' }}
-      >
-        {ch}
-      </span>
-    </span>
-  );
-}
-
+/**
+ * 房内玩家，对齐真机 docs/ref/vrcx0-players.png：
+ * VRChat 没在运行时整页只有空态（VR 头显图标 + 标题 + 两行说明），没有工具栏和表格。
+ * 「谁和我同一个实例」取自 /api/roster 的 my_world_id + same_room（好友维度，实时）；
+ * 非好友玩家要 VRChat 在线接口，本地采集器拿不到，不列。
+ * 历史同房记录（原「玩家」表）挪到 #/moderation（玩家管理）。
+ */
 export default function PlayersPage() {
-  const { data } = useQuery({ queryKey: ['players'], queryFn: () => api('players') });
-  // 101/102 表头排序，排序记在 localStorage（默认同房次数多→少）
-  const [sort, onSort] = useSort('players', 'meets');
-  const rows = sortRows(data?.players ?? [], SORT_COLUMNS.players, sort.key, sort.dir);
-  const { openFriend, close } = useDrawer();
-  const { hint, say } = useHint();
-  const menu = useRowMenu();
-  const nav = useListNav({
-    count: rows.length,
-    onEnter: (i) => {
-      const p = rows[i];
-      if (p?.user_id) openFriend(p.user_id);
-    },
-    onEscape: close,
+  const { data, isLoading } = useQuery({
+    queryKey: ['roster-same-room'],
+    queryFn: () => api('roster'),
+    refetchInterval: 30_000,
   });
-  const rowMenu = (ev, p) =>
-    menu.open(ev, friendItems({ id: p.user_id, name: p.name, openFriend, say }));
-  // 103 导出 = 表里这几行（同一份 rows，同序），行数和页面计数一致
-  const exportNow = () => {
-    const { text } = toCsv([
-      { key: 'name', label: '玩家' },
-      { key: 'meets', label: '共处次数' },
-      { key: 'last_seen', label: '最近一次' },
-      { key: 'last_world', label: '世界' },
-      { key: 'user_id', label: 'user_id' }
-    ], rows);
-    downloadCsv(csvFilename('players'), text);
-  };
+  // 「VRChat 在运行」= 采集器 WS 还连着 VRChat；断连时实例信息是上一次的残留，不能当房内玩家
+  const { data: status } = useQuery({ queryKey: ['status'], queryFn: () => api('status'), refetchInterval: 15_000 });
+  const { openFriend } = useDrawer();
+  const live = Boolean(data?.my_world_id) && Boolean(status?.collector?.connected);
+  const rows = (data?.friends ?? []).filter((f) => f.same_room);
+
+  if (isLoading) return <div className="p-4 text-[12px] text-fg3">加载中…</div>;
+
+  if (!live) {
+    return (
+      <div className="grid h-full place-items-center p-4" data-page="players">
+        <Empty
+          icon="vr"
+          title="VRChat 目前没有运行"
+          hint="启动 VRChat 并进入一个房间后，这里会显示同一房间的玩家；有人加入或离开时，列表也会自动更新。"
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="p-4">
-      <div className="mb-3 flex items-center gap-2">
-        <span className="text-[12px] text-fg3">来自游戏内日志（PC 端 log-agent）。</span>
-        <span className="chip ml-auto" data-count={rows.length}>共 {rows.length} 位</span>
-        <button className="chip" data-export="players" onClick={exportNow} disabled={rows.length === 0}>导出 CSV</button>
+    <div className="p-4" data-page="players">
+      <div className="mb-2 flex items-baseline gap-2">
+        <span className="text-[13px] font-medium">同一房间</span>
+        <span className="text-[11px] tabular-nums text-fg3" data-count={rows.length}>{rows.length} 位好友</span>
       </div>
       {rows.length === 0 ? (
-        <Empty icon="users" title={'还没有同房记录'} hint={'在 PC 上启动 log-agent 后才有数据。'} />
+        <Empty compact icon="users" title="这个房间里还没有好友" hint="只统计好友；其他玩家需要 VRChat 在线接口，采集器拿不到。" />
       ) : (
-        <div className="card overflow-hidden">
-          <table className="tbl">
-            <thead>
-              <tr>
-                <SortTh section="players" col="name" sort={sort} onSort={onSort} />
-                <SortTh section="players" col="meets" sort={sort} onSort={onSort} style={{ width: 90 }} />
-                <SortTh section="players" col="last_seen" sort={sort} onSort={onSort} style={{ width: 170 }} />
-                <SortTh section="players" col="world" sort={sort} onSort={onSort} />
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((p, i) => (
-                <tr
-                  key={p.user_id ?? p.name}
-                  data-nav-idx={i}
-                  data-nav-active={nav.active === i}
-                  onContextMenu={(ev) => rowMenu(ev, p)}
-                >
-                  <td data-label="玩家">
-                    <span className="flex items-center gap-2.5">
-                      <UserHoverCard id={p.user_id}>
-                        <InitialAvatar name={p.name} />
-                      </UserHoverCard>
-                      <span>{p.name}</span>
-                    </span>
-                  </td>
-                  <td className="tabular-nums text-fg2" data-label="共处次数">{p.meets}</td>
-                  <td className="text-[12px] text-fg3" data-label="最近一次">{new Date(p.last_seen).toLocaleString('zh-CN', { hour12: false })}</td>
-                  <td className="text-fg2" data-label="世界">{p.last_world ?? '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="world-grid" data-grid="room-players">
+          {rows.map((p) => (
+            <div
+              key={p.user_id}
+              className="card flex items-center gap-2.5 p-2.5"
+              data-room-player={p.user_id}
+              onClick={() => openFriend(p.user_id)}
+            >
+              <span className="avatar">
+                {p.icon_url ? <img src={imgUrl(p.icon_url)} alt="" loading="lazy" /> : (p.display_name ?? '?').charAt(0).toUpperCase()}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[12px]">{p.display_name}</span>
+                <span className="block truncate text-[11px] text-fg3">{p.status_description || p.world_name || '同房间'}</span>
+              </span>
+            </div>
+          ))}
         </div>
       )}
-
-      <div className="label-xs mt-5 mb-2">共处次数排行</div>
-      {rows.length === 0 ? (
-        <Empty icon="users" title={'暂无共处记录'} hint={'和好友同处一个房间后会自动累计次数。'} />
-      ) : (
-        <div className="card overflow-hidden">
-          <table className="tbl">
-            <thead>
-              <tr>
-                <th style={{ width: 56 }}>#</th>
-                <th>玩家</th>
-                <th style={{ width: 110 }}>共处次数</th>
-                <th style={{ width: 170 }}>最近一次</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...rows].sort((a, b) => (b.meets ?? 0) - (a.meets ?? 0)).map((p, i) => (
-                <tr key={p.user_id ?? p.name}>
-                  <td className="tabular-nums text-fg3" data-label="#">{i + 1}</td>
-                  <td data-label="玩家">
-                    <span className="flex items-center gap-2.5">
-                      <UserHoverCard id={p.user_id}>
-                        <InitialAvatar name={p.name} />
-                      </UserHoverCard>
-                      <span>{p.name}</span>
-                    </span>
-                  </td>
-                  <td className="tabular-nums text-fg2" data-label="共处次数">{p.meets} 次</td>
-                  <td className="text-[12px] text-fg3" data-label="最近一次">{new Date(p.last_seen).toLocaleString('zh-CN', { hour12: false })}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <RowMenu menu={menu.menu} onClose={menu.close} />
-      <Hint text={hint} />
     </div>
   );
 }

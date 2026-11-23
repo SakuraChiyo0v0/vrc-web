@@ -1,56 +1,43 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, send, shareUrl, imgUrl } from '../api.js';
 import Empty from '../components/Empty.jsx';
+import { useDrawer } from '../components/drawers.jsx';
 
-const KIND_LABEL = { world: '世界', friend: '好友' };
-
-function Thumb({ row }) {
-  if (row.thumbnail) {
-    return (
-      <span className="avatar">
-        <img src={imgUrl(row.thumbnail)} alt="" loading="lazy" />
-      </span>
-    );
-  }
-  const ch = (row.name ?? '?').trim().charAt(0).toUpperCase();
-  return (
-    <span className="avatar">
-      <span
-        className="flex h-full w-full items-center justify-center text-[11px] font-medium"
-        style={{ color: 'var(--content-tertiary)' }}
-      >
-        {ch}
-      </span>
-    </span>
-  );
-}
+/**
+ * 收藏页对齐真机 docs/ref/vrcx0-favorites.png：
+ * 左栏「按日期排序」+ 在线收藏夹(分组, n/150) + 本地收藏夹(Favorites, n) + 创建新的收藏夹；
+ * 右栏工具栏（搜索 / 刷新 / …）→ 分组标题 + n/150 → 2 列卡片网格（圆形头像 + 名字 + 所在世界）。
+ * 分组 = 本地 favorite_group，收藏项 = favorite；上限 150 是 VRChat 在线收藏夹的硬限制。
+ */
+const CAP = 150;
+const KIND = { world: '世界', friend: '好友' };
+const fmtDay = (v) => (v ? new Date(v).toLocaleDateString('zh-CN') : '—');
 
 export default function FavoritesPage() {
   const qc = useQueryClient();
-  const { data, error } = useQuery({ queryKey: ['favorites'], queryFn: () => api('favorites') });
-  // 91 三 tab：好友 / 世界 / 分组，避免两类收藏和分组定义混在一张表里
-  const [tab, setTab] = useState('world');
-  const [filter, setFilter] = useState('all');
-  const [draft, setDraft] = useState({ kind: 'world', targetId: '', note: '' });
+  const { openFriend, openWorld } = useDrawer();
+  const { data, error, refetch, isFetching } = useQuery({ queryKey: ['favorites'], queryFn: () => api('favorites') });
+  const [sel, setSel] = useState('all'); // 'all' | 'none' | groupId
+  const [q, setQ] = useState('');
+  const [sort, setSort] = useState('date');
+  const [creating, setCreating] = useState(false);
   const [groupName, setGroupName] = useState('');
+  const [adding, setAdding] = useState(false);
+  const [draft, setDraft] = useState({ kind: 'world', targetId: '', note: '' });
   const [toast, setToast] = useState('');
   const [busy, setBusy] = useState(false);
 
   const favorites = data?.favorites ?? [];
   const groups = data?.groups ?? [];
 
-  const refresh = async () => {
-    await qc.invalidateQueries({ queryKey: ['favorites'] });
-    await qc.invalidateQueries({ queryKey: ['pinned'] });
-  };
-
   const run = async (fn, okMsg) => {
     if (busy) return;
     setBusy(true);
     try {
       await fn();
-      await refresh();
+      await qc.invalidateQueries({ queryKey: ['favorites'] });
+      await qc.invalidateQueries({ queryKey: ['pinned'] });
       if (okMsg) setToast(okMsg);
     } catch (e) {
       setToast(e.message);
@@ -60,272 +47,194 @@ export default function FavoritesPage() {
     }
   };
 
-  const save = (row, patchRow) =>
-    run(
-      () =>
-        send('favorites', 'POST', {
-          kind: row.kind,
-          targetId: row.target_id,
-          note: patchRow.note ?? row.note,
-          groupId: patchRow.groupId !== undefined ? patchRow.groupId : row.group_id,
-          pinned: patchRow.pinned !== undefined ? patchRow.pinned : row.pinned,
-          sortOrder: row.sort_order,
-        }),
-      null,
-    );
+  const shown = useMemo(() => {
+    let rows = favorites;
+    if (sel === 'none') rows = rows.filter((f) => !f.group_id);
+    else if (sel !== 'all') rows = rows.filter((f) => f.group_id === sel);
+    const kw = q.trim().toLowerCase();
+    if (kw) rows = rows.filter((f) => `${f.name} ${f.note ?? ''} ${f.location ?? ''}`.toLowerCase().includes(kw));
+    const by = {
+      date: (a, b) => String(b.created_at ?? '').localeCompare(String(a.created_at ?? '')),
+      name: (a, b) => String(a.name ?? '').localeCompare(String(b.name ?? ''), 'zh-Hans-CN'),
+      kind: (a, b) => String(a.kind).localeCompare(String(b.kind)) || String(a.name).localeCompare(String(b.name), 'zh-Hans-CN'),
+    };
+    return [...rows].sort(by[sort] ?? by.date);
+  }, [favorites, sel, q, sort]);
+
+  const selName = sel === 'all' ? '全部收藏' : sel === 'none' ? '未分组' : groups.find((g) => g.id === sel)?.name ?? '收藏夹';
 
   const add = () =>
     run(async () => {
       const id = draft.targetId.trim();
-      if (!id) throw new Error('填一个世界 ID 或用户 ID（usr_… / wrld_…）');
-      await send('favorites', 'POST', { kind: draft.kind, targetId: id, note: draft.note.trim() || null });
+      if (!id) throw new Error('填一个世界 ID 或用户 ID（wrld_… / usr_…）');
+      await send('favorites', 'POST', {
+        kind: draft.kind, targetId: id, note: draft.note.trim() || null,
+        groupId: sel !== 'all' && sel !== 'none' ? sel : null,
+      });
       setDraft({ kind: draft.kind, targetId: '', note: '' });
     }, '已加入收藏');
 
-  const shareAll = () =>
+  const createGroup = () =>
     run(async () => {
-      const r = await send('shares', 'POST', { kind: 'favorites' });
-      setToast(shareUrl(r.id));
-      try {
-        await navigator.clipboard.writeText(shareUrl(r.id));
-      } catch {
-        /* 剪贴板不可用就只显示链接 */
-      }
-    }, null);
+      const name = groupName.trim();
+      if (!name) throw new Error('先填收藏夹名字');
+      const r = await send('favorite-groups', 'POST', { name });
+      setGroupName('');
+      setCreating(false);
+      if (r?.id) setSel(r.id);
+    }, '收藏夹已创建');
 
-  const kindRows = favorites.filter((f) => f.kind === tab);
-  const shown = kindRows.filter((f) => {
-    if (filter === 'all') return true;
-    if (filter === 'none') return !f.group_id;
-    return f.group_id === filter;
-  });
-  const counts = {
-    world: favorites.filter((f) => f.kind === 'world').length,
-    friend: favorites.filter((f) => f.kind === 'friend').length,
-    group: groups.length
+  const shareFolder = async () => {
+    const r = await send('shares', 'POST', { kind: 'favorites' });
+    setToast(shareUrl(r.id));
+    try { await navigator.clipboard.writeText(shareUrl(r.id)); } catch { /* 剪贴板不可用时只显示链接 */ }
   };
-  const ungrouped = favorites.filter((f) => !f.group_id);
-  const groupMembers = (gid) => favorites.filter((f) => (f.group_id ?? null) === gid);
 
   return (
-    <div className="p-4">
-      {/* 91 三类分 tab：世界 / 好友 / 分组，tabs 上带数量 */}
-      <div className="mb-2 flex items-center gap-1.5" role="tablist">
-        {[
-          ['world', '世界'],
-          ['friend', '好友'],
-          ['group', '分组']
-        ].map(([k, label]) => (
-          <button
-            key={k}
-            role="tab"
-            aria-selected={tab === k}
-            className="chip"
-            data-active={tab === k}
-            data-tab={k}
-            onClick={() => { setTab(k); setFilter('all'); if (k !== 'group') setDraft((d) => ({ ...d, kind: k })); }}
-          >
-            {label} {counts[k]}
-          </button>
-        ))}
-      </div>
+    <div className="flex gap-3 p-4" data-page="favorites">
+      {/* 左栏：排序 + 在线/本地收藏夹 */}
+      <aside className="fav-side" data-folder-sidebar>
+        <select className="inp mb-2 w-full" value={sort} onChange={(e) => setSort(e.target.value)} aria-label="排序">
+          <option value="date">按日期排序</option>
+          <option value="name">按名称排序</option>
+          <option value="kind">按类型排序</option>
+        </select>
 
-      {tab !== 'group' ? (
-      <div className="mb-3 flex flex-wrap items-center gap-2">
-        <button className="chip" data-active={filter === 'all'} onClick={() => setFilter('all')}>
-          全部 {kindRows.length}
-        </button>
-        <button className="chip" data-active={filter === 'none'} onClick={() => setFilter('none')}>
-          未分组 {favorites.filter((f) => !f.group_id).length}
+        <div className="fav-sec">
+          <span>在线收藏夹</span>
+          <span className="fav-badge">{groups.length}</span>
+        </div>
+        <button className="fav-folder" data-active={sel === 'all'} onClick={() => setSel('all')}>
+          <span className="truncate">全部收藏</span>
+          <span className="fav-cap">{favorites.length}/{favorites.length + CAP}</span>
         </button>
         {groups.map((g) => (
-          <button key={g.id} className="chip" data-active={filter === g.id} onClick={() => setFilter(g.id)}>
-            {g.name} {g.count}
-          </button>
+          <div key={g.id} className="fav-folder-row">
+            <button className="fav-folder" data-active={sel === g.id} onClick={() => setSel(g.id)}>
+              <span className="truncate">{g.name}</span>
+              <span className="fav-cap">{g.count}/{CAP}</span>
+            </button>
+            <button
+              className="fav-dots"
+              title="删除收藏夹（收藏项会回到未分组）"
+              onClick={() => run(() => send(`favorite-groups/${g.id}`, 'DELETE'), '收藏夹已删除')}
+            >
+              …
+            </button>
+          </div>
         ))}
-        <span className="mx-1 h-4 w-px" style={{ background: 'var(--stroke-subtle)' }} />
-        <input
-          className="inp"
-          style={{ width: 130 }}
-          placeholder="新分组名"
-          value={groupName}
-          onChange={(e) => setGroupName(e.target.value)}
-        />
-        <button
-          className="chip"
-          disabled={!groupName.trim()}
-          onClick={() =>
-            run(async () => {
-              await send('favorite-groups', 'POST', { name: groupName.trim() });
-              setGroupName('');
-            }, '分组已建')
-          }
-        >
-          + 分组
-        </button>
-        <span className="flex-1" />
-        <button className="chip" disabled={!favorites.length} onClick={shareAll}>
-          分享收藏合集
-        </button>
-      </div>
-      ) : null}
 
-      <div className="card mb-3 flex flex-wrap items-center gap-2 p-3">
-        <select className="inp" value={draft.kind} onChange={(e) => setDraft({ ...draft, kind: e.target.value })}>
-          <option value="world">世界</option>
-          <option value="friend">好友</option>
-        </select>
-        <input
-          className="inp flex-1"
-          style={{ minWidth: 220 }}
-          placeholder={draft.kind === 'world' ? 'wrld_…（世界 ID）' : 'usr_…（用户 ID）'}
-          value={draft.targetId}
-          onChange={(e) => setDraft({ ...draft, targetId: e.target.value })}
-          onKeyDown={(e) => e.key === 'Enter' && add()}
-        />
-        <input
-          className="inp"
-          style={{ width: 180 }}
-          placeholder="备注（可选）"
-          value={draft.note}
-          onChange={(e) => setDraft({ ...draft, note: e.target.value })}
-          onKeyDown={(e) => e.key === 'Enter' && add()}
-        />
-        <button className="chip" disabled={busy} onClick={add}>
-          收藏
-        </button>
-      </div>
-
-      {toast && (
-        <div className="card mb-3 truncate px-3 py-2 text-[12px] text-fg2" title={toast}>
-          {toast}
+        <div className="fav-sec mt-3">
+          <span>本地收藏夹</span>
+          <span className="fav-badge">1</span>
         </div>
-      )}
+        <button className="fav-folder" data-active={sel === 'none'} onClick={() => setSel('none')}>
+          <span className="truncate">Favorites</span>
+          <span className="fav-cap">{favorites.filter((f) => !f.group_id).length}</span>
+        </button>
 
-      {error && <div className="card p-4 text-[12px] text-fg2">{error.message}</div>}
+        {creating ? (
+          <div className="mt-2 flex gap-1">
+            <input
+              className="inp min-w-0 flex-1"
+              autoFocus
+              placeholder="收藏夹名字"
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && createGroup()}
+            />
+            <button className="chip" disabled={busy} onClick={createGroup}>建</button>
+          </div>
+        ) : (
+          <button className="fav-new" onClick={() => setCreating(true)}>+ 创建新的收藏夹</button>
+        )}
+      </aside>
 
-      {tab === 'group' ? (
-        // 91 分组 tab：每个分组一张卡，列出成员（收藏名 + 类型），未分组单独一卡
-        <div className="fav-groups">
-          {[...groups.map((g) => ({ id: g.id, name: g.name, rows: groupMembers(g.id) })),
-            { id: 'none', name: '未分组', rows: ungrouped }].map((g) => (
-            <div key={g.id} className="card p-3">
-              <div className="flex items-baseline justify-between gap-2">
-                <span className="truncate text-[12px] font-medium">{g.name}</span>
-                <span className="shrink-0 text-[11px] text-fg3">{g.rows.length} 项</span>
+      {/* 右栏：工具栏 + 分组标题 + 2 列卡片 */}
+      <section className="min-w-0 flex-1">
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <input
+            className="inp min-w-0 flex-1"
+            placeholder="搜索"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            aria-label="搜索收藏"
+          />
+          <button className="chip" onClick={() => refetch()} disabled={isFetching} title="刷新">{isFetching ? '刷新中…' : '刷新'}</button>
+          <button className="chip" data-active={adding} onClick={() => setAdding((v) => !v)}>+ 收藏</button>
+          <button className="chip" disabled={!favorites.length} onClick={shareFolder} title="生成只读分享链接">分享</button>
+        </div>
+
+        {adding ? (
+          <div className="card mb-2 flex flex-wrap items-center gap-2 p-2.5">
+            <select className="inp" value={draft.kind} onChange={(e) => setDraft({ ...draft, kind: e.target.value })}>
+              <option value="world">世界</option>
+              <option value="friend">好友</option>
+            </select>
+            <input
+              className="inp min-w-0 flex-1"
+              placeholder={draft.kind === 'world' ? 'wrld_…（世界 ID）' : 'usr_…（用户 ID）'}
+              value={draft.targetId}
+              onChange={(e) => setDraft({ ...draft, targetId: e.target.value })}
+              onKeyDown={(e) => e.key === 'Enter' && add()}
+            />
+            <input
+              className="inp"
+              style={{ width: 140 }}
+              placeholder="备注"
+              value={draft.note}
+              onChange={(e) => setDraft({ ...draft, note: e.target.value })}
+              onKeyDown={(e) => e.key === 'Enter' && add()}
+            />
+            <button className="chip" disabled={busy} onClick={add}>收藏</button>
+          </div>
+        ) : null}
+
+        <div className="mb-2 flex items-baseline gap-2">
+          <span className="text-[13px] font-medium">{selName}</span>
+          <span className="text-[11px] tabular-nums text-fg3" data-count={shown.length}>{shown.length}/{CAP}</span>
+        </div>
+
+        {toast ? <div className="card mb-2 truncate px-3 py-2 text-[12px] text-fg2" title={toast}>{toast}</div> : null}
+        {error ? <div className="card p-4 text-[12px] text-fg2">{error.message}</div> : null}
+
+        {shown.length === 0 ? (
+          <Empty icon="star" title={favorites.length ? '这个收藏夹还是空的' : '还没有收藏'}
+            hint={favorites.length ? '把收藏项拖到这个分组，或在上面「+ 收藏」加一条。' : '在上方「+ 收藏」填世界 / 用户 ID，或从世界抽屉里点收藏。'} />
+        ) : (
+          <div className="fav-grid" data-grid="favorites">
+            {shown.map((f) => (
+              <div
+                key={f.id}
+                className="fav-card"
+                onClick={() => (f.kind === 'world' ? openWorld(f.target_id) : f.target_id && openFriend(f.target_id))}
+                title={f.note ?? f.name}
+              >
+                <span className="fav-ava">
+                  {f.thumbnail ? <img src={imgUrl(f.thumbnail)} alt="" loading="lazy" /> : (f.name ?? '?').slice(0, 1)}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center gap-1.5">
+                    <span className="truncate text-[12px] font-medium">{f.name}</span>
+                    <span className="shrink-0 text-[10px] text-fg3">{KIND[f.kind] ?? f.kind}</span>
+                  </span>
+                  <span className="block truncate text-[11px] text-fg3">
+                    {f.location ?? f.note ?? `收藏于 ${fmtDay(f.created_at)}`}
+                  </span>
+                </span>
+                <button
+                  className="chip shrink-0"
+                  data-remove={f.id}
+                  title="取消收藏"
+                  onClick={(e) => { e.stopPropagation(); run(() => send(`favorites/${f.id}`, 'DELETE'), '已取消收藏'); }}
+                >
+                  移除
+                </button>
               </div>
-              {g.rows.length ? (
-                <ul className="mt-2 space-y-1">
-                  {g.rows.slice(0, 12).map((f) => (
-                    <li key={f.id} className="flex min-w-0 items-center gap-1.5 text-[12px]">
-                      <span className="truncate text-fg2">{f.name}</span>
-                      <span className="shrink-0 text-[11px] text-fg3">{KIND_LABEL[f.kind] ?? f.kind}</span>
-                    </li>
-                  ))}
-                  {g.rows.length > 12 ? <li className="text-[11px] text-fg3">…还有 {g.rows.length - 12} 项</li> : null}
-                </ul>
-              ) : (
-                <div className="mt-2 text-[11px] text-fg3">{g.id === 'none' ? '所有收藏都分了组' : '这个分组还是空的'}</div>
-              )}
-            </div>
-          ))}
-        </div>
-      ) : shown.length === 0 ? (
-        <Empty icon="star" title={kindRows.length ? '这个分组还是空的' : `还没有收藏的${KIND_LABEL[tab] ?? '项目'}`} hint={kindRows.length ? '把收藏项分到这个分组后就会显示。' : '在上面填世界 / 用户 ID 加一条，或从收藏的收藏里固定到侧栏。'} />
-      ) : (
-        <div className="card overflow-hidden">
-          <table className="tbl">
-            <thead>
-              <tr>
-                <th>名称</th>
-                <th style={{ width: 56 }}>类型</th>
-                <th style={{ width: 200 }}>备注</th>
-                <th style={{ width: 130 }}>分组</th>
-                <th style={{ width: 168 }}>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {shown.map((f) => (
-                <tr key={f.id}>
-                  <td data-label="名称">
-                    <span className="flex items-center gap-2.5">
-                      <Thumb row={f} />
-                      <span className="min-w-0">
-                        <span className="block truncate">{f.name}</span>
-                        {f.location && <span className="block truncate text-[11px] text-fg3">{f.location}</span>}
-                      </span>
-                    </span>
-                  </td>
-                  <td className="text-[12px] text-fg3" data-label="类型">{KIND_LABEL[f.kind] ?? f.kind}</td>
-                  <td data-label="备注">
-                    <input
-                      className="inp w-full"
-                      defaultValue={f.note ?? ''}
-                      placeholder="备注"
-                      onBlur={(e) => {
-                        const v = e.target.value.trim();
-                        if (v !== (f.note ?? '')) save(f, { note: v || null });
-                      }}
-                    />
-                  </td>
-                  <td data-label="分组">
-                    <select
-                      className="inp w-full"
-                      value={f.group_id ?? ''}
-                      onChange={(e) => save(f, { groupId: e.target.value || null })}
-                    >
-                      <option value="">未分组</option>
-                      {groups.map((g) => (
-                        <option key={g.id} value={g.id}>
-                          {g.name}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td data-label="操作">
-                    <span className="flex gap-1.5">
-                      {f.kind === 'world' && (
-                        <button
-                          className="chip"
-                          data-active={f.pinned}
-                          title="固定到侧栏"
-                          onClick={() => save(f, { pinned: !f.pinned })}
-                        >
-                          {f.pinned ? '已固定' : '固定'}
-                        </button>
-                      )}
-                      <button
-                        className="chip"
-                        title="生成只读分享链接"
-                        onClick={() =>
-                          run(async () => {
-                            const r = await send('shares', 'POST', { kind: 'world', targetId: f.target_id });
-                            setToast(shareUrl(r.id));
-                            try {
-                              await navigator.clipboard.writeText(shareUrl(r.id));
-                            } catch {
-                              /* 同上 */
-                            }
-                          }, null)
-                        }
-                      >
-                        分享
-                      </button>
-                      <button
-                        className="chip"
-                        title="取消收藏"
-                        onClick={() => run(() => send(`favorites/${f.id}`, 'DELETE'), '已取消收藏')}
-                      >
-                        移除
-                      </button>
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

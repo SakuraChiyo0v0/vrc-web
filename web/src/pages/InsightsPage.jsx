@@ -1,108 +1,161 @@
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api.js';
-import { hourBars, BAR_AREA_PX } from '../lib/viz.js';
 import Empty from '../components/Empty.jsx';
 
-function shortTime(iso) {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  return `${d.getMonth() + 1}/${d.getDate()}`;
+/**
+ * 好友关系图，版式对齐真机 docs/ref/vrcx0-insights.png：
+ * 工具栏（再次拉取 / 查找好友 / 重置）→ 力导向画布 → 左下浮动图例卡（圈子、点大小、连线、已获取 n、最少连接数滑块）。
+ *
+ * 数据只用本地能算出来的关系：players 的共处次数 + 最近所在世界。
+ * 圈子 = 最近同世界的一群人；点大小 = 共处次数；连线 = 同一圈子内、共处次数相近的人。
+ * 真机的「共同好友」需要 VRChat 在线接口，本地没有，所以图例写明这里用的是共处关系，不冒充共同好友。
+ */
+const W = 1000;
+const H = 620;
+const COLORS = ['#3b82f6', '#06b6d4', '#22c55e', '#eab308', '#ef4444', '#a855f7'];
+
+function layout(players) {
+  // 按最近世界分圈，圈内按共处次数排序；圈的半径随人数走，点半径随次数走
+  const byWorld = new Map();
+  for (const p of players) {
+    const key = p.last_world ?? '未知世界';
+    if (!byWorld.has(key)) byWorld.set(key, []);
+    byWorld.get(key).push(p);
+  }
+  const clusters = [...byWorld.entries()]
+    .map(([world, ps]) => ({ world, players: ps.sort((a, b) => b.meets - a.meets) }))
+    .sort((a, b) => b.players.length - a.players.length)
+    .slice(0, 6);
+  const cx = W / 2;
+  const cy = H / 2;
+  const ring = Math.min(W, H) * 0.32;
+
+  const nodes = [];
+  clusters.forEach((c, ci) => {
+    const a = (ci / clusters.length) * Math.PI * 2 - Math.PI / 2;
+    const ox = cx + Math.cos(a) * ring;
+    const oy = cy + Math.sin(a) * ring * 0.82;
+    const maxMeets = Math.max(...c.players.map((p) => p.meets), 1);
+    c.players.slice(0, 14).forEach((p, pi) => {
+      const ga = (pi / Math.max(1, Math.min(c.players.length, 14))) * Math.PI * 2;
+      const gr = 22 + Math.sqrt(pi) * 18;
+      nodes.push({
+        id: p.user_id ?? p.name,
+        name: p.name,
+        world: c.world,
+        cluster: ci,
+        meets: p.meets,
+        r: 4 + Math.sqrt(p.meets / maxMeets) * 9,
+        x: ox + Math.cos(ga) * gr,
+        y: oy + Math.sin(ga) * gr * 0.9,
+      });
+    });
+  });
+
+  // 同一圈子里相邻的人连一条线（代表「同世界同房过」）
+  const edges = [];
+  for (const n of nodes) {
+    const mates = nodes.filter((m) => m.cluster === n.cluster && m !== n);
+    mates.slice(0, 3).forEach((m) => {
+      if (n.id < m.id) edges.push({ a: n, b: m });
+    });
+  }
+  return { nodes, edges, clusters };
 }
 
-function Card({ title, hint, children }) {
-  return (
-    <section className="card">
-      <div
-        className="flex items-center justify-between border-b px-4 py-2.5"
-        style={{ borderColor: 'var(--stroke-subtle)' }}
-      >
-        <span className="text-[12px] font-medium">{title}</span>
-        {hint ? <span className="text-[11px] text-fg3">{hint}</span> : null}
-      </div>
-      <div className="p-2">{children}</div>
-    </section>
-  );
-}
-
-/** 常一起玩 / 渐行渐远 / 最常遇到的时段，数据来自 /api/insights */
 export default function InsightsPage() {
-  const { data, isLoading } = useQuery({ queryKey: ['insights'], queryFn: () => api('insights') });
+  const { data, isLoading, refetch, isFetching } = useQuery({ queryKey: ['insights-graph-players'], queryFn: () => api('players?min_meets=1') });
+  const [q, setQ] = useState('');
+  const [minLinks, setMinLinks] = useState(0);
 
-  if (isLoading) return <div className="p-4 text-[12px] text-fg3">加载中…</div>;
-
-  const companions = data?.companions?.items ?? [];
-  const fading = data?.fading?.items ?? [];
-  const bars = hourBars(data?.hours?.items ?? []);
-  const peak = bars.peak;
-  const events = data?.range?.events ?? 0;
+  const players = data?.players ?? [];
+  const graph = useMemo(() => layout(players), [players]);
+  const links = useMemo(() => {
+    const m = new Map();
+    for (const e of graph.edges) {
+      m.set(e.a.id, (m.get(e.a.id) ?? 0) + 1);
+      m.set(e.b.id, (m.get(e.b.id) ?? 0) + 1);
+    }
+    return m;
+  }, [graph]);
+  const vis = graph.nodes.filter((n) => (links.get(n.id) ?? 0) >= minLinks);
+  const visEdges = graph.edges.filter((e) => vis.includes(e.a) && vis.includes(e.b));
+  const hit = q.trim().toLowerCase();
 
   return (
-    <div className="grid gap-3 p-4 lg:grid-cols-2">
-      <Card title="常一起玩" hint={`近 ${data?.range?.days ?? 90} 天 · ${events} 次同房`}>
-        {companions.length === 0 && <Empty icon="users" title={'还没有足够数据'} compact />}
-        {companions.map((p) => (
-          <div
-            key={p.user_id ?? p.name}
-            className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-[var(--state-hover-surface)]"
-          >
-            <span className="min-w-0 flex-1 truncate text-[12px]">{p.name}</span>
-            <span className="shrink-0 text-[11px] tabular-nums text-fg3">
-              {p.meets} 次 · {p.active_days} 天 · 最近 {shortTime(p.last_seen)}
-            </span>
-          </div>
-        ))}
-      </Card>
+    <div className="flex h-full flex-col p-4" data-page="insights">
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <button className="chip" style={{ background: 'var(--primary)', color: 'var(--background)' }} onClick={() => refetch()} disabled={isFetching}>
+          {isFetching ? '拉取中…' : '再次拉取'}
+        </button>
+        <input
+          className="inp min-w-0 flex-1 sm:max-w-[260px]"
+          placeholder="查找好友"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          aria-label="查找好友"
+        />
+        <button className="chip ml-auto" onClick={() => { setQ(''); setMinLinks(0); }} title="重置筛选">重置</button>
+      </div>
 
-      <Card title="渐行渐远" hint="以前常见，最近 21 天没遇到">
-        {fading.length === 0 && <Empty icon="users" title={'暂时没有这样的人'} compact />}
-        {fading.map((p) => (
-          <div
-            key={p.user_id ?? p.name}
-            className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-[var(--state-hover-surface)]"
-          >
-            <span className="min-w-0 flex-1 truncate text-[12px]">{p.name}</span>
-            <span className="shrink-0 text-[11px] tabular-nums text-fg3">
-              {p.meets} 次 · 已 {p.days_since} 天没见
-            </span>
-          </div>
-        ))}
-      </Card>
+      {isLoading ? (
+        <div className="text-[12px] text-fg3">加载中…</div>
+      ) : players.length === 0 ? (
+        <Empty icon="users" title="还没有可以成图的关系" hint="采集器记到更多同房事件后，这里会按最近同世界分圈画出来。" />
+      ) : (
+        <div className="graph-wrap">
+          <svg viewBox={`0 0 ${W} ${H}`} className="graph-canvas" role="img" aria-label="好友关系图" preserveAspectRatio="xMidYMid meet">
+            {visEdges.map((e, i) => (
+              <line
+                key={i}
+                x1={e.a.x} y1={e.a.y} x2={e.b.x} y2={e.b.y}
+                stroke="var(--stroke-default)" strokeWidth={1}
+              />
+            ))}
+            {vis.map((n) => (
+              <g key={n.id} data-node={n.id} opacity={hit && !n.name.toLowerCase().includes(hit) ? 0.15 : 1}>
+                <circle cx={n.x} cy={n.y} r={n.r} fill={COLORS[n.cluster % COLORS.length]} opacity={0.85} />
+                <text x={n.x} y={n.y - n.r - 4} textAnchor="middle" fontSize="10" fill="var(--content-secondary)">
+                  {hit && n.name.toLowerCase().includes(hit) ? n.name : n.name.slice(0, 8)}
+                </text>
+              </g>
+            ))}
+          </svg>
 
-      <Card title="最常遇到的时段" hint={peak === null || peak === undefined ? '暂无数据' : `${String(peak).padStart(2, '0')}:00 附近最多`}>
-        {bars.empty ? (
-          <Empty icon="users" title={'这段时间还没有同房记录，等采集器攒够数据再画。'} compact />
-        ) : (
-          <>
-            <div className="flex items-end gap-[3px] px-2 pb-1 pt-3" style={{ height: BAR_AREA_PX + 12 }}>
-              {bars.bars.map((h) => (
-                <div
-                  key={h.hour}
-                  className="flex flex-1 flex-col items-center justify-end"
-                  title={`${String(h.hour).padStart(2, '0')}:00 · ${h.n} 次`}
-                  data-hour={h.hour}
-                  data-n={h.n}
-                >
-                  <div
-                    className="w-full rounded-[2px]"
-                    style={{ height: h.px, background: 'var(--primary)', opacity: h.opacity }}
-                  />
-                </div>
-              ))}
+          <div className="graph-legend" data-graph-legend>
+            <div className="mb-1 text-[11px] font-medium">圈子</div>
+            {graph.clusters.map((c, i) => (
+              <div key={c.world} className="graph-leg-row">
+                <span className="graph-dot" style={{ background: COLORS[i % COLORS.length] }} />
+                <span className="truncate">{c.world}</span>
+                <span className="ml-auto tabular-nums text-fg3">{c.players.length}</span>
+              </div>
+            ))}
+            {[...new Set(graph.nodes.map((n) => n.world))].length > graph.clusters.length ? (
+              <div className="mt-1 text-[10px] text-fg3">另有 {new Set(graph.nodes.map((n) => n.world)).size - graph.clusters.length} 个世界的人未画</div>
+            ) : null}
+            <div className="mt-2 space-y-0.5 text-[10px] text-fg3">
+              <div>点越大，同房次数越多</div>
+              <div>连线 = 最近同一世界、同房遇到过</div>
+              <div>按最近所在世界分圈</div>
             </div>
-            <div className="flex justify-between px-2 text-[11px] tabular-nums text-fg3">
-              <span>00</span>
-              <span>06</span>
-              <span>12</span>
-              <span>18</span>
-              <span>23</span>
+            <div className="mt-2 text-[10px] tabular-nums text-fg3" data-graph-count>
+              已获取 {players.length} 位玩家
             </div>
-          </>
-        )}
-      </Card>
-
-      <Card title="待补" hint="后续观察项">
-        <Empty icon="users" title={'共同世界、聊天热度等指标等数据够了再加，避免用样本不足的数字下结论。'} compact />
-      </Card>
+            <label className="mt-1 flex items-center gap-2 text-[10px] text-fg3">
+              最少连接数
+              <input
+                type="range" min="0" max="3" step="1" value={minLinks}
+                onChange={(e) => setMinLinks(Number(e.target.value))}
+                className="min-w-0 flex-1"
+                data-slider="min-links"
+              />
+              <span className="tabular-nums">{minLinks}</span>
+            </label>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

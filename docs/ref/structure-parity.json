@@ -1,23 +1,23 @@
 {
   "_note": "由 scripts/structure_parity.mjs 生成：spec.pages[*].structure（真机截图量测）vs 我们的 DOM",
-  "at": "2026-11-23T05:54:51.816Z",
+  "at": "2026-11-23T06:20:55.751Z",
   "base": "http://127.0.0.1:8899",
-  "pass": 21,
+  "pass": 27,
   "total": 27,
   "rows": [
     {
       "page": "search",
       "name": "主导航 tab 名",
-      "ours": "",
+      "ours": "探索/玩家/世界/模型/群组",
       "want": "探索/玩家/世界/模型/群组",
-      "ok": false
+      "ok": true
     },
     {
       "page": "search",
       "name": "网格列数",
-      "ours": "null",
+      "ours": "3",
       "want": "3",
-      "ok": false
+      "ok": true
     },
     {
       "page": "sessions",
@@ -71,23 +71,23 @@
     {
       "page": "players",
       "name": "空态文案",
-      "ours": "(无)",
+      "ours": "VRChat 目前没有运行",
       "want": "VRChat 目前没有运行",
-      "ok": false
+      "ok": true
     },
     {
       "page": "favorites",
       "name": "网格列数",
-      "ours": "null",
+      "ours": "2",
       "want": "2",
-      "ok": false
+      "ok": true
     },
     {
       "page": "favorites",
       "name": "收藏夹侧栏",
-      "ours": "false",
+      "ours": "true",
       "want": "true",
-      "ok": false
+      "ok": true
     },
     {
       "page": "insights",
@@ -99,9 +99,9 @@
     {
       "page": "insights",
       "name": "关系图画布",
-      "ours": "false",
+      "ours": "true",
       "want": "圈子/最少连接数",
-      "ok": false
+      "ok": true
     },
     {
       "page": "friendlist",

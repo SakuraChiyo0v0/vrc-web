@@ -27,7 +27,8 @@ const check = (page, name, ours, want, ok) => rows.push({ page, name, ours: Stri
 // 只看内容面板（排除侧栏/右栏），避免把导航文字算成页面 tab
 const probe = (p) => p.evaluate(() => {
   const txt = (el) => (el?.textContent || '').replace(/\s+/g, ' ').trim();
-  const main = document.querySelector('main') || document.body;
+  // 我们的内容根是 .workspace（外壳重排后没有 <main>）；真机/测试页也可能用 main，两者都认
+  const main = document.querySelector('.workspace') || document.querySelector('main') || document.body;
   const ths = [...main.querySelectorAll('thead th')].map(txt);
   const inView = (el) => {
     const r = el.getBoundingClientRect();
@@ -63,11 +64,12 @@ const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbo
 const p = await browser.newPage({ viewport: { width: 1688, height: 1028 }, deviceScaleFactor: 1 });
 
 async function go(page) {
-  await p.goto(`${BASE}#/${page}`, { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+  // BASE 只是服务根（可能是 http://host/vrc）：拼成 /vrc/#/page，否则 hash 会吃掉路径变成 404
+  await p.goto(`${BASE}/#/${page}`, { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
   // 懒加载路由 + 首屏接口：等 main 里出现实际内容再量，否则会把「还在加载」当成空结构
   await p
     .waitForFunction(() => {
-      const m = document.querySelector('main');
+      const m = document.querySelector('.workspace') || document.querySelector('main');
       if (!m || m.innerText.trim().length <= 20) return false;
       if (/^\s*加载中/.test(m.innerText)) return false;
       return !m.querySelector('.skeleton, [class*=skeleton]');
