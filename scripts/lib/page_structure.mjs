@@ -161,3 +161,22 @@ export const STRUCT_PAGES = ['search', 'feed', 'sessions', 'players', 'moderatio
 
 /** spec 页名 → 我们的路由名（真机「好友位置」= 我们的 #/friends） */
 export const PAGE_ROUTES = { locations: 'friends' };
+
+/**
+ * 端口预检：8899 在 NAS 上常被图片墙（imagewall）容器占着，对那种端口会截出「别人的 200」，
+ * 之后所有断言要么假通过要么全红。所以除了 HTTP 200，还要求 /api/roster 是本服务的 JSON。
+ */
+export async function assertVrcServer(base) {
+  const fail = (why) => {
+    console.error(`✗ baseUrl 不是本服务：${base}（${why}）\n  先起 mock+构建产物：node server/scripts/demo.mjs 8891`);
+    process.exit(2);
+  };
+  let res;
+  try { res = await fetch(`${base}/api/roster`, { redirect: 'manual' }); } catch (e) { fail(e.message); }
+  if (res.status !== 200) fail(`/api/roster HTTP ${res.status}`);
+  let body;
+  try { body = await res.json(); } catch { fail('/api/roster 不是 JSON，端口被别的服务占用'); }
+  if (typeof body?.total !== 'number' || !Array.isArray(body?.groups)) fail('/api/roster 缺 total/groups，不是 vrc-web');
+  return body;
+}
+

@@ -1,7 +1,7 @@
 /**
  * 页面结构对齐：docs/ref/vrcx0-spec.json → pages[*].structure（逐条来自真机截图量测）vs 我们的 DOM。
  *
- *   node scripts/structure_parity.mjs [baseUrl]     # 默认 http://127.0.0.1:8899（server/scripts/demo.mjs）
+ *   node scripts/structure_parity.mjs [baseUrl]     # 默认 http://127.0.0.1:8891（server/scripts/demo.mjs）
  *
  * 只比「截图能证明的结构」：表格列数与列名、可见行数、tab/chip/子导航文字、网格列数、空态文案。
  * 断言实现在 scripts/lib/page_structure.mjs（visual_parity.mjs 共用，保证两边口径一致）。
@@ -10,14 +10,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { probeMain, structureRows, STRUCT_PAGES, PAGE_ROUTES } from './lib/page_structure.mjs';
+import { probeMain, structureRows, STRUCT_PAGES, PAGE_ROUTES, assertVrcServer } from './lib/page_structure.mjs';
 
 const req = createRequire(import.meta.url);
 let pw;
 try { pw = req('playwright'); } catch { pw = createRequire(process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json')('playwright'); }
 const { chromium } = pw;
 
-const BASE = (process.argv[2] || 'http://127.0.0.1:8899').replace(/\/$/, '');
+const BASE = (process.argv[2] || process.env.VRC_BASE || 'http://127.0.0.1:8891').replace(/\/$/, '');
+await assertVrcServer(BASE);
 const ROOT = process.env.VRC_ROOT || path.resolve(import.meta.dirname, '..');
 const SPEC = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/ref/vrcx0-spec.json'), 'utf8'));
 const EXE = process.env.CHROME_PATH

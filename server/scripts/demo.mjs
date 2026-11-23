@@ -1,6 +1,6 @@
 /**
  * 演示/截图用服务：临时 SQLite 种子 + 真实 server（含 web/dist 静态站）。
- *   node server/scripts/demo.mjs [port]        # 默认 8899，Ctrl-C 退出
+ *   node server/scripts/demo.mjs [port]        # 默认 8891，Ctrl-C 退出（8899 上常驻图片墙容器，别用）
  *
  * 只写临时库（os.tmpdir），不碰线上 PG / VRChat。种子与 parity7 一致，
  * 目的是让「概览 / 好友位置 / 动态 / 游戏日志」四页都有数据可看。
@@ -13,7 +13,7 @@ import net from 'node:net';
 import { openDb } from '../src/db/index.js';
 
 const ROOT = new URL('../../', import.meta.url).pathname;
-const port = Number(process.argv[2] ?? 8899);
+const port = Number(process.argv[2] ?? 8891);
 const file = path.join(os.tmpdir(), `vrc-demo-${process.pid}.db`);
 const dbUrl = `sqlite:${file}`;
 
