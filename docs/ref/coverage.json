@@ -7,9 +7,9 @@
    "measured": true,
    "parity": true,
    "shots": {
-    "desktop": 7,
-    "mobile": 4,
-    "4k": 3
+    "desktop": 8,
+    "mobile": 5,
+    "4k": 4
    },
    "shots_missing": []
   },
@@ -17,11 +17,11 @@
    "ref": "docs/ref/vrcx0-search.png",
    "na": null,
    "measured": true,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 2,
-    "mobile": 2,
-    "4k": 1
+    "desktop": 3,
+    "mobile": 3,
+    "4k": 2
    },
    "shots_missing": []
   },
@@ -31,9 +31,9 @@
    "measured": true,
    "parity": true,
    "shots": {
-    "desktop": 5,
-    "mobile": 3,
-    "4k": 2
+    "desktop": 6,
+    "mobile": 4,
+    "4k": 3
    },
    "shots_missing": []
   },
@@ -43,9 +43,9 @@
    "measured": true,
    "parity": true,
    "shots": {
-    "desktop": 8,
-    "mobile": 3,
-    "4k": 1
+    "desktop": 9,
+    "mobile": 4,
+    "4k": 2
    },
    "shots_missing": []
   },
@@ -55,9 +55,9 @@
    "measured": true,
    "parity": true,
    "shots": {
-    "desktop": 2,
-    "mobile": 2,
-    "4k": 1
+    "desktop": 3,
+    "mobile": 3,
+    "4k": 2
    },
    "shots_missing": []
   },
@@ -65,11 +65,11 @@
    "ref": "docs/ref/vrcx0-roomhistory.png",
    "na": null,
    "measured": true,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 1,
-    "mobile": 2,
-    "4k": 1
+    "desktop": 2,
+    "mobile": 3,
+    "4k": 2
    },
    "shots_missing": []
   },
@@ -77,55 +77,59 @@
    "ref": "docs/ref/vrcx0-players.png",
    "na": null,
    "measured": true,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 2,
-    "mobile": 2,
-    "4k": 1
+    "desktop": 3,
+    "mobile": 3,
+    "4k": 2
    },
    "shots_missing": []
   },
   "moderation": {
-   "ref": null,
+   "ref": "docs/ref/vrcx0-moderation.png",
    "na": null,
-   "measured": false,
-   "parity": false,
+   "measured": true,
+   "parity": true,
    "shots": {
-    "desktop": 0,
-    "mobile": 0,
-    "4k": 0
+    "desktop": 1,
+    "mobile": 1,
+    "4k": 1
    },
-   "shots_missing": [
-    "desktop",
-    "mobile",
-    "4k"
-   ]
+   "shots_missing": []
+  },
+  "encounters": {
+   "ref": null,
+   "na": "本项目扩展页（同房遇到过的人）：VRCX-0 无对应路由，真机无截图可对；真机玩家管理槽位已由 moderation 对齐",
+   "measured": false,
+   "parity": true,
+   "shots": {
+    "desktop": 1,
+    "mobile": 1,
+    "4k": 1
+   },
+   "shots_missing": []
   },
   "stats": {
    "ref": null,
    "na": "VRCX-0 的 #/charts 会重定向到 #/charts/mutual（与 insights 同页），无独立「近24小时统计」页；docs/ref/vrcx0-stats.png 就是该重定向页",
    "measured": false,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 0,
-    "mobile": 0,
-    "4k": 0
+    "desktop": 1,
+    "mobile": 1,
+    "4k": 1
    },
-   "shots_missing": [
-    "desktop",
-    "mobile",
-    "4k"
-   ]
+   "shots_missing": []
   },
   "favorites": {
    "ref": "docs/ref/vrcx0-favorites.png",
    "na": null,
    "measured": true,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 1,
-    "mobile": 2,
-    "4k": 2
+    "desktop": 2,
+    "mobile": 3,
+    "4k": 3
    },
    "shots_missing": []
   },
@@ -133,11 +137,11 @@
    "ref": "docs/ref/vrcx0-insights.png",
    "na": null,
    "measured": true,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 1,
-    "mobile": 1,
-    "4k": 1
+    "desktop": 2,
+    "mobile": 2,
+    "4k": 2
    },
    "shots_missing": []
   },
@@ -147,9 +151,9 @@
    "measured": true,
    "parity": true,
    "shots": {
-    "desktop": 4,
-    "mobile": 2,
-    "4k": 3
+    "desktop": 5,
+    "mobile": 3,
+    "4k": 4
    },
    "shots_missing": []
   },
@@ -157,27 +161,23 @@
    "ref": null,
    "na": "VRCX-0 无 calendar 路由，#/calendar 落回 #/feed（capture_ref_cdp.mjs MAP 注释与实截均如此）",
    "measured": false,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 0,
-    "mobile": 0,
-    "4k": 0
+    "desktop": 1,
+    "mobile": 1,
+    "4k": 1
    },
-   "shots_missing": [
-    "desktop",
-    "mobile",
-    "4k"
-   ]
+   "shots_missing": []
   },
   "friendlist": {
    "ref": "docs/ref/vrcx0-friendlist.png",
    "na": null,
    "measured": true,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 5,
-    "mobile": 2,
-    "4k": 1
+    "desktop": 6,
+    "mobile": 3,
+    "4k": 2
    },
    "shots_missing": []
   },
@@ -185,11 +185,11 @@
    "ref": "docs/ref/vrcx0-friendlog.png",
    "na": null,
    "measured": true,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 5,
-    "mobile": 1,
-    "4k": 1
+    "desktop": 6,
+    "mobile": 2,
+    "4k": 2
    },
    "shots_missing": []
   },
@@ -197,11 +197,11 @@
    "ref": "docs/ref/vrcx0-gamelog.png",
    "na": null,
    "measured": true,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 6,
-    "mobile": 1,
-    "4k": 1
+    "desktop": 7,
+    "mobile": 2,
+    "4k": 2
    },
    "shots_missing": []
   },
@@ -209,11 +209,11 @@
    "ref": "docs/ref/vrcx0-settings.png",
    "na": null,
    "measured": true,
-   "parity": false,
+   "parity": true,
    "shots": {
-    "desktop": 2,
-    "mobile": 1,
-    "4k": 1
+    "desktop": 3,
+    "mobile": 2,
+    "4k": 2
    },
    "shots_missing": []
   }
@@ -221,7 +221,7 @@
  "friend_modal": {
   "ref": "docs/ref/vrcx0-friend.png",
   "measured": true,
-  "parity": false,
+  "parity": true,
   "shots": {
    "desktop": 8,
    "mobile": 3,
@@ -230,12 +230,12 @@
   "shots_missing": []
  },
  "summary": {
-  "pages": 17,
-  "ref": 14,
-  "measured": 14,
-  "parity": 5,
-  "shots3": 14,
-  "na": 2,
-  "todo": 10
+  "pages": 18,
+  "ref": 15,
+  "measured": 15,
+  "parity": 18,
+  "shots3": 18,
+  "na": 3,
+  "todo": 0
  }
 }

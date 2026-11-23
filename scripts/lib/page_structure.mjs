@@ -104,4 +104,4 @@ export function structureRows(page, got, want, pitch) {
 }
 
 /** 有 structure 量测的页面（新增页面时加这里） */
-export const STRUCT_PAGES = ['search', 'sessions', 'players', 'favorites', 'insights', 'friendlist', 'friendlog', 'gamelog', 'settings'];
+export const STRUCT_PAGES = ['search', 'sessions', 'players', 'moderation', 'favorites', 'insights', 'friendlist', 'friendlog', 'gamelog', 'settings'];

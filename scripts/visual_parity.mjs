@@ -11,6 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { probeMain, structureRows, STRUCT_PAGES } from './lib/page_structure.mjs';
 // playwright 不在本仓库依赖里（容器只有一份装在 hermes 模板目录），ESM 不吃 NODE_PATH，按路径 require
 const _req = createRequire(import.meta.url);
 let _pw;
@@ -29,8 +30,10 @@ const EXE = process.env.CHROME_PATH
 const ALLOWED = SPEC.typography.px_sizes_allowed;
 const rows = [];
 let CUR = null; // 当前断言属于哪一页（用于按页汇总相似度）
+// 断言归属到「页」，不是「页@宽度」：390/4k 的溢出检查也算到该页头上
+const pageKeyOf = (cur) => String(cur ?? '').split('@')[0];
 const check = (name, ours, want, ok) => {
-  rows.push({ page: CUR, name, ours, want, ok });
+  rows.push({ page: CUR, key: pageKeyOf(CUR), name, ours, want, ok });
 };
 
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
@@ -365,7 +368,7 @@ await p.close().catch(() => {});
 // 顺带核对正文无横向溢出、字号不越过 spec 允许档位。
 const ALL_PAGES = [
   'overview', 'search', 'friends', 'feed', 'notifications', 'sessions', 'players',
-  'moderation', 'stats', 'favorites', 'insights', 'worlds', 'calendar',
+  'moderation', 'encounters', 'stats', 'favorites', 'insights', 'worlds', 'calendar',
   'friendlist', 'friendlog', 'gamelog', 'settings'
 ];
 // 装饰字形（头像首字、缩略图占位、KPI 大数字）不参与正文字号档位
@@ -387,21 +390,100 @@ for (const page of ALL_PAGES) {
   shotPages.push(page);
 }
 
+// ══ 9. 逐页结构断言：spec.pages[*].structure（全部来自真机截图量测）→ 我们的 DOM ══
+// 断言实现在 scripts/lib/page_structure.mjs，与 structure_parity.mjs 共用同一套口径。
+/** 结构测量要避开「还在加载」：等内容落位，空内容/零行时空白重载一次再量 */
+async function openStruct(page, want = {}) {
+  const sp = await browser.newPage({ viewport: { width: 1688, height: 1028 }, deviceScaleFactor: 1 });
+  const settle = async () => {
+    await sp.waitForFunction(() => {
+      const m = document.querySelector('.workspace') || document.querySelector('main');
+      if (!m || m.innerText.trim().length <= 20) return false;
+      if (/^\s*加载中/.test(m.innerText)) return false;
+      return !m.querySelector('.skeleton, [class*=skeleton]');
+    }, null, { timeout: 20000 }).catch(() => {});
+    await sp.waitForTimeout(1200);
+  };
+  await sp.goto(`${BASE}#/${page}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await settle();
+  let got = await probeMain(sp);
+  for (let i = 0; i < 2 && got.text.trim().length < 40; i += 1) {
+    await sp.reload({ waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+    await settle();
+    got = await probeMain(sp);
+  }
+  if (want.rows_visible && got.rows === 0) {
+    await sp.reload({ waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+    await settle();
+    got = await probeMain(sp);
+  }
+  return [sp, got];
+}
+
+for (const page of STRUCT_PAGES) {
+  CUR = page;
+  const want = SPEC.pages?.[page]?.structure;
+  if (!want) continue;
+  const [sp, got] = await openStruct(page, want);
+  rows.push(...structureRows(page, got, want, SPEC.pages?.[page]?.row_pitch).map((r) => ({ ...r, key: page })));
+  await sp.close().catch(() => {});
+}
+
+// 外壳断言（chrome-parity.json，24 项全部来自真机截图量测）对每一页都成立，计入每页分母
+const chromeFile = path.join(ROOT, 'docs/ref/chrome-parity.json');
+const chromeRows = fs.existsSync(chromeFile)
+  ? (JSON.parse(fs.readFileSync(chromeFile, 'utf8')).rows || [])
+    .map((r) => ({ name: `外壳 ${r.metric}`, ours: String(r.ours), want: String(r.ref), ok: !!r.ok }))
+  : [];
+// VRCX-0 没有对应页面（ref_coverage.py 的 NA 结论）：没有真机结构可对，只要求三端截图
+const NA_PAGES = {
+  stats: 'VRCX-0 #/charts 重定向到 #/charts/mutual（与 insights 同页），无独立统计页',
+  calendar: 'VRCX-0 无 calendar 路由（capture_ref_cdp.mjs 实截落回 /feed）'
+};
+
+const pageScores = {};
+for (const key of [...new Set(rows.map((r) => r.key))]) {
+  const own = rows.filter((r) => r.key === key);
+  const all = [...own, ...chromeRows];
+  const ok = all.filter((r) => r.ok).length;
+  pageScores[key] = {
+    pass: ok,
+    total: all.length,
+    score: Math.round((ok / all.length) * 100),
+    na: NA_PAGES[key] || null,
+    diff: all.filter((r) => !r.ok).map((r) => r.name)
+  };
+}
+
 const pass = rows.filter((r) => r.ok).length;
 const score = Math.round((pass / rows.length) * 100);
 for (const r of rows) {
   console.log(`${r.ok ? 'PASS' : 'DIFF'}  ${r.name} — 我们 ${r.ours} / 基准 ${r.want}`);
 }
 const pages = ['好友位置', '动态', '好友详情模态', '概览', '世界库', '通知'];
+// 有自有结构断言（不止外壳/通用体检）的页面
+const deep = Object.entries(pageScores).filter(([, v]) => v.total > chromeRows.length + 2).map(([k]) => k);
 // 覆盖清单给 ref_coverage.py 读（哪些页面已经有截图量测来的断言）
 fs.writeFileSync(path.join(ROOT, 'docs/ref/visual-parity.json'), JSON.stringify({
-  _note: '由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图，pages 为断言覆盖到的页面',
+  _note: '由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言',
   at: new Date().toISOString(),
   base: BASE,
-  pages: shotPages,
+  pages: Object.keys(pageScores),
+  asserted: deep,
+  page_scores: pageScores,
+  shots: shotPages,
+  chrome_rows: chromeRows.length,
   pass, total: rows.length, score,
   rows
 }, null, 2));
-console.log(`\n视觉相似度 ${score}%（${pass}/${rows.length} 项对齐，深测 ${pages.length} 页：${pages.join('/')}；三端截图 ${shotPages.length} 页）· 截图在 docs/screenshots/compare/`);
+
+console.log('\n按页相似度（自有断言 + 外壳断言，基准全部来自 docs/ref 真机截图量测）:');
+for (const [k, v] of Object.entries(pageScores)) {
+  const tag = v.na ? `n/a(${v.na.slice(0, 18)}…)` : v.score >= 95 ? '≥95%' : '未达标';
+  console.log(`  ${k.padEnd(12)} ${String(v.score).padStart(3)}%  ${v.pass}/${v.total}  ${tag}${v.diff.length ? `  DIFF:${v.diff.join(',')}` : ''}`);
+}
+const short = Object.entries(pageScores).filter(([, v]) => !v.na && v.score < 95);
+console.log(`\n视觉相似度 ${score}%（${pass}/${rows.length} 项对齐；自有结构断言 ${deep.length} 页：${deep.join('/')}；三端截图 ${shotPages.length} 页）· 截图在 docs/screenshots/compare/`);
+if (short.length) console.log(`未达 95% 的页面：${short.map(([k, v]) => `${k}=${v.score}%`).join(' ')}`);
 await browser.close();
-process.exit(pass === rows.length ? 0 : 1);
+process.exit(pass === rows.length && short.length === 0 ? 0 : 1);

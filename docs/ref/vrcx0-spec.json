@@ -624,7 +624,34 @@
    },
    "nav_pill": null,
    "row_bands": 22,
-   "row_pitch": 41.5
+   "row_pitch": 41.5,
+   "structure": {
+    "_source": "docs/ref/crop-moderation-head.png（内容面板 283,47 起 1398×300 裁图）+ vision 逐字读 docs/ref/vrcx0-moderation.png；行数按行带计数",
+    "kind": "table",
+    "header_row": true,
+    "columns_n": 5,
+    "columns": [
+     "时间",
+     "类型",
+     "来源",
+     "目标",
+     "操作"
+    ],
+    "checkbox_col": false,
+    "tabs_n": 0,
+    "chips": [
+     "筛选"
+    ],
+    "toolbar": [
+     "筛选",
+     "搜索"
+    ],
+    "time_format": "日期换行 + 时分（10月14日 / 22:55）",
+    "kind_values": [
+     "屏蔽",
+     "静音"
+    ]
+   }
   },
   "notifications": {
    "_source": "measured docs/ref/vrcx0-notifications.png（scripts/measure_ref_chrome.py）",

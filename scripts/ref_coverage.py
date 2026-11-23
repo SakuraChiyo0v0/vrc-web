@@ -39,11 +39,13 @@ REF_OF = {
     'friendlog': 'friendlog',
     'gamelog': 'gamelog',
     'settings': 'settings',
+    'encounters': 'NA',
 }
 # VRCX-0 没有的页面：截图无法存在，写清证据，不让它冒充「已覆盖」
 NA = {
     'stats': 'VRCX-0 的 #/charts 会重定向到 #/charts/mutual（与 insights 同页），无独立「近24小时统计」页；docs/ref/vrcx0-stats.png 就是该重定向页',
     'calendar': 'VRCX-0 无 calendar 路由，#/calendar 落回 #/feed（capture_ref_cdp.mjs MAP 注释与实截均如此）',
+    'encounters': '本项目扩展页（同房遇到过的人）：VRCX-0 无对应路由，真机无截图可对；真机玩家管理槽位已由 moderation 对齐',
 }
 # 特殊：好友详情是模态，不是独立页面
 MODAL_REF = 'friend'
@@ -86,28 +88,30 @@ def shots_of(page):
     return got
 
 
-def parity_pages():
+def parity_data():
     """两条 parity 脚本的覆盖并集（都取「截图量测 → 断言」）：
-    - visual_parity.mjs 产出 docs/ref/visual-parity.json 的 pages
+    - visual_parity.mjs 的 asserted（有自有结构断言的页）与 page_scores（每页相似度）
     - structure_parity.mjs 产出 docs/ref/structure-parity.json 的 rows[].page
-    都没产出时退回扫源码里的 open('page')。"""
-    got = set()
+    只截了三端图但没有任何断言的页不算 parity。"""
+    got, scores = set(), {}
     vp = ROOT / 'docs/ref/visual-parity.json'
     sp = ROOT / 'docs/ref/structure-parity.json'
     if vp.exists():
-        got |= set(json.loads(vp.read_text()).get('pages') or [])
+        j = json.loads(vp.read_text())
+        got |= set(j.get('asserted') or [])
+        scores = j.get('page_scores') or {}
     if sp.exists():
         got |= {r['page'] for r in json.loads(sp.read_text()).get('rows', []) if r.get('page')}
     if not got:
         got = set(re.findall(r"open\('(\w+)'", PARITY.read_text()))
-    return got
+    return got, scores
 
 
 def main():
     sp = spec()
     meas = measured_blocks(sp)
     cov = {}
-    ps = parity_pages()
+    ps, _scores = parity_data()
     for p in pages():
         refname = REF_OF.get(p)
         na = refname == 'NA'

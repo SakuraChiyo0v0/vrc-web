@@ -92,7 +92,10 @@ export function registerRound7Routes(app, { db, T, iso }) {
       const [me] = await db.query(`select location from ${T('self_event')} order by at desc limit 1`);
       myLoc = me?.location ?? null;
     } catch { /* 同上 */ }
-    const myWorld = parseLocation(myLoc).world_id;
+    // 'offline'/'private'/'traveling' 是 VRChat 的位置哨兵值，不是世界 ID；
+    // VRChat 没在跑时 /api/roster 必须给 null，前端才会落到「VRChat 目前没有运行」空态
+    const myWorldRaw = parseLocation(myLoc).world_id;
+    const myWorld = myWorldRaw && !OFFLINE.has(myWorldRaw) && /^wrld_/.test(myWorldRaw) ? myWorldRaw : null;
     const now = Date.now();
 
     let friends = rows.map((r) => {

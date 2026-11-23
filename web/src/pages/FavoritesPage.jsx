@@ -12,6 +12,13 @@ import { useDrawer } from '../components/drawers.jsx';
  */
 const CAP = 150;
 const KIND = { world: '世界', friend: '好友' };
+// 真机收藏页首屏是 4 个收藏夹文件夹卡（docs/ref/vrcx0-favorites.png 的 folders_nav）
+const KIND_FOLDERS = [
+  { key: 'friend', label: '好友收藏', kind: 'friend' },
+  { key: 'group', label: '群组收藏', kind: null },
+  { key: 'world', label: '世界收藏', kind: 'world' },
+  { key: 'model', label: '模型收藏', kind: null },
+];
 const fmtDay = (v) => (v ? new Date(v).toLocaleDateString('zh-CN') : '—');
 
 export default function FavoritesPage() {
@@ -19,6 +26,7 @@ export default function FavoritesPage() {
   const { openFriend, openWorld } = useDrawer();
   const { data, error, refetch, isFetching } = useQuery({ queryKey: ['favorites'], queryFn: () => api('favorites') });
   const [sel, setSel] = useState('all'); // 'all' | 'none' | groupId
+  const [kindSel, setKindSel] = useState(null); // null=收藏夹总览；否则 KIND_FOLDERS 的 key
   const [q, setQ] = useState('');
   const [sort, setSort] = useState('date');
   const [creating, setCreating] = useState(false);
@@ -53,15 +61,20 @@ export default function FavoritesPage() {
     else if (sel !== 'all') rows = rows.filter((f) => f.group_id === sel);
     const kw = q.trim().toLowerCase();
     if (kw) rows = rows.filter((f) => `${f.name} ${f.note ?? ''} ${f.location ?? ''}`.toLowerCase().includes(kw));
+    if (kindSel) {
+      const kind = KIND_FOLDERS.find((k) => k.key === kindSel)?.kind;
+      rows = kind ? rows.filter((f) => f.kind === kind) : [];
+    }
     const by = {
       date: (a, b) => String(b.created_at ?? '').localeCompare(String(a.created_at ?? '')),
       name: (a, b) => String(a.name ?? '').localeCompare(String(b.name ?? ''), 'zh-Hans-CN'),
       kind: (a, b) => String(a.kind).localeCompare(String(b.kind)) || String(a.name).localeCompare(String(b.name), 'zh-Hans-CN'),
     };
     return [...rows].sort(by[sort] ?? by.date);
-  }, [favorites, sel, q, sort]);
+  }, [favorites, sel, q, sort, kindSel]);
 
-  const selName = sel === 'all' ? '全部收藏' : sel === 'none' ? '未分组' : groups.find((g) => g.id === sel)?.name ?? '收藏夹';
+  const kindLabel = KIND_FOLDERS.find((k) => k.key === kindSel)?.label ?? null;
+  const selName = kindLabel ?? (sel === 'all' ? '全部收藏' : sel === 'none' ? '未分组' : groups.find((g) => g.id === sel)?.name ?? '收藏夹');
 
   const add = () =>
     run(async () => {
@@ -191,6 +204,7 @@ export default function FavoritesPage() {
         ) : null}
 
         <div className="mb-2 flex items-baseline gap-2">
+          {kindSel ? <button className="chip" data-folder-back onClick={() => setKindSel(null)}>← 收藏夹</button> : null}
           <span className="text-[13px] font-medium">{selName}</span>
           <span className="text-[11px] tabular-nums text-fg3" data-count={shown.length}>{shown.length}/{CAP}</span>
         </div>
@@ -198,7 +212,23 @@ export default function FavoritesPage() {
         {toast ? <div className="card mb-2 truncate px-3 py-2 text-[12px] text-fg2" title={toast}>{toast}</div> : null}
         {error ? <div className="card p-4 text-[12px] text-fg2">{error.message}</div> : null}
 
-        {shown.length === 0 ? (
+        {kindSel === null ? (
+          // 真机首屏：4 个收藏夹文件夹卡（2 列网格）；点进去才是具体收藏项
+          <div className="fav-grid" data-grid="favorites" data-folder-cards>
+            {KIND_FOLDERS.map((k) => {
+              const n = k.kind ? favorites.filter((f) => f.kind === k.kind).length : 0;
+              return (
+                <div key={k.key} className="fav-card" data-folder={k.key} onClick={() => setKindSel(k.key)} title={k.label}>
+                  <span className="fav-ava">{k.label.slice(0, 1)}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[12px] font-medium">{k.label}</span>
+                    <span className="block truncate text-[11px] tabular-nums text-fg3">{n}/{CAP}</span>
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        ) : shown.length === 0 ? (
           <Empty icon="star" title={favorites.length ? '这个收藏夹还是空的' : '还没有收藏'}
             hint={favorites.length ? '把收藏项拖到这个分组，或在上面「+ 收藏」加一条。' : '在上方「+ 收藏」填世界 / 用户 ID，或从世界抽屉里点收藏。'} />
         ) : (
