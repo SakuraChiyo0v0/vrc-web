@@ -385,3 +385,21 @@ VRCX-0 的「导出 / 迁移」在 Web 端的对应物：CSV 多表导出、全�
 ## 第十七轮完成定义
 
 1. 171~175 全 done；2. `bash scripts/parity17_check.sh` 全绿（PARITY17 OK 5/5）；3. server 21 测试 / web 31 测试全过，parity12 6/6、parity15 5/5 回归；4. 不 push（主 agent 统一发布）。
+
+---
+
+# 第十九轮：覆盖矩阵 + 按量测对齐好友模态（2026-11-23）
+
+目标完成定义要求「每个页面都有真机截图、断言逐条来自截图量测、三端截图入库」。本轮先把三件事变成可执行的真假值。
+
+| # | 产出 | 验收 | 状态 |
+|---|---|---|---|
+| 191 | `scripts/ref_coverage.py`：页面 × 真机截图 × 像素量测 × 三端截图矩阵 | `python3 scripts/ref_coverage.py` 输出表格 + `docs/ref/coverage.json`；`--strict` 有缺口 exit 1 | done（16 页：真机截图 5、像素量测 0、parity 5、三端齐 3） |
+| 192 | 好友模态像素量测（连通域而非文字块） | `python3 scripts/measure_ref_friend.py --write` 写 spec.friend_modal：模态 1025×546（.801/.722）、padding 14、左栏 285、双列 419/256、栏距 15 | done（校验图 docs/ref/friend-measure.png） |
+| 193 | `.fd-card` 按量测对齐 | padding/左栏/栏距/列比/卡距/宽高与 192 一致 | done（web test 36/36、build 24.85s） |
+
+## 当前缺口（下一轮起点）
+
+- 缺真机截图 11 页：search / notifications / players / stats / favorites / insights / worlds / calendar / friendlist / friendlog / settings
+- 有截图但无像素量测 5 页：overview / friends / feed / sessions / gamelog
+- 三端截图只有 overview / friends / worlds 齐
