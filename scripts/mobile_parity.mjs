@@ -667,7 +667,16 @@ for (const page of ['feed', 'friends']) {
       appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(),
       shell: shell ? Math.round(shell.getBoundingClientRect().height) : null,
       sbBottom: sb ? Math.round(sb.getBoundingClientRect().bottom) : null,
-      inpBottom: inp ? Math.round(inp.getBoundingClientRect().bottom) : null
+      sbH: sb ? Math.round(sb.getBoundingClientRect().height) : null,
+      inpBottom: inp ? Math.round(inp.getBoundingClientRect().bottom) : null,
+      // 竖屏堆叠卡片不受横屏紧凑规则影响：首卡应仍是 6 行（标题 + 5 格各占一行）
+      // 堆叠卡片：非标题格也占满整行（紧凑两列时只占一半）→ 用它判「横屏紧凑规则没漏到竖屏」
+      cellRatio: (() => {
+        const tr = document.querySelector('tbody tr'); if (!tr) return null;
+        const tds = [...tr.querySelectorAll('td')]; const rowW = tr.getBoundingClientRect().width;
+        const cells = tds.slice(1).filter((td) => td.getBoundingClientRect().width > 0);
+        return !cells.length || !rowW ? null : Math.round(Math.max(...cells.map((td) => td.getBoundingClientRect().width)) / rowW * 100);
+      })(),
     };
   }, sel);
   await tab.evaluate(() => {
@@ -687,6 +696,11 @@ for (const page of ['feed', 'friends']) {
   check(tag, '状态栏不被键盘盖住', `bottom=${kb.sbBottom}`, '≤381', kb.sbBottom != null && kb.sbBottom <= 381);
   check(tag, '聚焦输入框在可视区内', `bottom=${kb.inpBottom}`, '≤381', kb.inpBottom != null && kb.inpBottom <= 381);
   check(tag, '收起键盘恢复原高', `${back.appVh} shell=${back.shell}`, 'dvh / 844', /dvh/.test(back.appVh) && back.shell === 844);
+  // 横屏紧凑规则（状态栏让位 + 卡片两列）只限矮视口：竖屏键盘弹起后仍有 ~430px，堆叠卡片更好读
+  if (page === 'feed') {
+    check(tag, '竖屏键盘下状态栏不清除', `sb.h=${kb.sbH}`, '≥35', kb.sbH != null && kb.sbH >= 35);
+    check(tag, '竖屏键盘下卡片仍堆叠', `非标题格宽 ${kb.cellRatio}% 行宽`, '≥80%', kb.cellRatio == null || kb.cellRatio >= 80);
+  }
   await tab.close();
 }
 // iOS 键盘还会把可视区整体上卷（visualViewport.offsetTop>0）：layout viewport 不动，
