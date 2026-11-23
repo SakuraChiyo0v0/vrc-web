@@ -22,21 +22,26 @@ PARITY = ROOT / 'scripts/visual_parity.mjs'
 # 页面 → 真机截图（VRCX-0 真机截到的页面名）
 REF_OF = {
     'overview': 'overview',
-    'feed': 'feed',
+    'search': 'search',
     'friends': 'locations',
+    'feed': 'feed',
+    'notifications': 'notifications',
     'sessions': 'roomhistory',
+    'players': 'players',          # VRCX-0「房内玩家」，真机只有空态（VRChat 未运行），断言只能取骨架+空态
+    'stats': 'NA',
+    'favorites': 'favorites',
+    'insights': 'insights',
+    'worlds': 'worlds',
+    'calendar': 'NA',
+    'friendlist': 'friendlist',
+    'friendlog': 'friendlog',
     'gamelog': 'gamelog',
-    'notifications': None,
-    'search': None,
-    'players': None,
-    'stats': None,
-    'favorites': None,
-    'insights': None,
-    'worlds': None,
-    'calendar': None,
-    'friendlist': None,
-    'friendlog': None,
-    'settings': None,
+    'settings': 'settings',
+}
+# VRCX-0 没有的页面：截图无法存在，写清证据，不让它冒充「已覆盖」
+NA = {
+    'stats': 'VRCX-0 的 #/charts 会重定向到 #/charts/mutual（与 insights 同页），无独立「近24小时统计」页；docs/ref/vrcx0-stats.png 就是该重定向页',
+    'calendar': 'VRCX-0 无 calendar 路由，#/calendar 落回 #/feed（capture_ref_cdp.mjs MAP 注释与实截均如此）',
 }
 # 特殊：好友详情是模态，不是独立页面
 MODAL_REF = 'friend'
@@ -52,9 +57,12 @@ def spec():
 
 
 def measured_blocks(sp):
-    """spec 里 _source 含 measured 的顶层块 = 有条目来自像素量测"""
+    """spec 里 _source 含 measured 的顶层块 + spec.pages 里按页量测的块"""
     out = {}
     for k, v in sp.items():
+        if isinstance(v, dict) and 'measured' in str(v.get('_source', '')):
+            out[k] = v
+    for k, v in (sp.get('pages') or {}).items():
         if isinstance(v, dict) and 'measured' in str(v.get('_source', '')):
             out[k] = v
     return out
@@ -88,11 +96,13 @@ def main():
     ps = parity_pages()
     for p in pages():
         refname = REF_OF.get(p)
-        ref_file = ROOT / 'docs/ref' / f'vrcx0-{refname}.png' if refname else None
+        na = refname == 'NA'
+        ref_file = ROOT / 'docs/ref' / f'vrcx0-{refname}.png' if refname and not na else None
         sh = shots_of(p)
         cov[p] = {
             'ref': str(ref_file.relative_to(ROOT)) if ref_file and ref_file.exists() else None,
-            'measured': refname in meas if refname else False,
+            'na': NA.get(p) if na else None,
+            'measured': refname in meas if refname and not na else False,
             'parity': p in ps,
             'shots': {k: len(v) for k, v in sh.items()},
             'shots_missing': [k for k, v in sh.items() if not v],
@@ -108,7 +118,7 @@ def main():
     }
 
     out = {
-        '_note': '由 scripts/ref_coverage.py 生成；ref=真机截图，measured=spec 内有像素量测块，parity=visual_parity 覆盖，shots=三端截图',
+        '_note': '由 scripts/ref_coverage.py 生成；ref=真机截图，measured=spec 内有像素量测块，parity=visual_parity 覆盖，shots=三端截图，na=VRCX-0 无此页（带证据）',
         'pages': cov,
         'friend_modal': modal,
         'summary': {
@@ -117,6 +127,9 @@ def main():
             'measured': sum(1 for v in cov.values() if v['measured']),
             'parity': sum(1 for v in cov.values() if v['parity']),
             'shots3': sum(1 for v in cov.values() if not v['shots_missing']),
+            'na': sum(1 for v in cov.values() if v['na']),
+            'todo': sum(1 for v in cov.values()
+                        if not v['na'] and (not v['ref'] or not v['measured'] or not v['parity'] or v['shots_missing'])),
         },
     }
     (ROOT / 'docs/ref/coverage.json').write_text(json.dumps(out, ensure_ascii=False, indent=1) + '\n')
@@ -125,17 +138,18 @@ def main():
     print(hdr)
     print('-' * 80)
     for p, v in cov.items():
-        s = '/'.join(k for k in ('desktop', 'mobile', '4k') if not v['shots_missing'] ) or '—'
-        print(f"{p:<12}{(v['ref'] or '缺'):<28}{'✓' if v['measured'] else '缺':<9}"
-              f"{'✓' if v['parity'] else '缺':<7}{s if s != '—' else '缺'}")
+        s = '/'.join(k for k in ('desktop', 'mobile', '4k') if not v['shots_missing']) or '缺'
+        ref = f"n/a（{NA[p][:16]}…）" if v['na'] else (v['ref'] or '缺')
+        print(f"{p:<12}{ref:<28}{'✓' if v['measured'] else ('n/a' if v['na'] else '缺'):<9}"
+              f"{'✓' if v['parity'] else '缺':<7}{s}")
     sm = out['summary']
     print('-' * 80)
     print(f"页面 {sm['pages']} · 真机截图 {sm['ref']} · 像素量测 {sm['measured']} · "
-          f"parity {sm['parity']} · 三端齐 {sm['shots3']}")
+          f"parity {sm['parity']} · 三端齐 {sm['shots3']} · n/a {sm['na']} · 待办 {sm['todo']}")
     print(f"好友模态：ref={'✓' if modal['ref'] else '缺'} measured={'✓' if modal['measured'] else '缺'} shots={modal['shots']}")
     print('→ docs/ref/coverage.json')
 
-    if '--strict' in sys.argv and (sm['ref'] < sm['pages'] or sm['measured'] < sm['pages'] or sm['shots3'] < sm['pages']):
+    if '--strict' in sys.argv and (sm['todo'] or not modal['measured'] or modal['shots_missing']):
         sys.exit(1)
 
 

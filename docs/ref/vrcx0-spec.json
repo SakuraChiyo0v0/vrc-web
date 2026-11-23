@@ -166,5 +166,653 @@
   ],
   "card_radius": null,
   "layout": "two independent columns (masonry), left wider than right (419 vs 256 px at 1280 width)"
+ },
+ "chrome": {
+  "_source": "measured docs/ref/vrcx0-*.png（16 张 1700×1040；scripts/measure_ref_chrome.py）",
+  "inner": {
+   "x": 6,
+   "y": 6,
+   "w": 1688,
+   "h": 1028
+  },
+  "topbar": {
+   "y": 8,
+   "h": 39
+  },
+  "statusbar": {
+   "y": 997,
+   "h": 35
+  },
+  "sidebar": {
+   "x": 6,
+   "w": 277
+  },
+  "rmargin": {
+   "x": 1681,
+   "w": 11
+  },
+  "content": {
+   "x": 283,
+   "y": 47,
+   "w": 1398,
+   "h": 950
+  },
+  "nav_pill": null,
+  "ratios": {
+   "sidebar_of_inner": 0.1641,
+   "topbar_of_inner": 0.0379,
+   "statusbar_of_inner": 0.034
+  },
+  "stable": true
+ },
+ "pages": {
+  "favorites": {
+   "_source": "measured docs/ref/vrcx0-favorites.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 19,
+   "row_pitch": 46.25
+  },
+  "feed": {
+   "_source": "measured docs/ref/vrcx0-feed.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 26,
+   "row_pitch": 30.5
+  },
+  "friendlist": {
+   "_source": "measured docs/ref/vrcx0-friendlist.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 24,
+   "row_pitch": 35.5
+  },
+  "friendlog": {
+   "_source": "measured docs/ref/vrcx0-friendlog.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 24,
+   "row_pitch": 43.5
+  },
+  "gamelog": {
+   "_source": "measured docs/ref/vrcx0-gamelog.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 23,
+   "row_pitch": 40.0
+  },
+  "insights": {
+   "_source": "measured docs/ref/vrcx0-insights.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 19,
+   "row_pitch": 43.75
+  },
+  "locations": {
+   "_source": "measured docs/ref/vrcx0-locations.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 14,
+   "row_pitch": 49.5
+  },
+  "moderation": {
+   "_source": "measured docs/ref/vrcx0-moderation.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 22,
+   "row_pitch": 41.5
+  },
+  "notifications": {
+   "_source": "measured docs/ref/vrcx0-notifications.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 21,
+   "row_pitch": 43.5
+  },
+  "overview": {
+   "_source": "measured docs/ref/vrcx0-overview.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 24,
+   "row_pitch": 37.0
+  },
+  "players": {
+   "_source": "measured docs/ref/vrcx0-players.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 23,
+   "row_pitch": 43.5
+  },
+  "roomhistory": {
+   "_source": "measured docs/ref/vrcx0-roomhistory.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 27,
+   "row_pitch": 30.5
+  },
+  "search": {
+   "_source": "measured docs/ref/vrcx0-search.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 21,
+   "row_pitch": 43.25
+  },
+  "settings": {
+   "_source": "measured docs/ref/vrcx0-settings.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 22,
+   "row_pitch": 42.0
+  },
+  "stats": {
+   "_source": "measured docs/ref/vrcx0-stats.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 15,
+   "row_pitch": 47.25
+  },
+  "worlds": {
+   "_source": "measured docs/ref/vrcx0-worlds.png（scripts/measure_ref_chrome.py）",
+   "ref_size": [
+    1700,
+    1040
+   ],
+   "inner": {
+    "x": 6,
+    "y": 6,
+    "w": 1688,
+    "h": 1028
+   },
+   "topbar": {
+    "y": 8,
+    "h": 39
+   },
+   "statusbar": {
+    "y": 997,
+    "h": 35
+   },
+   "sidebar": {
+    "x": 6,
+    "w": 277
+   },
+   "rmargin": {
+    "x": 1681,
+    "w": 11
+   },
+   "content": {
+    "x": 283,
+    "y": 47,
+    "w": 1398,
+    "h": 950
+   },
+   "nav_pill": null,
+   "row_bands": 21,
+   "row_pitch": 43.5
+  }
  }
 }

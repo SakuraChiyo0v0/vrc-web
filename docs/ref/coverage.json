@@ -1,9 +1,10 @@
 {
- "_note": "由 scripts/ref_coverage.py 生成；ref=真机截图，measured=spec 内有像素量测块，parity=visual_parity 覆盖，shots=三端截图",
+ "_note": "由 scripts/ref_coverage.py 生成；ref=真机截图，measured=spec 内有像素量测块，parity=visual_parity 覆盖，shots=三端截图，na=VRCX-0 无此页（带证据）",
  "pages": {
   "overview": {
    "ref": "docs/ref/vrcx0-overview.png",
-   "measured": false,
+   "na": null,
+   "measured": true,
    "parity": true,
    "shots": {
     "desktop": 6,
@@ -13,8 +14,9 @@
    "shots_missing": []
   },
   "search": {
-   "ref": null,
-   "measured": false,
+   "ref": "docs/ref/vrcx0-search.png",
+   "na": null,
+   "measured": true,
    "parity": false,
    "shots": {
     "desktop": 1,
@@ -27,7 +29,8 @@
   },
   "friends": {
    "ref": "docs/ref/vrcx0-locations.png",
-   "measured": false,
+   "na": null,
+   "measured": true,
    "parity": true,
    "shots": {
     "desktop": 4,
@@ -38,7 +41,8 @@
   },
   "feed": {
    "ref": "docs/ref/vrcx0-feed.png",
-   "measured": false,
+   "na": null,
+   "measured": true,
    "parity": true,
    "shots": {
     "desktop": 7,
@@ -50,8 +54,9 @@
    ]
   },
   "notifications": {
-   "ref": null,
-   "measured": false,
+   "ref": "docs/ref/vrcx0-notifications.png",
+   "na": null,
+   "measured": true,
    "parity": true,
    "shots": {
     "desktop": 1,
@@ -64,7 +69,8 @@
   },
   "sessions": {
    "ref": "docs/ref/vrcx0-roomhistory.png",
-   "measured": false,
+   "na": null,
+   "measured": true,
    "parity": false,
    "shots": {
     "desktop": 0,
@@ -77,8 +83,9 @@
    ]
   },
   "players": {
-   "ref": null,
-   "measured": false,
+   "ref": "docs/ref/vrcx0-players.png",
+   "na": null,
+   "measured": true,
    "parity": false,
    "shots": {
     "desktop": 1,
@@ -91,6 +98,7 @@
   },
   "stats": {
    "ref": null,
+   "na": "VRCX-0 的 #/charts 会重定向到 #/charts/mutual（与 insights 同页），无独立「近24小时统计」页；docs/ref/vrcx0-stats.png 就是该重定向页",
    "measured": false,
    "parity": false,
    "shots": {
@@ -105,8 +113,9 @@
    ]
   },
   "favorites": {
-   "ref": null,
-   "measured": false,
+   "ref": "docs/ref/vrcx0-favorites.png",
+   "na": null,
+   "measured": true,
    "parity": false,
    "shots": {
     "desktop": 0,
@@ -118,8 +127,9 @@
    ]
   },
   "insights": {
-   "ref": null,
-   "measured": false,
+   "ref": "docs/ref/vrcx0-insights.png",
+   "na": null,
+   "measured": true,
    "parity": false,
    "shots": {
     "desktop": 0,
@@ -133,8 +143,9 @@
    ]
   },
   "worlds": {
-   "ref": null,
-   "measured": false,
+   "ref": "docs/ref/vrcx0-worlds.png",
+   "na": null,
+   "measured": true,
    "parity": true,
    "shots": {
     "desktop": 3,
@@ -145,6 +156,7 @@
   },
   "calendar": {
    "ref": null,
+   "na": "VRCX-0 无 calendar 路由，#/calendar 落回 #/feed（capture_ref_cdp.mjs MAP 注释与实截均如此）",
    "measured": false,
    "parity": false,
    "shots": {
@@ -159,8 +171,9 @@
    ]
   },
   "friendlist": {
-   "ref": null,
-   "measured": false,
+   "ref": "docs/ref/vrcx0-friendlist.png",
+   "na": null,
+   "measured": true,
    "parity": false,
    "shots": {
     "desktop": 4,
@@ -172,8 +185,9 @@
    ]
   },
   "friendlog": {
-   "ref": null,
-   "measured": false,
+   "ref": "docs/ref/vrcx0-friendlog.png",
+   "na": null,
+   "measured": true,
    "parity": false,
    "shots": {
     "desktop": 4,
@@ -187,7 +201,8 @@
   },
   "gamelog": {
    "ref": "docs/ref/vrcx0-gamelog.png",
-   "measured": false,
+   "na": null,
+   "measured": true,
    "parity": false,
    "shots": {
     "desktop": 5,
@@ -200,8 +215,9 @@
    ]
   },
   "settings": {
-   "ref": null,
-   "measured": false,
+   "ref": "docs/ref/vrcx0-settings.png",
+   "na": null,
+   "measured": true,
    "parity": false,
    "shots": {
     "desktop": 1,
@@ -227,9 +243,11 @@
  },
  "summary": {
   "pages": 16,
-  "ref": 5,
-  "measured": 0,
+  "ref": 14,
+  "measured": 14,
   "parity": 5,
-  "shots3": 3
+  "shots3": 3,
+  "na": 2,
+  "todo": 11
  }
 }
