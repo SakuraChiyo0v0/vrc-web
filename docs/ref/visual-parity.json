@@ -1,6 +1,6 @@
 {
   "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言",
-  "at": "2026-11-23T16:44:57.952Z",
+  "at": "2026-11-23T17:27:47.617Z",
   "base": "http://127.0.0.1:8891",
   "pages": [
     "friends",
@@ -55,13 +55,11 @@
       "diff": []
     },
     "feed": {
-      "pass": 76,
+      "pass": 77,
       "total": 77,
-      "score": 99,
+      "score": 100,
       "na": null,
-      "diff": [
-        "行高"
-      ]
+      "diff": []
     },
     "drawer": {
       "pass": 74,
@@ -211,7 +209,7 @@
     "settings"
   ],
   "chrome_rows": 60,
-  "pass": 214,
+  "pass": 215,
   "total": 215,
   "score": 100,
   "rows": [
@@ -283,7 +281,7 @@
       "page": "feed",
       "key": "feed",
       "name": "动态行高",
-      "ours": "46px",
+      "ours": "44px",
       "want": "≤48px",
       "ok": true
     },
@@ -1530,9 +1528,9 @@
     {
       "page": "feed",
       "name": "行高",
-      "ours": "46",
+      "ours": "44",
       "want": "44",
-      "ok": false,
+      "ok": true,
       "key": "feed"
     },
     {
@@ -1562,7 +1560,7 @@
     {
       "page": "feed",
       "name": "一屏行数",
-      "ours": "20",
+      "ours": "21",
       "want": "≈19",
       "ok": true,
       "key": "feed"
