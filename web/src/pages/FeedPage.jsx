@@ -31,7 +31,11 @@ const LIMIT = 80;
 
 const ACCESS_LABEL = { public: '公开', 'friends+': '好友+', friends: '仅好友', group: '群组公开' };
 
-/** 真机时间列只给「时:分」（不带前导 0），不是今天时补「月-日」 */
+/**
+ * 真机时间列只给「时:分」（不带前导 0）——真机列表是当天的，日期在工具条里选。
+ * 跨日行补「月-日」，另起一行（\n + CSS white-space:pre-line）：
+ * 列宽只有 106（文字起点 78），单行「11-23 21:06」会折成 3 行把 44px 行高撑到 55。
+ */
 function clock(iso) {
   const d = new Date(iso);
   const now = new Date();
@@ -39,7 +43,7 @@ function clock(iso) {
   const hh = `${d.getHours()}`;
   const mm = String(d.getMinutes()).padStart(2, '0');
   if (sameDay) return `${hh}:${mm}`;
-  return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${hh}:${mm}`;
+  return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}\n${hh}:${mm}`;
 }
 
 /** location 串 → 区域 / 访问级别（wrld_x:inst~hidden(usr)~region(jp)） */

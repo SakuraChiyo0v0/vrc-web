@@ -200,10 +200,21 @@
   }
  },
  "worlds": {
-  "_source": "design-derived",
+  "_source": "measured docs/ref/vrcx0-search.png（scripts/measure_ref_worlds.py）：探索→热门的世界卡片网格",
   "grid_columns": 3,
   "grid_columns_md": 2,
-  "thumb_aspect": 1.78,
+  "col_gap": 16,
+  "row_pitch": 319,
+  "card_w": 316,
+  "thumb_aspect": 1.333,
+  "thumb_radius": 9,
+  "pad_x": 14,
+  "title_from_thumb": 16,
+  "title_h": 11,
+  "meta_from_title": 10,
+  "meta_h": 13,
+  "meta_lines": 1,
+  "text_bottom_gap": 32,
   "head_columns": 4,
   "min_cards": 3,
   "decor_px_range": [

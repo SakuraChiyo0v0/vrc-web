@@ -472,3 +472,18 @@ VRCX-0 的「导出 / 迁移」在 Web 端的对应物：CSV 多表导出、全�
 | 242 | 换算口径要分清：`getComputedStyle` 的 gap/zoom 是 CSS px，`getBoundingClientRect` 是放大后的设备 px；第一版把 gap 也乘了 zoom，误报 13 项 DIFF，改成「设备 px 先除 zoom 再跟算式比」后全绿 | 同上 36/36；误报口径修正写在脚本头注释 |
 | 243 | 新增 `scripts/worlds_check.sh` 一键回归：优先复用 127.0.0.1:8892 的读 PG 实例，否则自起一个（跑完杀掉），先跑 `worlds_realcovers.mjs`（1700 真封面）再跑 `worlds_viewports.mjs`，任一失败返回非 0 | `bash scripts/worlds_check.sh` → 真封面 **10/10** + 多视口 **36/36** → `WORLDS OK` |
 | 244 | 顺带量到的真问题（本轮不改，留作下一轮）：缩略图库内只存 `/256`，VRChat 同一 file 可换 `/512`、`/1024`（实测同一世界 60KB → 188KB → 476KB 都 200）。渲染宽/源图宽 = 1700 0.62×、1920 0.69×、2560 1.01×、**3840 1.67×（放大发虚）**；要修就得给 4K 走 `<picture>`/srcset 换 /1024，属于带宽换清晰度的取舍 | 数字见 `worlds_viewports.mjs` 输出的「缩略图清晰度」段 |
+
+
+---
+
+# 第二十五轮：世界卡片缩略图 2 倍档（4K 不再发虚）（2026-11-24）
+
+第二十四轮量到 3840 视口缩略图「渲染 855 / 源 512 = 1.67×」在放大发虚。本轮按 `<picture>` 换档，只让宽视口加带宽。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 251 | `WorldsPage.jsx` 缩略图改 `<picture>`：`<source media="(min-width: 2560px)" srcset={imgUrl(w.thumbnail, 1024)}>` + `<img src={imgUrl(w.thumbnail, 512)}>`；`styles.css` 加 `.world-card picture{display:block}`（否则 img 的 `width:100%` 撑不满卡片） | 1700/1920 仍只请求 512（`naturalWidth=512`，体积不涨）；2560/3840 取大档 |
+| 252 | 断点口径实测（`scripts/_probe_zoom_mq.mjs`）：CSS `zoom` **不影响** media query，`innerWidth` = 视口宽（1700/1920/2560/3840 原样），所以 `<source media>` 按视口宽匹配是可靠的 | 探针输出：2560 起 `mq2200/mq2560` 均 true，1700/1920 均 false |
+| 253 | 顺带校准了源图上限：VRChat 世界缩略图 `/1024` 档实际回 **800×600**（8 个世界全一致，`/768` 与 `/1024` 同字节 660KB，`/640` 与 `/512` 同字节 267KB → 只有 256/512/800 三档） | 800 是文件上限，3840 只能做到 855/800 = **1.07×**（原 1.67×） |
+| 254 | `worlds_viewports.mjs` 加两项断言（源档位：<2560 必须 512、≥2560 必须 >512；渲染/源 ≤1.02，源到 800 上限时 ≤1.10）+ 等首图解码后再量 | 四视口 **44/44 PASS**（原 36 项） |
+| 255 | `server/scripts/parity8.mjs` #90 断言过期修正：原来要求字面 `imgUrl(w.thumbnail)`，与 23 轮起的 `imgUrl(w.thumbnail,512)` 已经对不上（一直 FAIL）；改成校验 512 代理 + `<source>` 2 倍档 + `picture{display:block}` 三条 | parity8 世界库段 ok（7/10，其余 3 项是 #82/#88/#91 的历史遗留，与本轮无关） |

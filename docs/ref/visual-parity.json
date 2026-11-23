@@ -1,6 +1,6 @@
 {
   "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言",
-  "at": "2026-11-23T15:11:16.960Z",
+  "at": "2026-11-23T16:44:57.952Z",
   "base": "http://127.0.0.1:8891",
   "pages": [
     "friends",
@@ -55,11 +55,13 @@
       "diff": []
     },
     "feed": {
-      "pass": 77,
+      "pass": 76,
       "total": 77,
-      "score": 100,
+      "score": 99,
       "na": null,
-      "diff": []
+      "diff": [
+        "行高"
+      ]
     },
     "drawer": {
       "pass": 74,
@@ -69,15 +71,15 @@
       "diff": []
     },
     "overview": {
-      "pass": 97,
-      "total": 97,
+      "pass": 101,
+      "total": 101,
       "score": 100,
       "na": null,
       "diff": []
     },
     "worlds": {
-      "pass": 74,
-      "total": 74,
+      "pass": 78,
+      "total": 78,
       "score": 100,
       "na": null,
       "diff": []
@@ -209,8 +211,8 @@
     "settings"
   ],
   "chrome_rows": 60,
-  "pass": 207,
-  "total": 207,
+  "pass": 214,
+  "total": 215,
   "score": 100,
   "rows": [
     {
@@ -281,7 +283,7 @@
       "page": "feed",
       "key": "feed",
       "name": "动态行高",
-      "ours": "44px",
+      "ours": "46px",
       "want": "≤48px",
       "ok": true
     },
@@ -697,8 +699,8 @@
       "page": "worlds",
       "key": "worlds",
       "name": "世界缩略图比例",
-      "ours": "1:0.56",
-      "want": "≈16:9 (1.78)",
+      "ours": "1:0.75",
+      "want": "≈4:3 (1.333)",
       "ok": true
     },
     {
@@ -720,17 +722,49 @@
     {
       "page": "worlds",
       "key": "worlds",
-      "name": "卡片圆角",
-      "ours": "10px",
-      "want": "10px",
+      "name": "缩略图圆角",
+      "ours": "9px",
+      "want": "9px",
       "ok": true
     },
     {
       "page": "worlds",
       "key": "worlds",
-      "name": "卡片描边",
-      "ours": "1px",
-      "want": "1px",
+      "name": "卡片无描边无底",
+      "ours": "border 0px / 圆角 0px",
+      "want": "border 0px / 圆角 0px",
+      "ok": true
+    },
+    {
+      "page": "worlds",
+      "key": "worlds",
+      "name": "世界卡片列距",
+      "ours": "16px",
+      "want": "16px",
+      "ok": true
+    },
+    {
+      "page": "worlds",
+      "key": "worlds",
+      "name": "世界卡片文字左缩进",
+      "ours": "14px",
+      "want": "14px",
+      "ok": true
+    },
+    {
+      "page": "worlds",
+      "key": "worlds",
+      "name": "世界卡片元信息行数",
+      "ours": 1,
+      "want": "1 行",
+      "ok": true
+    },
+    {
+      "page": "worlds",
+      "key": "worlds",
+      "name": "世界卡片标题到元信息",
+      "ours": "10px",
+      "want": "10px",
       "ok": true
     },
     {
@@ -1430,6 +1464,38 @@
       "ok": true
     },
     {
+      "page": "overview",
+      "name": "榜单节数",
+      "ours": "3",
+      "want": "3",
+      "ok": true,
+      "key": "overview"
+    },
+    {
+      "page": "overview",
+      "name": "榜单标题",
+      "ours": "相处最久的人/相处变少的人/常遇见的路人",
+      "want": "相处最久的人/相处变少的人/常遇见的路人",
+      "ok": true,
+      "key": "overview"
+    },
+    {
+      "page": "overview",
+      "name": "榜单首名行",
+      "ours": "有/空/有",
+      "want": "有/有或空",
+      "ok": true,
+      "key": "overview"
+    },
+    {
+      "page": "overview",
+      "name": "榜单首名头像",
+      "ours": "116",
+      "want": "116",
+      "ok": true,
+      "key": "overview"
+    },
+    {
       "page": "search",
       "name": "主导航 tab 名",
       "ours": "探索/玩家/世界/模型/群组",
@@ -1464,9 +1530,9 @@
     {
       "page": "feed",
       "name": "行高",
-      "ours": "44",
+      "ours": "46",
       "want": "44",
-      "ok": true,
+      "ok": false,
       "key": "feed"
     },
     {
@@ -1496,7 +1562,7 @@
     {
       "page": "feed",
       "name": "一屏行数",
-      "ours": "21",
+      "ours": "20",
       "want": "≈19",
       "ok": true,
       "key": "feed"

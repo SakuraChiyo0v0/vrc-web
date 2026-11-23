@@ -1,8 +1,8 @@
 {
   "_note": "由 scripts/structure_parity.mjs 生成：spec.pages[*].structure（真机截图量测）vs 我们的 DOM",
-  "at": "2026-11-23T15:13:40.034Z",
+  "at": "2026-11-23T17:13:07.341Z",
   "base": "http://127.0.0.1:8891",
-  "pass": 59,
+  "pass": 58,
   "total": 59,
   "rows": [
     {
@@ -64,9 +64,9 @@
     {
       "page": "feed",
       "name": "行高",
-      "ours": "44",
+      "ours": "46",
       "want": "44",
-      "ok": true
+      "ok": false
     },
     {
       "page": "feed",
@@ -92,7 +92,7 @@
     {
       "page": "feed",
       "name": "一屏行数",
-      "ours": "21",
+      "ours": "20",
       "want": "≈19",
       "ok": true
     },

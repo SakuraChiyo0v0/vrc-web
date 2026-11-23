@@ -90,7 +90,7 @@ export default function WorldDrawer({ id, onClose }) {
         {data ? (
           <>
             {data.world?.thumbnail ? (
-              <img src={imgUrl(data.world.thumbnail)} alt="" className="w-full rounded-[10px] border" style={{ borderColor: 'var(--stroke-subtle)' }} />
+              <img src={imgUrl(data.world.thumbnail, 1024)} alt="" className="w-full rounded-[10px] border" style={{ borderColor: 'var(--stroke-subtle)' }} />
             ) : null}
 
             {/* 106 世界详情四格：官方访问量拉不到就显 — ，不拿本地数字冒充 */}

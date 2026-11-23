@@ -1,0 +1,32 @@
+{
+ "_source": "measured docs/ref/vrcx0-search.png（scripts/measure_ref_worlds.py）：探索→热门的世界卡片网格",
+ "_note": "缩略图在截图里是 #EEEEEE 占位（封面未加载），量的是盒模型不是封面图",
+ "ref_size": [
+  1700,
+  1040
+ ],
+ "grid": {
+  "x": 306,
+  "w": 982,
+  "columns": 3,
+  "col_gap": 16,
+  "row_pitch": 319
+ },
+ "card": {
+  "w": 316,
+  "thumb_h": 237,
+  "thumb_aspect": 1.333,
+  "thumb_radius": 9,
+  "pad_x": 14,
+  "title_from_thumb": 16,
+  "title_h": 11,
+  "title_color": [
+   38,
+   38,
+   38
+  ],
+  "meta_from_title": 10,
+  "meta_h": 13,
+  "text_bottom_gap": 32
+ }
+}

@@ -341,6 +341,8 @@ body {
   }
   .world-card:hover .wc-name { color: var(--primary, #0078d4); }
   .world-card .thumb { width: 100%; aspect-ratio: 4 / 3; border-radius: 9px; object-fit: cover; display: block; background: var(--surface-raised); }
+  /* 缩略图 2 倍档用 <picture> 包着，block 才能让 img 的 100% 等于卡片宽 */
+  .world-card picture { display: block; }
   .world-card .thumb-empty { display: grid; place-items: center; color: var(--content-tertiary); font-size: 18px; }
   .world-card .wc-body { padding: 14px 14px 0; min-width: 0; }
   .world-card .wc-name { font-size: 13px; line-height: 16px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

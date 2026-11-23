@@ -363,11 +363,22 @@ const wo = await p.evaluate(() => {
   const head = document.querySelector('.world-head');
   const cs = card ? getComputedStyle(card) : null;
   const tb = thumb ? thumb.getBoundingClientRect() : null;
+  const tcs = thumb ? getComputedStyle(thumb) : null;
+  const name = document.querySelector('.world-card .wc-name');
+  const nb = name ? name.getBoundingClientRect() : null;
+  const meta = document.querySelector('.world-card .wc-meta');
+  const mb = meta ? meta.getBoundingClientRect() : null;
+  const cb = card ? card.getBoundingClientRect() : null;
   return {
     cards: document.querySelectorAll('.world-card').length,
     cols: grid ? getComputedStyle(grid).gridTemplateColumns.split(' ').length : null,
     cardRadius: cs ? parseFloat(cs.borderTopLeftRadius) : null,
     cardBorder: cs ? cs.borderTopWidth : null,
+    thumbRadius: tcs ? tcs.borderTopLeftRadius : null,
+    colGap: grid ? Math.round(parseFloat(getComputedStyle(grid).columnGap)) : null,
+    padX: nb && cb ? Math.round(nb.left - cb.left) : null,
+    metaRows: document.querySelectorAll('.world-card:first-child .wc-meta').length,
+    metaGap: nb && mb ? Math.round(mb.top - nb.bottom) : null,
     thumbAspect: tb && tb.height ? +(tb.width / tb.height).toFixed(2) : null,
     headCols: head ? head.children.length : null,
     headH: head ? Math.round(head.getBoundingClientRect().height) : null
@@ -382,11 +393,15 @@ const woSpec = SPEC.worlds;
 
 check('世界库网格列数', wo.cols, String(woSpec.grid_columns), wo.cols === woSpec.grid_columns);
 check('世界卡片数', wo.cards, `≥${woSpec.min_cards}`, wo.cards >= woSpec.min_cards);
-check('世界缩略图比例', `1:${wo.thumbAspect ? (1 / wo.thumbAspect).toFixed(2) : null}`, `≈16:9 (${woSpec.thumb_aspect})`, wo.thumbAspect != null && Math.abs(wo.thumbAspect - woSpec.thumb_aspect) <= 0.05);
+check('世界缩略图比例', `1:${wo.thumbAspect ? (1 / wo.thumbAspect).toFixed(2) : null}`, `≈4:3 (${woSpec.thumb_aspect})`, wo.thumbAspect != null && Math.abs(wo.thumbAspect - woSpec.thumb_aspect) <= 0.05);
 check('世界表头列数', wo.headCols, String(woSpec.head_columns), wo.headCols === woSpec.head_columns);
 check('世界表头行高', `${wo.headH}px`, '≤32px', wo.headH != null && wo.headH <= 32);
-check('卡片圆角', `${wo.cardRadius}px`, `${SPEC.tokens.radius}px`, wo.cardRadius === SPEC.tokens.radius);
-check('卡片描边', wo.cardBorder, '1px', wo.cardBorder === '1px');
+check('缩略图圆角', wo.thumbRadius, `${woSpec.thumb_radius}px`, wo.thumbRadius === `${woSpec.thumb_radius}px`);
+check('卡片无描边无底', `border ${wo.cardBorder} / 圆角 ${wo.cardRadius}px`, 'border 0px / 圆角 0px', wo.cardBorder === '0px' && wo.cardRadius === 0);
+check('世界卡片列距', `${wo.colGap}px`, `${woSpec.col_gap}px`, wo.colGap === woSpec.col_gap);
+check('世界卡片文字左缩进', `${wo.padX}px`, `${woSpec.pad_x}px`, wo.padX === woSpec.pad_x);
+check('世界卡片元信息行数', wo.metaRows, `${woSpec.meta_lines} 行`, wo.metaRows === woSpec.meta_lines);
+check('世界卡片标题到元信息', `${wo.metaGap}px`, `${woSpec.meta_from_title}px`, wo.metaGap === woSpec.meta_from_title);
 check('世界库字号档位', woSizes.join('/'), ALLOWED.join('/'), offSpec(woSizes).length === 0);
 check('缩略图占位字号', `${woDecor}px`, `${woSpec.decor_px_range?.[0]}–${woSpec.decor_px_range?.[1]}px(装饰档)`, woDecor == null || (woDecor >= 16 && woDecor <= 20));
 

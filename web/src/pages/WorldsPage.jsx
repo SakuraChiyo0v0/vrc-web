@@ -11,16 +11,25 @@ import { usePref, useSort } from '../lib/prefs.js';
 const fmt = (v) => (v ? new Date(v).toLocaleString('zh-CN', { hour12: false }) : '—');
 
 // 90 缩略图 4:3 圆角铺满卡片（真机 316×237）；没有图就留同比例灰底 +首字，网格不会跳
+// 2 倍档：整页 zoom 把 2560+/3000+ 视口的卡片渲染宽推到 516~855 设备 px，512 档会被放大发虚。
+// media 断点按「视口宽」判（CSS zoom 不影响 media query，实测 2560 起需要大档）：
+//   1700→316px、1920→352px、2560→516px、3840→855px（设备 px）；≤2560 仍只取 512，不加带宽。
+// 请求 1024：VRChat 世界缩略图这一档实际回 800×600（文件上限），3840 下 855/800=1.07×。
+const BIG_THUMB_MIN_W = 2560;
+
 function Thumb({ w }) {
   if (w.thumbnail) {
     return (
-      <img
-        className="thumb"
-        src={imgUrl(w.thumbnail, 512)}
-        alt=""
-        loading="lazy"
-        onError={(e) => { e.currentTarget.replaceWith(Object.assign(document.createElement('div'), { className: 'thumb thumb-empty', textContent: (w.name ?? '?').slice(0, 1) })); }}
-      />
+      <picture>
+        <source media={`(min-width: ${BIG_THUMB_MIN_W}px)`} srcSet={imgUrl(w.thumbnail, 1024)} />
+        <img
+          className="thumb"
+          src={imgUrl(w.thumbnail, 512)}
+          alt=""
+          loading="lazy"
+          onError={(e) => { e.currentTarget.replaceWith(Object.assign(document.createElement('div'), { className: 'thumb thumb-empty', textContent: (w.name ?? '?').slice(0, 1) })); }}
+        />
+      </picture>
     );
   }
   return <div className="thumb thumb-empty">{(w.name ?? '?').slice(0, 1)}</div>;

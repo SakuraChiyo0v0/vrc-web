@@ -246,18 +246,22 @@ try {
   });
 
   /* ───── 90 世界库缩略图紧凑网格 ───── */
-  await check(90, '世界库缩略图网格：3 列，一屏 ≥9 个', async () => {
+  await check(90, '世界库缩略图网格：3 列，4:3 缩略图', async () => {
     must(/\.world-grid\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/.test(css),
       '.world-grid 不是 3 列等宽');
     must(/@media\(max-width:1023px\)\{\.world-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/.test(css),
       '窄屏没有降到 2 列');
     const thumb = (css.match(/\.world-card \.thumb\{[^}]*\}/) || [])[0] ?? '';
-    must(/aspect-ratio:16\s*\/\s*9/.test(thumb) && /object-fit:cover/.test(thumb), '缩略图没有 16:9 铺满');
+    must(/aspect-ratio:4\s*\/\s*3/.test(thumb) && /object-fit:cover/.test(thumb), '缩略图不是 4:3 铺满（真机量测 316×237）');
     const src = read('web/src/pages/WorldsPage.jsx');
     must(src.includes('className="world-grid"') && src.includes('className="world-card"'), '页面没换成卡片网格');
     must(!src.includes('className="tbl"'), '世界库还留着宽表格');
-    must(/imgUrl\(w\.thumbnail\)/.test(src), '缩略图没走图片代理 imgUrl');
-    return '3 列（≤1023px 2 列）16:9 缩略图卡；1080p 一屏 3×3=9 个';
+    // 缩略图必须走代理，且 2 倍档要挂在 <source media> 上（4K 不放大发虚，1700/1920 不加带宽）
+    must(/imgUrl\(w\.thumbnail,\s*512\)/.test(src), '缩略图没走图片代理 imgUrl(…,512)');
+    must(/<source[^>]*media=\{`\(min-width: \$\{BIG_THUMB_MIN_W\}px\)`\}[^>]*imgUrl\(w\.thumbnail,\s*1024\)/.test(src),
+      '缺 ≥2560 视口的 2 倍档 <source>（4K 缩略图会放大发虚）');
+    must(/\.world-card picture\{display:block\}/.test(css), '<picture> 没设 block，img 的 100% 撑不满卡片');
+    return '3 列（≤1023px 2 列）4:3 缩略图卡；圆角/列距/内边距见 docs/ref/worlds-measure.json';
   });
 
   /* ───── 91 收藏页三类分 tab ───── */
