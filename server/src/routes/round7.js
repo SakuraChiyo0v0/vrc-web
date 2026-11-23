@@ -200,7 +200,7 @@ export function registerRound7Routes(app, { db, T, iso }) {
 
     // 相处时长：好友会话 ∩ 我的同世界区间
     const sess = await db.query(
-      `select s.user_id, s.started_at, s.ended_at, s.world_id, s.world_name, f.display_name
+      `select s.user_id, s.started_at, s.ended_at, s.world_id, s.world_name, f.display_name, f.icon_url
          from ${T('friend_session')} s left join ${T('friend')} f on f.user_id = s.user_id
         where coalesce(s.ended_at, ?) >= ? and s.started_at <= ?
         order by s.started_at`,
@@ -218,7 +218,7 @@ export function registerRound7Routes(app, { db, T, iso }) {
       let ms = 0;
       for (const iv of byWorld.get(r.world_id) ?? []) ms += overlap(rs, re, Math.max(iv.start, from), Math.min(iv.end, to));
       if (!ms) return;
-      const cur = map.get(r.user_id) ?? { user_id: r.user_id, name: r.display_name ?? r.user_id, minutes: 0 };
+      const cur = map.get(r.user_id) ?? { user_id: r.user_id, name: r.display_name ?? r.user_id, icon_url: r.icon_url ?? null, minutes: 0 };
       cur.minutes += minutes(ms);
       map.set(r.user_id, cur);
     };
@@ -234,7 +234,7 @@ export function registerRound7Routes(app, { db, T, iso }) {
       .map((c) => {
         const first = togetherFirst.get(c.user_id)?.minutes ?? 0;
         const second = c.minutes - first;
-        return { user_id: c.user_id, name: c.name, minutes: second, was: first, drop: first && first > second ? Math.round((1 - second / first) * 100) : 0 };
+        return { user_id: c.user_id, name: c.name, icon_url: c.icon_url ?? null, minutes: second, was: first, drop: first && first > second ? Math.round((1 - second / first) * 100) : 0 };
       })
       .filter((c) => c.was >= 10 && c.drop > 0)
       .sort((a, b) => b.drop - a.drop)

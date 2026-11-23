@@ -1,0 +1,107 @@
+{
+ "_note": "measure_ref_overview_lists.py：右栏三榜单（相处最久的人/相处变少的人/常遇见的路人）。首名 hero 行 = 116 圆头像 + 32px 名字 + 名字下方 20px 时长；紧凑行 = 50 圆头像 + 22px 名字 + 右侧灰色相对条（左端固定 x1481、槽宽 67、栏右内缩 24）。截图只有第一块展开，后两块只露标题。数值=截图像素=CSS px 口径",
+ "image": "docs/ref/legacy/vrcx0-overview.png",
+ "column": {
+  "x": 1273,
+  "w": 300,
+  "bg": "#ffffff",
+  "border": null
+ },
+ "panels": [
+  {
+   "title": "相处最久的人",
+   "title_y": [
+    253,
+    276
+   ],
+   "text_h": 23,
+   "has_rows": true
+  },
+  {
+   "title": "相处变少的人",
+   "title_y": [
+    861,
+    880
+   ],
+   "text_h": 19,
+   "has_rows": false
+  },
+  {
+   "title": "常遇见的路人",
+   "title_y": [
+    1000,
+    1023
+   ],
+   "text_h": 23,
+   "has_rows": false
+  }
+ ],
+ "title": {
+  "x": 1273,
+  "y": [
+   253,
+   276
+  ],
+  "text_h": 23,
+  "font_px": 24,
+  "weight": 600
+ },
+ "subtitle": {
+  "x": 1274,
+  "y": [
+   299,
+   317
+  ],
+  "text_h": 18,
+  "font_px": 18,
+  "gap_below_title": 23
+ },
+ "hero": {
+  "avatar": {
+   "d": 116,
+   "x": 1272,
+   "y": 358,
+   "radius": "50%"
+  },
+  "name": {
+   "x": 1420,
+   "y": 378,
+   "text_h": 33,
+   "font_px": 32,
+   "gap_from_avatar": 33
+  },
+  "duration": {
+   "x": 1420,
+   "y": 436,
+   "text_h": 20,
+   "font_px": 20,
+   "below_name": 25
+  },
+  "gap_above": 41,
+  "gap_below": 55
+ },
+ "row": {
+  "avatar_d": 51.0,
+  "pitch": 71.5,
+  "name_text_h": 23.0,
+  "name_font_px": 22,
+  "name_gap_from_avatar": 23.0,
+  "bar": {
+   "x": 1481,
+   "h": 7.0,
+   "color": "#d9d9d9",
+   "widths": [
+    49,
+    38,
+    20
+   ],
+   "left_fixed": true,
+   "zone_w": 67
+  }
+ },
+ "section": {
+  "bar_right_inset": 25,
+  "panel_gap": 138
+ },
+ "source": "VRCX-0 overview 右栏（截图 docs/ref/legacy/vrcx0-overview.png）"
+}

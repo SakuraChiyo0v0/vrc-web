@@ -851,41 +851,75 @@ body {
   margin-top: 2px;
   font-size: 11px;
 }
+/* 右栏三榜单（量测 docs/ref/overview-lists-measure.json）：真机是白底无卡片的平铺栏。
+   标题 24/600、副标题 18（标题下 22）；首名 hero = 116 圆头像 + 32px 名字 + 20px 时长（名下方 25），
+   上距 41、下距 55；紧凑行 = 50 圆头像 + 22px 名字，行距 71（高 50 + 间 21），
+   右侧灰条高 7、左端固定（栏右缘内缩 25、槽宽 67），长度按相对榜首占比。 */
+.ov-rail { min-width: 0; display: flex; flex-direction: column; }
+.ov-sec + .ov-sec { margin-top: 48px; }
+.ov-list-head { margin-bottom: 0; }
+.ov-list-title { font-size: 24px; line-height: 1; font-weight: 600; color: var(--content-secondary); }
+.ov-list-sub { display: block; margin-top: 22px; font-size: 18px; line-height: 1.05; color: var(--content-tertiary); }
+.ov-people { display: flex; flex-direction: column; gap: 21px; margin-top: 41px; }
 .ov-person {
-  position: relative;
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: .5rem;
+  align-items: center;
+  gap: 22px;
   width: 100%;
-  padding: .25rem .25rem .4rem;
   border: 0;
+  border-radius: 0;
   background: transparent;
   color: inherit;
-  font-size: 12px;
   text-align: left;
   cursor: default;
-  overflow: hidden;
 }
+.ov-person:disabled { cursor: default; }
 .ov-person:hover { background: var(--state-hover-surface); }
+.ov-av {
+  flex: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--state-hover-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ov-av img { width: 100%; height: 100%; object-fit: cover; }
+.ov-av-ch { font-size: 20px; font-weight: 600; color: var(--content-secondary); }
+.ov-person-hero { gap: 32px; margin-bottom: 34px; } /* 行距 21 + 34 = 真机首名下方 55 */
+.ov-person-hero .ov-av { width: 116px; height: 116px; }
+.ov-person-hero .ov-av-ch { font-size: 40px; }
+.ov-person-main { min-width: 0; display: flex; flex-direction: column; }
 .ov-person-name {
   min-width: 0;
+  font-size: 22px;
+  line-height: 1.05;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.ov-person-hero .ov-person-name { font-size: 32px; font-weight: 600; }
 .ov-person-val {
   flex: none;
-  font-size: 11px;
+  margin-top: 25px;
+  font-size: 20px;
+  line-height: 1;
   color: var(--content-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.ov-person-barzone {
+  flex: none;
+  width: 67px;
+  margin: 0 25px 0 auto;
+  display: flex;
+  justify-content: flex-start;
 }
 .ov-person-bar {
-  position: absolute;
-  left: .25rem;
-  bottom: 2px;
-  height: 2px;
-  border-radius: 2px;
-  background: color-mix(in oklch, #4a9eff 70%, transparent);
+  height: 7px;
+  border-radius: 4px;
+  background: var(--stroke-strong);
 }
 .ov-drop { font-style: normal; color: #d29922; }
 .ov-jrow {

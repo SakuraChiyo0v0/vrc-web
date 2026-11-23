@@ -211,7 +211,8 @@ const ov = await p.evaluate(() => {
     tabular: [...kpi].every((k) => String(getComputedStyle(k).fontVariantNumeric).includes('tabular'))
   };
 });
-const ovSizes = await fontSizesOf(p, ['.ov-num']);
+// 右栏三榜单是独立规格（24/32/22/20/18 档位已在下面逐条断言），不参与正文字号档位
+const ovSizes = await fontSizesOf(p, ['.ov-num', '.ov-sec']);
 const ovSpec = SPEC.overview;
 
 check('概览每日柱数', ov.bars, `${ovSpec.daily_bars_min}–${ovSpec.daily_bars_max}`, ov.bars >= ovSpec.daily_bars_min && ov.bars <= ovSpec.daily_bars_max);
@@ -222,6 +223,78 @@ check('概览 tab', ov.tabs.join('/'), ovSpec.tabs.join('/'), ov.tabs.join('/') 
 check('概览字号档位', ovSizes.join('/'), ALLOWED.join('/'), offSpec(ovSizes).length === 0);
 check('KPI 大数字档位', ov.kpiSizes.join('/'), `${ovSpec.kpi_px_range[0]}–${ovSpec.kpi_px_range[1]}px`, ov.kpiSizes.length > 0 && ov.kpiSizes.every((s) => s >= ovSpec.kpi_px_range[0] && s <= ovSpec.kpi_px_range[1]));
 check('KPI 数字等宽', String(ov.tabular), 'true', ov.tabular === true);
+
+// 右栏三榜单（docs/ref/overview-lists-measure.json）：三节文案 + hero 116 圆头像/32 名字 + 紧凑行 50 头像/22 名字/行距 71
+// + 右侧灰条 7 高、槽宽 67、右缩进 25
+await p.waitForSelector('[data-list="companions"] .ov-person', { timeout: 15000 }).catch(() => {});
+const ovl = await p.evaluate(() => {
+  const secs = [...document.querySelectorAll('[data-list]')];
+  const r = (el) => (el ? el.getBoundingClientRect() : null);
+  const px = (el, prop) => (el ? parseFloat(getComputedStyle(el)[prop]) || 0 : null);
+  const hero = document.querySelector('[data-list="companions"] .ov-person-hero');
+  const heroAvEl = hero?.querySelector('.ov-av');
+  const heroAv = r(heroAvEl);
+  const titleEl = document.querySelector('[data-list="companions"] .ov-list-title');
+  const subEl = document.querySelector('[data-list="companions"] .ov-list-sub');
+  const title = r(titleEl);
+  const sub = r(subEl);
+  const rows = [...document.querySelectorAll('.ov-person:not(.ov-person-hero)')];
+  const avs = rows.map((x) => r(x.querySelector('.ov-av'))).filter(Boolean);
+  // 行距必须在同一节内量：跨节会把「节间距 + 下一节首行」当成行距
+  const secPitch = [...document.querySelectorAll('[data-list]')]
+    .map((s) => [...s.querySelectorAll('.ov-person:not(.ov-person-hero) .ov-av')].map((a) => r(a).top))
+    .find((tops) => tops.length > 1);
+  const pitch = secPitch ? Math.round(secPitch[1] - secPitch[0]) : null;
+  const bars = [...document.querySelectorAll('.ov-person-bar')];
+  const barEls = bars.map((b) => ({ el: b, box: r(b), zone: r(b.parentElement) }));
+  return {
+    lists: secs.map((s) => s.dataset.list),
+    titles: secs.map((s) => s.querySelector('.ov-list-title')?.textContent.trim() ?? ''),
+    heroAv: heroAv ? Math.round(heroAv.width) : null,
+    // computed 可能保留百分比（50%），按「≥半径」判断正圆
+    heroRound: heroAvEl ? (() => {
+      const br = String(getComputedStyle(heroAvEl).borderTopLeftRadius || '');
+      const v = parseFloat(br) || 0;
+      return br.includes('%') ? v >= 49 : v >= (heroAv?.width ?? 0) / 2 - 1;
+    })() : false,
+    heroMedia: !!hero?.querySelector('.ov-av img, .ov-av-ch'),
+    heroNamePx: hero ? Math.round(px(hero.querySelector('.ov-person-name'), 'fontSize')) : null,
+    heroValPx: hero ? Math.round(px(hero.querySelector('.ov-person-val'), 'fontSize')) : null,
+    titlePx: Math.round(px(titleEl, 'fontSize') ?? 0),
+    subPx: Math.round(px(subEl, 'fontSize') ?? 0),
+    subBelowTitle: !!(title && sub && sub.top >= title.bottom - 0.5),
+    rowAv: [...new Set(avs.map((b) => Math.round(b.width)))],
+    rowNamePx: [...new Set(rows.map((x) => Math.round(px(x.querySelector('.ov-person-name'), 'fontSize') ?? 0)))],
+    rowPitch: pitch,
+    rowMedia: rows.every((x) => !!x.querySelector('.ov-av img, .ov-av-ch')),
+    zoneW: [...new Set(barEls.map((b) => (b.zone ? Math.round(b.zone.width) : 0)))],
+    zoneRight: [...new Set(barEls.map((b) => (b.zone ? Math.round(b.zone.right) : 0)))],
+    railRight: (() => { const rail = document.querySelector('.ov-rail'); return rail ? Math.round(rail.getBoundingClientRect().right) : null; })(),
+    barH: [...new Set(barEls.map((b) => Math.round(b.box?.height ?? 0)))],
+    barsInside: barEls.every((b) => b.zone && b.box && b.box.right <= b.zone.right + 0.5 && b.box.width > 0)
+  };
+});
+const ovLists = SPEC.overview.lists ?? {};
+const wantLists = (ovLists.panels ?? []).map((x) => x.title);
+const heroD = ovLists.hero?.avatar?.d ?? 116;
+const rowD = ovLists.row?.avatar_d ?? 50;
+const zoneW = ovLists.row?.bar?.zone_w ?? 67;
+check('概览右栏三榜单', ovl.lists.join('/'), 'companions/shrinking/passersby', ovl.lists.join('/') === 'companions/shrinking/passersby');
+check('概览榜单标题', ovl.titles.join('/'), wantLists.join('/'), ovl.titles.length === 3 && ovl.titles.join('/') === wantLists.join('/'));
+check('榜单标题字号', `${ovl.titlePx}px`, `${ovLists.title?.font_px}px`, Math.abs(ovl.titlePx - (ovLists.title?.font_px ?? 24)) <= 1);
+check('榜单副标题在标题下方', String(ovl.subBelowTitle), 'true', ovl.subBelowTitle === true);
+check('榜单副标题字号', `${ovl.subPx}px`, `${ovLists.subtitle?.font_px}px`, Math.abs(ovl.subPx - (ovLists.subtitle?.font_px ?? 18)) <= 1);
+check('榜单首名 hero 头像', `${ovl.heroAv}px`, `${heroD}px 圆形`, ovl.heroAv != null && Math.abs(ovl.heroAv - heroD) <= 2 && ovl.heroRound === true && ovl.heroMedia === true);
+check('榜单 hero 名字字号', `${ovl.heroNamePx}px`, `${ovLists.hero?.name?.font_px}px`, Math.abs(ovl.heroNamePx - (ovLists.hero?.name?.font_px ?? 32)) <= 1);
+check('榜单 hero 时长字号', `${ovl.heroValPx}px`, `${ovLists.hero?.duration?.font_px}px`, Math.abs(ovl.heroValPx - (ovLists.hero?.duration?.font_px ?? 20)) <= 1);
+check('榜单紧凑行头像', ovl.rowAv.join('/') || '-', `${rowD}px`, ovl.rowAv.length > 0 && ovl.rowAv.every((w) => Math.abs(w - rowD) <= 2));
+check('榜单紧凑行名字字号', ovl.rowNamePx.join('/') || '-', `${ovLists.row?.name_font_px}px`, ovl.rowNamePx.length > 0 && ovl.rowNamePx.every((w) => Math.abs(w - (ovLists.row?.name_font_px ?? 22)) <= 1));
+check('榜单行距', `${ovl.rowPitch}px`, `${ovLists.row?.pitch}px`, ovl.rowPitch != null && Math.abs(ovl.rowPitch - (ovLists.row?.pitch ?? 71)) <= 2);
+check('榜单行都有头像槽', String(ovl.rowMedia), 'true', ovl.rowMedia === true);
+check('榜单相对条右槽宽', ovl.zoneW.join('/') || '-', `${zoneW}px`, ovl.zoneW.length > 0 && ovl.zoneW.every((w) => Math.abs(w - zoneW) <= 1));
+check('榜单相对条右缩进', ovl.railRight != null && ovl.zoneRight.length ? String(ovl.railRight - ovl.zoneRight[0]) + 'px' : '-', `${ovLists.section?.bar_right_inset ?? 25}px`, ovl.railRight != null && ovl.zoneRight.length > 0 && Math.abs(ovl.railRight - ovl.zoneRight[0] - (ovLists.section?.bar_right_inset ?? 25)) <= 1);
+check('榜单相对条高', ovl.barH.join('/') || '-', `${ovLists.row?.bar?.h}px`, ovl.barH.length > 0 && ovl.barH.every((h) => Math.abs(h - (ovLists.row?.bar?.h ?? 7)) <= 1));
+check('榜单相对条不溢出右槽', String(ovl.barsInside), 'true', ovl.barsInside === true);
 
 // 182 旅程：按月折叠，默认只开最新月，月头可开关，日行可点开逐次停留
 await p.locator('.ov-tab', { hasText: '旅程' }).click({ timeout: 8000 }).catch(() => {});
@@ -384,7 +457,7 @@ const ALL_PAGES = [
   'friendlist', 'friendlog', 'gamelog', 'settings'
 ];
 // 装饰字形（头像首字、缩略图占位、KPI 大数字）不参与正文字号档位
-const DECOR = ['.avatar-fallback', '.thumb-empty', '.ov-num', '.kpi-num', '[class*="num-"]'];
+const DECOR = ['.avatar-fallback', '.thumb-empty', '.ov-num', '.kpi-num', '[class*="num-"]', '.ov-sec'];
 const shotPages = [];
 for (const page of ALL_PAGES) {
   for (const [tag, width, height] of [['desktop', 1440, 960], ['mobile', 390, 844], ['4k', 3840, 2160]]) {

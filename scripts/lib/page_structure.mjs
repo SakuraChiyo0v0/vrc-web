@@ -48,12 +48,20 @@ export const probeMain = (p) => p.evaluate(() => {
     lines: fbody ? fbody.children.length : 0,
     heads: [...main.querySelectorAll('.loc-head .loc-title')].map(txt)
   } : null;
+  // 概览右栏三榜单（spec.pages.overview.structure）：节标题 + 每节首行是否存在
+  const ovsecs = [...main.querySelectorAll('.ov-sec')];
+  const overview = ovsecs.length ? {
+    titles: ovsecs.map((s) => txt(s.querySelector('.ov-list-title'))),
+    // 榜单为空时真机也只有标题（截图里后两块无行）→ 该节可无首名行
+    heroPer: ovsecs.map((s) => ({ rows: s.querySelectorAll('.ov-person').length, hero: !!s.querySelector('.ov-person-hero') })),
+    heroAvatar: Math.round((main.querySelector('.ov-sec .ov-person-hero .ov-av')?.getBoundingClientRect().width ?? 0)),
+  } : null;
   const cards = main.querySelectorAll('.card').length;
   const listRows = [...main.querySelectorAll('[data-list-row]')];
   const visRows = listRows.filter(inView);
   const cellsOf = (el) => [...el.querySelectorAll('[data-cell]')].map((c) => c.dataset.cell);
   return {
-    ths, tabs, subnav, gridCols: cols, cards, friendCard,
+    ths, tabs, subnav, gridCols: cols, cards, friendCard, overview,
     rows: visRows.length || trs.length,
     rowCells: trs[0]
       ? [...trs[0].children].filter((c) => !c.classList.contains('group-cell')).length
@@ -160,6 +168,18 @@ export function structureRows(page, got, want, pitch) {
       check('详情空态正文', got.text.includes(want.detail_empty[1]), want.detail_empty[1], got.text.includes(want.detail_empty[1]));
     }
   }
+  if (want.kind === 'overview_lists') {
+    // 概览右栏三块榜单：节标题文案与真机一致，每节都有首名 hero 行（头像由视觉通道量尺寸）
+    const o = got.overview;
+    check('榜单节数', o ? o.titles.length : 0, String(want.lists.length), !!o && o.titles.length === want.lists.length);
+    check('榜单标题', (o?.titles ?? []).join('/'), want.lists.join('/'),
+      !!o && JSON.stringify(o.titles) === JSON.stringify(want.lists));
+    const hp = o?.heroPer ?? [];
+    check('榜单首名行', hp.map((x) => (x.hero ? '有' : x.rows ? '缺' : '空')).join('/'), '有/有或空',
+      !!o && hp.every((x) => x.hero || x.rows === 0));
+    check('榜单首名头像', o?.heroAvatar ?? 0, String(want.hero_avatar_d),
+      !!o && Math.abs(o.heroAvatar - want.hero_avatar_d) <= 2);
+  }
   if (want.kind === 'graph_canvas') {
     const hasGraph = got.text.includes('圈子') || got.text.includes('最少连接数');
     check('关系图画布', hasGraph, '圈子/最少连接数', hasGraph);
@@ -168,7 +188,7 @@ export function structureRows(page, got, want, pitch) {
 }
 
 /** 有 structure 量测的页面（新增页面时加这里） */
-export const STRUCT_PAGES = ['search', 'feed', 'sessions', 'players', 'moderation', 'favorites', 'insights', 'friendlist', 'friendlog', 'gamelog', 'settings', 'locations'];
+export const STRUCT_PAGES = ['overview', 'search', 'feed', 'sessions', 'players', 'moderation', 'favorites', 'insights', 'friendlist', 'friendlog', 'gamelog', 'settings', 'locations'];
 
 /** spec 页名 → 我们的路由名（真机「好友位置」= 我们的 #/friends） */
 export const PAGE_ROUTES = { locations: 'friends' };

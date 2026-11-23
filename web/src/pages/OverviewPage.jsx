@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../api.js';
+import { api, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 import Empty from '../components/Empty.jsx';
 import { dayVisits, groupMonths, monthLabel, monthOf } from '../lib/journey.js';
@@ -8,7 +8,7 @@ import { dayVisits, groupMonths, monthLabel, monthOf } from '../lib/journey.js';
 /**
  * 77 概览：顶部「概览 / 旅程」+ 时间范围切换（规格取自 VRCX-0 真机截图）。
  *   主区：总时长 + 上一周期对比 + 每天平均 / 次上线 / 最久一次 + 每日时长柱 + 活跃时段 24h 柱
- *   右栏：相处最久的人（遇到过 N 人）/ 相处变少的人 / 常遇见的过路人
+ *   右栏：相处最久的人（遇到过 N 人）/ 相处变少的人 / 常遇见的路人
  * 数据全走 /api/overview；「旅程」是同一时间范围内的逐次停留，走 /api/game-log/days。
  */
 
@@ -91,24 +91,63 @@ function HourBars({ hourly }) {
   );
 }
 
+/**
+ * 右栏榜单（规格见 docs/ref/overview-lists-measure.json）：
+ *   首名 hero 行 = 116 圆头像 + 32px 字号名字 + 名字下方时长；紧凑行 = 50 圆头像 + 22px 名字 + 右侧 67px 灰色相对条。
+ * 没有头像数据时用名字首字占位（不编假图）。
+ */
+function oav(r, name) {
+  return r.icon_url || r.avatar || r.avatar_thumb || '';
+}
+
+function PersonRow({ r, hero, max, suffix, onClick }) {
+  const v = Number(r.minutes ?? r.meets ?? 0);
+  const av = oav(r);
+  const label = suffix(v) + (r.drop ? ` · 少 ${r.drop}%` : '');
+  return (
+    <button
+      className={`ov-person${hero ? ' ov-person-hero' : ''}`}
+      data-hero={hero ? 'true' : 'false'}
+      title={`${r.name} · ${label}`}
+      onClick={() => onClick?.(r)}
+      disabled={!onClick}
+    >
+      <span className="ov-av" aria-hidden="true">
+        {av ? (
+          <img src={imgUrl(av)} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} />
+        ) : (
+          <span className="ov-av-ch">{String(r.name ?? '?').trim().slice(0, 1)}</span>
+        )}
+      </span>
+      <span className="ov-person-main">
+        <span className="ov-person-name">{r.name}</span>
+        {hero ? (
+          <span className="ov-person-val tabular-nums">
+            {suffix(v)}
+            {r.drop ? <em className="ov-drop"> −{r.drop}%</em> : null}
+          </span>
+        ) : null}
+      </span>
+      {hero ? null : (
+        <span className="ov-person-barzone" aria-hidden="true">
+          <span className="ov-person-bar" style={{ width: `${Math.max(3, Math.round((v / max) * 67))}px` }} />
+        </span>
+      )}
+    </button>
+  );
+}
+
 function People({ rows, empty, suffix, onClick }) {
   if (!rows?.length) return <p className="px-1 py-2 text-[12px] text-fg3">{empty}</p>;
-  const max = Math.max(1, ...rows.map((r) => r.minutes ?? r.meets ?? 0));
+  // 真机：榜首 hero 不带条，其余行的灰条按「相对榜首」取长度（不是相对榜内最大紧凑行）
+  const max = Math.max(1, Number(rows[0].minutes ?? rows[0].meets ?? 0));
+  const [first, ...rest] = rows;
   return (
-    <div>
-      {rows.map((r) => {
-        const v = r.minutes ?? r.meets ?? 0;
-        return (
-          <button key={r.user_id ?? r.name} className="ov-person" onClick={() => onClick?.(r)} disabled={!onClick}>
-            <span className="ov-person-name">{r.name}</span>
-            <span className="ov-person-val tabular-nums">
-              {suffix(v)}
-              {r.drop ? <em className="ov-drop"> −{r.drop}%</em> : null}
-            </span>
-            <span className="ov-person-bar" style={{ width: `${Math.round((v / max) * 100)}%` }} />
-          </button>
-        );
-      })}
+    <div className="ov-people">
+      <PersonRow r={first} hero max={max} suffix={suffix} onClick={onClick} />
+      {rest.map((r) => (
+        <PersonRow key={r.user_id ?? r.name} r={r} max={max} suffix={suffix} onClick={onClick} />
+      ))}
     </div>
   );
 }
@@ -385,21 +424,21 @@ export default function OverviewPage() {
             </section>
           </div>
 
-          {/* 右栏三块榜单 */}
-          <aside className="flex min-w-0 flex-col gap-3">
-            <section className="card p-3">
-              <div className="mb-1 flex items-baseline justify-between">
-                <div className="label-xs">相处最久的人</div>
-                <span className="text-[11px] text-fg3 tabular-nums">遇到过 {data.people_met} 人</span>
+          {/* 右栏三块榜单：真机是白底无卡片边框的平铺栏，标题24/首名32/行22（measure_json） */}
+          <aside className="ov-rail">
+            <section className="ov-sec" data-list="companions">
+              <div className="ov-list-head">
+                <div className="ov-list-title">相处最久的人</div>
+                <span className="ov-list-sub tabular-nums">遇到过 {data.people_met} 人</span>
               </div>
               <People rows={data.companions} empty="这个范围内没和谁同房过" suffix={dur} onClick={(r) => openFriend?.(r.user_id)} />
             </section>
-            <section className="card p-3">
-              <div className="label-xs mb-1">相处变少的人</div>
+            <section className="ov-sec" data-list="shrinking">
+              <div className="ov-list-head"><div className="ov-list-title">相处变少的人</div></div>
               <People rows={data.shrinking} empty="没有明显变少的对象" suffix={dur} onClick={(r) => openFriend?.(r.user_id)} />
             </section>
-            <section className="card p-3">
-              <div className="label-xs mb-1">常遇见的过路人</div>
+            <section className="ov-sec" data-list="passersby">
+              <div className="ov-list-head"><div className="ov-list-title">常遇见的路人</div></div>
               <People rows={data.passersby} empty="还没遇到重复的陌生人" suffix={(v) => `${v} 次`} onClick={(r) => openFriend?.(r.user_id)} />
             </section>
           </aside>

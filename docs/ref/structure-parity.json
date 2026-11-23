@@ -1,10 +1,38 @@
 {
   "_note": "由 scripts/structure_parity.mjs 生成：spec.pages[*].structure（真机截图量测）vs 我们的 DOM",
-  "at": "2026-11-23T13:42:27.799Z",
-  "base": "http://172.17.0.1:8791",
-  "pass": 55,
-  "total": 55,
+  "at": "2026-11-23T15:13:40.034Z",
+  "base": "http://127.0.0.1:8891",
+  "pass": 59,
+  "total": 59,
   "rows": [
+    {
+      "page": "overview",
+      "name": "榜单节数",
+      "ours": "3",
+      "want": "3",
+      "ok": true
+    },
+    {
+      "page": "overview",
+      "name": "榜单标题",
+      "ours": "相处最久的人/相处变少的人/常遇见的路人",
+      "want": "相处最久的人/相处变少的人/常遇见的路人",
+      "ok": true
+    },
+    {
+      "page": "overview",
+      "name": "榜单首名行",
+      "ours": "有/空/有",
+      "want": "有/有或空",
+      "ok": true
+    },
+    {
+      "page": "overview",
+      "name": "榜单首名头像",
+      "ours": "116",
+      "want": "116",
+      "ok": true
+    },
     {
       "page": "search",
       "name": "主导航 tab 名",
@@ -260,7 +288,7 @@
     {
       "page": "friendlog",
       "name": "一屏行数",
-      "ours": "17",
+      "ours": "21",
       "want": "≈19",
       "ok": true
     },
@@ -379,15 +407,15 @@
     {
       "page": "locations",
       "name": "卡片行数",
-      "ours": "4",
+      "ours": "3",
       "want": "1~4",
       "ok": true
     },
     {
       "page": "locations",
       "name": "分栏标题",
-      "ours": "其他在线好友/位于私人房间",
-      "want": "其他在线好友/位于私人房间",
+      "ours": "JP Alpha Club · 公开/JP 夜の喫茶店 · 公开/好友收藏/其他在线好友/位于私人房间",
+      "want": "好友收藏/其他在线好友/位于私人房间",
       "ok": true
     }
   ]
