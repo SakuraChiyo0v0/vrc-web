@@ -224,6 +224,19 @@
     "expected_device_w_at_110pct": 352,
     "match": true
    }
+  },
+  "nav": {
+   "_source": "docs/ref/nav-measure.json（measure_ref_nav.py 量 vrcx0-overview.png 侧栏文字带）+ VRCX-0 src/ui/shadcn/sidebar.tsx",
+   "top_pitch": 40.0,
+   "sub_pitch": 35.0,
+   "sub_indent": 27.0,
+   "top_icon_x": 25.0,
+   "sub_icon_x": 52.0,
+   "row_gap": 4,
+   "folders": 2,
+   "note": "顶层 h-8×1.1 + gap-1×1.1 ≈ 40；二级 h-7×1.1 + 4.4 ≈ 35；子项左移 27（SidebarMenuSub mx-3.5 border-l px-2.5）；真机默认两个折叠夹（收藏/社交）展开",
+   "item_h": 36.0,
+   "sub_item_h": 31.0
   }
  },
  "pages": {

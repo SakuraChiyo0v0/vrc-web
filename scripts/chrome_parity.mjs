@@ -60,7 +60,7 @@ want['rail.icon_rail_w'] = RAIL.icon_rail_w;                    // 36
 want['rail.section_head_h'] = RAIL.section_head_h;              // 21
 want['rail.row_pitch'] = RAIL.row_pitch;                        // 60
 want['rail.flush_right'] = 0;                                   // 栏右缘 = 内容面板右缘（真机 1680/1681）
-const tol = { 'content.h': 4, 'rail.row_pitch': 3, 'rail.flush_right': 2 };
+const tol = { 'content.h': 4, 'rail.row_pitch': 3, 'rail.flush_right': 2, 'nav.sub_indent': 3 };
 
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
@@ -109,6 +109,47 @@ try {
     };
   });
 
+  // 185 侧栏导航密度：真机量测（spec.chrome.nav）→ 行距/缩进/折叠夹数
+  const NAVREF = SPEC.nav;
+  const navGot = await page.evaluate(() => {
+    const rows = [...document.querySelectorAll('aside.vrc-sidebar [data-nav-kind]')];
+    const y = (el) => el.getBoundingClientRect();
+    const med = (xs) => {
+      if (!xs.length) return null;
+      xs.sort((a, b) => a - b);
+      return Math.round(xs[Math.floor(xs.length / 2)] * 10) / 10;
+    };
+    // 顶层（含折叠夹行）相邻行距：子项块夹在中间时差值很大，取中位数不受影响
+    const top = rows.filter((el) => el.dataset.navKind !== 'sub');
+    const topPitch = med(top.slice(1).map((el, i) => y(el).y - y(top[i]).y));
+    const sub = {};
+    for (const box of document.querySelectorAll('.nav-sub')) {
+      const els = [...box.querySelectorAll('[data-nav-kind="sub"]')];
+      sub[box.dataset.navSub] = els.slice(1).map((el, i) => Math.round((y(el).y - y(els[i]).y) * 10) / 10);
+    }
+    const subPitch = med(Object.values(sub).flat());
+    const iconX = (el) => y(el.firstElementChild).x;
+    const firstTop = top.find((el) => el.dataset.navKind === 'top');
+    const firstSub = rows.find((el) => el.dataset.navKind === 'sub');
+    return {
+      topPitch,
+      subPitch,
+      rowH: Math.round(y(firstTop).height * 10) / 10,
+      subRowH: firstSub ? Math.round(y(firstSub).height * 10) / 10 : null,
+      subIndent: firstTop && firstSub ? Math.round((iconX(firstSub) - iconX(firstTop)) * 10) / 10 : null,
+      folders: document.querySelectorAll('aside.vrc-sidebar [data-nav-folder]').length,
+      topCount: top.length,
+      subCount: rows.length - top.length
+    };
+  });
+  want['nav.top_pitch'] = NAVREF.top_pitch;
+  want['nav.sub_pitch'] = NAVREF.sub_pitch;
+  want['nav.item_h'] = NAVREF.item_h;
+  want['nav.sub_item_h'] = NAVREF.sub_item_h;
+  want['nav.sub_indent'] = NAVREF.sub_indent;
+  want['nav.folders'] = NAVREF.folders;
+  tol['nav.folders'] = 0;
+
   const ours = {
     'topbar.h': got.topbar.h,
     'topbar.y': got.topbar.y,
@@ -133,6 +174,13 @@ try {
     'rail.row_pitch': got.rowPitch ?? null,
     'rail.flush_right': got.roster ? Math.round((got.roster.x + got.roster.w - (got.content.x + got.content.w)) * 10) / 10 : null
   };
+
+  ours['nav.top_pitch'] = navGot.topPitch;
+  ours['nav.sub_pitch'] = navGot.subPitch;
+  ours['nav.item_h'] = navGot.rowH;
+  ours['nav.sub_item_h'] = navGot.subRowH;
+  ours['nav.sub_indent'] = navGot.subIndent;
+  ours['nav.folders'] = navGot.folders;
 
   for (const k of Object.keys(want)) {
     const o = ours[k];

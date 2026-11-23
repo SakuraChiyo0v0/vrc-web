@@ -213,11 +213,22 @@ body {
   /* 123 数据 tab：2×3 数字格 */
   .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
 
+  /* 185 导航密度取真机量测（docs/ref/nav-measure.json）：
+   * 顶层行距 40 = 行高 36 + 行间 4；二级 35 = 行高 31 + 4；二级左移 27（竖线 + 内边距）
+   * 对应 VRCX-0 sidebar.tsx h-8×1.1 / h-7×1.1 + SidebarMenu gap-1 + SidebarMenuSub mx-3.5 border-l px-2.5 */
   .nav-item {
-    display: flex; align-items: center; gap: .5rem; height: 32px; padding: 0 .5rem;
+    display: flex; align-items: center; gap: .5rem; height: 36px; margin: 0 0 4px; padding: 0 .5rem;
     border-radius: 7px; color: var(--content-secondary); font-size: 13px;
   }
   .nav-item:hover { background: var(--state-hover-surface); color: var(--content-primary); }
+  .nav-chevron { font-size: 13px; line-height: 1; opacity: .55; transition: transform .15s ease; }
+  .nav-chevron[data-open='true'] { transform: rotate(90deg); }
+  .nav-sub {
+    display: flex; flex-direction: column;
+    margin: 0 0 4px 15px; padding-left: 11px;
+    border-left: 1px solid var(--stroke-subtle);
+  }
+  .nav-sub .nav-item { height: 31px; margin-bottom: 4px; font-size: 12px; }
   /* 61 好友页单列行列表：VRCX-0 紧凑档 h-8（32px），hover 才出现描边 */
   /* 83 行内改 grid：名字 1fr | 状态 16% | 世界 26% | 区域 40px | 平台 44px | 时长 72px（头像 22px 打头），
      右侧元数据不再随文字长度流动，六列在所有行严格对齐 */

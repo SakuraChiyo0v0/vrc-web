@@ -1,7 +1,7 @@
 {
   "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言",
-  "at": "2026-11-23T07:54:25.043Z",
-  "base": "http://vrc-web-r18:8790/vrc/",
+  "at": "2026-11-23T08:36:38.462Z",
+  "base": "http://127.0.0.1:8899",
   "pages": [
     "friends",
     "feed",
@@ -46,134 +46,134 @@
   ],
   "page_scores": {
     "friends": {
+      "pass": 41,
+      "total": 41,
+      "score": 100,
+      "na": null,
+      "diff": []
+    },
+    "feed": {
+      "pass": 40,
+      "total": 40,
+      "score": 100,
+      "na": null,
+      "diff": []
+    },
+    "drawer": {
+      "pass": 44,
+      "total": 44,
+      "score": 100,
+      "na": null,
+      "diff": []
+    },
+    "overview": {
+      "pass": 51,
+      "total": 51,
+      "score": 100,
+      "na": null,
+      "diff": []
+    },
+    "worlds": {
+      "pass": 44,
+      "total": 44,
+      "score": 100,
+      "na": null,
+      "diff": []
+    },
+    "notifications": {
+      "pass": 43,
+      "total": 43,
+      "score": 100,
+      "na": null,
+      "diff": []
+    },
+    "search": {
+      "pass": 36,
+      "total": 36,
+      "score": 100,
+      "na": null,
+      "diff": []
+    },
+    "sessions": {
+      "pass": 41,
+      "total": 41,
+      "score": 100,
+      "na": null,
+      "diff": []
+    },
+    "players": {
       "pass": 35,
       "total": 35,
       "score": 100,
       "na": null,
       "diff": []
     },
-    "feed": {
+    "moderation": {
+      "pass": 38,
+      "total": 38,
+      "score": 100,
+      "na": null,
+      "diff": []
+    },
+    "encounters": {
       "pass": 34,
       "total": 34,
       "score": 100,
       "na": null,
       "diff": []
     },
-    "drawer": {
-      "pass": 38,
-      "total": 38,
+    "stats": {
+      "pass": 34,
+      "total": 34,
+      "score": 100,
+      "na": "VRCX-0 #/charts 重定向到 #/charts/mutual（与 insights 同页），无独立统计页",
+      "diff": []
+    },
+    "favorites": {
+      "pass": 36,
+      "total": 36,
       "score": 100,
       "na": null,
       "diff": []
     },
-    "overview": {
-      "pass": 45,
-      "total": 45,
+    "insights": {
+      "pass": 36,
+      "total": 36,
       "score": 100,
       "na": null,
       "diff": []
     },
-    "worlds": {
-      "pass": 38,
-      "total": 38,
+    "calendar": {
+      "pass": 34,
+      "total": 34,
       "score": 100,
-      "na": null,
+      "na": "VRCX-0 无 calendar 路由（capture_ref_cdp.mjs 实截落回 /feed）",
       "diff": []
     },
-    "notifications": {
+    "friendlist": {
       "pass": 37,
       "total": 37,
       "score": 100,
       "na": null,
       "diff": []
     },
-    "search": {
-      "pass": 30,
-      "total": 30,
-      "score": 100,
-      "na": null,
-      "diff": []
-    },
-    "sessions": {
-      "pass": 35,
-      "total": 35,
-      "score": 100,
-      "na": null,
-      "diff": []
-    },
-    "players": {
-      "pass": 29,
-      "total": 29,
-      "score": 100,
-      "na": null,
-      "diff": []
-    },
-    "moderation": {
-      "pass": 32,
-      "total": 32,
-      "score": 100,
-      "na": null,
-      "diff": []
-    },
-    "encounters": {
-      "pass": 28,
-      "total": 28,
-      "score": 100,
-      "na": null,
-      "diff": []
-    },
-    "stats": {
-      "pass": 28,
-      "total": 28,
-      "score": 100,
-      "na": "VRCX-0 #/charts 重定向到 #/charts/mutual（与 insights 同页），无独立统计页",
-      "diff": []
-    },
-    "favorites": {
-      "pass": 30,
-      "total": 30,
-      "score": 100,
-      "na": null,
-      "diff": []
-    },
-    "insights": {
-      "pass": 30,
-      "total": 30,
-      "score": 100,
-      "na": null,
-      "diff": []
-    },
-    "calendar": {
-      "pass": 28,
-      "total": 28,
-      "score": 100,
-      "na": "VRCX-0 无 calendar 路由（capture_ref_cdp.mjs 实截落回 /feed）",
-      "diff": []
-    },
-    "friendlist": {
-      "pass": 31,
-      "total": 31,
-      "score": 100,
-      "na": null,
-      "diff": []
-    },
     "friendlog": {
-      "pass": 32,
-      "total": 32,
+      "pass": 38,
+      "total": 38,
       "score": 100,
       "na": null,
       "diff": []
     },
     "gamelog": {
-      "pass": 31,
-      "total": 31,
+      "pass": 37,
+      "total": 37,
       "score": 100,
       "na": null,
       "diff": []
     },
     "settings": {
-      "pass": 31,
-      "total": 31,
+      "pass": 37,
+      "total": 37,
       "score": 100,
       "na": null,
       "diff": []
@@ -199,7 +199,7 @@
     "gamelog",
     "settings"
   ],
-  "chrome_rows": 24,
+  "chrome_rows": 30,
   "pass": 166,
   "total": 166,
   "score": 100,
@@ -408,7 +408,7 @@
       "page": "overview",
       "key": "overview",
       "name": "概览每日柱数",
-      "ours": 10,
+      "ours": 7,
       "want": "7–31",
       "ok": true
     },
@@ -496,7 +496,7 @@
       "page": "overview",
       "key": "overview",
       "name": "展开月有日行",
-      "ours": "2",
+      "ours": "7",
       "want": "≥1",
       "ok": true
     },
@@ -544,7 +544,7 @@
       "page": "worlds",
       "key": "worlds",
       "name": "世界卡片数",
-      "ours": 50,
+      "ours": 5,
       "want": "≥3",
       "ok": true
     },
@@ -608,7 +608,7 @@
       "page": "notifications",
       "key": "notifications",
       "name": "通知卡片数",
-      "ours": 4,
+      "ours": 5,
       "want": "≥1",
       "ok": true
     },
@@ -616,7 +616,7 @@
       "page": "notifications",
       "key": "notifications",
       "name": "通知筛选 chip",
-      "ours": 14,
+      "ours": 15,
       "want": "≥5",
       "ok": true
     },
@@ -632,7 +632,7 @@
       "page": "notifications",
       "key": "notifications",
       "name": "通知类型标签数",
-      "ours": 8,
+      "ours": 3,
       "want": "≥1",
       "ok": true
     },
@@ -1471,7 +1471,7 @@
     {
       "page": "friendlog",
       "name": "一屏行数",
-      "ours": "17",
+      "ours": "21",
       "want": "≈19",
       "ok": true,
       "key": "friendlog"

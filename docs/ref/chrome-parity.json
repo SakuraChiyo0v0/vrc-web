@@ -176,6 +176,54 @@
    "ok": true
   },
   {
+   "metric": "nav.top_pitch",
+   "ours": 40,
+   "ref": 40,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "nav.sub_pitch",
+   "ours": 35,
+   "ref": 35,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "nav.item_h",
+   "ours": 36,
+   "ref": 36,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "nav.sub_item_h",
+   "ours": 31,
+   "ref": 31,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "nav.sub_indent",
+   "ours": 27,
+   "ref": 27,
+   "diff": 0,
+   "tol": 3,
+   "ok": true
+  },
+  {
+   "metric": "nav.folders",
+   "ours": 2,
+   "ref": 2,
+   "diff": 0,
+   "tol": 0,
+   "ok": true
+  },
+  {
    "metric": "shell.fill",
    "ours": 1028,
    "ref": 1028,

@@ -403,3 +403,17 @@ VRCX-0 的「导出 / 迁移」在 Web 端的对应物：CSV 多表导出、全�
 - 缺真机截图 11 页：search / notifications / players / stats / favorites / insights / worlds / calendar / friendlist / friendlog / settings
 - 有截图但无像素量测 5 页：overview / friends / feed / sessions / gamelog
 - 三端截图只有 overview / friends / worlds 齐
+
+---
+
+# 第二十轮：侧栏导航密度按真机量测（2026-11-23）
+
+侧栏此前是 5 个分组标题 + 32px 行高的自拟结构，真机是单列菜单 + 两个折叠夹。本轮把密度变成可断言数值。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 201 | `scripts/measure_ref_nav.py`：量 `vrcx0-overview.png` 侧栏文字带起点差 → 行距、左端 x 差 → 二级缩进 | `top_pitch 40`、`sub_pitch 35`、`sub_indent 27`（24 条文字带，落 `docs/ref/nav-measure.json`） |
+| 202 | `spec.chrome.nav` + `chrome_parity.mjs` 6 项导航断言（top_pitch / sub_pitch / item_h / sub_item_h / sub_indent / folders） | chrome_parity **30/30（100%）** |
+| 203 | Sidebar 改单列菜单 + 收藏/社交两个折叠夹（默认展开），`styles.css` 行高 36+4 / 子项 31+4 / 左移 27 | `npm test` 40/40、`npm run build` ✓ |
+| 204 | 导航可达性：`web/test/nav.test.mjs`（PAGES ⊆ NAV 且 NAV ⊆ PAGES，折叠夹非页面）+ `scripts/nav_coverage.mjs` 逐项点击 | nav.test 4/4；nav_coverage **19/19**（18 页 hash+标题全对、folder 3→0→3） |
+| 205 | 回归 | structure_parity **31/31**、visual_parity **166/166（100%）** |

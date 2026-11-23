@@ -1,0 +1,182 @@
+{
+ "_note": "nav_coverage.mjs：逐个点侧栏项，断言 hash=#/<id>、顶栏标题=TITLES[id][0]、无错误边界；最后验折叠夹收起/展开",
+ "base": "http://127.0.0.1:8899",
+ "viewport": {
+  "w": 1688,
+  "h": 1028
+ },
+ "score": 100,
+ "rows": [
+  {
+   "id": "overview",
+   "hash": "#/overview",
+   "title": "概览",
+   "want": "概览",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "feed",
+   "hash": "#/feed",
+   "title": "动态",
+   "want": "动态",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "friends",
+   "hash": "#/friends",
+   "title": "好友位置",
+   "want": "好友位置",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "gamelog",
+   "hash": "#/gamelog",
+   "title": "游戏日志",
+   "want": "游戏日志",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "players",
+   "hash": "#/players",
+   "title": "房内玩家",
+   "want": "房内玩家",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "search",
+   "hash": "#/search",
+   "title": "搜索",
+   "want": "搜索",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "favorites",
+   "hash": "#/favorites",
+   "title": "收藏",
+   "want": "收藏",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "worlds",
+   "hash": "#/worlds",
+   "title": "世界库",
+   "want": "世界库",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "calendar",
+   "hash": "#/calendar",
+   "title": "日历",
+   "want": "日历",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "friendlist",
+   "hash": "#/friendlist",
+   "title": "好友列表",
+   "want": "好友列表",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "friendlog",
+   "hash": "#/friendlog",
+   "title": "好友历史",
+   "want": "好友历史",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "moderation",
+   "hash": "#/moderation",
+   "title": "玩家管理",
+   "want": "玩家管理",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "encounters",
+   "hash": "#/encounters",
+   "title": "遇到过的玩家",
+   "want": "遇到过的玩家",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "notifications",
+   "hash": "#/notifications",
+   "title": "通知",
+   "want": "通知",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "stats",
+   "hash": "#/stats",
+   "title": "统计",
+   "want": "统计",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "insights",
+   "hash": "#/insights",
+   "title": "洞察",
+   "want": "洞察",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "folder:fav",
+   "hash": "-",
+   "title": "3→0→3",
+   "want": "N→0→N",
+   "active": "-",
+   "ok": true,
+   "error": null
+  }
+ ]
+}
