@@ -81,8 +81,17 @@ function useSoftKeyboardViewport() {
       const mobile = window.matchMedia('(max-width:1023px), (max-height:500px)').matches;
       // 键盘至少吃掉 120px；地址栏/工具栏伸缩通常 <100px，不能当键盘把外壳压矮
       const keyboard = vv.height > 0 && vv.height < window.innerHeight - 120;
-      if (mobile && keyboard) root.style.setProperty('--app-vh', `${Math.round(vv.height)}px`);
-      else root.style.removeProperty('--app-vh');
+      if (mobile && keyboard) {
+        root.style.setProperty('--app-vh', `${Math.round(vv.height)}px`);
+        // iOS 聚焦靠下的输入框时还会把可视区整体上卷（visualViewport.offsetTop>0）：
+        // 外壳按 offsetTop 下移，顶栏才不会被顶出屏外、底部按钮才落回可视区内。
+        root.style.setProperty('--app-vv-top', `${Math.round(vv.offsetTop || 0)}px`);
+        root.dataset.kb = '1';
+      } else {
+        root.style.removeProperty('--app-vh');
+        root.style.removeProperty('--app-vv-top');
+        delete root.dataset.kb;
+      }
     };
     apply();
     vv.addEventListener('resize', apply);
@@ -93,6 +102,8 @@ function useSoftKeyboardViewport() {
       vv.removeEventListener('scroll', apply);
       window.removeEventListener('resize', apply);
       root.style.removeProperty('--app-vh');
+      root.style.removeProperty('--app-vv-top');
+      delete root.dataset.kb;
     };
   }, []);
 }
@@ -164,7 +175,7 @@ export default function App() {
     <DrawerProvider>
       {/* 184 外壳按真机量测（docs/ref/vrcx0-spec.json → chrome）：
           通栏顶栏 h39 / 侧栏 277 / 内容面板贴侧栏、右边距 11 / 底部状态栏 h35 */}
-      <div className="flex h-full flex-col" style={{ background: 'var(--surface-canvas)', height: 'var(--app-vh)' }}>
+      <div id="vrc-shell" className="flex h-full flex-col" style={{ background: 'var(--surface-canvas)', height: 'var(--app-vh)' }}>
         <header
           id="vrc-topbar"
           className="vrc-topbar flex h-[39px] shrink-0 items-center border-b"

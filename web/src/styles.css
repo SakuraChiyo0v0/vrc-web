@@ -1482,6 +1482,17 @@ html[data-phone='1'] #root {
   /* 触屏滚动：滚到尽头别把页面滚动/下拉刷新一起带走（滚动链外溢） */
   .workspace > div, .feed-scroll { overscroll-behavior-y: contain; }
 
+  /* iOS 聚焦靠下的输入框会把可视区整体上卷（visualViewport.offsetTop>0）：
+     layout viewport 不动，顶栏会被顶出屏外、底部按钮落到键盘下。按 offsetTop 下移外壳，
+     让外壳正好落在可视区 [offsetTop, offsetTop+height]。只在键盘弹起时生效（html[data-kb]）。 */
+  html[data-kb='1'] #vrc-shell { transform: translateY(var(--app-vv-top, 0px)); }
+
+  /* 横屏 + 键盘同时存在（844×390 键盘 220 → 外壳只剩 170）：抽屉头 36 + 底部 96 把导航区挤到 8px，
+     一个条目都看不见。键盘弹起期间抽屉铺到外壳底边、整栏当一条滚动链（导航与「收起导航栏」同滚），
+     并把状态栏让位撤掉（状态栏在这时只是装饰，导航可用优先）。 */
+  html[data-kb='1'] .vrc-sidebar { bottom: 0; overflow-y: auto; overscroll-behavior-y: contain; }
+  html[data-kb='1'] .vrc-sidebar > nav { flex: none; overflow: visible; }
+
   /* iOS Safari：表单控件字号 <16px 时聚焦会把整页放大且不会自动还原（真机实测 12px 一碰就放大）。
      真机可用性优先于设计稿 12px —— 只在移动形态生效，桌面量测不受影响。
      前四条与源码里带父级/属性的规则同权重，靠排在后面生效（否则选择器优先级低的会被压回 11/12px）。 */

@@ -687,6 +687,80 @@ for (const page of ['feed', 'friends']) {
   check(tag, '收起键盘恢复原高', `${back.appVh} shell=${back.shell}`, 'dvh / 844', /dvh/.test(back.appVh) && back.shell === 844);
   await tab.close();
 }
+// iOS 键盘还会把可视区整体上卷（visualViewport.offsetTop>0）：layout viewport 不动，
+// 顶栏曾被顶到屏外（top=0 而可视顶边在 120），底部状态栏落到可视区外。外壳按 offsetTop 下移修掉。
+for (const [top, tag] of [[120, 'kb-offset@120'], [400, 'kb-offset@400']]) {
+  const tab = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, deviceScaleFactor: 2, isMobile: true });
+  await tab.goto(`${BASE}#/feed`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await tab.waitForTimeout(1400);
+  await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
+  await tab.locator('[data-testid="feed-search"]').first().click({ timeout: 5000 }).catch(() => {});
+  await tab.evaluate((t) => {
+    const vv = window.visualViewport;
+    Object.defineProperty(vv, 'height', { configurable: true, get: () => 380 });
+    Object.defineProperty(vv, 'offsetTop', { configurable: true, get: () => t });
+    vv.dispatchEvent(new Event('resize'));
+    vv.dispatchEvent(new Event('scroll'));
+    window.dispatchEvent(new Event('resize'));
+  }, top);
+  await tab.waitForTimeout(500);
+  const d = await tab.evaluate(() => {
+    const r = (s) => { const el = document.querySelector(s); const b = el?.getBoundingClientRect(); return b ? { top: Math.round(b.top), bottom: Math.round(b.bottom), h: Math.round(b.height) } : null; };
+    return { vvTop: Math.round(window.visualViewport.offsetTop || 0), vvH: Math.round(window.visualViewport.height), topbar: r('#vrc-topbar'), sb: r('#vrc-statusbar'), main: r('main'), shift: getComputedStyle(document.querySelector('#vrc-shell')).transform };
+  });
+  check(tag, '顶栏落在可视区顶边（不被上卷顶出屏外）', `topbar.top=${d.topbar?.top} vvTop=${d.vvTop}`, '≈vvTop', !!d.topbar && Math.abs(d.topbar.top - d.vvTop) <= 2);
+  check(tag, '状态栏不越出可视区底边', `sb.bottom=${d.sb?.bottom} 可视底=${d.vvTop + d.vvH}`, '≤可视底', !!d.sb && d.sb.bottom <= d.vvTop + d.vvH + 1);
+  check(tag, '内容区仍非零高', `main.h=${d.main?.h}`, '≥100', !!d.main && d.main.h >= 100);
+  await tab.evaluate(() => { const vv = window.visualViewport; delete vv.height; delete vv.offsetTop; vv.dispatchEvent(new Event('resize')); window.dispatchEvent(new Event('resize')); });
+  await tab.waitForTimeout(400);
+  const back = await tab.evaluate(() => {
+    const sh = document.querySelector('#vrc-shell')?.getBoundingClientRect();
+    return { top: Math.round(sh?.top ?? -1), kb: document.documentElement.dataset.kb || null, shift: getComputedStyle(document.querySelector('#vrc-shell')).transform };
+  });
+  check(tag, '收起键盘后位移归零', `shell.top=${back.top} kb=${back.kb} shift=${back.shift}`, 'top=0 无位移', back.top === 0 && !back.kb && (back.shift === 'none' || back.shift === 'matrix(1, 0, 0, 1, 0, 0)'));
+  await tab.close();
+}
+
+// 横屏 + 键盘同时存在（844×390 键盘 ~220 → 可视 170，只剩顶栏44+状态栏35）：内容区不能被压成 0，
+// 抽屉在极矮可视区里仍要能滚到最后一项（否则横屏输入时导航全死）。
+for (const [w, h, kb] of [[844, 390, 220], [932, 430, 240]]) {
+  const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 2, isMobile: true });
+  await tab.goto(`${BASE}#/feed`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await tab.waitForTimeout(1400);
+  await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
+  await tab.locator('[data-testid="feed-search"]').first().click({ timeout: 5000 }).catch(() => {});
+  await tab.evaluate((hh) => {
+    const vv = window.visualViewport;
+    Object.defineProperty(vv, 'height', { configurable: true, get: () => hh });
+    vv.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event('resize'));
+  }, h - kb);
+  await tab.waitForTimeout(500);
+  const g = await tab.evaluate(() => {
+    const r = (s) => { const el = document.querySelector(s); const b = el?.getBoundingClientRect(); return b ? { top: Math.round(b.top), bottom: Math.round(b.bottom), h: Math.round(b.height) } : null; };
+    return { vvH: Math.round(window.visualViewport.height), appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(), topbar: r('#vrc-topbar'), sb: r('#vrc-statusbar'), main: r('main') };
+  });
+  await tab.evaluate(() => document.querySelector('[aria-label="菜单"]')?.click());
+  await tab.waitForTimeout(300);
+  const dr = await tab.evaluate(() => {
+    const bar = document.querySelector('.vrc-sidebar');
+    if (!bar) return null;
+    const items = [...bar.querySelectorAll('.nav-item')];
+    const scroller = [...bar.querySelectorAll('*')].find((el) => el.scrollHeight > el.clientHeight + 4 && /auto|scroll/.test(getComputedStyle(el).overflowY)) || bar;
+    scroller.scrollTop = scroller.scrollHeight;
+    const last = items[items.length - 1]?.getBoundingClientRect();
+    const b = bar.getBoundingClientRect();
+    return { n: items.length, client: scroller.clientHeight, scroll: scroller.scrollHeight, barBottom: Math.round(b.bottom), lastBottom: last ? Math.round(last.bottom) : null, scrollerBottom: Math.round(scroller.getBoundingClientRect().bottom) };
+  });
+  const tag = `kb-landscape@${w}x${h}`;
+  check(tag, '外壳跟随可视高', `appVh=${g.appVh} vvH=${g.vvH}`, `${g.vvH}px`, g.appVh === `${g.vvH}px`);
+  check(tag, '顶栏与状态栏都在可视区内', `topbar=${g.topbar?.h} sb.bottom=${g.sb?.bottom} 可视=${g.vvH}`, 'sb.bottom≤vvH', !!g.sb && g.sb.bottom <= g.vvH + 1 && !!g.topbar && g.topbar.top === 0);
+  check(tag, '内容区未被压成 0', `main.h=${g.main?.h}`, '≥60', !!g.main && g.main.h >= 60);
+  check(tag, '抽屉在极矮可视区可滚到最后项', dr ? `n=${dr.n} client=${dr.client} scroll=${dr.scroll} lastBottom=${dr.lastBottom} scrollerBottom=${dr.scrollerBottom}` : 'n/a', '可滚且末项在容器内',
+    !!dr && (dr.scroll <= dr.client + 2 || (dr.lastBottom != null && dr.lastBottom <= dr.scrollerBottom + 2)));
+  await tab.close();
+}
+
 {
   const tab = await browser.newPage({ viewport: { width: 1440, height: 900 }, hasTouch: false });
   await tab.goto(`${BASE}#/feed`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
@@ -735,6 +809,35 @@ for (const [w, h] of [[320, 568], [360, 800], [390, 844]]) {
 }
 
 await browser.close();
+
+// 人工对照用快照：按断言组（tag）归组落 docs/mobile-baseline.md，省得翻 900 行日志找「哪个页面哪条口径」。
+{
+  const { writeFileSync } = await import('node:fs');
+  const groups = new Map();
+  for (const r of rows) {
+    if (!groups.has(r.page)) groups.set(r.page, []);
+    groups.get(r.page).push(r);
+  }
+  const failN = rows.filter((r) => !r.ok).length;
+  const out = [
+    '# 移动端验收基线（自动生成，勿手改）',
+    '',
+    `生成：${new Date().toISOString().slice(0, 19).replace('T', ' ')} · 断言 ${rows.length - failN}/${rows.length} PASS · 页面 ${PAGES.length} × 视口 ${WIDTHS.length + 1}`,
+    '',
+    '移动形态判据：宽 ≤1023 或高 ≤500（styles.css / tailwind md raw / Sidebar matchMedia 三处一致）。',
+    '重新生成：`node scripts/mobile_parity.mjs`（脚本末尾自动写回本文件）。',
+    '',
+  ];
+  for (const [tag, list] of groups) {
+    out.push(`## ${tag}`, '', '| 断言 | 实测 | 期望 | 结果 |', '| --- | --- | --- | --- |');
+    for (const r of list) {
+      const esc = (s) => String(s ?? '').replace(/\|/g, '\\|');
+      out.push(`| ${esc(r.name)} | ${esc(r.ours)} | ${esc(r.want)} | ${r.ok ? 'PASS' : '**FAIL**'} |`);
+    }
+    out.push('');
+  }
+  writeFileSync(path.join(process.cwd(), 'docs/mobile-baseline.md'), out.join('\n'));
+}
 
 const fail = rows.filter((r) => !r.ok);
 const pct = ((rows.length - fail.length) / rows.length * 100).toFixed(1);
