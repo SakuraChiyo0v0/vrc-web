@@ -128,7 +128,9 @@ const drawer = await p.evaluate(() => {
     headerPx: head ? parseFloat(getComputedStyle(head).fontSize) : null
   };
 });
-const drawerSizes = await fontSizesOf(p);
+// 头像降级首字母是 80px 头像里的装饰字形（与 .thumb-empty 同类），不算正文字号档位；
+// 演示库的头像 id 是假的（av_1…），图片必然 403，不排除会让 demo 跑出假低分。
+const drawerSizes = await fontSizesOf(p, ['.avatar-fallback', '.thumb-empty']);
 
 check('抽屉头像', `${drawer.avatar}px`, '≥72px', drawer.avatar != null && drawer.avatar >= 72);
 check('抽屉 tab 数', drawer.tabs, String(SPEC.user_dialog.tab_count), drawer.tabs === SPEC.user_dialog.tab_count);
@@ -136,6 +138,14 @@ check('抽屉 tab 名', drawer.tabLabels, SPEC.user_dialog.tab_labels.join('/'),
 check('抽屉字号档位', drawerSizes.join('/'), ALLOWED.join('/'), offSpec(drawerSizes).length === 0);
 await shot(p, 'drawer-1440.png');
 await p.keyboard.press('Escape').catch(() => {});
+// 抽屉必须走 Esc/关闭按钮收干净，否则后续页测到的字号/尺寸会混进抽屉内部的装饰字形
+const drawerClosed = await p.waitForSelector('.drawer-head', { state: 'detached', timeout: 4000 }).then(() => true).catch(() => false);
+if (!drawerClosed) {
+  const closeBtn = p.locator('aside .chip', { hasText: '关闭' });
+  if (await closeBtn.count()) await closeBtn.first().click({ timeout: 5000 }).catch(() => {});
+  await p.waitForSelector('.drawer-head', { state: 'detached', timeout: 8000 }).catch(() => {});
+}
+check('抽屉 Esc 可关闭', String(drawerClosed), 'true', drawerClosed);
 
 // ══ 4. 概览 ══
 await open('overview', { ready: '.ov-bar' });

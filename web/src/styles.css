@@ -608,7 +608,13 @@ body {
   height: 100%;
   display: flex;
   align-items: flex-end;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: inherit;
 }
+.ov-bar:disabled { cursor: default; }
 .ov-bar-fill {
   width: 100%;
   border-radius: 2px 2px 0 0;
@@ -831,3 +837,19 @@ html[data-phone='1'] #root {
 /* 全局兜底：HTML `hidden` 属性必须压过 Tailwind 的 display 工具类（.flex/.grid 等），
    否则 hidden={...} 的 tab 面板会被 .flex 顶成 display:flex，四个面板同时显示。 */
 [hidden] { display: none !important; }
+
+/* 181 抽屉数据 tab 图表：逐日时长柱 / 常去世界横条 */
+.dc-bars { display: flex; align-items: flex-end; gap: 1px; height: 58px; padding-bottom: 2px; border-bottom: 1px solid var(--stroke-subtle); }
+.dc-bar { flex: 1 1 0; min-width: 2px; height: 100%; display: flex; align-items: flex-end; }
+.dc-bar-fill { width: 100%; border-radius: 2px 2px 0 0; background: color-mix(in oklch, #4a9eff 78%, var(--surface-panel)); }
+.dc-axis { display: flex; justify-content: space-between; margin-top: 3px; font-size: 11px; }
+.dc-row { display: flex; align-items: center; gap: .4rem; width: 100%; padding: .18rem 0; border: 0; background: none; color: inherit; font-size: 12px; text-align: left; }
+.dc-row:hover { background: var(--state-hover-surface); }
+.dc-row-name { flex: 0 0 7.5rem; max-width: 7.5rem; }
+.dc-row-bar { flex: 1 1 auto; height: 6px; border-radius: 3px; background: var(--surface-raised); overflow: hidden; }
+.dc-row-bar > span { display: block; height: 100%; border-radius: 3px; background: color-mix(in oklch, #4a9eff 72%, transparent); }
+.dc-row-val { flex: 0 0 auto; font-size: 11px; color: var(--content-tertiary); }
+.jm-head-toggle { display: flex; align-items: center; gap: .35rem; width: 100%; border: 0; background: none; color: inherit; text-align: left; cursor: pointer; }
+.jm-head-toggle:hover { color: var(--content-primary); }
+.jm-caret { display: inline-block; width: 10px; font-size: 10px; color: var(--content-tertiary); transition: transform .12s ease; }
+.jm-caret[data-open='false'] { transform: rotate(-90deg); }

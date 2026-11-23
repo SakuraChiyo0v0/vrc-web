@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api, imgUrl, send } from '../api.js';
 import { useDrawer } from './drawers.jsx';
+import { barPct } from '../lib/journey.js';
 
 const KIND = {
   online: '上线',
@@ -185,7 +186,7 @@ function Heatmap({ id }) {
   if (!data?.hourly) return null;
   const max = data.max || 1;
   return (
-    <div>
+    <div data-chart="heat">
       <div className="label-xs mb-1.5 flex items-center justify-between">
         <span>活跃时段</span>
         <span className="text-fg3" style={{ fontWeight: 400 }}>
@@ -200,7 +201,7 @@ function Heatmap({ id }) {
           ))}
         </div>
         {(data.weekdays ?? []).map((wd, d) => (
-          <div key={wd} className="mb-[2px] flex items-center gap-[2px]">
+          <div key={wd} className="mb-[2px] flex items-center gap-[2px]" data-heat-row={d}>
             <span className="w-6 shrink-0 text-[11px] text-fg3">{wd}</span>
             {data.hourly[d].map((n, h) => (
               <span
@@ -339,6 +340,95 @@ function VisitedWorlds({ id, limit = 6 }) {
   );
 }
 
+/** 181 在线时长：近 30 天逐日柱，空日也留位，鼠标悬停看当天时长 */
+function DailyDuration({ id }) {
+  const { data } = useQuery({ queryKey: ['friend-daily', id, 30], queryFn: () => api(`friend/${encodeURIComponent(id)}/daily?days=30`) });
+  if (!data?.daily?.length) return null;
+  const daily = data.daily;
+  const max = Math.max(1, ...daily.map((d) => d.minutes));
+  const peak = daily.reduce((a, d) => (d.minutes > a.minutes ? d : a), daily[0]);
+  const axis = (i) => {
+    const [, m, dd] = daily[i].date.split('-');
+    return `${Number(m)}/${Number(dd)}`;
+  };
+  return (
+    <div data-chart="duration">
+      <div className="label-xs mb-1.5 flex items-center justify-between">
+        <span>在线时长</span>
+        <span className="text-fg3" style={{ fontWeight: 400 }}>
+          近 {data.days} 天 · 共 {Math.round((data.total_minutes ?? 0) / 60)} 小时 · {data.active_days} 天有记录
+        </span>
+      </div>
+      <div className="card px-2 py-2">
+        <div className="dc-bars" role="img" aria-label="在线时长（近 30 天）">
+          {daily.map((d) => (
+            <span
+              key={d.date}
+              className="dc-bar"
+              data-date={d.date}
+              data-minutes={d.minutes}
+              title={`${d.date} · ${d.minutes} 分钟${d.sessions ? ` · ${d.sessions} 段` : ''}`}
+            >
+              <span className="dc-bar-fill" style={{ height: `${barPct(d.minutes, max)}%`, opacity: d.minutes ? 1 : 0 }} />
+            </span>
+          ))}
+        </div>
+        <div className="dc-axis text-fg3">
+          <span>{axis(0)}</span>
+          <span>{axis(Math.floor(daily.length / 2))}</span>
+          <span>{axis(daily.length - 1)}</span>
+        </div>
+        {peak.minutes > 0 ? (
+          <div className="mt-1 text-[11px] text-fg3 tabular-nums">
+            最多的一天 {axis(daily.indexOf(peak))} · {peak.minutes} 分钟
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** 181 常去世界：按次数排横条，点一下开世界抽屉 */
+function WorldBars({ id, limit = 8 }) {
+  const { openWorld } = useDrawer();
+  const { data } = useQuery({ queryKey: ['friend-worlds5', id], queryFn: () => api(`friend/${encodeURIComponent(id)}/worlds`) });
+  const worlds = (data?.worlds ?? []).slice(0, limit);
+  if (!worlds.length) {
+    return (
+      <div data-chart="worlds">
+        <div className="label-xs mb-1.5">常去世界</div>
+        <div className="card px-3 py-2 text-[12px] text-fg3">还没有世界访问记录。</div>
+      </div>
+    );
+  }
+  const max = Math.max(1, ...worlds.map((w) => w.visits ?? 0));
+  return (
+    <div data-chart="worlds">
+      <div className="label-xs mb-1.5 flex items-center justify-between">
+        <span>常去世界</span>
+        <span className="text-fg3" style={{ fontWeight: 400 }}>{data.returned} 个 · 按次数</span>
+      </div>
+      <div className="card px-2.5 py-1.5">
+        {worlds.map((w) => (
+          <button
+            key={w.world_id}
+            className="dc-row"
+            data-world={w.world_id ?? ''}
+            onClick={() => w.world_id?.startsWith('wrld_') && openWorld(w.world_id)}
+            title={`${w.world_name} · ${w.visits} 次 · ${w.minutes} 分钟`}
+          >
+            <span className="dc-row-name truncate">{w.world_name}</span>
+            <span className="dc-row-bar">
+              <span style={{ width: `${barPct(w.visits, max)}%` }} />
+            </span>
+            <span className="dc-row-val tabular-nums">{w.visits} 次 · {Math.round((w.minutes ?? 0) / 60 * 10) / 10} 时</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /** 123 数据 tab：把散落的数字收成一组，不和概览重复叙述 */
 function Stats({ id, counts, meets }) {
   const { data: sess } = useQuery({
@@ -388,6 +478,18 @@ export default function FriendDrawer({ id, onClose }) {
     setTab(next);
     setSeen((s) => (s.has(next) ? s : new Set([...s, next])));
   };
+
+  // Esc 关闭抽屉（规格同 VRCX-0；此前只有遮罩点击能关，键盘用户和自动化都被困住）
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      const t = e.target;
+      if (t instanceof HTMLElement && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+      onClose?.();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
 
   const counts = {
     overview: data?.counts?.events ?? data?.events?.length ?? 0,
@@ -496,7 +598,6 @@ export default function FriendDrawer({ id, onClose }) {
                 <div className="mt-1 flex justify-between gap-3"><span className="text-fg3">同房次数</span><span className="tabular-nums">{data.meets ?? 0}</span></div>
                 <div className="mt-1 flex justify-between gap-3"><span className="text-fg3">最近更新</span><span>{fmt(p?.updated_at)}</span></div>
               </div>
-              <Heatmap id={id} />
               <VisitedWorlds id={id} limit={5} />
             </div>
 
@@ -510,7 +611,9 @@ export default function FriendDrawer({ id, onClose }) {
             {seen.has('data') ? (
               <div hidden={tab !== 'data'} className="flex flex-col gap-3" data-panel="data">
                 <Stats id={id} counts={counts} meets={data.meets} />
-                <VisitedWorlds id={id} limit={10} />
+                <DailyDuration id={id} />
+                <Heatmap id={id} />
+                <WorldBars id={id} limit={8} />
                 <div>
                   <div className="label-xs mb-1.5">常一起出现的世界</div>
                   {(data.worlds ?? []).length === 0 ? (

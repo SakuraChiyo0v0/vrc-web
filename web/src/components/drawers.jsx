@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import WorldDrawer from './WorldDrawer.jsx';
-import FriendDrawer from './FriendDrawer.jsx';
+import FriendDialog from './FriendDialog.jsx';
 
 const DrawerCtx = createContext(null);
 
@@ -21,7 +21,7 @@ export function DrawerProvider({ children }) {
     <DrawerCtx.Provider value={value}>
       {children}
       {world ? <WorldDrawer id={world} onClose={close} /> : null}
-      {friend ? <FriendDrawer id={friend} onClose={close} /> : null}
+      {friend ? <FriendDialog id={friend} onClose={close} /> : null}
     </DrawerCtx.Provider>
   );
 }

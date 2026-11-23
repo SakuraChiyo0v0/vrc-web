@@ -161,6 +161,20 @@ for (const [d, wid, wname, mins] of plan) {
   await ins(`insert into game_event (kind, display_name, user_id, location, world_name, detail, at) values (?,?,?,?,?,?,?)`,
     ['room_join', 'Dave', 'usr_dave', null, wname, null, at(start + 5 * MIN)]);
 }
+// 182 旅程按月折叠需要跨月数据：仅 DEMO_SPAN 打开时补 30~100 天前的停留，
+// 默认不种，避免改动其他轮次已入库的截图基线。
+if (process.env.DEMO_SPAN) {
+  for (const [d, wid, wname, mins] of [
+    [35, 'wrld_a', 'Alpha Club', 88], [38, 'wrld_c', '夜の喫茶店', 52],
+    [67, 'wrld_b', 'Beta Lounge', 64], [95, 'wrld_a', 'Alpha Club', 40]
+  ]) {
+    const start = daysAgo(d) - mins * MIN;
+    await ins(`insert into self_event (kind, location, world_id, at) values (?,?,?,?)`,
+      ['location', `${wid}:1~region(jp)`, wid, at(start)]);
+    await ins(`insert into self_event (kind, location, world_id, at) values (?,?,?,?)`,
+      ['location', 'offline', null, at(start + mins * MIN)]);
+  }
+}
 await ins(`insert into game_event (kind, display_name, user_id, location, world_name, detail, at) values (?,?,?,?,?,?,?)`,
   ['room_join', 'Dave', 'usr_dave', null, 'Alpha Club', null, at(now - 60 * MIN)]);
 await ins(`insert into game_event (kind, display_name, user_id, location, world_name, detail, at) values (?,?,?,?,?,?,?)`,

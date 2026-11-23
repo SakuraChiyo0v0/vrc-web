@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 import Empty from '../components/Empty.jsx';
+import { dayVisits, groupMonths, monthLabel, monthOf } from '../lib/journey.js';
 
 /**
  * 77 概览：顶部「概览 / 旅程」+ 时间范围切换（规格取自 VRCX-0 真机截图）。
@@ -42,8 +43,8 @@ const ymd = (d) => {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 };
 
-/** 85 空数据不画空轴：0 时长时只出一行空态，不渲染柱/轴 */
-function DailyBars({ daily }) {
+/** 85 空数据不画空轴：0 时长时只出一行空态，不渲染柱/轴；182 每根柱可点，跳到旅程该天 */
+function DailyBars({ daily, onPick }) {
   const total = daily.reduce((s, d) => s + Number(d.minutes ?? 0), 0);
   if (!daily.length || total === 0) {
     return <Empty icon="clock" title={'这个范围内还没有停留时长，暂时画不出每日柱'} compact />;
@@ -53,10 +54,18 @@ function DailyBars({ daily }) {
   return (
     <div className="ov-bars" role="img" aria-label="每日时长">
       {daily.map((d) => (
-        <div key={d.date} className="ov-bar" title={`${md(d.date)} · ${dur(d.minutes)}`}>
+        <button
+          key={d.date}
+          className="ov-bar"
+          data-date={d.date}
+          data-minutes={d.minutes}
+          title={`${md(d.date)} · ${dur(d.minutes)}${onPick ? ' · 点击看当天' : ''}`}
+          onClick={() => onPick?.(d.date)}
+          disabled={!onPick}
+        >
           <span className="ov-bar-fill" style={{ height: `${Math.max(d.minutes ? 3 : 0, (d.minutes / max) * 100)}%` }} />
           {!thin && d.date.endsWith('-01') ? <span className="ov-bar-tick">{md(d.date)}</span> : null}
-        </div>
+        </button>
       ))}
     </div>
   );
@@ -107,89 +116,114 @@ function People({ rows, empty, suffix, onClick }) {
 const WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
 /**
- * 92 旅程：按「月 → 日」分组的长时间轴（真机概览页第二个 tab）。
- * 每月一行统计，下面是当天总时长 + 时长条；点一天展开当天的逐次停留。
+ * 92/182 旅程：按「月 → 日」分组的长时间轴（真机概览页第二个 tab）。
+ * 每月一行统计，点月份头折叠/展开（默认只展开最新一月）；点一天展开当天逐次停留。
+ * 从概览的每日柱点过来时（focus），自动展开对应月份和当天并滚到该行。
  */
-function Journey({ days, openWorld }) {
-  const [open, setOpen] = useState(null);
+function Journey({ days, openWorld, focus }) {
+  const [openDay, setOpenDay] = useState(null);
+  // null = 默认只开最新月；用户点过月份头后以显式集合为准
+  const [openMonths, setOpenMonths] = useState(null);
+  const months = useMemo(() => groupMonths(days), [days]);
 
-  const months = useMemo(() => {
-    const m = new Map();
-    for (const d of days) {
-      const key = String(d.date).slice(0, 7);
-      if (!m.has(key)) m.set(key, { key, days: [], minutes: 0 });
-      const g = m.get(key);
-      g.days.push(d);
-      g.minutes += Number(d.minutes ?? 0);
-    }
-    return [...m.values()]
-      .sort((a, b) => b.key.localeCompare(a.key))
-      .map((g) => {
-        g.days.sort((a, b) => String(b.date).localeCompare(String(a.date)));
-        g.max = Math.max(1, ...g.days.map((d) => Number(d.minutes ?? 0)));
-        return g;
-      });
-  }, [days]);
+  useEffect(() => {
+    if (!focus || !months.length) return;
+    setOpenDay(focus);
+    const key = monthOf(focus);
+    setOpenMonths((prev) => {
+      const base = new Set(prev ?? [months[0].key]);
+      base.add(key);
+      return base;
+    });
+    const t = setTimeout(() => {
+      document.querySelector(`[data-day="${focus}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 80);
+    return () => clearTimeout(t);
+  }, [focus, months]);
 
   if (!months.length) {
     return <p className="px-3 py-4 text-[12px] text-fg3">这个范围内没有停留记录</p>;
   }
 
+  const monthOpen = (key) => (openMonths ? openMonths.has(key) : key === months[0].key);
+  const toggleMonth = (key) => {
+    setOpenMonths((prev) => {
+      const base = new Set(prev ?? [months[0].key]);
+      if (base.has(key)) base.delete(key);
+      else base.add(key);
+      return base;
+    });
+  };
+
   return (
     <div className="jm-wrap" data-journey="months">
-      {months.map((g) => (
-        <section key={g.key} className="card overflow-hidden" data-month={g.key}>
-          <div className="jm-head">
-            <span className="text-[12px] font-medium tabular-nums">
-              {g.key.slice(0, 4)} 年 {Number(g.key.slice(5, 7))} 月
-            </span>
-            <span className="text-[11px] text-fg3 tabular-nums">
-              {g.days.length} 天 · {dur(g.minutes)}
-            </span>
-          </div>
-          {g.days.map((d) => {
-            const date = new Date(`${d.date}T12:00:00+08:00`);
-            const rows = [];
-            for (const w of d.worlds ?? []) {
-              for (const v of w.visits ?? []) rows.push({ ...v, world_name: w.world_name, world_id: w.world_id });
-            }
-            rows.sort((a, b) => String(b.start_at).localeCompare(String(a.start_at)));
-            const isOpen = open === d.date;
-            return (
-              <div key={d.date} className="jm-day" data-day={d.date}>
-                <button
-                  className="jm-dayrow"
-                  data-open={isOpen ? 'true' : 'false'}
-                  onClick={() => setOpen(isOpen ? null : d.date)}
-                  title={`${d.date} · ${rows.length} 次停留`}
-                >
-                  <span className="w-[46px] shrink-0 text-[11px] tabular-nums">{md(d.date)}</span>
-                  <span className="w-[34px] shrink-0 text-[11px] text-fg3">{WEEK[date.getDay()]}</span>
-                  <span className="jm-daybar">
-                    <span style={{ width: `${Math.round((Number(d.minutes ?? 0) / g.max) * 100)}%` }} />
-                  </span>
-                  <span className="w-[70px] shrink-0 text-right text-[11px] tabular-nums">{dur(d.minutes)}</span>
-                  <span className="w-[44px] shrink-0 text-right text-[11px] text-fg3 tabular-nums">{rows.length} 次</span>
-                </button>
-                {isOpen ? (
-                  <div className="jm-visits">
-                    {rows.map((v, i) => (
-                      <div key={`${v.start_at}-${i}`} className="ov-jrow">
-                        <span className="w-[92px] shrink-0 text-[11px] text-fg3 tabular-nums">{hm(v.start_at)} – {hm(v.end_at)}</span>
-                        <button className="min-w-0 flex-1 truncate text-left text-[12px]" onClick={() => openWorld?.(v.world_id)} title={v.world_name}>
-                          {v.world_name}
-                        </button>
-                        <span className="w-[64px] shrink-0 text-right text-[11px] tabular-nums">{dur(v.minutes)}</span>
-                        <span className="w-[52px] shrink-0 text-right text-[11px] text-fg3 tabular-nums">{(v.players ?? []).length} 人</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
-            );
-          })}
-        </section>
-      ))}
+      {months.map((g) => {
+        const isMonthOpen = monthOpen(g.key);
+        const peak = g.days.reduce((a, d) => (Number(d.minutes ?? 0) > Number(a.minutes ?? 0) ? d : a), g.days[0]);
+        return (
+          <section key={g.key} className="card overflow-hidden" data-month={g.key} data-month-open={isMonthOpen ? 'true' : 'false'}>
+            <div className="jm-head">
+              <button
+                className="jm-head-toggle"
+                data-month-toggle={g.key}
+                aria-expanded={isMonthOpen}
+                onClick={() => toggleMonth(g.key)}
+                title={isMonthOpen ? '收起这个月' : '展开这个月'}
+              >
+                <span className="jm-caret" data-open={isMonthOpen ? 'true' : 'false'}>▾</span>
+                <span className="text-[12px] font-medium tabular-nums">{monthLabel(g.key)}</span>
+                <span className="ml-auto text-[11px] text-fg3 tabular-nums">
+                  {g.days.length} 天 · {dur(g.minutes)}
+                </span>
+              </button>
+            </div>
+            {isMonthOpen ? (
+              <>
+                {g.days.map((d) => {
+                  const date = new Date(`${d.date}T12:00:00+08:00`);
+                  const rows = dayVisits(d);
+                  const isOpen = openDay === d.date;
+                  return (
+                    <div key={d.date} className="jm-day" data-day={d.date}>
+                      <button
+                        className="jm-dayrow"
+                        data-open={isOpen ? 'true' : 'false'}
+                        onClick={() => setOpenDay(isOpen ? null : d.date)}
+                        title={`${d.date} · ${rows.length} 次停留`}
+                      >
+                        <span className="w-[46px] shrink-0 text-[11px] tabular-nums">{md(d.date)}</span>
+                        <span className="w-[34px] shrink-0 text-[11px] text-fg3">{WEEK[date.getDay()]}</span>
+                        <span className="jm-daybar">
+                          <span style={{ width: `${Math.round((Number(d.minutes ?? 0) / g.max) * 100)}%` }} />
+                        </span>
+                        <span className="w-[70px] shrink-0 text-right text-[11px] tabular-nums">{dur(d.minutes)}</span>
+                        <span className="w-[44px] shrink-0 text-right text-[11px] text-fg3 tabular-nums">{rows.length} 次</span>
+                      </button>
+                      {isOpen ? (
+                        <div className="jm-visits">
+                          {rows.map((v, i) => (
+                            <div key={`${v.start_at}-${i}`} className="ov-jrow">
+                              <span className="w-[92px] shrink-0 text-[11px] text-fg3 tabular-nums">{hm(v.start_at)} – {hm(v.end_at)}</span>
+                              <button className="min-w-0 flex-1 truncate text-left text-[12px]" onClick={() => openWorld?.(v.world_id)} title={v.world_name}>
+                                {v.world_name}
+                              </button>
+                              <span className="w-[64px] shrink-0 text-right text-[11px] tabular-nums">{dur(v.minutes)}</span>
+                              <span className="w-[52px] shrink-0 text-right text-[11px] text-fg3 tabular-nums">{(v.players ?? []).length} 人</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+                <div className="px-3 pb-1.5 text-[11px] text-fg3 tabular-nums" data-month-foot>
+                  峰值 {md(peak.date)} · {dur(peak.minutes)}
+                </div>
+              </>
+            ) : null}
+          </section>
+        );
+      })}
     </div>
   );
 }
@@ -197,6 +231,8 @@ function Journey({ days, openWorld }) {
 export default function OverviewPage() {
   const [tab, setTab] = useState('overview');
   const [range, setRange] = useState('all');
+  // 182 从每日柱点进旅程时带过去的日期（只作为一次跳转信号）
+  const [focus, setFocus] = useState(null);
   const today = useMemo(() => ymd(new Date()), []);
   const [from, setFrom] = useState(() => ymd(new Date(Date.now() - 30 * 86400_000)));
   const [to, setTo] = useState(today);
@@ -234,7 +270,7 @@ export default function OverviewPage() {
               key={k}
               data-tab={k}
               data-active={tab === k}
-              onClick={() => setTab(k)}
+              onClick={() => { setTab(k); if (k === 'overview') setFocus(null); }}
               className="ov-tab px-3 py-1 text-[12px]"
             >
               {label}
@@ -320,7 +356,7 @@ export default function OverviewPage() {
                     : '无数据'}
                 </div>
               </div>
-              <DailyBars daily={daily} />
+              <DailyBars daily={daily} onPick={(date) => { setFocus({ date }); setTab('journey'); }} />
             </section>
 
             {/* 活跃时段 */}
@@ -370,7 +406,7 @@ export default function OverviewPage() {
         </div>
       ) : null}
 
-      {tab === 'journey' ? <Journey days={log?.days ?? []} openWorld={openWorld} /> : null}
+      {tab === 'journey' ? <Journey days={log?.days ?? []} openWorld={openWorld} focus={focus?.date} /> : null}
     </div>
   );
 }

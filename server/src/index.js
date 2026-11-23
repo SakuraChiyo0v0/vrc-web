@@ -15,6 +15,7 @@ import { registerRound4Routes } from './routes/round4.js';
 import { registerRound5Routes } from './routes/round5.js';
 import { registerRound6Routes } from './routes/round6.js';
 import { registerRound7Routes } from './routes/round7.js';
+import { registerRound18Routes } from './routes/round18.js';
 import { aggregateNotifications } from './lib/notif.js';
 import { matchText } from './lib/pinyin.js';
 
@@ -85,6 +86,7 @@ registerRound4Routes(app, { db, T, iso });
 registerRound5Routes(app, { db, T, iso });
 registerRound6Routes(app, { db, T, iso });
 registerRound7Routes(app, { db, T, iso });
+registerRound18Routes(app, { db, T, iso });
 
 app.get('/api/health', async () => {
   const [s] = await db.query(

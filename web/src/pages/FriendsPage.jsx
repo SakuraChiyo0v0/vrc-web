@@ -227,7 +227,7 @@ export default function FriendsPage() {
             </div>
             <div className="flex flex-col p-1">
               {people.map((f) => (
-                <div key={f.user_id} className="friend-row" onClick={() => openFriend(f.user_id)}>
+                <div key={f.user_id} className="friend-row" data-user={f.user_id} onClick={() => openFriend(f.user_id)}>
                   <UserHoverCard id={f.user_id}>
                     <Avatar f={f} />
                   </UserHoverCard>
