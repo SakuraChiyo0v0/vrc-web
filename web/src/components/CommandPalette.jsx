@@ -72,7 +72,7 @@ export default function CommandPalette({ open, onClose, onOpen, onNavigate }) {
 
   let lastGroup = null;
   return (
-    <div className="fixed inset-0 z-50 flex justify-center pt-[12vh]" style={{ background: 'rgba(0,0,0,.32)' }} onClick={() => setOpen(false)}>
+    <div className="cmdk-overlay fixed inset-0 z-50 flex justify-center" style={{ background: 'rgba(0,0,0,.32)' }} onClick={() => setOpen(false)}>
       <div
         data-testid="palette"
         className="h-fit w-[560px] max-w-[92vw] overflow-hidden rounded-[12px] border shadow-xl"
@@ -88,7 +88,7 @@ export default function CommandPalette({ open, onClose, onOpen, onNavigate }) {
           className="h-11 w-full border-b px-4 text-[14px] outline-none"
           style={{ background: 'transparent', borderColor: 'var(--stroke-subtle)', color: 'var(--content-primary)' }}
         />
-        <div className="max-h-[52vh] overflow-auto p-1.5">
+        <div className="cmdk-list overflow-auto p-1.5">
           {q.trim().length === 0 && (
             <div className="px-3 py-6 text-center text-[12px] text-fg3">
               输入名字开始搜索 · ↑↓ 选择 · Enter 打开 · Esc 关闭

@@ -10,7 +10,7 @@
  *   1) 无横向溢出：documentElement.scrollWidth ≤ innerWidth+1，且列出右溢元素
  *   2) 表格卡片化（≤1023 或矮≤500）：thead display:none、tbody tr display:flex/flex-direction:column
  *      ≥768：thead 可见、tbody tr 不是 flex 卡片
- *   3) 触控目标：所有可见 button/a/[role=button] 高度 ≥ 28（报告最小值与违规清单）
+ *   3) 触控目标：所有可见 button/a/[role=button] 高度 ≥ 32（报告最小值与违规清单；390 竖屏另列 <44 的控件）
  *   4) 字号：可见文本最小字号 ≥ 11（低于 11 视为移动端可读性破线）
  *   5) 抽屉：默认侧栏移出视口；点 ☰ 后 data-open=true 且左边缘 ≥ -1；点 ✕ 关闭
  *   6) 内容区不被压成 0 宽
@@ -52,6 +52,11 @@ async function open(p, width, height) {
   const tab = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1, isMobile: false, hasTouch: true });
   await tab.goto(`${BASE}#/${p}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
   await tab.waitForTimeout(1200);
+  // 表格页首屏要等接口：thead 出来了但 tbody 还没行时，卡片化断言会拿到 tr=null（假 FAIL）
+  await tab.waitForFunction(() => {
+    const th = document.querySelector('thead');
+    return !th || !!document.querySelector('tbody tr');
+  }, { timeout: 8000 }).catch(() => {});
   return tab;
 }
 
@@ -89,7 +94,8 @@ const audit = (tab) => tab.evaluate(() => {
     offenders: offenders.slice(0, 6),
     minFont,
     tapMin: tap.length ? Math.min(...tap.map((x) => x.h)) : null,
-    tapSmall: tap.filter((x) => x.h < 28).slice(0, 6),
+    tapSmall: tap.filter((x) => x.h < 32).slice(0, 6),
+    tapUnder44: [...new Map(tap.filter((x) => x.h < 44).map((x) => [x.t, x])).values()].slice(0, 10),
     theadDisplay: th ? getComputedStyle(th).display : null,
     trDisplay: tr ? getComputedStyle(tr).display : null,
     trDir: tr ? getComputedStyle(tr).flexDirection : null,
@@ -112,8 +118,10 @@ for (const page of PAGES) {
     const hasTable = a.theadDisplay != null;
     check(tag, hasTable ? '表格卡片化' : '表格卡片化(n/a 无表格)', `thead=${a.theadDisplay} tr=${a.trDisplay}`, 'thead=none tr=flex',
       !hasTable || (a.theadDisplay === 'none' && a.trDisplay === 'flex'));
-    check(tag, '触控目标≥28', a.tapMin == null ? 'n/a' : `${a.tapMin}px`, '≥28px', a.tapMin == null || a.tapMin >= 28);
+    check(tag, '触控目标≥32', a.tapMin == null ? 'n/a' : `${a.tapMin}px`, '≥32px', a.tapMin == null || a.tapMin >= 32);
     if (a.tapSmall.length) console.log(`      过小触控: ${a.tapSmall.map((t) => `${t.t}(${t.h}px)`).join(' ')}`);
+    // 390 竖屏（真机主档）列出仍 <44 的控件，作为是否继续抬阈值的依据
+    if (width === 390 && a.tapUnder44.length) console.log(`      <44 触控: ${a.tapUnder44.map((t) => `${t.t}(${t.h}px)`).join(' ')}`);
     check(tag, '最小字号≥11', `${a.minFont}px`, '≥11px', a.minFont >= 11);
     check(tag, '内容区非零宽', `${a.mainW}px`, '>0', a.mainW == null || a.mainW > 0);
     check(tag, '侧栏默认收起', `left=${a.sidebarLeft}`, '<0', a.sidebarLeft == null || a.sidebarLeft < 0);
@@ -156,6 +164,11 @@ for (const [w, h, mobile] of [[1023, 900, true], [1024, 900, false], [1024, 500,
   });
   check('topbar@390', '顶栏搜索入口', `按钮 ${bar.n}: ${bar.labels}`, '≥2 且含「快速搜索」',
     bar.n >= 2 && bar.labels.includes('快速搜索'));
+  const barTap = await tab.evaluate(() => {
+    const bs = [...document.querySelectorAll('#vrc-topbar button')].filter((b) => b.getBoundingClientRect().width > 0);
+    return { minH: Math.round(Math.min(...bs.map((b) => b.getBoundingClientRect().height))), minW: Math.round(Math.min(...bs.map((b) => b.getBoundingClientRect().width))) };
+  });
+  check('topbar@390', '顶栏按钮 44 命中区', `${barTap.minW}×${barTap.minH}`, '≥44×44', barTap.minH >= 44 && barTap.minW >= 44);
   await tab.click('[data-topbar="search-mobile"]');
   await tab.waitForTimeout(300);
   check('topbar@390', '搜索按钮开面板', await tab.evaluate(() => String(!!document.querySelector('[data-testid="palette"]'))), 'true',
@@ -164,6 +177,28 @@ for (const [w, h, mobile] of [[1023, 900, true], [1024, 900, false], [1024, 500,
   await tab.waitForTimeout(250);
   check('topbar@390', 'Esc 关面板', await tab.evaluate(() => String(!!document.querySelector('[data-testid="palette"]'))), 'false',
     !(await tab.evaluate(() => !!document.querySelector('[data-testid="palette"]'))));
+  await tab.close();
+}
+
+// 命令面板在 iOS 地址栏展开时不能顶出可视化区（模拟：把 --app-vh 压到可视高度）
+for (const [w, h, vh] of [[390, 844, 560], [844, 390, 300]]) {
+  const tab = await open('friends', w, h);
+  await tab.click('[data-topbar="search-mobile"]');
+  await tab.waitForTimeout(300);
+  const fit = await tab.evaluate((vvh) => {
+    document.documentElement.style.setProperty('--app-vh', `${vvh}px`);
+    const p = document.querySelector('[data-testid="palette"]');
+    const list = p.querySelector('.cmdk-list');
+    const r = p.getBoundingClientRect();
+    return {
+      top: Math.round(r.top), bottom: Math.round(r.bottom),
+      listH: Math.round(list.getBoundingClientRect().height),
+      maxList: Math.round(parseFloat(getComputedStyle(list).maxHeight)),
+    };
+  }, vh);
+  const tag = `palette@${w}x${h}`;
+  check(tag, `面板在可视高 ${vh} 内`, `top=${fit.top} bottom=${fit.bottom}`, `bottom≤${vh}`, fit.bottom <= vh + 1);
+  check(tag, '结果列表高度按可视高算', `listH=${fit.listH} maxH=${fit.maxList}`, `maxH≤${Math.round(vh * 0.52)}`, fit.maxList <= Math.round(vh * 0.52) + 1);
   await tab.close();
 }
 
@@ -199,6 +234,16 @@ for (const [w, h, mobile] of [[1023, 900, true], [1024, 900, false], [1024, 500,
   const closed = await tab.evaluate(() => Math.round(document.querySelector('.vrc-sidebar')?.getBoundingClientRect().left ?? 0));
   check('drawer@390', '☰ 打开抽屉', `left=${before}→${opened.left} data-open=${opened.open}`, 'left≥-1 且 data-open=true',
     before < 0 && opened.left >= -1 && opened.open === 'true');
+  const navTap = await tab.evaluate(() => {
+    const top = [...document.querySelectorAll('.vrc-sidebar > * .nav-item, .vrc-sidebar .nav-item')]
+      .filter((n) => !n.closest('.nav-sub'))
+      .filter((n) => n.getBoundingClientRect().height > 0);
+    const sub = [...document.querySelectorAll('.vrc-sidebar .nav-sub .nav-item')].filter((n) => n.getBoundingClientRect().height > 0);
+    const h = (a) => (a.length ? Math.round(Math.min(...a.map((n) => n.getBoundingClientRect().height))) : null);
+    return { top: h(top), sub: h(sub), n: top.length, ns: sub.length };
+  });
+  check('drawer@390', '抽屉导航 ≥44/40', `顶层 ${navTap.n} 项 ${navTap.top}px / 二级 ${navTap.ns} 项 ${navTap.sub}px`, '顶层≥44 二级≥40',
+    (navTap.top == null || navTap.top >= 44) && (navTap.sub == null || navTap.sub >= 40));
   check('drawer@390', '✕ 关闭抽屉', `left=${closed}`, '<0', closed < 0);
   await tab.close();
 }
@@ -339,8 +384,8 @@ for (const [w, h, top, bottom, lr] of [[390, 844, 47, 34, 0], [844, 390, 0, 21, 
     };
   }, [top, bottom, lr]);
   check(`safe-area@${w}x${h}`, '安全区变量已定义', base.vars.join('/'), '全是长度值（0px 起）', base.vars.every((v) => /px$/.test(v)));
-  check(`safe-area@${w}x${h}`, '顶栏让出刘海', `bar=${r.barH} pad=${r.barPad}（原 ${base.bar}）`, `≤39+${top} 且 pad=${top}`,
-    r.barPad === top && r.barH >= 39 + top - 0.5 && r.barH <= 39 + top + 0.5);
+  check(`safe-area@${w}x${h}`, '顶栏让出刘海', `bar=${r.barH} pad=${r.barPad}（无刘海 ${base.bar}）`, `=44+${top} 且 pad=${top}`,
+    r.barPad === top && r.barH >= 44 + top - 0.5 && r.barH <= 44 + top + 0.5);
   check(`safe-area@${w}x${h}`, '抽屉上下让位', `top=${r.sdPadTop} bottom=${r.sdPadBottom}`, `top=${top} bottom=${bottom}`,
     r.sdPadTop === top && r.sdPadBottom === bottom);
   check(`safe-area@${w}x${h}`, '抽屉左右让位（横屏刘海）', `left=${r.sdPadL}`, `left=${lr}`,

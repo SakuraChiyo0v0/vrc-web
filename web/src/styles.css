@@ -24,6 +24,9 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
+  /* 应用可视高度：iOS Safari 地址栏展开时 100vh 仍是「最大高度」，%vh 算出来的浮层会被工具栏吃掉底部。
+     dvh 跟随真实可视区；不支持 dvh 的老浏览器退回 vh。测试可直接覆写这个变量模拟工具栏。 */
+  --app-vh: 100vh;
   --state-hover-surface: color-mix(in oklch, var(--foreground) 6%, transparent);
   --state-pressed-surface: color-mix(in oklch, var(--foreground) 10%, transparent);
   --state-selected-surface: color-mix(in oklab, var(--primary) 9%, transparent);
@@ -49,6 +52,11 @@
   /* 65 workspace 描边层（VRCX-0 .vrcx-0-workspace） */
   --workspace-highlight: color-mix(in oklch, var(--background) 60%, var(--foreground));
   --workspace-edge: var(--stroke-subtle);
+}
+
+/* 支持 dvh 的浏览器用动态视口高度（地址栏展开/收起时跟着变） */
+@supports (height: 100dvh) {
+  :root { --app-vh: 100dvh; }
 }
 
 [data-theme='dark'] {
@@ -1049,6 +1057,10 @@ body {
 .flog-tbl td, .flog-tbl tbody tr { height: 43.5px; }
 .flog-tbl .flog-act { text-align: right; }
 
+/* 98 命令面板：高度按「真实可视高度」算（iOS 地址栏展开时 100vh 会顶出屏外） */
+.cmdk-overlay { padding-top: calc(var(--app-vh) * .12); }
+.cmdk-list { max-height: calc(var(--app-vh) * .52); }
+
 /* 手机预览：?phone=1 时把整个应用装进 390×844 设备框（桌面端也能看手机版） */
 html[data-phone='1'] body {
   background: color-mix(in oklch, var(--foreground) 8%, var(--surface-canvas));
@@ -1057,7 +1069,7 @@ html[data-phone='1'] body {
 html[data-phone='1'] #root {
   width: 390px;
   height: 844px;
-  max-height: calc(100vh - 48px);
+  max-height: calc(var(--app-vh) - 48px);
   margin: 0 auto;
   overflow: hidden;
   border-radius: 18px;
@@ -1431,8 +1443,17 @@ html[data-phone='1'] #root {
   /* 设置页开关：命中区 44×44（轨道视觉不变），32px 的轨道拇指点不中 */
   .vrc-switch { width: 44px; height: 44px; min-height: 44px; }
 
+  /* 顶栏与抽屉导航是拇指最常点的两处：抬到 iOS 44 命中区（其余表格 chip/单元格走 32 折中档）。
+     顶栏跟随加高到 44，否则 44 的按钮会溢出条外。 */
+  .vrc-topbar { height: calc(44px + var(--safe-top)); }
+  .vrc-topbar button, .vrc-sidebar-close { min-width: 44px; min-height: 44px; }
+  /* 侧栏是 flex 列 + overflow-y-auto：导航项默认 flex-shrink:1，条目一多就被压到 min-height（实测 32）。
+     关掉收缩，让抽屉自己滚。 */
+  .vrc-sidebar .nav-item { height: 44px; flex: none; }
+  .vrc-sidebar .nav-sub .nav-item { height: 40px; flex: none; }
+
   /* 安全区：刘海机顶栏加高、抽屉上下让位，底部按钮不被 home 指示条盖住 */
-  .vrc-topbar { height: calc(39px + var(--safe-top)); padding-top: var(--safe-top); }
+  .vrc-topbar { height: calc(44px + var(--safe-top)); padding-top: var(--safe-top); }
   .vrc-sidebar { padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); padding-left: var(--safe-left); padding-right: var(--safe-right); }
   /* 横屏刘海在左右两侧：内容区整体内缩，否则最左的 ☰ 与最右的图标落在刘海下 */
   main { padding-left: var(--safe-left); padding-right: var(--safe-right); }
