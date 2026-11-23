@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * 185 侧栏导航按 VRCX-0 真机结构：单列 SidebarMenu（无分组标题）+ 两个折叠夹（收藏 / 社交），
@@ -83,8 +83,40 @@ function NavFolder({ item, page, onNavigate }) {
 }
 
 export default function Sidebar({ page, onNavigate, me, open = false, onClose, onCollapse }) {
+  const ref = useRef(null);
+
+  // 44 抽屉打开时焦点进侧栏并困在里面（手机没有 Tab 键，但外接键盘/读屏要能走完菜单且不漏到背后的内容区）；
+  // 关闭时焦点还给 ☰。Esc 关闭在 App 的全局 keydown 里（它管 sidebar 的开关状态）。
+  useEffect(() => {
+    if (!open) return;
+    const el = ref.current;
+    if (!el) return;
+    if (!window.matchMedia('(max-width: 767px), (max-height: 500px)').matches) return;
+    const prev = document.activeElement;
+    const items = () => [...el.querySelectorAll('button, a[href], input, select, [tabindex]:not([tabindex="-1"])')]
+      .filter((n) => n.getBoundingClientRect().width > 0 && !n.hasAttribute('disabled'));
+    items()[0]?.focus();
+    const onKey = (e) => {
+      if (e.key !== 'Tab') return;
+      const list = items();
+      if (!list.length) return;
+      const i = list.indexOf(document.activeElement);
+      const next = e.shiftKey
+        ? (i <= 0 ? list[list.length - 1] : list[i - 1])
+        : (i < 0 || i === list.length - 1 ? list[0] : list[i + 1]);
+      e.preventDefault();
+      next?.focus();
+    };
+    el.addEventListener('keydown', onKey);
+    return () => {
+      el.removeEventListener('keydown', onKey);
+      if (prev?.isConnected && typeof prev.focus === 'function') prev.focus();
+    };
+  }, [open]);
+
   return (
     <aside
+      ref={ref}
       className="vrc-sidebar flex w-[214px] shrink-0 flex-col border-r md:w-[277px]"
       data-open={open ? 'true' : 'false'}
       style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-shell)' }}

@@ -201,6 +201,86 @@ for (const [w, h, mobile] of [[767, 900, true], [768, 900, false], [900, 500, tr
   await tab.close();
 }
 
+// 抽屉三种关闭方式 + 焦点陷阱（friends@390）：Esc / 点遮罩 / 焦点进抽屉且 Tab 不漏到背后内容区
+{
+  const tab = await open('friends', 390, 844);
+  const asideLeft = () => tab.evaluate(() => Math.round(document.querySelector('.vrc-sidebar')?.getBoundingClientRect().left ?? 0));
+  const inSidebar = () => tab.evaluate(() => !!document.activeElement?.closest?.('.vrc-sidebar'));
+
+  await tab.click('button[aria-label="菜单"]');
+  await tab.waitForTimeout(350);
+  check('drawer@390', '打开后焦点进抽屉', String(await inSidebar()), 'true', await inSidebar());
+
+  // Tab 走一圈（40 次，菜单项 ~20 个）不能跑到抽屉外
+  let escaped = 0;
+  for (let i = 0; i < 40; i += 1) {
+    await tab.keyboard.press('Tab');
+    if (!(await inSidebar())) escaped += 1;
+  }
+  check('drawer@390', 'Tab 焦点锁在抽屉内', `漏出 ${escaped}/40 次`, '0', escaped === 0);
+
+  await tab.keyboard.press('Escape');
+  await tab.waitForTimeout(350);
+  const leftEsc = await asideLeft();
+  const backToMenu = await tab.evaluate(() => document.activeElement?.getAttribute('aria-label'));
+  check('drawer@390', 'Esc 关闭抽屉', `left=${leftEsc}`, '<0', leftEsc < 0);
+  check('drawer@390', '关闭后焦点回 ☰', String(backToMenu), '菜单', backToMenu === '菜单');
+
+  await tab.click('button[aria-label="菜单"]');
+  await tab.waitForTimeout(300);
+  await tab.mouse.click(370, 420); // 抽屉宽 214，370 处是遮罩
+  await tab.waitForTimeout(350);
+  const leftOverlay = await asideLeft();
+  check('drawer@390', '点遮罩关闭抽屉', `left=${leftOverlay}`, '<0', leftOverlay < 0);
+  await tab.close();
+}
+
+// 横屏顶栏信息密度（844×390 / 932×430）：标题不被截断、两个按钮之间还有余量、不挤在一起
+for (const [w, h] of [[844, 390], [932, 430]]) {
+  const tab = await open('friends', w, h);
+  const r = await tab.evaluate(() => {
+    const bar = document.querySelector('#vrc-topbar');
+    const h1 = bar.querySelector('h1');
+    const btns = [...bar.querySelectorAll('button')].filter((b) => b.getBoundingClientRect().width > 0)
+      .map((b) => b.getBoundingClientRect());
+    return {
+      barRight: Math.round(bar.getBoundingClientRect().right),
+      titleTrunc: h1 ? h1.scrollWidth > h1.clientWidth + 1 : false,
+      // 左侧 ☰ 右缘 与 右侧搜索按钮左缘 之间的空隙（这块放标题）
+      gap: btns.length >= 2 ? Math.round(btns[btns.length - 1].left - btns[0].right) : null,
+      maxRight: btns.length ? Math.round(Math.max(...btns.map((q) => q.right))) : null,
+    };
+  });
+  check(`topbar@${w}x${h}`, '标题不截断', String(r.titleTrunc), 'false', r.titleTrunc === false);
+  check(`topbar@${w}x${h}`, '按钮不挤出顶栏', `right=${r.maxRight} bar=${r.barRight}`, '≤bar', r.maxRight == null || r.maxRight <= r.barRight);
+  check(`topbar@${w}x${h}`, '左右按钮余量', `gap=${r.gap}px`, '≥200', r.gap != null && r.gap >= 200);
+  await tab.close();
+}
+
+// 设置页开关命中区（390×844 / 844×390）：按钮 44×44，中心 ±18px 仍点在开关上（轨道视觉仍是 32×18）
+for (const [w, h] of [[390, 844], [844, 390]]) {
+  const tab = await open('settings', w, h);
+  await tab.waitForTimeout(500);
+  const r = await tab.evaluate(() => {
+    const el = [...document.querySelectorAll('[role="switch"]')].find((e) => e.getBoundingClientRect().width > 0);
+    if (!el) return null;
+    const q = el.getBoundingClientRect();
+    const cx = q.left + q.width / 2;
+    const cy = q.top + q.height / 2;
+    const hits = (dx, dy) => { const e = document.elementFromPoint(cx + dx, cy + dy); return !!e && (e === el || el.contains(e)); };
+    const track = el.querySelector('.vrc-switch-track')?.getBoundingClientRect();
+    return {
+      w: Math.round(q.width), h: Math.round(q.height),
+      track: track ? `${Math.round(track.width)}×${Math.round(track.height)}` : null,
+      hit: hits(0, -18) && hits(0, 18) && hits(-18, 0) && hits(18, 0),
+    };
+  });
+  check(`switch@${w}x${h}`, '开关命中区 44×44', r ? `${r.w}×${r.h}（轨道 ${r.track}）` : 'n/a（无开关）', '44×44 且轨道 32×18',
+    !r || (r.w === 44 && r.h === 44 && r.track === '32×18'));
+  check(`switch@${w}x${h}`, '边缘 ±18px 仍命中', r ? String(r.hit) : 'n/a', 'true', !r || r.hit === true);
+  await tab.close();
+}
+
 await browser.close();
 
 const fail = rows.filter((r) => !r.ok);

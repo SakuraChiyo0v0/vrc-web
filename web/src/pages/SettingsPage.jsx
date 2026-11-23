@@ -24,18 +24,19 @@ function Switch({ id, label, note, on, onChange }) {
         <div className="text-[12px]">{label}</div>
         {note ? <div className="mt-0.5 text-[11px] text-fg3">{note}</div> : null}
       </div>
+      {/* 53 开关：轨道仍是 18×32（桌面像素不变），按钮本身在移动断点撑到 44×44 当命中区，
+          真机拇指按 32px 宽的轨道很难点中。视觉与命中区分离，见 styles.css .vrc-switch */}
       <button
         role="switch"
         aria-checked={on}
         aria-label={label}
         onClick={() => onChange(!on)}
-        className="relative h-[18px] w-[32px] shrink-0 rounded-full transition-colors"
-        style={{ background: on ? 'var(--status-online)' : 'var(--stroke-strong)' }}
+        className="vrc-switch shrink-0"
+        data-testid="switch"
       >
-        <span
-          className="absolute top-[2px] size-[14px] rounded-full bg-white transition-[left]"
-          style={{ left: on ? 16 : 2 }}
-        />
+        <span className="vrc-switch-track" style={{ background: on ? 'var(--status-online)' : 'var(--stroke-strong)' }}>
+          <span className="vrc-switch-knob" style={{ left: on ? 16 : 2 }} />
+        </span>
       </button>
     </div>
   );

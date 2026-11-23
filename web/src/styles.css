@@ -1380,6 +1380,20 @@ html[data-phone='1'] #root {
   .worlds-page { padding: 23px 52px 24px 23px; }
 }
 
+/* 53 设置页开关：轨道 18×32（桌面像素与改造前一致），移动断点按钮撑到 44×44 当命中区 */
+.vrc-switch {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 18px; padding: 0; border: 0; background: none;
+}
+.vrc-switch-track {
+  position: relative; display: block; width: 32px; height: 18px;
+  border-radius: 999px; transition: background .15s;
+}
+.vrc-switch-knob {
+  position: absolute; top: 2px; width: 14px; height: 14px;
+  border-radius: 999px; background: #fff; transition: left .15s;
+}
+
 /* ── 27 移动端触控 / 排版下限（<768px）─────────────────────────
  * 桌面密度档（chip 26 / 图标按钮 18–24 / 徽标 10.5px）是 1700 视口真机量测的结果，
  * 直接搬到手机上点不中、看不清。这里只在移动断点放宽，桌面量测不受影响：
@@ -1405,4 +1419,6 @@ html[data-phone='1'] #root {
   /* 设置行：右值+按钮固定 shrink-0，360 视口顶出卡片（实测 right=378）→ 右块换行占满 */
   .set-row { flex-wrap: wrap; }
   .set-row-right { flex: 1 1 100%; justify-content: flex-end; }
+  /* 设置页开关：命中区 44×44（轨道视觉不变），32px 的轨道拇指点不中 */
+  .vrc-switch { width: 44px; height: 44px; min-height: 44px; }
 }

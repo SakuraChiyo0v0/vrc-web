@@ -116,6 +116,7 @@ export default function App() {
   useEffect(() => {
     const onKey = (e) => {
       if (palette) return; // 搜索浮层自己处理按键
+      if (e.key === 'Escape' && nav) { e.preventDefault(); setNav(false); return; }
       if (help && e.key === 'Escape') { e.preventDefault(); setHelp(false); return; }
       const hit = resolveShortcut(e);
       if (!hit) return;
@@ -124,7 +125,7 @@ export default function App() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [palette, help]);
+  }, [palette, help, nav]);
 
   // ?phone=1：整页换成 390×844 的同源 iframe（媒体查询才真的按手机宽度算）
   if (new URLSearchParams(location.search).get('phone') === '1') return <PhoneFrame />;
