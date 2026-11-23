@@ -1,9 +1,20 @@
 # 移动端验收基线（自动生成，勿手改）
 
-生成：2026-11-23 23:05:25 · 断言 1099/1099 PASS · 页面 13 × 视口 10
+生成：2026-11-23 23:39:33 · 断言 1197/1197 PASS · 页面 13 × 视口 11
 
 移动形态判据：宽 ≤1023 或高 ≤500（styles.css / tailwind md raw / Sidebar matchMedia 三处一致）。
 重新生成：`node scripts/mobile_parity.mjs`（脚本末尾自动写回本文件）。
+
+## friends@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
 
 ## friends@360
 
@@ -110,6 +121,17 @@
 | 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 820px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## overview@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
 ## overview@360
@@ -219,6 +241,17 @@
 | 内容区非零宽 | 820px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
+## search@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
 ## search@360
 
 | 断言 | 实测 | 期望 | 结果 |
@@ -324,6 +357,17 @@
 | 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 820px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## feed@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化 | thead=none tr=flex | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
 ## feed@360
@@ -433,6 +477,17 @@
 | 内容区非零宽 | 820px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
+## sessions@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
 ## sessions@360
 
 | 断言 | 实测 | 期望 | 结果 |
@@ -538,6 +593,17 @@
 | 触控目标≥32 | 32px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 820px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## players@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 40px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
 ## players@360
@@ -647,6 +713,17 @@
 | 内容区非零宽 | 820px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
+## moderation@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化 | thead=none tr=flex | thead=none tr=flex | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
 ## moderation@360
 
 | 断言 | 实测 | 期望 | 结果 |
@@ -752,6 +829,17 @@
 | 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 820px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## favorites@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
 ## favorites@360
@@ -861,6 +949,17 @@
 | 内容区非零宽 | 820px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
+## insights@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
 ## insights@360
 
 | 断言 | 实测 | 期望 | 结果 |
@@ -966,6 +1065,17 @@
 | 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 820px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## friendlist@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化 | thead=none tr=flex | thead=none tr=flex | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
 ## friendlist@360
@@ -1075,6 +1185,17 @@
 | 内容区非零宽 | 820px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
+## friendlog@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化 | thead=none tr=flex | thead=none tr=flex | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
 ## friendlog@360
 
 | 断言 | 实测 | 期望 | 结果 |
@@ -1180,6 +1301,17 @@
 | 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 820px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## gamelog@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
 ## gamelog@360
@@ -1289,13 +1421,24 @@
 | 内容区非零宽 | 820px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
 
+## settings@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
 ## settings@360
 
 | 断言 | 实测 | 期望 | 结果 |
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=360 vw=360 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 360px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -1306,7 +1449,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=375 vw=375 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 375px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -1317,10 +1460,10 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=390 vw=390 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | chip 命中区≥36 | 36px 设置快捷键(36) 设置密码(36) 设置延迟（分钟）(36) | ≥36px | PASS |
 | 表单控件≥36 | 36px (36) | ≥36px | PASS |
-| 行内/表格目标≥32 | 32px 系统(32) 界面(32) 社交(32) | ≥32px | PASS |
+| 行内/表格目标≥32 | 44px 系统(44) 界面(44) 社交(44) | ≥32px | PASS |
 | 表单控件中心可点（未被遮挡） | 0 处遮挡 | 0 | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 390px | >0 | PASS |
@@ -1332,7 +1475,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=414 vw=414 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 414px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -1343,7 +1486,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=430 vw=430 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 430px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -1354,7 +1497,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=844 vw=844 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 844px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -1367,7 +1510,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=932 vw=932 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 932px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -1380,7 +1523,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=768 vw=768 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 768px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -1391,7 +1534,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=820 vw=820 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 32px | ≥32px | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 820px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -1606,7 +1749,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 0ms（20 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 1ms（20 行） | ≤300ms | PASS |
 
 ## scroll@feed@390
 
@@ -1614,7 +1757,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 0ms（36 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 1ms（36 行） | ≤300ms | PASS |
 
 ## extreme@friendlist@360
 
@@ -2113,3 +2256,48 @@
 | <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
 | 无 <32 控件 | 0 个 | 0 | PASS |
 | 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## setnav@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 子导航 10 项齐 | 10 项 | 10 | PASS |
+| 子导航条目命中区≥44 | 44px | ≥44px | PASS |
+| 滚到底末项（反馈）回到容器内 | auto scrollTop=0 lastBottom=510 navBottom=809 | lastBottom≤navBottom | PASS |
+| 末项中心可点 | 命中 反馈 | 反馈 | PASS |
+
+## setnav@360x800
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 子导航 10 项齐 | 10 项 | 10 | PASS |
+| 子导航条目命中区≥44 | 44px | ≥44px | PASS |
+| 滚到底末项（反馈）回到容器内 | auto scrollTop=0 lastBottom=510 navBottom=765 | lastBottom≤navBottom | PASS |
+| 末项中心可点 | 命中 反馈 | 反馈 | PASS |
+
+## setnav@844x390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 子导航 10 项齐 | 10 项 | 10 | PASS |
+| 子导航条目命中区≥44 | 44px | ≥44px | PASS |
+| 滚到底末项（反馈）回到容器内 | auto scrollTop=165 lastBottom=345 navBottom=355 | lastBottom≤navBottom | PASS |
+| 末项中心可点 | 命中 反馈 | 反馈 | PASS |
+
+## setnav@932x430
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 子导航 10 项齐 | 10 项 | 10 | PASS |
+| 子导航条目命中区≥44 | 44px | ≥44px | PASS |
+| 滚到底末项（反馈）回到容器内 | auto scrollTop=125 lastBottom=385 navBottom=395 | lastBottom≤navBottom | PASS |
+| 末项中心可点 | 命中 反馈 | 反馈 | PASS |
+
+## setnav@844x390+kb220
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 子导航 10 项齐 | 10 项 | 10 | PASS |
+| 子导航条目命中区≥44 | 44px | ≥44px | PASS |
+| 滚到底末项（反馈）回到容器内 | auto scrollTop=330 lastBottom=166 navBottom=170 | lastBottom≤navBottom | PASS |
+| 末项中心可点 | 命中 反馈 | 反馈 | PASS |

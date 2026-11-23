@@ -1020,7 +1020,8 @@ for (const [w, h] of [[390, 844], [360, 800], [844, 390]]) {
 // 断言「<36 的控件只允许出现在白名单选择器里」——新增控件若偷偷缩到 32 以下会在这里报出来；
 // 同时把「二级导航 40」与「表格行内 ≥32」写成显式口径，避免以后被顺手抹平。
 {
-  const ALLOW = '[data-tab].ov-tab, .sess-seg button, .sess-row, .sess-self, [data-list-row] button, [data-list-row] a, .gl-inst button, .gl-inst a, [data-subnav-item], tbody td button, tbody td a, .vrc-sidebar .nav-sub .nav-item';
+  // 设置页子导航条目已抬到 44，从白名单移除 → 以后若被缩回 32 会直接被这条抓出来
+  const ALLOW = '[data-tab].ov-tab, .sess-seg button, .sess-row, .sess-self, [data-list-row] button, [data-list-row] a, .gl-inst button, .gl-inst a, tbody td button, tbody td a, .vrc-sidebar .nav-sub .nav-item';
   for (const page of PAGES) {
     const tab = await open(page, 390, 844);
     const r = await tab.evaluate((allowSel) => {
@@ -1048,6 +1049,50 @@ for (const [w, h] of [[390, 844], [360, 800], [844, 390]]) {
     if (r.cellMin != null) check(tag, '表格行内目标 32 档', `${r.cellMin}px`, '≥32px', r.cellMin >= 32);
     await tab.close();
   }
+}
+
+// 设置页左上子导航（系统/界面/社交…共 10 项）：桌面 32px 行高、容器 overflow:visible。
+// 横屏 844×390（主区 311）与横屏+键盘（134）时「反馈」等条目落在容器外、滚也滚不出来（真 bug）。
+// 判据：10 项齐、命中区 ≥44、滚到底末项回到容器内、末项中心点得到它自己。
+for (const c of [{ w: 390, h: 844, kb: 0 }, { w: 360, h: 800, kb: 0 }, { w: 844, h: 390, kb: 0 }, { w: 932, h: 430, kb: 0 }, { w: 844, h: 390, kb: 220 }]) {
+  const tag = `setnav@${c.w}x${c.h}${c.kb ? `+kb${c.kb}` : ''}`;
+  const tab = await browser.newPage({ viewport: { width: c.w, height: c.h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  await tab.goto(`${BASE}#/settings`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await tab.waitForTimeout(1400);
+  await tab.waitForSelector('.settings-subnav [data-subnav-item]', { timeout: 15000 }).catch(() => {});
+  if (c.kb) {
+    await tab.evaluate((h) => {
+      document.documentElement.style.setProperty('--app-vh', `${window.innerHeight - h}px`);
+      document.documentElement.setAttribute('data-kb', '1');
+    }, c.kb);
+    await tab.waitForTimeout(300);
+  }
+  const r = await tab.evaluate(() => {
+    const nav = document.querySelector('.settings-subnav');
+    if (!nav) return { found: false };
+    const items = [...nav.querySelectorAll('[data-subnav-item]')];
+    const hs = items.map((el) => Math.round(el.getBoundingClientRect().height));
+    nav.scrollTop = 9999;
+    const nb = nav.getBoundingClientRect();
+    const last = items[items.length - 1];
+    const lb = last.getBoundingClientRect();
+    const cx = Math.round(lb.left + lb.width / 2);
+    const cy = Math.round(Math.min(lb.bottom - 4, nb.bottom - 4));
+    const hit = document.elementFromPoint(cx, cy);
+    return {
+      found: true, n: items.length, minH: Math.min(...hs),
+      overflowY: getComputedStyle(nav).overflowY, scrollTop: nav.scrollTop,
+      lastBottom: Math.round(lb.bottom), navBottom: Math.round(nb.bottom),
+      hitSelf: !!hit && (hit === last || last.contains(hit)),
+      hitText: hit ? (hit.textContent || '').trim().slice(0, 4) : null,
+    };
+  });
+  check(tag, '子导航 10 项齐', r.found ? `${r.n} 项` : 'n/a', '10', !r.found || r.n === 10);
+  check(tag, '子导航条目命中区≥44', r.found ? `${r.minH}px` : 'n/a', '≥44px', !r.found || r.minH >= 44);
+  check(tag, '滚到底末项（反馈）回到容器内', r.found ? `${r.overflowY} scrollTop=${r.scrollTop} lastBottom=${r.lastBottom} navBottom=${r.navBottom}` : 'n/a',
+    'lastBottom≤navBottom', !r.found || r.lastBottom <= r.navBottom + 1);
+  check(tag, '末项中心可点', r.found ? `命中 ${r.hitText}` : 'n/a', '反馈', !r.found || r.hitSelf);
+  await tab.close();
 }
 
 await browser.close();

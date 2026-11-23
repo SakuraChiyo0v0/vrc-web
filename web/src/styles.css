@@ -1455,6 +1455,12 @@ html[data-phone='1'] #root {
   .set-row-right { flex: 1 1 100%; justify-content: flex-end; }
   /* 设置页开关：命中区 44×44（轨道视觉不变），32px 的轨道拇指点不中 */
   .vrc-switch { width: 44px; height: 44px; min-height: 44px; }
+  /* 设置页左上子导航（系统/界面/社交…共 10 项）：桌面 32px 行高、容器 overflow:visible，
+     横屏 844×390 主区只有 311px、横屏+键盘只剩 134px → 「反馈」等条目落在容器外且滚不出来
+     （探针 scripts/_probe_setnav.mjs：lastBottom=390 > navBottom=355，scrollTop 设 9999 仍是 0）。
+     抬到 44 命中区，并让这一列自己滚。 */
+  .settings-subnav { overflow-y: auto; overscroll-behavior-y: contain; }
+  .settings-subnav [data-subnav-item] { min-height: 44px; flex: none; }
 
   /* 顶栏与抽屉导航是拇指最常点的两处：抬到 iOS 44 命中区（其余表格 chip/单元格走 32 折中档）。
      顶栏跟随加高到 44，否则 44 的按钮会溢出条外。 */
