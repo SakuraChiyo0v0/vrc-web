@@ -396,8 +396,10 @@ body {
   .feed-tbl thead th { height: 44px; font-size: 12px; }
   .feed-tbl thead th, .feed-tbl tbody td { padding-left: 58px; padding-right: 12px; }
   .feed-tbl tbody td { height: 44px; font-size: 12px; }
-  /* 时间列只有 106 宽（文字起点 78）：跨日行是「月-日\n时:分」两行，行距压到 15 才装得进 44px 行 */
-  .feed-tbl tbody td[data-label='时间'] { white-space: pre-line; line-height: 15px; }
+  /* 时间列只有 106 宽（文字起点 78）：跨日行是「月-日\n时:分」两行，行距压到 15 才装得进 44px 行。
+     white-space 用 pre 不用 pre-line：pre-line 仍允许折行，「11-23」会在连字符处再断一次变 3 行（45px），
+     行高被撑到 46；pre 只认写死的换行，固定两行 → 行高正好 44。 */
+  .feed-tbl tbody td[data-label='时间'] { white-space: pre; line-height: 15px; }
   /* 118 时间线分段头：今天/昨天/更早，整行浅底、粘在滚动容器顶部 */
   .feed-tbl tbody tr.feed-day td {
     height: 26px; padding: 0 .75rem; font-size: 11px; font-weight: 600;
