@@ -138,7 +138,7 @@ export default function App() {
         <header
           id="vrc-topbar"
           className="vrc-topbar flex h-[39px] shrink-0 items-center border-b"
-          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-shell)', paddingLeft: 14, paddingRight: 8 }}
+          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-shell)', paddingLeft: 'calc(14px + var(--safe-left, 0px))', paddingRight: 'calc(8px + var(--safe-right, 0px))' }}
         >
           {/* 顶栏是页面无关的自定义标题栏（spec.chrome.topbar / scripts/measure_ref_topbar.py
               量 16 张真机截图逐项一致）：品牌 + 帮助 / 快速搜索 + 6 图标 + 3 窗口控制。

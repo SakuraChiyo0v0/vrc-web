@@ -303,31 +303,53 @@ for (const [page, w, h] of [
   await tab.close();
 }
 
-// 安全区：把 env() 变量按刘海机/带指示条真机的值注入，量顶栏是否加高、抽屉是否让位
-for (const [w, h, top, bottom] of [[390, 844, 47, 34], [844, 390, 0, 21]]) {
+// 安全区：把 env() 变量按刘海机/带指示条真机的值注入，量顶栏是否加高、抽屉是否让位。
+// 横屏刘海在左右两侧（47px），竖屏在顶部（47）与底部（34 home 指示条）。
+for (const [w, h, top, bottom, lr] of [[390, 844, 47, 34, 0], [844, 390, 0, 21, 47]]) {
   const tab = await open('friends', w, h);
   await tab.waitForTimeout(500);
   const base = await tab.evaluate(() => ({
     bar: Math.round(document.querySelector('.vrc-topbar').getBoundingClientRect().height),
-    vars: ['--safe-top', '--safe-bottom'].map((k) => getComputedStyle(document.documentElement).getPropertyValue(k).trim()),
+    vars: ['--safe-top', '--safe-bottom', '--safe-left', '--safe-right'].map((k) => getComputedStyle(document.documentElement).getPropertyValue(k).trim()),
   }));
-  const r = await tab.evaluate(([t, b]) => {
+  const r = await tab.evaluate(([t, b, x]) => {
     document.documentElement.style.setProperty('--safe-top', `${t}px`);
     document.documentElement.style.setProperty('--safe-bottom', `${b}px`);
+    document.documentElement.style.setProperty('--safe-left', `${x}px`);
+    document.documentElement.style.setProperty('--safe-right', `${x}px`);
     const bar = document.querySelector('.vrc-topbar');
     const sd = document.querySelector('.vrc-sidebar');
+    const sb = document.querySelector('#vrc-statusbar');
+    const sbBox = sb.getBoundingClientRect();
     return {
+      barPadL: parseFloat(getComputedStyle(bar).paddingLeft),
+      barPadR: parseFloat(getComputedStyle(bar).paddingRight),
+      mainPadL: parseFloat(getComputedStyle(document.querySelector('main')).paddingLeft),
+      sdPadL: parseFloat(getComputedStyle(sd).paddingLeft),
+      sbPadBottom: parseFloat(getComputedStyle(sb).paddingBottom),
+      // 内容（图标/文字行）底边到视口底边的余量：home 指示条就压在这段里
+      sbGap: sb.firstElementChild ? Math.round(window.innerHeight - sb.firstElementChild.getBoundingClientRect().bottom) : -1,
+      over: getComputedStyle(document.querySelector('.workspace > div')).overscrollBehaviorY,
       barH: Math.round(bar.getBoundingClientRect().height),
       barPad: parseFloat(getComputedStyle(bar).paddingTop),
       sdPadTop: parseFloat(getComputedStyle(sd).paddingTop),
       sdPadBottom: parseFloat(getComputedStyle(sd).paddingBottom),
     };
-  }, [top, bottom]);
+  }, [top, bottom, lr]);
   check(`safe-area@${w}x${h}`, '安全区变量已定义', base.vars.join('/'), '全是长度值（0px 起）', base.vars.every((v) => /px$/.test(v)));
   check(`safe-area@${w}x${h}`, '顶栏让出刘海', `bar=${r.barH} pad=${r.barPad}（原 ${base.bar}）`, `≤39+${top} 且 pad=${top}`,
     r.barPad === top && r.barH >= 39 + top - 0.5 && r.barH <= 39 + top + 0.5);
   check(`safe-area@${w}x${h}`, '抽屉上下让位', `top=${r.sdPadTop} bottom=${r.sdPadBottom}`, `top=${top} bottom=${bottom}`,
     r.sdPadTop === top && r.sdPadBottom === bottom);
+  check(`safe-area@${w}x${h}`, '抽屉左右让位（横屏刘海）', `left=${r.sdPadL}`, `left=${lr}`,
+    r.sdPadL === lr);
+  check(`safe-area@${w}x${h}`, '顶栏左右让位（横屏刘海）', `left=${r.barPadL} right=${r.barPadR}`, `left=${14 + lr} right=${8 + lr}`,
+    r.barPadL === 14 + lr && r.barPadR === 8 + lr);
+  check(`safe-area@${w}x${h}`, '内容区左右让位', `main padding-left=${r.mainPadL}`, `${lr}`,
+    r.mainPadL === lr);
+  check(`safe-area@${w}x${h}`, '状态栏不被 home 指示条盖住', `内容底边距=${r.sbGap}px pad=${r.sbPadBottom}`, `≥${bottom} 且 pad=${bottom}`,
+    r.sbGap >= bottom - 0.5 && r.sbPadBottom === bottom);
+  check(`safe-area@${w}x${h}`, '滚动不外溢（不发下拉刷新）', r.over, 'contain', r.over === 'contain');
   await tab.close();
 }
 

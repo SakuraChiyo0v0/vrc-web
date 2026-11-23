@@ -22,6 +22,8 @@
      桌面与无刘海设备算出来就是 0px，不影响任何桌面量测。 */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
   --state-hover-surface: color-mix(in oklch, var(--foreground) 6%, transparent);
   --state-pressed-surface: color-mix(in oklch, var(--foreground) 10%, transparent);
   --state-selected-surface: color-mix(in oklab, var(--primary) 9%, transparent);
@@ -1428,7 +1430,13 @@ html[data-phone='1'] #root {
 
   /* 安全区：刘海机顶栏加高、抽屉上下让位，底部按钮不被 home 指示条盖住 */
   .vrc-topbar { height: calc(39px + var(--safe-top)); padding-top: var(--safe-top); }
-  .vrc-sidebar { padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+  .vrc-sidebar { padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); padding-left: var(--safe-left); padding-right: var(--safe-right); }
+  /* 横屏刘海在左右两侧：内容区整体内缩，否则最左的 ☰ 与最右的图标落在刘海下 */
+  main { padding-left: var(--safe-left); padding-right: var(--safe-right); }
+  /* 底部状态栏：home 指示条会盖住最后 34px（原来 bottom 正好等于视口底边） */
+  #vrc-statusbar { height: calc(35px + var(--safe-bottom)); padding-bottom: var(--safe-bottom); }
+  /* 触屏滚动：滚到尽头别把页面滚动/下拉刷新一起带走（滚动链外溢） */
+  .workspace > div, .feed-scroll { overscroll-behavior-y: contain; }
 
   /* iOS Safari：表单控件字号 <16px 时聚焦会把整页放大且不会自动还原（真机实测 12px 一碰就放大）。
      真机可用性优先于设计稿 12px —— 只在移动形态生效，桌面量测不受影响。
