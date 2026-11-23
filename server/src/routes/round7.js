@@ -21,8 +21,10 @@ const parseJson = (v) => {
   try { return JSON.parse(String(v)); } catch { return null; }
 };
 
-const OFFLINE = new Set(['offline', 'private', 'traveling']);
-const isOnline = (loc) => !!loc && !OFFLINE.has(String(loc));
+// 只有 'offline' 是真的离线；'private' / 'traveling' 的人还在 VRChat 里，算在线。
+// 真机「在线 12」= 世界栏 2 + 好友收藏 1 + 其他在线 6 + 位于私人房间 3，私人房间计入在线是实锤。
+const OFFLINE = new Set(['offline']);
+export const isOnline = (loc) => !!loc && !OFFLINE.has(String(loc));
 
 /** location 串 → 世界 / 实例 / 区域 / 访问级别（VRCX-0 右栏显示的「JP 世界名·公开」） */
 function parseLocation(loc) {

@@ -91,6 +91,13 @@ for (const [uid, name, tl, lang, st, loc, wid, wname] of extraFriends) {
       JSON.stringify([`language_${lang}`, 'system_trust_basic', 'system_trust_known']),
       0, at(now - 3 * MIN)]);
 }
+// 好友位置分栏演示：同一实例 2 人（世界栏成组）+ 在线私人房间（可折叠组）
+await ins(`insert into friend (user_id, display_name, trust_level, platform, status, status_description, location, world_id, world_name, icon_url, avatar_id, is_favorite, updated_at)
+           values (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+  ['usr_kudan', '旧日崩解', 'system_trust_trusted', 'standalonewindows', 'join me', '在挂机听歌', 'wrld_a:9~region(jp)', 'wrld_a', 'Alpha Club', null, 'av_2', 0, at(now - 4 * MIN)]);
+await ins(`insert into friend (user_id, display_name, trust_level, platform, status, status_description, location, world_id, world_name, icon_url, avatar_id, is_favorite, updated_at)
+           values (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+  ['usr_zk', 'ZKOAC', 'system_trust_known', 'standalonewindows', 'active', '喵喵可爱捏', 'private', null, null, null, 'av_3', 0, at(now - 5 * MIN)]);
 // 105 拼音搜索：中文名好友，用来截「xh → 小红」
 await ins(`insert into friend (user_id, display_name, trust_level, platform, status, location, world_id, world_name, icon_url, is_favorite, updated_at)
            values (?,?,?,?,?,?,?,?,?,?,?)`,

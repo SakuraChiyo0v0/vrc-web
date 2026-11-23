@@ -22,12 +22,27 @@ export const probeMain = (p) => p.evaluate(() => {
   const subnav = [...main.querySelectorAll('[data-subnav] button, .settings-subnav button')].map(txt);
   const grid = main.querySelector('.world-grid, .fav-grid, [data-grid]');
   const cols = grid ? getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length : null;
+  // 好友位置页卡片几何（spec.friends_locations 的像素量测）
+  const fc = main.querySelector('.loc-card');
+  const fav = fc?.querySelector('.avatar');
+  const fbody = fc?.querySelector('.loc-body');
+  const fcs = fc ? getComputedStyle(fc) : null;
+  const friendCard = fc ? {
+    h: Math.round(fc.getBoundingClientRect().height * 10) / 10,
+    w: Math.round(fc.getBoundingClientRect().width * 10) / 10,
+    avatar: Math.round((fav?.getBoundingClientRect().width ?? 0) * 10) / 10,
+    avatarRadius: fav ? getComputedStyle(fav).borderRadius : '',
+    borderW: fcs ? parseFloat(fcs.borderTopWidth) || 0 : 0,
+    bg: fcs?.backgroundColor ?? '',
+    lines: fbody ? fbody.children.length : 0,
+    heads: [...main.querySelectorAll('.loc-head .loc-title')].map(txt)
+  } : null;
   const cards = main.querySelectorAll('.card').length;
   const listRows = [...main.querySelectorAll('[data-list-row]')];
   const visRows = listRows.filter(inView);
   const cellsOf = (el) => [...el.querySelectorAll('[data-cell]')].map((c) => c.dataset.cell);
   return {
-    ths, tabs, subnav, gridCols: cols, cards,
+    ths, tabs, subnav, gridCols: cols, cards, friendCard,
     rows: visRows.length || trs.length,
     rowCells: trs[0]
       ? [...trs[0].children].filter((c) => !c.classList.contains('group-cell')).length
@@ -110,7 +125,20 @@ export function structureRows(page, got, want, pitch) {
   }
   if (want.empty_title) check('空态文案', got.emptyTitle || '(无)', want.empty_title, got.emptyTitle === want.empty_title);
   if (want.chips) check('chip', got.text.includes(want.chips[0]), want.chips.join('/'), want.chips.every((c) => got.text.includes(c)));
-  if (want.groups) {
+  if (want.kind === 'friend_grid') {
+    const c = got.friendCard;
+    check('卡片存在', c ? '有' : '无', '有', !!c);
+    if (c) {
+      check('卡片高', c.h, String(want.card_height), Math.abs(c.h - want.card_height) <= 1.5);
+      check('头像尺寸', c.avatar, String(want.avatar_size), Math.abs(c.avatar - want.avatar_size) <= 1);
+      check('头像正圆', c.avatarRadius, want.card_avatar_radius || '50%', c.avatarRadius === (want.card_avatar_radius || '50%'));
+      check('卡片边框', c.borderW, String(want.card_border_px ?? 1), c.borderW === (want.card_border_px ?? 1));
+      check('卡片行数', c.lines, `1~${want.lines_per_card}`, c.lines > 1 && c.lines <= want.lines_per_card);
+    }
+    check('分栏标题', (c?.heads ?? []).join('/'), want.groups.join('/'),
+      want.groups.every((g) => (c?.heads ?? []).some((h) => h.includes(g))));
+  }
+  if (want.kind !== 'friend_grid' && want.groups) {
     const ok = want.groups.every((g) => got.text.includes(g));
     check('分组标题', want.groups.filter((g) => got.text.includes(g)).join('/'), want.groups.join('/'), ok);
   }
@@ -129,4 +157,7 @@ export function structureRows(page, got, want, pitch) {
 }
 
 /** 有 structure 量测的页面（新增页面时加这里） */
-export const STRUCT_PAGES = ['search', 'feed', 'sessions', 'players', 'moderation', 'favorites', 'insights', 'friendlist', 'friendlog', 'gamelog', 'settings'];
+export const STRUCT_PAGES = ['search', 'feed', 'sessions', 'players', 'moderation', 'favorites', 'insights', 'friendlist', 'friendlog', 'gamelog', 'settings', 'locations'];
+
+/** spec 页名 → 我们的路由名（真机「好友位置」= 我们的 #/friends） */
+export const PAGE_ROUTES = { locations: 'friends' };

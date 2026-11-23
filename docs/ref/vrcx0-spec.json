@@ -22,12 +22,17 @@
   "_source": "docs/ref/feed-measure.json（scripts/measure_ref_feed.py 像素量测）"
  },
  "friends_locations": {
-  "columns": 2,
+  "_source": "docs/ref/vrcx0-locations.png 裁图（283,80 起 617×260）放大复核 + 卡片像素量测；2026-11-23 更正",
+  "columns": 6,
+  "columns_mobile": 2,
   "card_height": 96,
   "avatar_size": 56,
-  "card_border": "none",
-  "card_background": "transparent",
-  "lines_per_card": 4
+  "avatar_shape": "circle",
+  "card_border": "1px solid var(--stroke-subtle)",
+  "card_radius": 10,
+  "card_background": "var(--surface-panel)",
+  "lines_per_card": 4,
+  "_correction": "原记录 columns=2 / card_border=none / card_background=transparent 是手机档 + 误判；真机 1688 内窗内容宽 1398 时为 6 列白底细边框卡片"
  },
  "detail_panel": {
   "width": 244,
@@ -716,7 +721,26 @@
    },
    "nav_pill": null,
    "row_bands": 14,
-   "row_pitch": 49.5
+   "row_pitch": 49.5,
+   "structure": {
+    "_source": "docs/ref/vrcx0-locations.png：分栏标题 + 卡片几何 + 网格列数（与 friends_locations 同源）",
+    "kind": "friend_grid",
+    "grid_columns": 6,
+    "card_height": 96,
+    "avatar_size": 56,
+    "card_border_px": 1,
+    "card_avatar_radius": "50%",
+    "lines_per_card": 4,
+    "groups": [
+     "好友收藏",
+     "其他在线好友",
+     "位于私人房间"
+    ],
+    "_groups_note": "真机「在线」标签下的可见分组（世界栏标题随房间变化，不计入）；「离线」是独立标签页，不在这组断言里（vrcx0-locations.png 裁图复核）。",
+    "toolbar": [
+     "搜索好友"
+    ]
+   }
   },
   "moderation": {
    "_source": "measured docs/ref/vrcx0-moderation.png（scripts/measure_ref_chrome.py）",

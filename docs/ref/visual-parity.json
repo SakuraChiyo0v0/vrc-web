@@ -1,7 +1,7 @@
 {
   "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言",
-  "at": "2026-11-23T11:42:06.205Z",
-  "base": "http://127.0.0.1:8899",
+  "at": "2026-11-23T12:47:13.645Z",
+  "base": "http://127.0.0.1:8891",
   "pages": [
     "friends",
     "feed",
@@ -21,7 +21,8 @@
     "friendlist",
     "friendlog",
     "gamelog",
-    "settings"
+    "settings",
+    "locations"
   ],
   "asserted": [
     "friends",
@@ -42,12 +43,13 @@
     "friendlist",
     "friendlog",
     "gamelog",
-    "settings"
+    "settings",
+    "locations"
   ],
   "page_scores": {
     "friends": {
-      "pass": 71,
-      "total": 71,
+      "pass": 72,
+      "total": 72,
       "score": 100,
       "na": null,
       "diff": []
@@ -177,6 +179,13 @@
       "score": 100,
       "na": null,
       "diff": []
+    },
+    "locations": {
+      "pass": 69,
+      "total": 69,
+      "score": 100,
+      "na": null,
+      "diff": []
     }
   },
   "shots": [
@@ -200,39 +209,47 @@
     "settings"
   ],
   "chrome_rows": 60,
-  "pass": 181,
-  "total": 181,
+  "pass": 191,
+  "total": 191,
   "score": 100,
   "rows": [
     {
       "page": "friends",
       "key": "friends",
-      "name": "好友行高",
-      "ours": "32px",
-      "want": "32–40px",
+      "name": "好友卡片高",
+      "ours": "96px",
+      "want": "96px",
       "ok": true
     },
     {
       "page": "friends",
       "key": "friends",
       "name": "头像尺寸",
-      "ours": "22px",
-      "want": "≈56px(大方块)/40px(列表)",
+      "ours": "56px",
+      "want": "56px",
       "ok": true
     },
     {
       "page": "friends",
       "key": "friends",
-      "name": "行无边框底色",
-      "ours": "0px/rgba(0, 0, 0, 0)",
-      "want": "0px / transparent",
+      "name": "卡片细边框",
+      "ours": "1px",
+      "want": "1px",
+      "ok": true
+    },
+    {
+      "page": "friends",
+      "key": "friends",
+      "name": "卡片非透明底",
+      "ours": "oklch(0.987175 0 0)",
+      "want": "不透明",
       "ok": true
     },
     {
       "page": "friends",
       "key": "friends",
       "name": "字号档位",
-      "ours": "11/12/13/14",
+      "ours": "11/12/13",
       "want": "11/12/13/14",
       "ok": true
     },
@@ -784,7 +801,7 @@
       "page": "friends@1440",
       "key": "friends",
       "name": "friends 字号档位",
-      "ours": "11/12/13/14",
+      "ours": "11/12/13",
       "want": "11/12/13/14",
       "ok": true
     },
@@ -1651,6 +1668,78 @@
       "want": "启动/窗口与托盘",
       "ok": true,
       "key": "settings"
+    },
+    {
+      "page": "locations",
+      "name": "工具条",
+      "ours": "搜索好友",
+      "want": "搜索好友",
+      "ok": true,
+      "key": "locations"
+    },
+    {
+      "page": "locations",
+      "name": "网格列数",
+      "ours": "6",
+      "want": "6",
+      "ok": true,
+      "key": "locations"
+    },
+    {
+      "page": "locations",
+      "name": "卡片存在",
+      "ours": "有",
+      "want": "有",
+      "ok": true,
+      "key": "locations"
+    },
+    {
+      "page": "locations",
+      "name": "卡片高",
+      "ours": "96",
+      "want": "96",
+      "ok": true,
+      "key": "locations"
+    },
+    {
+      "page": "locations",
+      "name": "头像尺寸",
+      "ours": "56",
+      "want": "56",
+      "ok": true,
+      "key": "locations"
+    },
+    {
+      "page": "locations",
+      "name": "头像正圆",
+      "ours": "50%",
+      "want": "50%",
+      "ok": true,
+      "key": "locations"
+    },
+    {
+      "page": "locations",
+      "name": "卡片边框",
+      "ours": "1",
+      "want": "1",
+      "ok": true,
+      "key": "locations"
+    },
+    {
+      "page": "locations",
+      "name": "卡片行数",
+      "ours": "3",
+      "want": "1~4",
+      "ok": true,
+      "key": "locations"
+    },
+    {
+      "page": "locations",
+      "name": "分栏标题",
+      "ours": "JP Alpha Club · 公开/JP 夜の喫茶店 · 公开/好友收藏/其他在线好友/位于私人房间",
+      "want": "好友收藏/其他在线好友/位于私人房间",
+      "ok": true,
+      "key": "locations"
     }
   ]
 }

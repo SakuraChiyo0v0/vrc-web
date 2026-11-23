@@ -1,9 +1,9 @@
 {
   "_note": "由 scripts/structure_parity.mjs 生成：spec.pages[*].structure（真机截图量测）vs 我们的 DOM",
-  "at": "2026-11-23T11:39:23.140Z",
-  "base": "http://127.0.0.1:8899",
-  "pass": 46,
-  "total": 46,
+  "at": "2026-11-23T12:37:10.787Z",
+  "base": "http://127.0.0.1:8891",
+  "pass": 55,
+  "total": 55,
   "rows": [
     {
       "page": "search",
@@ -325,6 +325,69 @@
       "name": "分组标题",
       "ours": "启动/窗口与托盘",
       "want": "启动/窗口与托盘",
+      "ok": true
+    },
+    {
+      "page": "locations",
+      "name": "工具条",
+      "ours": "搜索好友",
+      "want": "搜索好友",
+      "ok": true
+    },
+    {
+      "page": "locations",
+      "name": "网格列数",
+      "ours": "6",
+      "want": "6",
+      "ok": true
+    },
+    {
+      "page": "locations",
+      "name": "卡片存在",
+      "ours": "有",
+      "want": "有",
+      "ok": true
+    },
+    {
+      "page": "locations",
+      "name": "卡片高",
+      "ours": "96",
+      "want": "96",
+      "ok": true
+    },
+    {
+      "page": "locations",
+      "name": "头像尺寸",
+      "ours": "56",
+      "want": "56",
+      "ok": true
+    },
+    {
+      "page": "locations",
+      "name": "头像正圆",
+      "ours": "50%",
+      "want": "50%",
+      "ok": true
+    },
+    {
+      "page": "locations",
+      "name": "卡片边框",
+      "ours": "1",
+      "want": "1",
+      "ok": true
+    },
+    {
+      "page": "locations",
+      "name": "卡片行数",
+      "ours": "3",
+      "want": "1~4",
+      "ok": true
+    },
+    {
+      "page": "locations",
+      "name": "分栏标题",
+      "ours": "JP Alpha Club · 公开/JP 夜の喫茶店 · 公开/好友收藏/其他在线好友/位于私人房间",
+      "want": "好友收藏/其他在线好友/位于私人房间",
       "ok": true
     }
   ]

@@ -10,7 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { probeMain, structureRows, STRUCT_PAGES } from './lib/page_structure.mjs';
+import { probeMain, structureRows, STRUCT_PAGES, PAGE_ROUTES } from './lib/page_structure.mjs';
 
 const req = createRequire(import.meta.url);
 let pw;
@@ -61,7 +61,7 @@ async function go(page, want = {}) {
 for (const page of STRUCT_PAGES) {
   const want = SPEC.pages?.[page]?.structure;
   if (!want) { rows.push({ page, name: '结构记录', ours: '无', want: 'spec.pages 有 structure', ok: true }); continue; }
-  const got = await go(page, want);
+  const got = await go(PAGE_ROUTES[page] || page, want);
   rows.push(...structureRows(page, got, want, SPEC.pages?.[page]?.row_pitch));
 }
 

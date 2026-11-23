@@ -86,8 +86,10 @@ let p = await open('friends', { ready: '.friend-row:not(.list-head), .card' });
 await shot(p, 'friends-1440.png');
 
 const measured = await p.evaluate(() => {
-  const row = document.querySelector('.friend-row:not(.list-head)');
-  const avatar = document.querySelector('.friend-row:not(.list-head) .avatar');
+  // 默认网格：真机好友位置页是 96px 白底 1px 细边框卡片（spec.friends_locations），
+  // 不是旧版 32–40 的紧凑列表行；列表视图是我们自己的额外档位，真机截图里没有
+  const row = document.querySelector('.loc-card') || document.querySelector('.friend-row:not(.list-head)');
+  const avatar = row?.querySelector('.avatar') || document.querySelector('.friend-row:not(.list-head) .avatar');
   const navItem = document.querySelector('aside button, nav button');
   const cs = row ? getComputedStyle(row) : null;
   return {
@@ -101,9 +103,15 @@ const measured = await p.evaluate(() => {
 });
 const friendSizes = await fontSizesOf(p);
 
-check('好友行高', `${measured.rowHeight}px`, '32–40px', measured.rowHeight != null && measured.rowHeight <= 40);
-check('头像尺寸', `${measured.avatarSize}px`, '≈56px(大方块)/40px(列表)', measured.avatarSize != null && measured.avatarSize >= 22);
-check('行无边框底色', `${measured.rowBorder}/${measured.rowBg}`, '0px / transparent', measured.rowBorder === '0px');
+// 基准取 spec.friends_locations（2026-11-23 真机复核：6 列 96px 卡片 / 56 头像 / 1px 边框 / 白底）
+const FL = SPEC.friends_locations;
+const flBorder = FL.card_border_px ?? (parseFloat(FL.card_border) || 1);
+check('好友卡片高', `${measured.rowHeight}px`, `${FL.card_height}px`,
+  measured.rowHeight != null && Math.abs(measured.rowHeight - FL.card_height) <= 1.5);
+check('头像尺寸', `${measured.avatarSize}px`, `${FL.avatar_size}px`, measured.avatarSize === FL.avatar_size);
+check('卡片细边框', measured.rowBorder, `${flBorder}px`, measured.rowBorder === `${flBorder}px`);
+check('卡片非透明底', measured.rowBg, '不透明',
+  !!measured.rowBg && measured.rowBg !== 'transparent' && measured.rowBg !== 'rgba(0, 0, 0, 0)');
 check('字号档位', friendSizes.join('/'), ALLOWED.join('/'), offSpec(friendSizes).length === 0);
 check('数字等宽', measured.tabular, 'tabular-nums', String(measured.tabular).includes('tabular'));
 

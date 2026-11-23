@@ -1255,3 +1255,67 @@ html[data-phone='1'] #root {
 }
 .tb-icon:hover { background: var(--surface-raised); color: var(--content-primary); }
 .tb-icon[data-active='true'] { background: var(--state-selected-surface); color: var(--content-primary); }
+
+/* ══ 好友位置页：按 docs/ref/vrcx0-locations.png 复刻 ══
+ * 分栏：组头（区域码 + 世界名·访问 + 圆形人数徽标，私人房间可折叠）+ 卡片网格。
+ * 卡片量测来自 spec.friends_locations：高 96 / 头像 56 / 无边框 / 透明底 / 4 行文字；
+ * 列数按真机档：≥1600 六列、1280–1599 四列、768–1279 三列、<768 两列（spec columns 2 = 手机档）。
+ */
+.loc-groups { display: flex; flex-direction: column; gap: 14px; }
+.loc-head {
+  display: flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 2px; font-size: 12px;
+  color: var(--content-secondary);
+}
+.loc-head[data-collapsible] { cursor: pointer; user-select: none; }
+.loc-code {
+  flex: none; font-size: 11px; line-height: 14px; padding: 0 4px;
+  border: 1px solid var(--stroke-subtle); border-radius: 4px;
+  color: var(--platform-pc); font-variant-numeric: tabular-nums;
+}
+.loc-title { color: var(--content-primary); }
+.loc-count {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  min-width: 16px; height: 16px; padding: 0 4px; margin-left: 2px;
+  border-radius: 8px; background: var(--surface-raised);
+  font-size: 11px; color: var(--content-tertiary);
+}
+.loc-caret { flex: none; color: var(--content-tertiary); transition: transform .15s; }
+.loc-caret[data-open='true'] { transform: rotate(90deg); }
+.loc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+/* 卡片本体：注意它同时带 .friend-row（旧测试/截图脚本的选择器），这里把行样式整体覆盖成卡片。
+ * 真机裁图（docs/ref/vrcx0-locations.png 283,80 起放大）确认：白底卡片 + 1px 浅灰边框 + 圆角，
+ * 头像为正圆（不是圆角方形）。 */
+.loc-card {
+  display: flex; align-items: flex-start; gap: 8px;
+  height: 96px; min-height: 0; padding: 8px;
+  border: 1px solid var(--stroke-subtle); border-radius: 10px; background: var(--surface-panel);
+  grid-template-columns: none; grid-template-areas: none;
+}
+.loc-card + .loc-card { box-shadow: none; }
+.loc-card:hover { background: var(--state-hover-surface); }
+.loc-card .avatar { flex: none; width: 56px; height: 56px; border-radius: 50%; }
+.loc-card .avatar img { border-radius: 50%; }
+.loc-card .dot { width: 10px; height: 10px; right: -2px; bottom: -2px; }
+.loc-body { min-width: 0; display: flex; flex-direction: column; gap: 1px; font-size: 11px; }
+.loc-name {
+  min-width: 0; display: flex; align-items: center; gap: 3px;
+  font-size: 13px; color: var(--content-primary);
+}
+.loc-star { flex: none; font-size: 11px; color: var(--status-joinme); }
+.loc-dur { color: var(--content-tertiary); }
+.loc-world { min-width: 0; display: flex; align-items: center; gap: 4px; color: var(--content-tertiary); }
+.loc-status {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--content-secondary);
+}
+/* 真机 1688 宽窗口、内容 1398 → 6 列（一屏 12 张卡按 6+6 铺）；窗口变窄按 5/4/3 列递减 */
+@media (min-width: 768px) { .loc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .loc-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1200px) { .loc-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+@media (min-width: 1450px) { .loc-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+@media (max-width: 767px) {
+  .loc-card { height: auto; min-height: 76px; }
+  .loc-card .avatar { width: 40px; height: 40px; }
+  .loc-name { font-size: 12px; }
+}

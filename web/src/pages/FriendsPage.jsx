@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
-import { api, BASE, imgUrl } from '../api.js';
+import { useMemo, useState } from 'react';
+import { api, imgUrl } from '../api.js';
 import { useDrawer } from '../components/drawers.jsx';
 import UserHoverCard from '../components/UserHoverCard.jsx';
 import Skeleton from '../components/Skeleton.jsx';
 import { SortCol } from '../components/SortHead.jsx';
 import { csvFilename, downloadCsv, toCsv } from '../lib/csv.js';
+import { groupFriendsByLocation } from '../lib/locationGroups.js';
 import { matchText } from '../lib/pinyin.js';
 import { usePref, useSort } from '../lib/prefs.js';
 import { SORT_COLUMNS, sortRows } from '../lib/sort.js';
@@ -26,17 +27,6 @@ const TABS = [
   ['active', '活跃中'],
   ['offline', '离线']
 ];
-
-function locLabel(f) {
-  if (!f.location) return '未知';
-  if (f.location === 'offline') return '离线';
-  if (f.location === 'private') return '私密世界';
-  if (f.location === 'traveling') return '切换中';
-  // 世界元数据拉不到（私有/已删除/接口失败）时显示人话，不要把 wrld_xxx 甩给用户
-  if (f.world_name) return f.world_name;
-  if (String(f.location).startsWith('wrld_')) return '未知世界';
-  return f.location;
-}
 
 /** 79 在线时长：真机为「36分钟」这种短写法，超过 24h 才带天 */
 function dur(m) {
@@ -72,54 +62,57 @@ function Platform({ p }) {
   return <span className="plat" data-p={key}>{label}</span>;
 }
 
-function fmtMinutes(m) {
-  const n = Number(m ?? 0);
-  if (n < 60) return `${n} 分钟`;
-  return `${Math.floor(n / 60)} 小时 ${n % 60} 分`;
-}
-
-/** 44 今日摘要：在线时长 / 遇到的人 / 新世界 */
-function TodaySummary() {
-  const { data } = useQuery({
-    queryKey: ['summary-today'],
-    queryFn: () => api('summary/today'),
-    refetchInterval: 30_000
-  });
-  const cards = [
-    ['今日在线', fmtMinutes(data?.onlineMinutes), '自己待在房间里的累计时长'],
-    ['遇到的人', data?.players ?? 0, '今天同房过的人'],
-    ['新世界', data?.newWorlds ?? 0, '第一次去的世界']
-  ];
-  // 82 全 0 时三张卡只剩空壳，折叠成一行；有任一数据才铺开
-  const blank =
-    !data ||
-    (Number(data.onlineMinutes ?? 0) === 0 && Number(data.players ?? 0) === 0 && Number(data.newWorlds ?? 0) === 0);
-  if (data && blank) {
-    return <div className="summary-empty">今天还没有活动记录</div>;
-  }
+/**
+ * 真机卡片（docs/ref/vrcx0-locations.png + spec.friends_locations）：
+ * 头像 56（正圆）· 卡片高 96 · 白底 1px 浅灰边框 · 名字 / 在线时长 / 区域+世界·访问 / 状态消息 四行。
+ * 世界栏里的卡片不重复世界名（栏头已写）；私人房间卡不显示在线时长（真机只留名字+状态）。
+ */
+function LocCard({ f, showWorld, showDur, openFriend }) {
+  const world = f.world_name ?? '未知世界';
+  const status = f.status_description || f.status || '';
   return (
-    <div className="mb-3 summary-grid">
-      {cards.map(([label, value, hint]) => (
-        <div key={label} className="card px-3 py-2" title={hint}>
-          <div className="label-xs">{label}</div>
-          <div className="mt-0.5 text-[14px] tabular-nums">{value}</div>
-          <div className="truncate text-[11px] text-fg3">{hint}</div>
+    <div
+      className="friend-row loc-card"
+      data-user={f.user_id}
+      data-online={f.online ? '1' : '0'}
+      onClick={() => openFriend(f.user_id)}
+    >
+      <UserHoverCard id={f.user_id}>
+        <Avatar f={f} />
+      </UserHoverCard>
+      <div className="loc-body">
+        <div className="loc-name">
+          <span className="truncate">{f.display_name ?? f.user_id}</span>
+          {f.favorite ? <span className="loc-star">★</span> : null}
         </div>
-      ))}
+        {showDur ? (
+          <div className="loc-dur tabular-nums">{f.online ? dur(f.online_minutes) : '离线'}</div>
+        ) : null}
+        {showWorld && f.online ? (
+          <div className="loc-world">
+            {f.region ? <span className="loc-code">{String(f.region).toUpperCase()}</span> : null}
+            <span className="truncate">{world}{f.access_label ? ` · ${f.access_label}` : ''}</span>
+          </div>
+        ) : null}
+        <div className="loc-status" title={status}>{status || (f.online ? '…' : '')}</div>
+      </div>
     </div>
   );
 }
 
 /**
- * 78/79 好友位置：顶部五个可点标签（计数来自 /api/roster），
- * 每条 = 头像+在线点+名字+状态+区域+在线时长+世界·访问级别。
- * 数据走 roster（与右栏同一份来源），不再另外算一遍。
+ * 78/79 好友位置：按真机 locations 页复刻 ——
+ *   工具栏（网格/列表切换 + 在线/收藏/同房/活跃/离线标签 + 搜索）
+ *   → 分栏：同实例 ≥2 人成世界栏；单人 → 好友收藏 / 其他在线好友 / 位于私人房间；离线垫底
+ *   → 网格视图 6 列卡片（手机 2 列），列表视图保留紧凑行
  */
 export default function FriendsPage() {
-  // 102 标签 / 搜索词 / 排序都记在 localStorage，刷新后保持
+  // 102 标签 / 搜索词 / 排序 / 视图都记在 localStorage，刷新后保持
   const [tab, setTab] = usePref('friends:tab', 'online');
   const [q, setQ] = usePref('friends:q', '');
+  const [view, setView] = usePref('friends:view', 'grid');
   const [sort, onSort] = useSort('friends', 'name');
+  const [closed, setClosed] = useState(() => localStorage.getItem('friends:private-closed') === '1');
   const { openFriend } = useDrawer();
   const { data, isLoading } = useQuery({
     queryKey: ['roster'],
@@ -128,8 +121,8 @@ export default function FriendsPage() {
   });
 
   const facets = data?.facets ?? {};
-  const groups = useMemo(() => {
-    const list = (data?.friends ?? []).filter((f) => {
+  const list = useMemo(() => {
+    const rows = (data?.friends ?? []).filter((f) => {
       if (!matchText(f.display_name, q)) return false;
       if (tab === 'offline') return !f.online;
       if (tab === 'online') return f.online;
@@ -138,17 +131,13 @@ export default function FriendsPage() {
       if (tab === 'active') return f.active;
       return true;
     });
-    const map = new Map();
-    for (const f of sortRows(list, SORT_COLUMNS.friends, sort.key, sort.dir)) {
-      const k = locLabel(f);
-      if (!map.has(k)) map.set(k, []);
-      map.get(k).push(f);
-    }
-    return [...map.entries()].sort((a, b) => b[1].length - a[1].length);
+    return sortRows(rows, SORT_COLUMNS.friends, sort.key, sort.dir);
   }, [data, q, tab, sort]);
 
-  // 103 导出行 = 页面上这几行（同一份 groups 展开），不另外请求接口
-  const shown = groups.flatMap(([, people]) => people);
+  const groups = useMemo(() => groupFriendsByLocation(list), [list]);
+  const shown = list;
+
+  // 103 导出行 = 页面上这几行，不另外请求接口
   const exportNow = () => {
     const { text, rows } = toCsv([
       { key: 'display_name', label: '名字' },
@@ -161,12 +150,34 @@ export default function FriendsPage() {
     return rows;
   };
 
+  const togglePrivate = () => {
+    const v = !closed;
+    setClosed(v);
+    localStorage.setItem('friends:private-closed', v ? '1' : '0');
+  };
+
   return (
     <div className="p-4">
-      <TodaySummary />
-
-      {/* 78 一排可点标签，当前项加深（chip[data-active]） */}
+      {/* 真机工具栏：左侧网格/列表切换 + 一排可点标签，右侧搜索 */}
       <div className="mb-2 flex flex-wrap items-center gap-1.5">
+        <button
+          className="chip"
+          data-view="grid"
+          aria-pressed={view === 'grid'}
+          title="网格视图（按所在世界分栏）"
+          onClick={() => setView('grid')}
+        >
+          ▦
+        </button>
+        <button
+          className="chip"
+          data-view="list"
+          aria-pressed={view === 'list'}
+          title="列表视图（紧凑行）"
+          onClick={() => setView('list')}
+        >
+          ☷
+        </button>
         {TABS.map(([key, label]) => (
           <button
             key={key}
@@ -178,9 +189,17 @@ export default function FriendsPage() {
             {label} <span className="tabular-nums opacity-70">{facets[key] ?? 0}</span>
           </button>
         ))}
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="搜索好友"
+          aria-label="搜索好友"
+          className="ml-auto h-8 min-w-0 rounded-lg border px-2.5 text-[12px] outline-none"
+          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)', color: 'var(--content-primary)', width: 220 }}
+        />
         {/* 103 导出跟随当前 tab + 搜索 + 排序 */}
         <button
-          className="chip ml-auto"
+          className="chip"
           data-export="friends"
           data-export-rows={shown.length}
           disabled={shown.length === 0}
@@ -189,16 +208,6 @@ export default function FriendsPage() {
         >
           导出 CSV
         </button>
-      </div>
-
-      <div className="mb-3 flex items-center gap-2">
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="搜索好友"
-          className="h-8 min-w-0 flex-1 rounded-lg border px-2.5 text-[12px] outline-none sm:w-60 sm:flex-none"
-          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-panel)', color: 'var(--content-primary)' }}
-        />
         <span className="text-[12px] text-fg3" data-count="filtered">
           {shown.length} / {data?.total ?? 0} 人
         </span>
@@ -206,51 +215,93 @@ export default function FriendsPage() {
 
       {isLoading ? <Skeleton rows={6} cols={3} /> : null}
 
-      {/* 101 列头即排序：名字 / 状态 / 世界 / 在线时长，箭头指示方向（手机端隐藏，排序仍生效） */}
-      <div className="friend-row list-head" data-sort-head="friends">
-        <span />
-        <SortCol section="friends" col="name" sort={sort} onSort={onSort} />
-        <SortCol section="friends" col="status" sort={sort} onSort={onSort} />
-        <SortCol section="friends" col="world" sort={sort} onSort={onSort} />
-        <span />
-        <span />
-        <SortCol section="friends" col="duration" sort={sort} onSort={onSort} className="justify-end" />
-      </div>
+      {view === 'grid' ? (
+        <div className="loc-groups" data-view="grid">
+          {groups.map((g) => {
+            const isPrivate = g.type === 'private';
+            const collapsed = isPrivate && closed;
+            return (
+              <section key={g.key} className="loc-group" data-group={g.type} data-group-key={g.key}>
+                {/* 组头：区域码 + 世界名 + 访问级别 + 人数徽标（真机灰色圆徽）；私人房间可折叠 */}
+                <header
+                  className="loc-head"
+                  onClick={isPrivate ? togglePrivate : undefined}
+                  data-collapsible={isPrivate ? '1' : undefined}
+                >
+                  {g.region ? <span className="loc-code">{g.region}</span> : null}
+                  <span className="loc-title truncate">{g.label}</span>
+                  <span className="loc-count tabular-nums">{g.rows.length}</span>
+                  {isPrivate ? <span className="loc-caret" data-open={collapsed ? 'false' : 'true'}>›</span> : null}
+                </header>
+                {collapsed ? null : (
+                  <div className="loc-grid" data-grid="friends-locations">
+                    {g.rows.map((f) => (
+                      <LocCard
+                        key={f.user_id}
+                        f={f}
+                        showWorld={g.type !== 'world'}
+                        showDur={g.type !== 'private'}
+                        openFriend={openFriend}
+                      />
+                    ))}
+                  </div>
+                )}
+              </section>
+            );
+          })}
+          {!isLoading && groups.length === 0 ? (
+            <div className="card p-8 text-center text-[12px] text-fg3">这个筛选下没有人</div>
+          ) : null}
+        </div>
+      ) : (
+        <>
+          {/* 101 列头即排序：名字 / 状态 / 世界 / 在线时长（手机端隐藏，排序仍生效） */}
+          <div className="friend-row list-head" data-sort-head="friends">
+            <span />
+            <SortCol section="friends" col="name" sort={sort} onSort={onSort} />
+            <SortCol section="friends" col="status" sort={sort} onSort={onSort} />
+            <SortCol section="friends" col="world" sort={sort} onSort={onSort} />
+            <span />
+            <span />
+            <SortCol section="friends" col="duration" sort={sort} onSort={onSort} className="justify-end" />
+          </div>
 
-      {/* 61 单列 32px 行列表（VRCX-0 compact 档），不再三列卡片网格 */}
-      <div className="flex flex-col gap-2">
-        {groups.map(([world, people]) => (
-          <section key={world} className="card overflow-hidden">
-            <div className="group-head" style={{ background: 'var(--surface-raised)' }}>
-              <span className="truncate font-medium">{world}</span>
-              <span className="shrink-0 whitespace-nowrap tabular-nums text-fg3">{people.length} 人</span>
-            </div>
-            <div className="flex flex-col p-1">
-              {people.map((f) => (
-                <div key={f.user_id} className="friend-row" data-user={f.user_id} onClick={() => openFriend(f.user_id)}>
-                  <UserHoverCard id={f.user_id}>
-                    <Avatar f={f} />
-                  </UserHoverCard>
-                  <span className="fr-name">{f.display_name ?? f.user_id}</span>
-                  {/* 84 三态语义色：与头像 dot 同一批 CSS 变量，不再一律灰 */}
-                  <span className="fr-status st" data-s={f.status ?? 'offline'} title={f.status_description ?? f.status ?? ''}>
-                    {f.status ?? '—'}
-                    {f.status_description ? `「${f.status_description}」` : ''}
-                  </span>
-                  {/* 79 「世界名·公开」+ 区域 + 在线时长 */}
-                  <span className="fr-world">{f.online ? `${f.world_name ?? '未知世界'}·${f.access_label ?? '公开'}` : '—'}</span>
-                  <span className={`fr-reg${f.region ? ' reg' : ''}`}>{f.region ? String(f.region).toUpperCase() : ''}</span>
-                  <span className="fr-plat">{f.platform ? <Platform p={f.platform} /> : null}</span>
-                  <span className="fr-dur tabular-nums">{f.online ? dur(f.online_minutes) : ''}</span>
+          <div className="flex flex-col gap-2">
+            {groups.map((g) => (
+              <section key={g.key} className="card overflow-hidden">
+                <div className="group-head" style={{ background: 'var(--surface-raised)' }}>
+                  {g.region ? <span className="loc-code">{g.region}</span> : null}
+                  <span className="truncate font-medium">{g.label}</span>
+                  <span className="shrink-0 whitespace-nowrap tabular-nums text-fg3">{g.rows.length} 人</span>
                 </div>
-              ))}
-            </div>
-          </section>
-        ))}
-        {!isLoading && groups.length === 0 ? (
-          <div className="card p-8 text-center text-[12px] text-fg3">这个筛选下没有人</div>
-        ) : null}
-      </div>
+                <div className="flex flex-col p-1">
+                  {g.rows.map((f) => (
+                    <div key={f.user_id} className="friend-row" data-user={f.user_id} onClick={() => openFriend(f.user_id)}>
+                      <UserHoverCard id={f.user_id}>
+                        <Avatar f={f} />
+                      </UserHoverCard>
+                      <span className="fr-name">{f.display_name ?? f.user_id}</span>
+                      {/* 84 三态语义色：与头像 dot 同一批 CSS 变量，不再一律灰 */}
+                      <span className="fr-status st" data-s={f.status ?? 'offline'} title={f.status_description ?? f.status ?? ''}>
+                        {f.status ?? '—'}
+                        {f.status_description ? `「${f.status_description}」` : ''}
+                      </span>
+                      {/* 79 「世界名·公开」+ 区域 + 在线时长 */}
+                      <span className="fr-world">{f.online ? `${f.world_name ?? '未知世界'}·${f.access_label ?? '公开'}` : '—'}</span>
+                      <span className={`fr-reg${f.region ? ' reg' : ''}`}>{f.region ? String(f.region).toUpperCase() : ''}</span>
+                      <span className="fr-plat">{f.platform ? <Platform p={f.platform} /> : null}</span>
+                      <span className="fr-dur tabular-nums">{f.online ? dur(f.online_minutes) : ''}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ))}
+            {!isLoading && groups.length === 0 ? (
+              <div className="card p-8 text-center text-[12px] text-fg3">这个筛选下没有人</div>
+            ) : null}
+          </div>
+        </>
+      )}
     </div>
   );
 }
