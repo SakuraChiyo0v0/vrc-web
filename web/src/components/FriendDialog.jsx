@@ -14,7 +14,7 @@ const TABS = [
   ['favworlds', '收藏的世界'],
   ['avatars', '创建的模型'],
   ['activity', '活动记录'],
-  ['json', '原始 JSON'],
+  ['json', '原始 JSON 信息'],
 ];
 
 const LANG = { language_zho: '中文', language_yue: '粤语', language_eng: '英语', language_jpn: '日语', language_kor: '韩语' };

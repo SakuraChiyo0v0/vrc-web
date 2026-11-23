@@ -93,7 +93,7 @@ check('字号档位', friendSizes.join('/'), ALLOWED.join('/'), offSpec(friendSi
 check('数字等宽', measured.tabular, 'tabular-nums', String(measured.tabular).includes('tabular'));
 
 // ══ 2. 动态页（表格四列） ══
-await open('feed', { ready: 'thead th' });
+p = await open('feed', { ready: 'thead th' });
 await shot(p, 'feed-1440.png');
 const feed = await p.evaluate(() => {
   const ths = [...document.querySelectorAll('thead th')].map((t) => t.textContent.trim());
@@ -115,88 +115,62 @@ check('动态无头像', String(feed.hasAvatar), 'false', feed.hasAvatar === fal
 check('表头不大写', feed.headerTransform, 'none', feed.headerTransform === 'none');
 check('动态字号档位', feedSizes.join('/'), ALLOWED.join('/'), offSpec(feedSizes).length === 0);
 
-// ══ 3. 好友抽屉（回好友位置页点第一行） ══
-await open('friends', { ready: '.friend-row:not(.list-head)' });
-// 固定开 Alice（演示库里唯一有会话/世界记录的人），否则数据 tab 的横条会空
+// ══ 3. 好友详情模态（1025×546 居中，量测自 docs/ref/vrcx0-friend.png） ══
+// 真机是「大模态工作台」不是窄抽屉：左资料栏 285 + 右水平 tab + 双列卡片（419/256，栏距 15）。
+p = await open('friends', { width: 1280, height: 756, fresh: true, ready: '.friend-row:not(.list-head)' });
 await p.locator('.friend-row[data-user="usr_alice"]').click({ timeout: 8000, force: true }).catch(async () => {
   await p.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true }).catch(() => {});
 });
 await p.waitForSelector('.fd-card', { timeout: 12000 }).catch(() => {});
-await p.waitForTimeout(600);
-const drawer = await p.evaluate(() => {
-  const av = document.querySelector('.fd-avatar, .fd-card .avatar');
-  // tab 名要干净：徽章数字（概览309）不算名字
-  const tabs = [...document.querySelectorAll('[role="tab"]')].map((t) => t.textContent.replace(/\d+/g, '').trim());
-  const head = document.querySelector('.drawer-head');
+await p.waitForTimeout(800);
+const FM = SPEC.friend_modal;
+const fm = await p.evaluate(() => {
+  const rect = (s) => { const e = document.querySelector(s); if (!e) return null; const b = e.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height }; };
+  const card = rect('.fd-card');
+  const cs = card && document.querySelector('.fd-card') ? getComputedStyle(document.querySelector('.fd-card')) : null;
+  const left = rect('.fd-left');
+  const grid = document.querySelector('.fd-grid');
+  const gcs = grid ? getComputedStyle(grid) : null;
+  const tabs = [...document.querySelectorAll('.fd-tabs button')].map((t) => t.textContent.replace(/\d+/g, '').trim());
   return {
-    avatar: av ? Math.round(av.getBoundingClientRect().width) : null,
-    tabs: tabs.length,
+    w: card ? Math.round(card.w) : null,
+    h: card ? Math.round(card.h) : null,
+    centerDx: card ? Math.round(card.x + card.w / 2 - window.innerWidth / 2) : null,
+    pad: cs ? Math.round(parseFloat(cs.paddingTop)) : null,
+    radius: cs ? Math.round(parseFloat(cs.borderTopLeftRadius)) : null,
+    leftW: left ? Math.round(left.w) : null,
+    leftRatio: left && card ? +(left.w / card.w).toFixed(3) : null,
+    cols: gcs ? gcs.gridTemplateColumns.split(' ').map((v) => Math.round(parseFloat(v))) : [],
+    colGap: gcs ? Math.round(parseFloat(gcs.columnGap)) : null,
+    tabCount: tabs.length,
     tabLabels: tabs.join('/'),
-    hasBadge: !!document.querySelector('.badge, .chip[data-tone]'),
-    headerPx: head ? parseFloat(getComputedStyle(head).fontSize) : null
+    panels: [...document.querySelectorAll('.fd-panel h4')].map((h) => h.textContent.trim())
   };
 });
-// 头像降级首字母是 80px 头像里的装饰字形（与 .thumb-empty 同类），不算正文字号档位；
-// 演示库的头像 id 是假的（av_1…），图片必然 403，不排除会让 demo 跑出假低分。
-const drawerSizes = await fontSizesOf(p, ['.avatar-fallback', '.thumb-empty']);
+// 头像降级首字母/缩略图占位是装饰字形，不算正文字号档位
+const modalSizes = await fontSizesOf(p, ['.avatar-fallback', '.thumb-empty']);
 
-check('抽屉头像', `${drawer.avatar}px`, '≥72px', drawer.avatar != null && drawer.avatar >= 72);
-check('抽屉 tab 数', drawer.tabs, String(SPEC.user_dialog.tab_count), drawer.tabs === SPEC.user_dialog.tab_count);
-check('抽屉 tab 名', drawer.tabLabels, SPEC.user_dialog.tab_labels.join('/'), drawer.tabLabels === SPEC.user_dialog.tab_labels.join('/'));
-check('抽屉字号档位', drawerSizes.join('/'), ALLOWED.join('/'), offSpec(drawerSizes).length === 0);
-await shot(p, 'drawer-1440.png');
+check('模态宽', `${fm.w}px`, `${FM.modal.w}px`, fm.w != null && Math.abs(fm.w - FM.modal.w) <= 2);
+check('模态高', `${fm.h}px`, `${FM.modal.h}px`, fm.h != null && Math.abs(fm.h - FM.modal.h) <= 2);
+check('模态水平居中', `${fm.centerDx}px 偏移`, '±2px', fm.centerDx != null && Math.abs(fm.centerDx) <= 2);
+check('模态内边距', `${fm.pad}px`, `${FM.modal.padding}px`, fm.pad === FM.modal.padding);
+check('模态圆角', `${fm.radius}px`, `${FM.modal.radius}px`, fm.radius === FM.modal.radius);
+check('左资料栏宽', `${fm.leftW}px`, `${FM.left_column.w}px`, fm.leftW != null && Math.abs(fm.leftW - FM.left_column.w) <= 2);
+check('左栏占比', fm.leftRatio, String(FM.left_column.ratio_of_modal), fm.leftRatio != null && Math.abs(fm.leftRatio - FM.left_column.ratio_of_modal) <= 0.01);
+check('双列卡片宽', fm.cols.join('/'), FM.card_columns.map((c) => c.w).join('/'), fm.cols.length === 2 && fm.cols.every((w, i) => Math.abs(w - FM.card_columns[i].w) <= 4));
+check('卡片栏距', `${fm.colGap}px`, `${FM.column_gap}px`, fm.colGap === FM.column_gap);
+check('模态 tab 数', fm.tabCount, String(FM.tab_count), fm.tabCount === FM.tab_count);
+check('模态 tab 名', fm.tabLabels, FM.tab_labels.join('/'), fm.tabLabels === FM.tab_labels.join('/'));
+check('信息 tab 四张卡', fm.panels.join('/'), '当前状态/个人资料详情/个人简介/活动摘要', ['当前状态', '个人资料详情', '个人简介', '活动摘要'].every((t) => fm.panels.includes(t)));
+check('模态字号档位', modalSizes.join('/'), ALLOWED.join('/'), offSpec(modalSizes).length === 0);
+await shot(p, 'friend-modal-1280.png');
 
-// 181 数据 tab：三块图表要真的画出来，且柱体不溢出、热力图是 7×24
-await p.locator('[role="tab"][data-tab="data"]').click({ timeout: 8000 }).catch(() => {});
-await p.waitForSelector('[data-panel="data"]:not([hidden])', { timeout: 10000 }).catch(() => {});
-await p.waitForTimeout(1000);
-const charts = await p.evaluate(() => {
-  const bars = [...document.querySelectorAll('[data-chart="duration"] .dc-bar')];
-  const fills = bars.map((b) => {
-    const f = b.querySelector('.dc-bar-fill');
-    return f ? { bar: b.getBoundingClientRect().height, fill: f.getBoundingClientRect().height, op: Number(getComputedStyle(f).opacity) } : null;
-  });
-  const heat = document.querySelectorAll('[data-chart="heat"] [data-heat-row]');
-  const heatCells = [...heat].map((r) => r.children.length - 1); // 首列是周几标签
-  const wrows = [...document.querySelectorAll('[data-chart="worlds"] .dc-row')];
-  const wbars = wrows.map((r) => {
-    const fill = r.querySelector('.dc-row-bar > span');
-    const track = r.querySelector('.dc-row-bar');
-    return track && fill ? fill.getBoundingClientRect().width <= track.getBoundingClientRect().width + 0.5 : true;
-  });
-  return {
-    panel: !!document.querySelector('[data-panel="data"]:not([hidden])'),
-    bars: bars.length,
-    barFills: fills.filter(Boolean).length,
-    barInside: fills.every((f) => !f || f.fill <= f.bar + 0.5),
-    heatRows: heat.length,
-    heatCells: [...new Set(heatCells)].sort((a, b) => a - b),
-    worlds: wrows.length,
-    worldInside: wbars.every(Boolean),
-    titles: [...document.querySelectorAll('[data-panel="data"] .label-xs > span:first-child')].map((n) => n.textContent.trim())
-  };
-});
-const chartSizes = await fontSizesOf(p, ['.avatar-fallback', '.thumb-empty']);
-check('抽屉数据 tab 可见', String(charts.panel), 'true', charts.panel === true);
-check('在线时长 30 根日柱', charts.bars, '30', charts.bars === 30);
-check('柱体不溢出容器', String(charts.barInside && charts.barFills === charts.bars), 'true', charts.barInside && charts.barFills === charts.bars);
-check('活跃时段 7×24 热力图', charts.heatRows, '7 行 × 24 格', charts.heatRows === 7 && charts.heatCells.length === 1 && charts.heatCells[0] === 24);
-check('常去世界横条不溢出', `${charts.worlds} 行`, '≥1 行', charts.worlds >= 1 && charts.worldInside);
-check('数据 tab 三块标题', charts.titles.join('/'), '在线时长/活跃时段/常去世界', ['在线时长', '活跃时段', '常去世界'].every((t) => charts.titles.includes(t)));
-check('数据 tab 字号档位', chartSizes.join('/'), ALLOWED.join('/'), offSpec(chartSizes).length === 0);
-await shot(p, 'drawer-data-1440.png');
 await p.keyboard.press('Escape').catch(() => {});
-// 抽屉必须走 Esc/关闭按钮收干净，否则后续页测到的字号/尺寸会混进抽屉内部的装饰字形
-const drawerClosed = await p.waitForSelector('.drawer-head', { state: 'detached', timeout: 4000 }).then(() => true).catch(() => false);
-if (!drawerClosed) {
-  const closeBtn = p.locator('aside .chip', { hasText: '关闭' });
-  if (await closeBtn.count()) await closeBtn.first().click({ timeout: 5000 }).catch(() => {});
-  await p.waitForSelector('.drawer-head', { state: 'detached', timeout: 8000 }).catch(() => {});
-}
-check('抽屉 Esc 可关闭', String(drawerClosed), 'true', drawerClosed);
+const modalClosed = await p.waitForSelector('.fd-card', { state: 'detached', timeout: 4000 }).then(() => true).catch(() => false);
+check('模态 Esc 可关闭', String(modalClosed), 'true', modalClosed);
 
 // ══ 4. 概览 ══
-await open('overview', { ready: '.ov-bar' });
+p = await open('overview', { ready: '.ov-bar' });
 await shot(p, 'overview-1440.png');
 const ov = await p.evaluate(() => {
   const bars = [...document.querySelectorAll('.ov-bar')];
@@ -285,7 +259,7 @@ check('点一天展开逐次停留', `${dayOpened} 行`, '≥1', dayOpened >= 1)
 await shot(p, 'overview-journey-1440.png');
 
 // ══ 5. 世界库 ══
-await open('worlds', { ready: '.world-card' });
+p = await open('worlds', { ready: '.world-card' });
 await shot(p, 'worlds-1440.png');
 const wo = await p.evaluate(() => {
   const grid = document.querySelector('.world-grid');
@@ -322,7 +296,7 @@ check('世界库字号档位', woSizes.join('/'), ALLOWED.join('/'), offSpec(woS
 check('缩略图占位字号', `${woDecor}px`, `${woSpec.decor_px_range?.[0]}–${woSpec.decor_px_range?.[1]}px(装饰档)`, woDecor == null || (woDecor >= 16 && woDecor <= 20));
 
 // ══ 6. 通知 ══
-await open('notifications');
+p = await open('notifications');
 await p.waitForTimeout(1200);
 await shot(p, 'notifications-1440.png');
 const nt = await p.evaluate(() => {
@@ -381,6 +355,6 @@ const score = Math.round((pass / rows.length) * 100);
 for (const r of rows) {
   console.log(`${r.ok ? 'PASS' : 'DIFF'}  ${r.name} — 我们 ${r.ours} / 基准 ${r.want}`);
 }
-const pages = ['好友位置', '动态', '好友抽屉', '概览', '世界库', '通知'];
+const pages = ['好友位置', '动态', '好友详情模态', '概览', '世界库', '通知'];
 console.log(`\n视觉相似度 ${score}%（${pass}/${rows.length} 项对齐，覆盖 ${pages.length} 页：${pages.join('/')}）· 截图在 docs/screenshots/compare/`);
 process.exit(pass === rows.length ? 0 : 1);

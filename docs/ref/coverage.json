@@ -85,6 +85,22 @@
    },
    "shots_missing": []
   },
+  "moderation": {
+   "ref": null,
+   "na": null,
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 0,
+    "mobile": 0,
+    "4k": 0
+   },
+   "shots_missing": [
+    "desktop",
+    "mobile",
+    "4k"
+   ]
+  },
   "stats": {
    "ref": null,
    "na": "VRCX-0 的 #/charts 会重定向到 #/charts/mutual（与 insights 同页），无独立「近24小时统计」页；docs/ref/vrcx0-stats.png 就是该重定向页",
@@ -214,12 +230,12 @@
   "shots_missing": []
  },
  "summary": {
-  "pages": 16,
+  "pages": 17,
   "ref": 14,
   "measured": 14,
   "parity": 5,
   "shots3": 14,
   "na": 2,
-  "todo": 9
+  "todo": 10
  }
 }
