@@ -112,7 +112,10 @@ check('动态字号档位', feedSizes.join('/'), ALLOWED.join('/'), offSpec(feed
 
 // ══ 3. 好友抽屉（回好友位置页点第一行） ══
 await open('friends', { ready: '.friend-row:not(.list-head)' });
-await p.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true }).catch(() => {});
+// 固定开 Alice（演示库里唯一有会话/世界记录的人），否则数据 tab 的横条会空
+await p.locator('.friend-row[data-user="usr_alice"]').click({ timeout: 8000, force: true }).catch(async () => {
+  await p.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true }).catch(() => {});
+});
 await p.waitForSelector('.drawer-avatar', { timeout: 12000 }).catch(() => {});
 await p.waitForTimeout(600);
 const drawer = await p.evaluate(() => {
@@ -137,6 +140,46 @@ check('抽屉 tab 数', drawer.tabs, String(SPEC.user_dialog.tab_count), drawer.
 check('抽屉 tab 名', drawer.tabLabels, SPEC.user_dialog.tab_labels.join('/'), drawer.tabLabels === SPEC.user_dialog.tab_labels.join('/'));
 check('抽屉字号档位', drawerSizes.join('/'), ALLOWED.join('/'), offSpec(drawerSizes).length === 0);
 await shot(p, 'drawer-1440.png');
+
+// 181 数据 tab：三块图表要真的画出来，且柱体不溢出、热力图是 7×24
+await p.locator('[role="tab"][data-tab="data"]').click({ timeout: 8000 }).catch(() => {});
+await p.waitForSelector('[data-panel="data"]:not([hidden])', { timeout: 10000 }).catch(() => {});
+await p.waitForTimeout(1000);
+const charts = await p.evaluate(() => {
+  const bars = [...document.querySelectorAll('[data-chart="duration"] .dc-bar')];
+  const fills = bars.map((b) => {
+    const f = b.querySelector('.dc-bar-fill');
+    return f ? { bar: b.getBoundingClientRect().height, fill: f.getBoundingClientRect().height, op: Number(getComputedStyle(f).opacity) } : null;
+  });
+  const heat = document.querySelectorAll('[data-chart="heat"] [data-heat-row]');
+  const heatCells = [...heat].map((r) => r.children.length - 1); // 首列是周几标签
+  const wrows = [...document.querySelectorAll('[data-chart="worlds"] .dc-row')];
+  const wbars = wrows.map((r) => {
+    const fill = r.querySelector('.dc-row-bar > span');
+    const track = r.querySelector('.dc-row-bar');
+    return track && fill ? fill.getBoundingClientRect().width <= track.getBoundingClientRect().width + 0.5 : true;
+  });
+  return {
+    panel: !!document.querySelector('[data-panel="data"]:not([hidden])'),
+    bars: bars.length,
+    barFills: fills.filter(Boolean).length,
+    barInside: fills.every((f) => !f || f.fill <= f.bar + 0.5),
+    heatRows: heat.length,
+    heatCells: [...new Set(heatCells)].sort((a, b) => a - b),
+    worlds: wrows.length,
+    worldInside: wbars.every(Boolean),
+    titles: [...document.querySelectorAll('[data-panel="data"] .label-xs > span:first-child')].map((n) => n.textContent.trim())
+  };
+});
+const chartSizes = await fontSizesOf(p, ['.avatar-fallback', '.thumb-empty']);
+check('抽屉数据 tab 可见', String(charts.panel), 'true', charts.panel === true);
+check('在线时长 30 根日柱', charts.bars, '30', charts.bars === 30);
+check('柱体不溢出容器', String(charts.barInside && charts.barFills === charts.bars), 'true', charts.barInside && charts.barFills === charts.bars);
+check('活跃时段 7×24 热力图', charts.heatRows, '7 行 × 24 格', charts.heatRows === 7 && charts.heatCells.length === 1 && charts.heatCells[0] === 24);
+check('常去世界横条不溢出', `${charts.worlds} 行`, '≥1 行', charts.worlds >= 1 && charts.worldInside);
+check('数据 tab 三块标题', charts.titles.join('/'), '在线时长/活跃时段/常去世界', ['在线时长', '活跃时段', '常去世界'].every((t) => charts.titles.includes(t)));
+check('数据 tab 字号档位', chartSizes.join('/'), ALLOWED.join('/'), offSpec(chartSizes).length === 0);
+await shot(p, 'drawer-data-1440.png');
 await p.keyboard.press('Escape').catch(() => {});
 // 抽屉必须走 Esc/关闭按钮收干净，否则后续页测到的字号/尺寸会混进抽屉内部的装饰字形
 const drawerClosed = await p.waitForSelector('.drawer-head', { state: 'detached', timeout: 4000 }).then(() => true).catch(() => false);
@@ -179,6 +222,62 @@ check('概览 tab', ov.tabs.join('/'), ovSpec.tabs.join('/'), ov.tabs.join('/') 
 check('概览字号档位', ovSizes.join('/'), ALLOWED.join('/'), offSpec(ovSizes).length === 0);
 check('KPI 大数字档位', ov.kpiSizes.join('/'), `${ovSpec.kpi_px_range[0]}–${ovSpec.kpi_px_range[1]}px`, ov.kpiSizes.length > 0 && ov.kpiSizes.every((s) => s >= ovSpec.kpi_px_range[0] && s <= ovSpec.kpi_px_range[1]));
 check('KPI 数字等宽', String(ov.tabular), 'true', ov.tabular === true);
+
+// 182 旅程：按月折叠，默认只开最新月，月头可开关，日行可点开逐次停留
+await p.locator('.ov-tab', { hasText: '旅程' }).click({ timeout: 8000 }).catch(() => {});
+await p.waitForSelector('[data-journey="months"]', { timeout: 15000 }).catch(() => {});
+await p.waitForTimeout(700);
+const jm = await p.evaluate(() => {
+  const secs = [...document.querySelectorAll('[data-journey="months"] section[data-month]')];
+  const open = secs.filter((s) => s.dataset.monthOpen === 'true');
+  const dayRows = open.reduce((n, s) => n + s.querySelectorAll('.jm-day').length, 0);
+  const closedRows = secs.filter((s) => s.dataset.monthOpen !== 'true')
+    .reduce((n, s) => n + s.querySelectorAll('.jm-day').length, 0);
+  const bars = [...document.querySelectorAll('.jm-daybar')].map((b) => {
+    const f = b.firstElementChild;
+    return f ? f.getBoundingClientRect().width <= b.getBoundingClientRect().width + 0.5 : true;
+  });
+  return {
+    months: secs.length,
+    open: open.length,
+    dayRows,
+    closedRows,
+    barInside: bars.every(Boolean),
+    heads: [...document.querySelectorAll('.jm-head-toggle')].map((b) => {
+      const m = b.textContent.match(/(\d{4})\s*年\s*(\d{1,2})\s*月/);
+      return m ? `${m[1]}-${m[2]}` : b.textContent.trim().slice(0, 12);
+    })
+  };
+});
+check('旅程按月分组', `${jm.months} 个月`, '≥1', jm.months >= 1);
+check('旅程默认只开最新月', `${jm.open}/${jm.months} 展开`, jm.months > 1 ? '1' : String(jm.months), jm.months > 1 ? jm.open === 1 : jm.open === jm.months);
+check('折叠月不渲染日行', String(jm.closedRows), '0', jm.closedRows === 0);
+check('展开月有日行', String(jm.dayRows), '≥1', jm.dayRows >= 1);
+check('旅程日柱不溢出', String(jm.barInside), 'true', jm.barInside);
+check('月头是「YYYY 年 M 月」', jm.heads.join('/'), 'YYYY-M', jm.heads.length > 0 && jm.heads.every((h) => /^\d{4}-\d{1,2}$/.test(h)));
+
+if (jm.months >= 2) {
+  const toggles = p.locator('.jm-head-toggle');
+  await toggles.nth(1).click({ timeout: 5000 }).catch(() => {});
+  await p.waitForTimeout(350);
+  const expanded = await p.evaluate(() => document.querySelectorAll('[data-month-open="true"]').length);
+  await toggles.nth(1).click({ timeout: 5000 }).catch(() => {});
+  await p.waitForTimeout(350);
+  const collapsed = await p.evaluate(() => document.querySelectorAll('[data-month-open="true"]').length);
+  check('月份头点开/再点收起', `展开 ${expanded} 月 → ${collapsed} 月`, '2 → 1', expanded === 2 && collapsed === 1);
+} else {
+  check('月份头点开/再点收起', '演示数据只有一个月', '跳过', true);
+}
+
+const dayOpened = await p.evaluate(async () => {
+  const row = document.querySelector('.jm-dayrow');
+  if (!row) return 0;
+  row.click();
+  await new Promise((r) => setTimeout(r, 300));
+  return document.querySelectorAll('.jm-visits .ov-jrow').length;
+});
+check('点一天展开逐次停留', `${dayOpened} 行`, '≥1', dayOpened >= 1);
+await shot(p, 'overview-journey-1440.png');
 
 // ══ 5. 世界库 ══
 await open('worlds', { ready: '.world-card' });

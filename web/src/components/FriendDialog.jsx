@@ -67,6 +67,7 @@ export default function FriendDialog({ id, onClose }) {
   return (
     <div className="fd-scrim" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="fd-card" role="dialog" aria-label="好友详情">
+        <button type="button" className="fd-close" title="关闭 (Esc)" onClick={onClose}>✕</button>
         {/* ── 左：资料栏 ── */}
         <aside className="fd-left">
           <div className="fd-cover">
@@ -82,12 +83,11 @@ export default function FriendDialog({ id, onClose }) {
           <div className="fd-namepill">
             <span className="fd-dot" data-s={p?.status} />
             <strong>{p?.display_name ?? id}</strong>
-            <button type="button" title="关闭" onClick={onClose}>✕</button>
           </div>
 
           <ul className="fd-attrs">
-            <li><span className="k">好友</span></li>
-            <li><span className="k">信任</span><b>{trust}{p?.trust_rank != null ? ` · #${p.trust_rank}` : ''}</b></li>
+            <li><span className="k">关系</span><b>好友</b></li>
+            <li><span className="k">信任</span><b>{trust}{p?.trust_rank != null ? `（等级 ${p.trust_rank}）` : ''}</b></li>
             <li><span className="k">平台</span><b>{PLATFORM[p?.platform] ?? p?.platform ?? '—'}</b></li>
             {langs.length ? <li><span className="k">语言</span><b>{langs.join(' ')}</b></li> : null}
             {p?.group_name ? <li><span className="k">展示群组</span><b className="truncate">{p.group_name}</b></li> : null}
@@ -125,10 +125,13 @@ export default function FriendDialog({ id, onClose }) {
                 <div className="fd-statusline">
                   <span className="fd-region">{region(p.location)}</span>
                   <b>{status}</b>
-                  <span className="fd-sub">{p.status_description || '—'}</span>
+                  {p.status_description?.trim() ? <span className="fd-sub">{p.status_description}</span> : null}
                 </div>
                 <div className="fd-world">
-                  <span>{p.world_name || (p.location === 'private' ? '私密世界' : '—')}</span>
+                  <span title={p.world_id || ''}>
+                    {p.world_name || (p.location === 'private' ? '私密世界'
+                      : p.world_id ? `世界 ${p.world_id.slice(5, 13)}` : '不在世界里')}
+                  </span>
                   {p.world_id ? <a href={`https://vrchat.com/home/world/${p.world_id}`} target="_blank" rel="noreferrer">打开世界</a> : null}
                 </div>
                 <div className="fd-sub">最近更新 {fmtDate(p.updated_at)}</div>
@@ -146,17 +149,17 @@ export default function FriendDialog({ id, onClose }) {
 
               <article className="fd-panel wide">
                 <h4>个人简介</h4>
-                <div className="fd-bio">{p.status_description?.trim() ? p.status_description : '—'}</div>
+                <div className="fd-bio">{p.status_description?.trim() ? p.status_description : <span className="fd-none">暂无简介</span>}</div>
               </article>
 
               <article className="fd-panel">
                 <h4>活动摘要</h4>
                 <dl className="fd-sum">
                   <div><dt>最后活动时间</dt><dd>{fmtDate(p.updated_at)}</dd></div>
-                  <div><dt>见面的次数</dt><dd>{counts.sessions ?? '—'}</dd></div>
+                  <div><dt>见面的次数</dt><dd>{counts.sessions != null ? `${counts.sessions} 次` : '—'}</dd></div>
                   <div><dt>一起游玩的时长</dt><dd>{fmtMin(data?.minutes)}</dd></div>
                   <div><dt>常去的世界</dt><dd>{counts.worlds ?? '—'} 个</dd></div>
-                  <div><dt>添加为好友</dt><dd>—</dd></div>
+                  <div><dt>成为好友时间</dt><dd className="fd-sub">VRChat 未提供</dd></div>
                 </dl>
               </article>
             </div>
