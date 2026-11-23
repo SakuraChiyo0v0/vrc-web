@@ -90,6 +90,28 @@ GET  /api/notifications
 POST /ingest/log          PC agent 上报（x-ingest-token）
 ```
 
+## 验收
+
+一键回归（需要 `web/dist` 已构建；8891 没起会自动起一个 demo 实例）：
+
+```bash
+cd web && npm run build && cd ..
+scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
+```
+
+四段全过才打印 `REGRESS OK 4/4`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
+
+| 环节 | 脚本 | 现在跑出来的数 |
+|---|---|---|
+| 桌面结构 | `node scripts/structure_parity.mjs` | 59/59 |
+| 桌面视觉 | `node scripts/visual_parity.mjs` | 215/215（100%） |
+| 移动断点 | `node scripts/mobile_parity.mjs` | 612/612 |
+| 前端单测 | `cd web && npm test` | 48 pass |
+
+移动端断点（`mobile_parity.mjs`）：13 个页面 × 7 个视口（竖屏 360/375/390/414/430，横屏 844×390、932×430），断言无横向溢出、表格卡片化、触控 ≥28、字号 ≥11、侧栏默认收起、横屏内容区不被压扁；另测 767/768 与 900×500/900×501 两对断点两侧。
+
+「移动形态」的条件是**窄（≤767px）或矮（≤500px）**——手机横屏宽 844 但高 390，若不看高度会掉回桌面布局（侧栏常驻 277px + 表格右侧被裁掉）。`styles.css` 的 7 个 `@media` 与 `tailwind.config.js` 的 `md` screen 用同一条件，改的时候两边一起改。
+
 ## 已知限制
 
 - 只读：不做加好友、邀请、改状态这类写操作

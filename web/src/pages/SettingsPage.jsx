@@ -43,12 +43,12 @@ function Switch({ id, label, note, on, onChange }) {
 
 function Row({ label, value, children, note }) {
   return (
-    <div className="flex items-center justify-between gap-3 py-2">
+    <div className="set-row flex items-center justify-between gap-3 py-2">
       <div className="min-w-0">
         <div className="text-[12px]">{label}</div>
         {note ? <div className="mt-0.5 text-[11px] text-fg3">{note}</div> : null}
       </div>
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="set-row-right flex shrink-0 items-center gap-2">
         {value ? <span className="text-[12px] tabular-nums text-fg2">{value}</span> : null}
         {children}
       </div>

@@ -124,9 +124,9 @@ export default function SearchPage() {
               style={{ display: 'flex' }}
             >
               {hero.thumbnail ? (
-                <img className="thumb" src={imgUrl(hero.thumbnail)} alt="" style={{ width: 420, flex: 'none' }} />
+                <img className="thumb res-hero-thumb" src={imgUrl(hero.thumbnail)} alt="" />
               ) : (
-                <div className="thumb thumb-empty" style={{ width: 420, flex: 'none' }}>{hero.name.slice(0, 1)}</div>
+                <div className="thumb thumb-empty res-hero-thumb">{hero.name.slice(0, 1)}</div>
               )}
               <div className="wc-body flex flex-col justify-center">
                 <div className="text-[14px] font-medium">{hero.name}</div>

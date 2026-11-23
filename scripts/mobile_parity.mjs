@@ -3,8 +3,8 @@
  *
  *   node scripts/mobile_parity.mjs [baseUrl] [--all]
  *
- * 覆盖 STRUCT_PAGES + friends（14 页）× 3 个移动宽度（360 / 390 / 430），外加
- * 767 / 768 一对「断点两侧」检查（767 必须是移动形态，768 必须回到桌面形态）。
+ * 覆盖 STRUCT_PAGES + friends（14 页）× 7 个移动视口（360/375/390/414/430 竖屏 + 844×390/932×430 横屏），
+ * 外加 767 / 768 与 900×500 / 900×501 两对「断点两侧」检查（窄/矮 → 移动形态，否则桌面形态）。
  *
  * 每页断言：
  *   1) 无横向溢出：documentElement.scrollWidth ≤ innerWidth+1，且列出右溢元素
@@ -31,7 +31,9 @@ const EXE = process.env.CHROME_PATH
   || '/opt/data/cache/pw-browsers/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell';
 
 const PAGES = ['friends', ...STRUCT_PAGES.filter((p) => p !== 'locations')];
-const WIDTHS = [[360, 800], [390, 844], [430, 932]];
+// 竖屏 360/375/390/414/430 + 手机横屏 844×390 / 932×430。
+// 横屏宽 >767，命中的是「矮视口」那一支移动规则（styles.css: max-width:767px, max-height:500px）。
+const WIDTHS = [[360, 800], [375, 667], [390, 844], [414, 896], [430, 932], [844, 390], [932, 430]];
 
 await assertVrcServer(BASE);
 
@@ -90,6 +92,8 @@ const audit = (tab) => tab.evaluate(() => {
     trDisplay: tr ? getComputedStyle(tr).display : null,
     trDir: tr ? getComputedStyle(tr).flexDirection : null,
     mainW: main ? Math.round(main.getBoundingClientRect().width) : null,
+    mainH: main ? Math.round(main.getBoundingClientRect().height) : null,
+    topbarH: (() => { const t = document.querySelector('#vrc-topbar'); return t ? Math.round(t.getBoundingClientRect().height) : null; })(),
     sidebarLeft: (() => { const s = document.querySelector('.vrc-sidebar'); return s ? Math.round(s.getBoundingClientRect().left) : null; })(),
   };
 });
@@ -111,17 +115,32 @@ for (const page of PAGES) {
     check(tag, '最小字号≥11', `${a.minFont}px`, '≥11px', a.minFont >= 11);
     check(tag, '内容区非零宽', `${a.mainW}px`, '>0', a.mainW == null || a.mainW > 0);
     check(tag, '侧栏默认收起', `left=${a.sidebarLeft}`, '<0', a.sidebarLeft == null || a.sidebarLeft < 0);
+    if (height <= 500) {
+      // 横屏：竖向只有 ~390px，顶栏必须瘦、内容区不能被压成 0 高
+      check(tag, '横屏内容区非零高', `${a.mainH}px`, '≥200', a.mainH == null || a.mainH >= 200);
+      check(tag, '横屏顶栏高度', `${a.topbarH}px`, '≤48', a.topbarH == null || a.topbarH <= 48);
+    }
     await tab.close();
   }
 }
 
 // 断点两侧：767 移动形态 / 768 桌面形态（只测一页，形态判定同页）
-for (const [w, mobile] of [[767, true], [768, false]]) {
-  const tab = await open('feed', w, 900);
+// 表格可能还没渲染出来（feed 首屏要等接口），先等 thead / tbody tr 出现；仍无则退到 friendlist 重开一次。
+async function openWithTable(p, width, height) {
+  let tab = await open(p, width, height);
+  await tab.waitForFunction(() => !!document.querySelector('thead'), { timeout: 8000 }).catch(() => {});
+  let has = await tab.evaluate(() => !!document.querySelector('thead'));
+  if (!has) { await tab.close(); tab = await open('friendlist', width, height);
+    await tab.waitForFunction(() => !!document.querySelector('thead'), { timeout: 8000 }).catch(() => {}); }
+  return tab;
+}
+
+for (const [w, h, mobile] of [[767, 900, true], [768, 900, false], [900, 500, true], [900, 501, false]]) {
+  const tab = await openWithTable('feed', w, h);
   const a = await audit(tab);
-  check(`breakpoint@${w}`, '断点形态', `thead=${a.theadDisplay} tr=${a.trDisplay}`, mobile ? 'thead=none tr=flex' : 'thead=table-row 不是 flex',
+  check(`breakpoint@${w}x${h}`, '断点形态', `thead=${a.theadDisplay} tr=${a.trDisplay}`, mobile ? 'thead=none tr=flex' : 'thead=table-row 不是 flex',
     mobile ? (a.theadDisplay === 'none' && a.trDisplay === 'flex') : (a.theadDisplay !== 'none' && a.trDisplay !== 'flex'));
-  check(`breakpoint@${w}`, '无横向溢出', `scrollW=${a.docScrollW} vw=${a.vw}`, '≤vw+1', a.docScrollW <= a.vw + 1);
+  check(`breakpoint@${w}x${h}`, '无横向溢出', `scrollW=${a.docScrollW} vw=${a.vw}`, '≤vw+1', a.docScrollW <= a.vw + 1);
   await tab.close();
 }
 
