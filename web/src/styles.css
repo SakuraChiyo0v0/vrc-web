@@ -1433,9 +1433,15 @@ html[data-phone='1'] #root {
   .chip, select.chip { min-height: 36px; }
   input:not([type='checkbox']):not([type='radio']), select { min-height: 36px; }
   .inp { height: 36px; }
-  .feed-search { min-height: 32px; }
+  /* 搜索框容器桌面定高 26：移动端把 input 抬到 36 后 input 会溢出容器上下各 2px，
+     而表格紧跟其后绘制 → 搜索框下半截被表格行盖住，点它命中的是 TD（实测 390 宽 center 命中 TD.truncate）。
+     容器改成随内容高度走。 */
+  .feed-search { height: auto; min-height: 36px; }
   /* 工具栏搜索框桌面写死 min-width 300，360 视口会顶出屏幕 → 允许换行、可压缩 */
-  .feed-toolbar { flex-wrap: wrap; height: auto; min-height: 54px; padding: 10px 16px; row-gap: 8px; }
+  /* 工具栏桌面是 flex:0 0 54px（定高不参与伸缩）：移动端允许换行后内容会折到第二行，
+     flex-basis 仍是 54 → 行溢出容器往下压进表格，搜索框被表格盖住（390 宽 center 命中 TD）。
+     改成按内容高度伸缩。 */
+  .feed-toolbar { flex: 0 0 auto; flex-wrap: wrap; height: auto; min-height: 54px; padding: 10px 16px; row-gap: 8px; }
   .feed-search { min-width: 0; flex: 1 1 180px; }
   .feed-search input[type='date'] { width: 96px; }
   /* 搜索页 hero 封面：桌面 420 定宽，手机上压成整行 */
@@ -1465,7 +1471,14 @@ html[data-phone='1'] #root {
   /* 横屏刘海在左右两侧：内容区整体内缩，否则最左的 ☰ 与最右的图标落在刘海下 */
   main { padding-left: var(--safe-left); padding-right: var(--safe-right); }
   /* 底部状态栏：home 指示条会盖住最后 34px（原来 bottom 正好等于视口底边） */
-  #vrc-statusbar { height: calc(35px + var(--safe-bottom)); padding-bottom: var(--safe-bottom); }
+  #vrc-statusbar {
+    height: calc(35px + var(--safe-bottom)); padding-bottom: var(--safe-bottom);
+    /* 320 极窄（iPhone SE 初代）：桌面 gap 23 + 四段文字 258px 合计 349 > 320，
+       最右 SteamVR 段被 overflow:hidden 直接裁掉 17px 且滚不出来。移动端收窄间距，
+       并留横向滚动兜底（320 以下/超长主机名时不至于丢信息）。 */
+    gap: 12px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
+  }
+  #vrc-statusbar::-webkit-scrollbar { display: none; }
   /* 触屏滚动：滚到尽头别把页面滚动/下拉刷新一起带走（滚动链外溢） */
   .workspace > div, .feed-scroll { overscroll-behavior-y: contain; }
 

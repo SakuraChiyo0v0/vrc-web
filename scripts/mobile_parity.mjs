@@ -4,7 +4,8 @@
  *   node scripts/mobile_parity.mjs [baseUrl] [--all]
  *
  * 覆盖 STRUCT_PAGES + friends（13 页）× 10 个移动视口（360/375/390/414/430 竖屏 + 844×390/932×430 横屏 + 768×1024/820×1180 平板竖屏），
- * 外加 1023 / 1024 与 1024×500 / 1024×501 两对「断点两侧」检查（窄≤1023/矮≤500 → 移动形态，否则桌面形态）。
+ * 外加 1023 / 1024 与 1024×500 / 1024×501 两对「断点两侧」检查（窄≤1023/矮≤500 → 移动形态，否则桌面形态），
+ * 以及软键盘（visualViewport 压矮）、320 极窄状态栏、命中遮挡等单点检查。
  *
  * 每页断言：
  *   1) 无横向溢出：documentElement.scrollWidth ≤ innerWidth+1，且列出右溢元素
@@ -67,6 +68,7 @@ const audit = (tab) => tab.evaluate(() => {
   const de = document.documentElement;
   const offenders = [];
   const tap = [];
+  const occluded = [];
   let minFont = 99;
   document.querySelectorAll('body *').forEach((el) => {
     const r = el.getBoundingClientRect();
@@ -89,6 +91,17 @@ const audit = (tab) => tab.evaluate(() => {
         tap.push({ h: Math.round(r.height), w: Math.round(r.width), t: (el.getAttribute('aria-label') || text).slice(0, 18), layer });
       }
     }
+    // 命中区是否被后续内容盖住：表单控件/行内按钮若溢出定高容器，后面的表格/卡片会画在它上面，
+    // 手指点中心命中的就是别的东西（feed 搜索框曾被表格行盖住，点它毫无反应）。
+    if (el.matches('input, select, .chip') && r.width > 0 && r.height > 0
+      && r.top >= 0 && r.bottom <= window.innerHeight && r.left >= 0 && r.right <= window.innerWidth) {
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const hit = document.elementFromPoint(cx, cy);
+      if (hit && hit !== el && !el.contains(hit) && !hit.contains(el)) {
+        occluded.push(`${el.tagName.toLowerCase()}${el.getAttribute('placeholder') ? `[${el.getAttribute('placeholder')}]` : ''} ← ${hit.tagName.toLowerCase()}.${(hit.className || '').toString().split(' ')[0]}`);
+      }
+    }
   });
   const th = document.querySelector('thead');
   const tr = document.querySelector('tbody tr');
@@ -108,6 +121,7 @@ const audit = (tab) => tab.evaluate(() => {
     layers: { topbar: minOf('topbar'), nav: minOf('nav'), chip: minOf('chip'), field: minOf('field'), rest: minOf('rest') },
     tapSmall: tap.filter((x) => x.h < 32).slice(0, 6),
     tapUnder44: [...new Map(tap.filter((x) => x.h < 44).map((x) => [x.t, x])).values()].slice(0, 10),
+    occluded: occluded.slice(0, 6),
     theadDisplay: th ? getComputedStyle(th).display : null,
     trDisplay: tr ? getComputedStyle(tr).display : null,
     trDir: tr ? getComputedStyle(tr).flexDirection : null,
@@ -141,6 +155,8 @@ for (const page of PAGES) {
       check(tag, 'chip 命中区≥36', fmt(L.chip), '≥36px', !L.chip || L.chip.h >= 36);
       check(tag, '表单控件≥36', fmt(L.field), '≥36px', !L.field || L.field.h >= 36);
       check(tag, '行内/表格目标≥32', fmt(L.rest), '≥32px', !L.rest || L.rest.h >= 32);
+      // 表单控件中心必须点得到自己：溢出定高容器被后面内容盖住时，手指点上去命中别的元素
+      check(tag, '表单控件中心可点（未被遮挡）', a.occluded.length ? a.occluded.join(' | ') : '0 处遮挡', '0', a.occluded.length === 0);
     }
     check(tag, '最小字号≥11', `${a.minFont}px`, '≥11px', a.minFont >= 11);
     check(tag, '内容区非零宽', `${a.mainW}px`, '>0', a.mainW == null || a.mainW > 0);
@@ -614,6 +630,107 @@ for (const page of ['friendlist', 'feed']) {
   check(tag, '卡片行不超出容器', r ? `row=${r.rowW} 越界格 ${r.clipped.join(',') || '无'}` : 'n/a', '无越界', !r || r.clipped.length === 0);
   check(tag, '长文本不画到卡片外', r ? r.leaks.join(',') || '无泄漏' : 'n/a', '无泄漏', !r || r.leaks.length === 0);
   check(tag, '超长昵称被省略或换行', r ? `truncate=${r.nameTrunc} 行高=${r.rowH}` : 'n/a', 'true 或行高>44', !r || r.nameTrunc === true || r.rowH > 44);
+  await tab.close();
+}
+
+// 软键盘（iOS）：键盘弹出时只有 visualViewport 变矮，layout viewport（100% / 100dvh）不变。
+// Chromium 没键盘，用 defineProperty 把 visualViewport.height 压到 380 并派发 resize 模拟。
+// 要求：外壳高度跟着 visualViewport 缩（否则底部状态栏和列表底部被键盘盖死且滚不出来）、
+// 聚焦的搜索框仍在可视区内、键盘收起后恢复原高；桌面形态不介入（地址栏伸缩不是键盘）。
+for (const page of ['feed', 'friends']) {
+  const tab = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, deviceScaleFactor: 2 });
+  await tab.goto(`${BASE}#/${page}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await tab.waitForTimeout(1400);
+  await tab.waitForFunction(() => {
+    const th = document.querySelector('thead');
+    return !!document.querySelector('#root > div') && (!th || !!document.querySelector('tbody tr'));
+  }, { timeout: 15000 }).catch(() => {});
+  await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
+  const sel = page === 'feed' ? '[data-testid="feed-search"]' : 'input[placeholder*="搜索"]';
+  await tab.locator(sel).first().click({ timeout: 5000 }).catch(() => {});
+  await tab.waitForTimeout(150);
+  const focused = await tab.evaluate((s) => document.querySelector(s) === document.activeElement, sel);
+  await tab.evaluate(() => {
+    const vv = window.visualViewport;
+    Object.defineProperty(vv, 'height', { configurable: true, get: () => 380 });
+    vv.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event('resize'));
+  });
+  await tab.waitForTimeout(500);
+  const kb = await tab.evaluate((s) => {
+    const shell = document.querySelector('#root > div');
+    const sb = document.querySelector('#vrc-statusbar');
+    const inp = document.querySelector(s);
+    return {
+      appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(),
+      shell: shell ? Math.round(shell.getBoundingClientRect().height) : null,
+      sbBottom: sb ? Math.round(sb.getBoundingClientRect().bottom) : null,
+      inpBottom: inp ? Math.round(inp.getBoundingClientRect().bottom) : null
+    };
+  }, sel);
+  await tab.evaluate(() => {
+    const vv = window.visualViewport;
+    delete vv.height;
+    vv.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event('resize'));
+  });
+  await tab.waitForTimeout(400);
+  const back = await tab.evaluate(() => ({
+    appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(),
+    shell: Math.round(document.querySelector('#root > div')?.getBoundingClientRect().height ?? -1)
+  }));
+  const tag = `keyboard@${page}@390`;
+  check(tag, '键盘弹出前搜索框点得到', String(focused), 'true', focused === true);
+  check(tag, '外壳高度跟随 visualViewport', `${kb.appVh} shell=${kb.shell}`, '380px / ≤381', /^380px$/.test(kb.appVh) && kb.shell != null && kb.shell <= 381);
+  check(tag, '状态栏不被键盘盖住', `bottom=${kb.sbBottom}`, '≤381', kb.sbBottom != null && kb.sbBottom <= 381);
+  check(tag, '聚焦输入框在可视区内', `bottom=${kb.inpBottom}`, '≤381', kb.inpBottom != null && kb.inpBottom <= 381);
+  check(tag, '收起键盘恢复原高', `${back.appVh} shell=${back.shell}`, 'dvh / 844', /dvh/.test(back.appVh) && back.shell === 844);
+  await tab.close();
+}
+{
+  const tab = await browser.newPage({ viewport: { width: 1440, height: 900 }, hasTouch: false });
+  await tab.goto(`${BASE}#/feed`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await tab.waitForFunction(() => !!document.querySelector('#root > div'), { timeout: 15000 }).catch(() => {});
+  await tab.waitForTimeout(600);
+  await tab.evaluate(() => {
+    const vv = window.visualViewport;
+    Object.defineProperty(vv, 'height', { configurable: true, get: () => 600 });
+    vv.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event('resize'));
+  });
+  await tab.waitForTimeout(400);
+  const d = await tab.evaluate(() => ({
+    appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(),
+    shell: document.querySelector('#root > div') ? Math.round(document.querySelector('#root > div').getBoundingClientRect().height) : null
+  }));
+  check('keyboard@desktop@1440', '桌面不跟随视觉视口缩矮', `${d.appVh} shell=${d.shell}`, 'dvh / 900', /dvh/.test(d.appVh) && d.shell === 900);
+  await tab.close();
+}
+
+// 底部状态栏在极窄屏的信息完整性：320（iPhone SE 初代）曾把最右 SteamVR 段裁掉 17px 且滚不出来。
+// 判据：最后一段的右缘不越过状态栏右缘；横向无不可滚的溢出（scrollWidth ≤ clientWidth+1）。
+for (const [w, h] of [[320, 568], [360, 800], [390, 844]]) {
+  const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 2 });
+  await tab.goto(`${BASE}#/feed`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await tab.waitForTimeout(1300);
+  const sb = await tab.evaluate(() => {
+    const bar = document.querySelector('#vrc-statusbar');
+    if (!bar) return null;
+    const items = [...bar.querySelectorAll('[data-status-item]')];
+    const last = items[items.length - 1];
+    const r = bar.getBoundingClientRect();
+    return {
+      n: items.length,
+      lastRight: last ? Math.round(last.getBoundingClientRect().right) : null,
+      barRight: Math.round(r.right),
+      client: bar.clientWidth, scroll: bar.scrollWidth,
+      gap: getComputedStyle(bar).columnGap,
+    };
+  });
+  const tag = `statusbar@${w}`;
+  check(tag, '最后一段不被裁', sb ? `${sb.n} 段 lastRight=${sb.lastRight} barRight=${sb.barRight} gap=${sb.gap}` : 'n/a', 'lastRight≤barRight',
+    !sb || sb.lastRight == null || sb.lastRight <= sb.barRight + 1);
+  check(tag, '横向无不可滚溢出', sb ? `scrollW=${sb.scroll} clientW=${sb.client}` : 'n/a', '≤client+1', !sb || sb.scroll <= sb.client + 1);
   await tab.close();
 }
 

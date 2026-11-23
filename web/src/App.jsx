@@ -69,6 +69,34 @@ function useTheme() {
   return [theme, () => setTheme((t) => (t === 'light' ? 'dark' : 'light'))];
 }
 
+/** 软键盘：iOS 弹出键盘时 layout viewport（100% / 100dvh）不变，只有 visualViewport 变矮，
+ *  底部状态栏和浮层会被键盘吃掉又滚不出来。移动形态下把 --app-vh 跟着 visualViewport.height 走，
+ *  外壳高度用 var(--app-vh)，键盘收起即恢复 dvh。桌面形态不介入（地址栏伸缩只差几十 px，不触发）。 */
+function useSoftKeyboardViewport() {
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const root = document.documentElement;
+    const apply = () => {
+      const mobile = window.matchMedia('(max-width:1023px), (max-height:500px)').matches;
+      // 键盘至少吃掉 120px；地址栏/工具栏伸缩通常 <100px，不能当键盘把外壳压矮
+      const keyboard = vv.height > 0 && vv.height < window.innerHeight - 120;
+      if (mobile && keyboard) root.style.setProperty('--app-vh', `${Math.round(vv.height)}px`);
+      else root.style.removeProperty('--app-vh');
+    };
+    apply();
+    vv.addEventListener('resize', apply);
+    vv.addEventListener('scroll', apply);
+    window.addEventListener('resize', apply);
+    return () => {
+      vv.removeEventListener('resize', apply);
+      vv.removeEventListener('scroll', apply);
+      window.removeEventListener('resize', apply);
+      root.style.removeProperty('--app-vh');
+    };
+  }, []);
+}
+
 export default function App() {
   // 页面来自地址栏 #hash（可深链、可截图/验收直开某页），无 hash 时默认好友位置
   const readHash = () => {
@@ -109,6 +137,7 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
   useEffect(() => { localStorage.setItem('vrc-roster-open', roster ? '1' : '0'); }, [roster]);
+  useSoftKeyboardViewport();
   // 状态必须自动刷新：否则采集器重连后页面还挂着「离线」，看着像故障
   const { data: status, isError: statusError } = useQuery({ queryKey: ['status'], queryFn: () => api('status'), refetchInterval: 15_000, refetchOnWindowFocus: true });
 
@@ -135,7 +164,7 @@ export default function App() {
     <DrawerProvider>
       {/* 184 外壳按真机量测（docs/ref/vrcx0-spec.json → chrome）：
           通栏顶栏 h39 / 侧栏 277 / 内容面板贴侧栏、右边距 11 / 底部状态栏 h35 */}
-      <div className="flex h-full flex-col" style={{ background: 'var(--surface-canvas)' }}>
+      <div className="flex h-full flex-col" style={{ background: 'var(--surface-canvas)', height: 'var(--app-vh)' }}>
         <header
           id="vrc-topbar"
           className="vrc-topbar flex h-[39px] shrink-0 items-center border-b"
