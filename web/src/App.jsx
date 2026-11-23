@@ -11,6 +11,10 @@ import { DrawerProvider } from './components/drawers.jsx';
 import RosterPanel from './components/RosterPanel.jsx';
 import ErrorBoundary, { OfflineBanner } from './components/ErrorBoundary.jsx';
 import { resolveShortcut } from './lib/shortcuts.js';
+import {
+  IconSearch, IconBell, IconSparkle, IconMoon, IconSun, IconPin,
+  IconSplit, IconCollapseRight, IconMinimize, IconMaximize, IconClose
+} from './components/icons.jsx';
 
 // 134 路由级懒加载：16 个页面各自成 chunk，首屏只载入当前页那一个。
 // 手机上首屏 JS 少一大截（441 kB → 主包 + 单个页面块），换页时来回切热 chunk 不再重复下载。
@@ -74,6 +78,11 @@ export default function App() {
   };
   const [page, setPage] = useState(() => readHash() ?? 'friends');
   const [nav, setNav] = useState(false);
+  // 188 真机 SidebarFooter 的「收起导航栏」：桌面折叠侧栏，状态记在 localStorage（下次进来保持）
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem('vrc-nav-collapsed') === '1');
+  useEffect(() => {
+    localStorage.setItem('vrc-nav-collapsed', collapsed ? '1' : '0');
+  }, [collapsed]);
   const [palette, setPalette] = useState(false);
   const [help, setHelp] = useState(false);
   // 187 右栏默认展开（真机 1700 宽下内容面板内就有右栏）；窄屏(<1280)由 CSS 隐藏
@@ -101,7 +110,7 @@ export default function App() {
   }, []);
   useEffect(() => { localStorage.setItem('vrc-roster-open', roster ? '1' : '0'); }, [roster]);
   // 状态必须自动刷新：否则采集器重连后页面还挂着「离线」，看着像故障
-  const { data: status } = useQuery({ queryKey: ['status'], queryFn: () => api('status'), refetchInterval: 15_000, refetchOnWindowFocus: true });
+  const { data: status, isError: statusError } = useQuery({ queryKey: ['status'], queryFn: () => api('status'), refetchInterval: 15_000, refetchOnWindowFocus: true });
 
   // 68 ⌘/Ctrl+数字跳页、? 快捷键表（逻辑在 lib/shortcuts.js，有 node 单测）
   useEffect(() => {
@@ -127,42 +136,71 @@ export default function App() {
       <div className="flex h-full flex-col" style={{ background: 'var(--surface-canvas)' }}>
         <header
           id="vrc-topbar"
-          className="vrc-topbar flex h-[39px] shrink-0 items-center gap-2 border-b px-2"
-          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-shell)' }}
+          className="vrc-topbar flex h-[39px] shrink-0 items-center border-b"
+          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-shell)', paddingLeft: 14, paddingRight: 8 }}
         >
+          {/* 顶栏是页面无关的自定义标题栏（spec.chrome.topbar / scripts/measure_ref_topbar.py
+              量 16 张真机截图逐项一致）：品牌 + 帮助 / 快速搜索 + 6 图标 + 3 窗口控制。
+              页面标题只在内容区，这里 md 以上只留 sr-only 供无障碍与 nav_coverage 读。 */}
           <button className="chip md:hidden" onClick={() => setNav(true)} aria-label="菜单">☰</button>
-          <div
-            className="grid size-6 shrink-0 place-items-center rounded-[7px] text-[11px] font-medium"
-            style={{ background: 'var(--surface-raised)', border: '1px solid var(--stroke-subtle)' }}
-          >
-            V
-          </div>
-          <div className="flex min-w-0 items-center gap-2">
-            <span className="max-w-[140px] truncate text-[12px] font-medium">{status?.account?.display_name ?? 'VRC'}</span>
-            <span className="hidden h-3 w-px sm:block" style={{ background: 'var(--stroke-subtle)' }} />
-            <h1 className="whitespace-nowrap text-[13px] font-medium leading-tight">{TITLES[page]?.[0] ?? ''}</h1>
-            <p className="hidden truncate text-[11px] text-fg3 lg:block">{TITLES[page]?.[1] ?? ''}</p>
-          </div>
-
-          <div className="ml-auto flex shrink-0 items-center gap-1.5">
-            <button onClick={() => setPalette(true)} className="chip" title="全局搜索（⌘K）">
-              <span className="opacity-60">⌕</span><span className="hidden sm:inline"> 搜索</span>
-              <kbd className="ml-1 hidden text-[11px] opacity-50 sm:inline">⌘K</kbd>
-            </button>
+          {collapsed ? (
             <button
-              onClick={() => setRoster((v) => !v)}
               className="chip hidden md:inline-flex"
-              data-active={roster ? 'true' : undefined}
-              title="右栏好友面板"
+              onClick={() => setCollapsed(false)}
+              title="展开导航栏"
+              aria-label="展开导航栏"
+              data-testid="nav-expand"
             >
-              好友栏
+              ☰
             </button>
-            <button onClick={() => setHelp(true)} className="chip" title="快捷键（?）">
-              <span className="opacity-60">?</span>
+          ) : null}
+          <span data-topbar="brand" className="hidden whitespace-nowrap text-[12px] font-medium md:inline-flex" style={{ letterSpacing: 0.85 }}>VRCX-0</span>
+          <button
+            data-topbar="help"
+            className="ml-[25px] hidden rounded py-0.5 text-[12px] text-fg2 hover:bg-raised md:inline-flex"
+            onClick={() => setHelp((v) => !v)}
+            title="帮助（快捷键 ?）"
+          >
+            帮助
+          </button>
+          <h1 className="whitespace-nowrap text-[13px] font-medium md:sr-only">{TITLES[page]?.[0] ?? ''}</h1>
+
+          <div className="ml-auto flex shrink-0 items-center">
+            <button
+              data-topbar="search"
+              onClick={() => setPalette(true)}
+              className="hidden h-6 items-center text-[12px] text-fg3 hover:text-fg md:flex"
+              style={{ width: 225 }}
+              title="快速搜索（Ctrl K）"
+            >
+              <IconSearch size={15} />
+              <span className="truncate">快速搜索</span>
+              {/* 真机 Ctrl K 宽 34：字号必须留在 11px 档（10/9.5px 会破 visual_parity 字号白名单），用负字距压到 34 */}
+              <kbd className="ml-auto text-[11px] opacity-70" style={{ letterSpacing: -1 }}>Ctrl K</kbd>
             </button>
-            <button onClick={toggleTheme} className="chip" title="切换主题">
-              {theme === 'light' ? '◐' : '☀'}
-            </button>
+            <div data-topbar="actions" className="ml-[22px] hidden items-center md:flex" style={{ gap: 12 }}>
+              <button className="tb-icon" onClick={() => setPage('notifications')} title="通知"><IconBell size={16} /></button>
+              <button className="tb-icon" onClick={() => setPage('insights')} title="洞察"><IconSparkle size={16} /></button>
+              <button className="tb-icon" onClick={toggleTheme} title={theme === 'light' ? '切到深色' : '切到浅色'}>
+                {theme === 'light' ? <IconMoon size={15} /> : <IconSun size={15} />}
+              </button>
+              <button className="tb-icon" onClick={() => setPage('favorites')} title="收藏（固定的世界）"><IconPin size={16} /></button>
+              <button
+                className="tb-icon"
+                data-active={roster ? 'true' : undefined}
+                onClick={() => setRoster((v) => !v)}
+                title="右栏好友面板"
+              >
+                <IconSplit size={15} />
+              </button>
+              <button className="tb-icon" onClick={() => setCollapsed(true)} title="收起导航栏"><IconCollapseRight size={15} /></button>
+            </div>
+            {/* 真机量的是字形：图标 glyph 间距 25（actions 末图 → 窗口控制首图），按钮内左右各余 4.5/6 已扣掉 */}
+            <div data-topbar="window-controls" className="ml-[15px] hidden items-center md:flex" style={{ gap: 16 }}>
+              <span className="tb-icon cursor-default text-fg3" aria-hidden="true" title="最小化（桌面壳）"><IconMinimize size={14} /></span>
+              <span className="tb-icon cursor-default text-fg3" aria-hidden="true" title="最大化（桌面壳）"><IconMaximize size={14} /></span>
+              <span className="tb-icon cursor-default text-fg3" aria-hidden="true" title="关闭（桌面壳）"><IconClose size={14} /></span>
+            </div>
           </div>
         </header>
 
@@ -176,13 +214,16 @@ export default function App() {
               onClick={() => setNav(false)}
             />
           ) : null}
-          <Sidebar
-            page={page}
-            onNavigate={(p) => { setPage(p); setNav(false); }}
-            me={status?.account}
-            open={nav}
-            onClose={() => setNav(false)}
-          />
+          {collapsed ? null : (
+            <Sidebar
+              page={page}
+              onNavigate={(p) => { setPage(p); setNav(false); }}
+              me={status?.account}
+              open={nav}
+              onClose={() => setNav(false)}
+              onCollapse={() => setCollapsed(true)}
+            />
+          )}
 
           <main className="flex min-w-0 flex-1 flex-col">
             {/* 65 主内容 workspace：1px ring + 顶部内高光，卡片不再裸贴页面 */}
@@ -204,7 +245,7 @@ export default function App() {
           </main>
         </div>
 
-        <StatusBar status={status} theme={theme} page={page} />
+        <StatusBar status={status} serverOk={!statusError} />
       </div>
 
       <CommandPalette

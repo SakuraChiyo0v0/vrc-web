@@ -177,6 +177,15 @@
    "active": "-",
    "ok": true,
    "error": null
+  },
+  {
+   "id": "footer:collapse",
+   "hash": "-",
+   "title": "nav→no→nav",
+   "want": "nav→no→nav",
+   "active": "-",
+   "ok": true,
+   "error": null
   }
  ]
 }

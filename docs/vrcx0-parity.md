@@ -417,3 +417,17 @@ VRCX-0 的「导出 / 迁移」在 Web 端的对应物：CSV 多表导出、全�
 | 203 | Sidebar 改单列菜单 + 收藏/社交两个折叠夹（默认展开），`styles.css` 行高 36+4 / 子项 31+4 / 左移 27 | `npm test` 40/40、`npm run build` ✓ |
 | 204 | 导航可达性：`web/test/nav.test.mjs`（PAGES ⊆ NAV 且 NAV ⊆ PAGES，折叠夹非页面）+ `scripts/nav_coverage.mjs` 逐项点击 | nav.test 4/4；nav_coverage **19/19**（18 页 hash+标题全对、folder 3→0→3） |
 | 205 | 回归 | structure_parity **31/31**、visual_parity **166/166（100%）** |
+
+---
+
+# 第二十一轮：侧栏底部与底部状态栏按真机收敛（2026-11-23）
+
+真机侧栏底部只有 `SidebarFooter` 两项（设置 / 收起导航栏），底部状态栏是 4 个左对齐状态点。此前我们是自拟的 PinnedWorlds + 「数据来自 VRChat pipeline / NAS 常驻采集」说明块，状态栏是 pipeline/在线/事件/页码混排。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 211 | `scripts/measure_ref_footer.py` 量 `vrcx0-overview.png` 侧栏 y>900 与状态栏 → `docs/ref/footer-measure.json`（footer 2 项、pitch 39、上方无分割线；状态栏 h35、4 项、点径 8、首点 x10、项间距 24/23/22、左对齐） | 量测文件落库，写入 `spec.chrome.nav.footer` / `spec.chrome.statusbar` |
+| 212 | Sidebar footer 只留「设置 / 收起导航栏」两项并去掉说明块；收起后顶栏出现展开按钮，状态存 `localStorage` | `nav.footer_count 2/2`、`nav.footer_pitch 40/39`、`nav.footer_labels 一致`、`nav.footer_no_note none` |
+| 213 | StatusBar 改 4 项「圆点 + 文字」（服务器状态 / 实时连接 / VRChat / SteamVR），绿灰只跟真实信号（`/api/status` 有数据、collector.connected、账号 last_ok_at < 10 分钟；SteamVR 采集未接入恒灰），右侧不放东西 | `statusbar.items 4/4`、`first_dot_x 10/10`、`item_gap 23/23`、`dot_w 8/8`、`labels 一致`、`left_aligned 337<=844` |
+| 214 | 收起/展开闭环断言进 `scripts/nav_coverage.mjs`（点收起 → 侧栏消失 + 展开按钮出现 + localStorage=1 → 点展开 → 侧栏回来） | nav_coverage **20/20**（18 页 + folder 3→0→3 + footer:collapse nav→no→nav） |
+| 215 | 回归 | chrome_parity **40/40（100%）**、structure_parity **31/31**、visual_parity **166/166（100%）**、`npm run build` ✓、`npm test` 40/40 |

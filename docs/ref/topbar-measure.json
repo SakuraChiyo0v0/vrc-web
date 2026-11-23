@@ -1,0 +1,170 @@
+{
+ "_note": "measure_ref_topbar.py：顶栏是页面无关的自定义标题栏。左：品牌 VRCX-0 + 帮助；右：搜索（放大镜/占位/Ctrl K）+ 6 图标 + 3 窗口控制。截图里没有 logo 方块、账号名、页面标题、副标题",
+ "image": "docs/ref/vrcx0-favorites.png",
+ "shots_identical": 16,
+ "shots": [
+  "vrcx0-favorites.png",
+  "vrcx0-feed.png",
+  "vrcx0-friendlist.png",
+  "vrcx0-friendlog.png",
+  "vrcx0-gamelog.png",
+  "vrcx0-insights.png",
+  "vrcx0-locations.png",
+  "vrcx0-moderation.png",
+  "vrcx0-notifications.png",
+  "vrcx0-overview.png",
+  "vrcx0-players.png",
+  "vrcx0-roomhistory.png",
+  "vrcx0-search.png",
+  "vrcx0-settings.png",
+  "vrcx0-stats.png",
+  "vrcx0-worlds.png"
+ ],
+ "band": {
+  "y": 8,
+  "h": 38,
+  "bg": "#f5f5f5"
+ },
+ "content_center_y": 21.5,
+ "brand": {
+  "x": 20,
+  "x1": 69,
+  "w": 49,
+  "y": 19,
+  "y1": 28,
+  "glyphs": 4,
+  "label": "VRCX-0"
+ },
+ "help": {
+  "x": 94,
+  "x1": 119,
+  "w": 25,
+  "y": 18,
+  "y1": 29,
+  "glyphs": 2,
+  "label": "帮助"
+ },
+ "search": {
+  "x": 1116,
+  "x1": 1185,
+  "w": 69,
+  "icon_x": 1116,
+  "icon_w": 15,
+  "placeholder_x": 1131,
+  "placeholder_w": 54,
+  "placeholder": "快速搜索",
+  "shortcut": {
+   "x": 1307,
+   "x1": 1341,
+   "w": 34,
+   "label": "Ctrl K"
+  },
+  "shortcut_gap": 122,
+  "box": false,
+  "border_bottom_over_content": true,
+  "border_color": "#e9e9e9"
+ },
+ "actions": {
+  "items": [
+   {
+    "x": 1368,
+    "x1": 1385,
+    "w": 17,
+    "y": 12,
+    "y1": 31,
+    "glyphs": 1,
+    "label": "通知"
+   },
+   {
+    "x": 1401,
+    "x1": 1418,
+    "w": 17,
+    "y": 16,
+    "y1": 31,
+    "glyphs": 1,
+    "label": "发现"
+   },
+   {
+    "x": 1437,
+    "x1": 1452,
+    "w": 15,
+    "y": 17,
+    "y1": 30,
+    "glyphs": 1,
+    "label": "主题"
+   },
+   {
+    "x": 1474,
+    "x1": 1486,
+    "w": 12,
+    "y": 16,
+    "y1": 31,
+    "glyphs": 1,
+    "label": "固定"
+   },
+   {
+    "x": 1508,
+    "x1": 1523,
+    "w": 15,
+    "y": 16,
+    "y1": 31,
+    "glyphs": 1,
+    "label": "好友栏"
+   },
+   {
+    "x": 1548,
+    "x1": 1563,
+    "w": 15,
+    "y": 18,
+    "y1": 29,
+    "glyphs": 2,
+    "label": "收起导航栏"
+   }
+  ],
+  "count": 6,
+  "pitch": 36,
+  "first_x": 1368,
+  "last_x1": 1563,
+  "gap_from_shortcut": 27,
+  "icon_w_median": 15.0
+ },
+ "window_controls": {
+  "items": [
+   {
+    "x": 1588,
+    "x1": 1600,
+    "w": 12,
+    "y": 23,
+    "y1": 24,
+    "glyphs": 1,
+    "label": "最小化"
+   },
+   {
+    "x": 1628,
+    "x1": 1640,
+    "w": 12,
+    "y": 18,
+    "y1": 29,
+    "glyphs": 1,
+    "label": "最大化"
+   },
+   {
+    "x": 1668,
+    "x1": 1679,
+    "w": 11,
+    "y": 19,
+    "y1": 28,
+    "glyphs": 1,
+    "label": "关闭"
+   }
+  ],
+  "count": 3,
+  "pitch": 40.0,
+  "first_x": 1588,
+  "gap_from_actions": 25,
+  "right_pad": 9
+ },
+ "page_title_in_topbar": false,
+ "account_in_topbar": false,
+ "source": "VRCX-0 自定义标题栏：品牌 + 帮助 + 搜索（Ctrl K）+ 通知/星芒/主题/图钉/分栏/收起 + 窗口控制；页面标题只在内容区"
+}

@@ -1227,3 +1227,16 @@ html[data-phone='1'] #root {
   .sess-list { width: 100%; flex: 1; }
   .sess-detail { display: none; }
 }
+
+/* 顶栏图标按钮：24×24，间距由容器 gap 控制（真机 pitch 36；窗口控制 pitch 40） */
+.tb-icon {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  color: var(--content-secondary);
+}
+.tb-icon:hover { background: var(--surface-raised); color: var(--content-primary); }
+.tb-icon[data-active='true'] { background: var(--state-selected-surface); color: var(--content-primary); }

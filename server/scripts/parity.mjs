@@ -200,13 +200,15 @@ try {
     return 'FavoritesPage 已挂路由，读写 favorites/shares/groups';
   });
 
-  // 8w 侧栏固定区（web 端接线：取 /api/pinned 并显示在线人数）
-  await check('8w', '侧栏固定区', async () => {
+  // 8w 侧栏底部（188 真机量测：SidebarFooter 只有设置 / 收起导航栏，无固定世界块、无说明块）
+  await check('8w', '侧栏底部', async () => {
     const side = fs.readFileSync(path.join(ROOT, 'web/src/components/Sidebar.jsx'), 'utf8');
-    must(/api\('pinned'\)/.test(side), 'Sidebar 没取 /api/pinned');
-    must(/PinnedWorlds/.test(side), 'Sidebar 没渲染固定区组件');
-    must(/p\.online/.test(side), '固定项没显示在线人数');
-    return '侧栏读 pinned 并渲染在线人数';
+    must(!/PinnedWorlds/.test(side), '侧栏还挂着固定世界块（真机没有）');
+    must(!/数据来自 VRChat pipeline/.test(side), '侧栏还有自拟的数据来源说明块');
+    must(/收起导航栏/.test(side) && /设置/.test(side), '侧栏底部缺少设置/收起导航栏');
+    const r = await get('/api/pinned');
+    must(r.status === 200 && Array.isArray(r.json.pinned), '/api/pinned 仍应可用（固定项由收藏页展示）');
+    return 'footer=设置+收起导航栏；/api/pinned 正常';
   });
 
   // 11w 洞察页（web 端接线：路由注册 + 页面读 /api/insights 的三段）

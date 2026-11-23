@@ -177,11 +177,80 @@
   },
   "topbar": {
    "y": 8,
-   "h": 39
+   "h": 39,
+   "bg": "#f5f5f5",
+   "content_center_y": 21.5,
+   "brand": {
+    "label": "VRCX-0",
+    "x": 20,
+    "w": 49,
+    "cap_h": 9
+   },
+   "help": {
+    "label": "帮助",
+    "x": 94,
+    "w": 25
+   },
+   "search": {
+    "x": 1116,
+    "w": 69,
+    "icon_w": 15,
+    "placeholder": "快速搜索",
+    "shortcut": "Ctrl K",
+    "shortcut_x": 1307,
+    "shortcut_gap": 122,
+    "box": false,
+    "placeholder_x": 1131,
+    "placeholder_w": 54,
+    "shortcut_x1": 1341,
+    "shortcut_w": 34,
+    "_source": "docs/ref/topbar-measure.json（measure_ref_topbar.py）；x 为 inner 绝对坐标"
+   },
+   "actions": {
+    "count": 6,
+    "first_x": 1368,
+    "pitch": 36,
+    "gap_from_shortcut": 27,
+    "icon_w": 15.0
+   },
+   "window_controls": {
+    "count": 3,
+    "first_x": 1588,
+    "pitch": 40.0,
+    "right_pad": 9
+   },
+   "page_title": false,
+   "account": false,
+   "_source": "docs/ref/topbar-measure.json（measure_ref_topbar.py，16 张真机截图顶栏逐项一致）"
   },
   "statusbar": {
    "y": 997,
-   "h": 35
+   "h": 35,
+   "bg": "#f5f5f5",
+   "items": [
+    {
+     "label": "服务器状态",
+     "dot": "green"
+    },
+    {
+     "label": "实时连接",
+     "dot": "green"
+    },
+    {
+     "label": "VRChat",
+     "dot": "gray"
+    },
+    {
+     "label": "SteamVR",
+     "dot": "gray"
+    }
+   ],
+   "count": 4,
+   "dot_w": 8.0,
+   "first_dot_x": 10,
+   "item_gap": 23.0,
+   "right_aligned": false,
+   "_source": "docs/ref/footer-measure.json（measure_ref_footer.py：按圆点颜色/宽度定位 4 项，项间距 = 下一圆点 - 上项文字右端）"
   },
   "sidebar": {
    "x": 6,
@@ -236,7 +305,24 @@
    "folders": 2,
    "note": "顶层 h-8×1.1 + gap-1×1.1 ≈ 40；二级 h-7×1.1 + 4.4 ≈ 35；子项左移 27（SidebarMenuSub mx-3.5 border-l px-2.5）；真机默认两个折叠夹（收藏/社交）展开",
    "item_h": 36.0,
-   "sub_item_h": 31.0
+   "sub_item_h": 31.0,
+   "footer": {
+    "_source": "docs/ref/footer-measure.json（measure_ref_footer.py 量 vrcx0-overview.png 侧栏 y>900 文字带）+ VRCX-0 sidebar.tsx SidebarFooter",
+    "items": [
+     {
+      "id": "settings",
+      "label": "设置"
+     },
+     {
+      "id": "collapse",
+      "label": "收起导航栏"
+     }
+    ],
+    "count": 2,
+    "pitch": 39,
+    "divider_above": false,
+    "note": "真机侧栏底部只有 SidebarFooter 的两项，上方无分割线；没有固定世界列表、没有数据来源说明块"
+   }
   }
  },
  "pages": {

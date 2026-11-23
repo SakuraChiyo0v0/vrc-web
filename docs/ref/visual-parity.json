@@ -1,6 +1,6 @@
 {
   "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言",
-  "at": "2026-11-23T08:36:38.462Z",
+  "at": "2026-11-23T09:58:45.232Z",
   "base": "http://127.0.0.1:8899",
   "pages": [
     "friends",
@@ -46,134 +46,134 @@
   ],
   "page_scores": {
     "friends": {
-      "pass": 41,
-      "total": 41,
+      "pass": 71,
+      "total": 71,
       "score": 100,
       "na": null,
       "diff": []
     },
     "feed": {
-      "pass": 40,
-      "total": 40,
+      "pass": 70,
+      "total": 70,
       "score": 100,
       "na": null,
       "diff": []
     },
     "drawer": {
-      "pass": 44,
-      "total": 44,
+      "pass": 74,
+      "total": 74,
       "score": 100,
       "na": null,
       "diff": []
     },
     "overview": {
-      "pass": 51,
-      "total": 51,
+      "pass": 81,
+      "total": 81,
       "score": 100,
       "na": null,
       "diff": []
     },
     "worlds": {
-      "pass": 44,
-      "total": 44,
+      "pass": 74,
+      "total": 74,
       "score": 100,
       "na": null,
       "diff": []
     },
     "notifications": {
-      "pass": 43,
-      "total": 43,
+      "pass": 73,
+      "total": 73,
       "score": 100,
       "na": null,
       "diff": []
     },
     "search": {
-      "pass": 36,
-      "total": 36,
+      "pass": 66,
+      "total": 66,
       "score": 100,
       "na": null,
       "diff": []
     },
     "sessions": {
-      "pass": 41,
-      "total": 41,
+      "pass": 71,
+      "total": 71,
       "score": 100,
       "na": null,
       "diff": []
     },
     "players": {
-      "pass": 35,
-      "total": 35,
+      "pass": 65,
+      "total": 65,
       "score": 100,
       "na": null,
       "diff": []
     },
     "moderation": {
-      "pass": 38,
-      "total": 38,
+      "pass": 68,
+      "total": 68,
       "score": 100,
       "na": null,
       "diff": []
     },
     "encounters": {
-      "pass": 34,
-      "total": 34,
+      "pass": 64,
+      "total": 64,
       "score": 100,
       "na": null,
       "diff": []
     },
     "stats": {
-      "pass": 34,
-      "total": 34,
+      "pass": 64,
+      "total": 64,
       "score": 100,
       "na": "VRCX-0 #/charts 重定向到 #/charts/mutual（与 insights 同页），无独立统计页",
       "diff": []
     },
     "favorites": {
-      "pass": 36,
-      "total": 36,
+      "pass": 66,
+      "total": 66,
       "score": 100,
       "na": null,
       "diff": []
     },
     "insights": {
-      "pass": 36,
-      "total": 36,
+      "pass": 66,
+      "total": 66,
       "score": 100,
       "na": null,
       "diff": []
     },
     "calendar": {
-      "pass": 34,
-      "total": 34,
+      "pass": 64,
+      "total": 64,
       "score": 100,
       "na": "VRCX-0 无 calendar 路由（capture_ref_cdp.mjs 实截落回 /feed）",
       "diff": []
     },
     "friendlist": {
-      "pass": 37,
-      "total": 37,
+      "pass": 67,
+      "total": 67,
       "score": 100,
       "na": null,
       "diff": []
     },
     "friendlog": {
-      "pass": 38,
-      "total": 38,
+      "pass": 68,
+      "total": 68,
       "score": 100,
       "na": null,
       "diff": []
     },
     "gamelog": {
-      "pass": 37,
-      "total": 37,
+      "pass": 67,
+      "total": 67,
       "score": 100,
       "na": null,
       "diff": []
     },
     "settings": {
-      "pass": 37,
-      "total": 37,
+      "pass": 67,
+      "total": 67,
       "score": 100,
       "na": null,
       "diff": []
@@ -199,7 +199,7 @@
     "gamelog",
     "settings"
   ],
-  "chrome_rows": 30,
+  "chrome_rows": 60,
   "pass": 166,
   "total": 166,
   "score": 100,
@@ -616,7 +616,7 @@
       "page": "notifications",
       "key": "notifications",
       "name": "通知筛选 chip",
-      "ours": 15,
+      "ours": 11,
       "want": "≥5",
       "ok": true
     },
@@ -624,7 +624,7 @@
       "page": "notifications",
       "key": "notifications",
       "name": "通知默认筛选",
-      "ours": "好友栏/全部/全部类型",
+      "ours": "全部/全部类型",
       "want": "全部/全部类型",
       "ok": true
     },

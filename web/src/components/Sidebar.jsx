@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../api.js';
 
 /**
  * 185 侧栏导航按 VRCX-0 真机结构：单列 SidebarMenu（无分组标题）+ 两个折叠夹（收藏 / 社交），
@@ -40,35 +38,6 @@ const NAV = [
   { id: 'stats', label: '统计', icon: '▤' },
   { id: 'insights', label: '洞察', icon: '✧' }
 ];
-
-/** 固定世界：名称 + 当前在里面的人数，点进去到收藏页 */
-function PinnedWorlds({ onNavigate }) {
-  const { data } = useQuery({ queryKey: ['pinned'], queryFn: () => api('pinned'), refetchInterval: 60_000 });
-  const rows = data?.pinned ?? [];
-  if (!rows.length) return null;
-  return (
-    <div className="border-t px-2.5 py-2" style={{ borderColor: 'var(--stroke-subtle)' }}>
-      <div className="label-xs px-2 pb-1.5">固定世界</div>
-      {rows.map((p) => (
-        <button
-          key={p.id}
-          onClick={() => onNavigate('favorites')}
-          title={p.note ? `${p.name} · ${p.note}` : p.name}
-          className="nav-item w-full text-left"
-        >
-          <span className="w-3.5 text-center text-[11px] opacity-60">★</span>
-          <span className="min-w-0 flex-1 truncate">{p.name}</span>
-          {p.online > 0 ? (
-            <span className="flex shrink-0 items-center gap-1 text-[11px] tabular-nums text-fg3">
-              <span className="size-1.5 rounded-full" style={{ background: 'var(--status-joinme, #4ade80)' }} />
-              {p.online}
-            </span>
-          ) : null}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 function NavItem({ item, page, onNavigate, depth = 0 }) {
   return (
@@ -113,7 +82,7 @@ function NavFolder({ item, page, onNavigate }) {
   );
 }
 
-export default function Sidebar({ page, onNavigate, me, open = false, onClose }) {
+export default function Sidebar({ page, onNavigate, me, open = false, onClose, onCollapse }) {
   return (
     <aside
       className="vrc-sidebar flex w-[214px] shrink-0 flex-col border-r md:w-[277px]"
@@ -136,17 +105,20 @@ export default function Sidebar({ page, onNavigate, me, open = false, onClose })
         )}
       </nav>
 
-      <PinnedWorlds onNavigate={onNavigate} />
-
-      {/* 185 设置进 footer（真机 SidebarFooter 的位置） */}
-      <div className="border-t px-2.5 py-2" style={{ borderColor: 'var(--stroke-subtle)' }}>
+      {/* 185/188 SidebarFooter：真机只有两项（设置 / 收起导航栏），上方无分割线、没有说明文字块。
+          量测见 docs/ref/footer-measure.json：footer pitch 39。 */}
+      <div className="px-2.5 pb-2" data-nav-footer="1">
         <NavItem item={{ id: 'settings', label: '设置', icon: '⚙' }} page={page} onNavigate={onNavigate} />
-      </div>
-
-      <div className="border-t px-4 py-3 text-[11px] leading-relaxed text-fg3" style={{ borderColor: 'var(--stroke-subtle)' }}>
-        数据来自 VRChat pipeline
-        <br />
-        NAS 常驻采集
+        <button
+          onClick={() => onCollapse?.()}
+          data-nav-kind="footer"
+          data-testid="nav-collapse"
+          className="nav-item w-full text-left"
+          title="收起导航栏"
+        >
+          <span className="w-3.5 text-center text-[11px] opacity-60">⇤</span>
+          <span className="truncate">收起导航栏</span>
+        </button>
       </div>
     </aside>
   );

@@ -120,7 +120,11 @@ try {
       return Math.round(xs[Math.floor(xs.length / 2)] * 10) / 10;
     };
     // 顶层（含折叠夹行）相邻行距：子项块夹在中间时差值很大，取中位数不受影响
-    const top = rows.filter((el) => el.dataset.navKind !== 'sub');
+    // 顶层 = top/folder 两种；footer（设置/收起导航栏）单独量，混进来会拉偏行距
+    const top = rows.filter((el) => el.dataset.navKind === 'top' || el.dataset.navKind === 'folder');
+    const footRows = [...document.querySelectorAll('[data-nav-footer] [data-nav-kind]')];
+    const sbBar = document.querySelector('#vrc-statusbar');
+    const sbItems = [...(sbBar?.querySelectorAll('[data-status-item]') ?? [])];
     const topPitch = med(top.slice(1).map((el, i) => y(el).y - y(top[i]).y));
     const sub = {};
     for (const box of document.querySelectorAll('.nav-sub')) {
@@ -139,9 +143,99 @@ try {
       subIndent: firstTop && firstSub ? Math.round((iconX(firstSub) - iconX(firstTop)) * 10) / 10 : null,
       folders: document.querySelectorAll('aside.vrc-sidebar [data-nav-folder]').length,
       topCount: top.length,
-      subCount: rows.length - top.length
+      subCount: rows.length - top.length,
+      // 188 SidebarFooter：真机只有两项、pitch 39、无分歧线、无说明块
+      footCount: footRows.length,
+      footLabels: footRows.map((el) => (el.lastElementChild?.textContent ?? el.textContent).trim()),
+      footPitch: footRows.length > 1 ? Math.round((y(footRows[1]).y - y(footRows[0]).y) * 10) / 10 : null,
+      // 真机 footer 贴侧栏底：最后一行底到侧栏底 8px 内
+      footBottomGap: footRows.length
+        ? Math.round((y(document.querySelector('aside.vrc-sidebar')).bottom - y(footRows[footRows.length - 1]).bottom) * 10) / 10
+        : null,
+      footNoteBlock: !!document.querySelector('aside.vrc-sidebar .text-fg3'),
+      // 188 底部状态栏：4 项圆点 + 文字，左对齐
+      sbCount: sbItems.length,
+      sbLabels: sbItems.map((el) => el.textContent.trim()),
+      sbFirstDotX: sbItems[0] ? Math.round(y(sbItems[0].firstElementChild).x * 10) / 10 : null,
+      sbDotW: sbItems[0] ? Math.round(y(sbItems[0].firstElementChild).width * 10) / 10 : null,
+      // 项间距 = 下一项圆点左缘 - 上一项文字右缘（真机 24/23/22）
+      sbGaps: sbItems.slice(1).map((el, i) => {
+        const prevLabel = y(sbItems[i].lastElementChild);
+        return Math.round((y(el.firstElementChild).x - (prevLabel.x + prevLabel.width)) * 10) / 10;
+      }),
+      sbLastRight: sbItems.length ? Math.round((y(sbItems[sbItems.length - 1]).x + y(sbItems[sbItems.length - 1]).width) * 10) / 10 : null,
+      sbH: sbBar ? Math.round(y(sbBar).height * 10) / 10 : null
     };
   });
+  // 189 顶栏（自定义标题栏）：真机量的是字形（docs/ref/topbar-measure.json → spec.chrome.topbar），
+  // 所以品牌/帮助/搜索/图标一律取 rect，窗口控制取 glyph（svg）而非按钮框。
+  const TBREF = SPEC.topbar;
+  const tbGot = await page.evaluate(() => {
+    const q = (n) => document.querySelector(`[data-topbar="${n}"]`);
+    const r = (el) => {
+      if (!el) return null;
+      const b = el.getBoundingClientRect();
+      return { x: Math.round(b.x * 10) / 10, w: Math.round(b.width * 10) / 10, right: Math.round(b.right * 10) / 10 };
+    };
+    const glyph = (el) => r(el.querySelector('svg') ?? el.firstElementChild);
+    const search = q('search');
+    const kbd = search.querySelector('kbd');
+    const acts = [...q('actions').children].map(glyph);
+    const wcs = [...q('window-controls').children].map(glyph);
+    const pitches = (a) => a.slice(1).map((v, i) => Math.round((v.x - a[i].x) * 10) / 10);
+    const med = (xs) => {
+      if (!xs.length) return null;
+      const s = [...xs].sort((a, b) => a - b);
+      return s[Math.floor(s.length / 2)];
+    };
+    const h1 = document.querySelector('#vrc-topbar h1');
+    // 底色用 canvas 归一成 rgb（主题色是 oklch，直接比字符串会误判）
+    const cv = document.createElement('canvas');
+    cv.width = cv.height = 1;
+    const cx = cv.getContext('2d');
+    cx.fillStyle = getComputedStyle(document.querySelector('#vrc-topbar')).backgroundColor;
+    cx.fillRect(0, 0, 1, 1);
+    const px = cx.getImageData(0, 0, 1, 1).data;
+    return {
+      bg: [px[0], px[1], px[2]],
+      brand: r(q('brand')),
+      help: r(q('help')),
+      search: r(search),
+      icon: r(search.firstElementChild),
+      ph: r(search.querySelector('span')),
+      kbd: r(kbd),
+      actCount: acts.length,
+      actFirst: acts[0]?.x ?? null,
+      actPitch: med(pitches(acts)),
+      actGap: acts[0] && kbd ? Math.round((acts[0].x - r(kbd).right) * 10) / 10 : null,
+      wcCount: wcs.length,
+      wcFirst: wcs[0]?.x ?? null,
+      wcPitch: med(pitches(wcs)),
+      wcRightPad: wcs.length ? Math.round((window.innerWidth - wcs[wcs.length - 1].right) * 10) / 10 : null,
+      titleVisible: !!h1 && h1.getBoundingClientRect().width > 1
+    };
+  });
+  want['topbar.brand_x'] = rel(TBREF.brand.x, SPEC.inner.x);
+  want['topbar.brand_w'] = TBREF.brand.w;
+  want['topbar.help_x'] = rel(TBREF.help.x, SPEC.inner.x);
+  want['topbar.help_w'] = TBREF.help.w;
+  want['topbar.search_icon_x'] = rel(TBREF.search.x, SPEC.inner.x);
+  want['topbar.search_icon_w'] = TBREF.search.icon_w;
+  want['topbar.placeholder_x'] = rel(TBREF.search.placeholder_x, SPEC.inner.x);
+  want['topbar.shortcut_x'] = rel(TBREF.search.shortcut_x, SPEC.inner.x);
+  want['topbar.shortcut_w'] = TBREF.search.shortcut_w;
+  want['topbar.actions_count'] = TBREF.actions.count;
+  want['topbar.actions_first_x'] = rel(TBREF.actions.first_x, SPEC.inner.x);
+  want['topbar.actions_pitch'] = TBREF.actions.pitch;
+  want['topbar.actions_gap'] = TBREF.actions.gap_from_shortcut;
+  want['topbar.wc_count'] = TBREF.window_controls.count;
+  want['topbar.wc_first_x'] = rel(TBREF.window_controls.first_x, SPEC.inner.x);
+  want['topbar.wc_pitch'] = TBREF.window_controls.pitch;
+  want['topbar.wc_right_pad'] = TBREF.window_controls.right_pad;
+  tol['topbar.actions_count'] = 0;
+  tol['topbar.wc_count'] = 0;
+  tol['topbar.wc_right_pad'] = 4;   // 真机窗口控制字形宽 11-12，我们的 svg 14，末字形右缘必然多 3
+
   want['nav.top_pitch'] = NAVREF.top_pitch;
   want['nav.sub_pitch'] = NAVREF.sub_pitch;
   want['nav.item_h'] = NAVREF.item_h;
@@ -149,6 +243,17 @@ try {
   want['nav.sub_indent'] = NAVREF.sub_indent;
   want['nav.folders'] = NAVREF.folders;
   tol['nav.folders'] = 0;
+  // 188 侧栏 footer + 底部状态栏（docs/ref/footer-measure.json → spec.chrome.nav.footer / chrome.statusbar）
+  const SBREF = SPEC.statusbar;
+  want['nav.footer_count'] = NAVREF.footer.count;
+  want['nav.footer_pitch'] = NAVREF.footer.pitch;
+  want['statusbar.items'] = SBREF.count;
+  want['statusbar.first_dot_x'] = SBREF.first_dot_x;
+  want['statusbar.item_gap'] = SBREF.item_gap;
+  want['statusbar.dot_w'] = SBREF.dot_w;
+  tol['nav.footer_count'] = 0;
+  tol['statusbar.items'] = 0;
+  tol['statusbar.dot_w'] = 1;
 
   const ours = {
     'topbar.h': got.topbar.h,
@@ -175,12 +280,42 @@ try {
     'rail.flush_right': got.roster ? Math.round((got.roster.x + got.roster.w - (got.content.x + got.content.w)) * 10) / 10 : null
   };
 
+  ours['topbar.brand_x'] = tbGot.brand?.x ?? null;
+  ours['topbar.brand_w'] = tbGot.brand?.w ?? null;
+  ours['topbar.help_x'] = tbGot.help?.x ?? null;
+  ours['topbar.help_w'] = tbGot.help?.w ?? null;
+  ours['topbar.search_icon_x'] = tbGot.icon?.x ?? null;
+  ours['topbar.search_icon_w'] = tbGot.icon?.w ?? null;
+  ours['topbar.placeholder_x'] = tbGot.ph?.x ?? null;
+  ours['topbar.shortcut_x'] = tbGot.kbd?.x ?? null;
+  ours['topbar.shortcut_w'] = tbGot.kbd?.w ?? null;
+  ours['topbar.actions_count'] = tbGot.actCount;
+  ours['topbar.actions_first_x'] = tbGot.actFirst;
+  ours['topbar.actions_pitch'] = tbGot.actPitch;
+  ours['topbar.actions_gap'] = tbGot.actGap;
+  ours['topbar.wc_count'] = tbGot.wcCount;
+  ours['topbar.wc_first_x'] = tbGot.wcFirst;
+  ours['topbar.wc_pitch'] = tbGot.wcPitch;
+  ours['topbar.wc_right_pad'] = tbGot.wcRightPad;
+
   ours['nav.top_pitch'] = navGot.topPitch;
   ours['nav.sub_pitch'] = navGot.subPitch;
   ours['nav.item_h'] = navGot.rowH;
   ours['nav.sub_item_h'] = navGot.subRowH;
   ours['nav.sub_indent'] = navGot.subIndent;
   ours['nav.folders'] = navGot.folders;
+  ours['nav.footer_count'] = navGot.footCount;
+  ours['nav.footer_pitch'] = navGot.footPitch;
+  ours['statusbar.items'] = navGot.sbCount;
+  ours['statusbar.first_dot_x'] = navGot.sbFirstDotX;
+  // 项间距：相邻项文字右端到下一圆点的空隙（真机 24/23/22，取中位数）
+  ours['statusbar.item_gap'] = (() => {
+    const g = (navGot.sbGaps ?? []).filter((v) => v != null);
+    if (!g.length) return null;
+    g.sort((a, b) => a - b);
+    return g[Math.floor(g.length / 2)];
+  })();
+  ours['statusbar.dot_w'] = navGot.sbDotW;
 
   for (const k of Object.keys(want)) {
     const o = ours[k];
@@ -193,6 +328,48 @@ try {
   rows.push({ metric: 'shell.fill', ours: Math.round(got.topbar.h + got.statusbar.h + got.content.h), ref: H, diff: Math.round(got.topbar.h + got.statusbar.h + got.content.h - H), tol: 0, ok: Math.abs(got.topbar.h + got.statusbar.h + got.content.h - H) <= 1 });
   rows.push({ metric: 'content.flush_sidebar', ours: ours['content.x'], ref: ours['sidebar.x'] + ours['sidebar.w'], diff: Math.round((ours['content.x'] - ours['sidebar.x'] - ours['sidebar.w']) * 10) / 10, tol: 1, ok: Math.abs(ours['content.x'] - ours['sidebar.x'] - ours['sidebar.w']) <= 1 });
   // 真机 1700 宽下右栏是展开的（截图里就在），所以默认应为 open
+  // 顺序/文案/对齐这类非数值项单独断言（spec 里是数组，不做差值和容差）
+  // 顶栏底色与「无页面标题/账号名」：真机 16 张截图顶栏逐项一致，底色 #f5f5f5
+  {
+    const hex = TBREF.bg.replace('#', '');
+    const ref = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    const d = Math.max(...ref.map((v, i) => Math.abs(v - tbGot.bg[i])));
+    rows.push({ metric: 'topbar.bg', ours: `rgb(${tbGot.bg.join(',')})`, ref: TBREF.bg, diff: d, tol: 3, ok: d <= 3 });
+  }
+  rows.push({
+    metric: 'topbar.no_page_title',
+    ours: tbGot.titleVisible ? 'visible title' : 'sr-only',
+    ref: 'none', diff: '-', tol: '-', ok: tbGot.titleVisible === false
+  });
+  rows.push({
+    metric: 'nav.footer_labels',
+    ours: (navGot.footLabels ?? []).join('|'),
+    ref: NAVREF.footer.items.map((i) => i.label).join('|'),
+    diff: '-', tol: '-',
+    ok: (navGot.footLabels ?? []).join('|') === NAVREF.footer.items.map((i) => i.label).join('|')
+  });
+  rows.push({
+    metric: 'nav.footer_no_note',
+    ours: navGot.footNoteBlock ? 'has note block' : 'none',
+    ref: 'none', diff: '-', tol: '-', ok: navGot.footNoteBlock === false
+  });
+  rows.push({
+    metric: 'nav.footer_at_bottom',
+    ours: `${navGot.footBottomGap}px`, ref: '8px', diff: navGot.footBottomGap - 8, tol: 8,
+    ok: navGot.footBottomGap != null && navGot.footBottomGap >= 0 && navGot.footBottomGap <= 16
+  });
+  rows.push({
+    metric: 'statusbar.labels',
+    ours: (navGot.sbLabels ?? []).join('|'),
+    ref: SBREF.items.map((i) => i.label).join('|'),
+    diff: '-', tol: '-',
+    ok: (navGot.sbLabels ?? []).join('|') === SBREF.items.map((i) => i.label).join('|')
+  });
+  rows.push({
+    metric: 'statusbar.left_aligned',
+    ours: navGot.sbLastRight, ref: `<=${Math.round(got.vw / 2)}`, diff: '-', tol: '-',
+    ok: navGot.sbLastRight != null && navGot.sbLastRight <= got.vw / 2
+  });
   rows.push({ metric: 'roster.default_on', ours: got.roster ? 'open' : 'closed', ref: 'open', diff: '-', tol: '-', ok: !!got.roster });
 
   fs.mkdirSync(SHOT, { recursive: true });

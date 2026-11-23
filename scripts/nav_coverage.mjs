@@ -75,6 +75,29 @@ try {
     return { key, before, closed, reopened };
   });
   rows.push({ id: `folder:${fold.key}`, hash: '-', title: `${fold.before}→${fold.closed}→${fold.reopened}`, want: 'N→0→N', active: '-', ok: fold.before > 0 && fold.closed === 0 && fold.reopened === fold.before, error: null });
+  // 188 SidebarFooter「收起导航栏」：点了侧栏消失、顶栏出展开按钮、再点回来（状态存 localStorage）
+  const collapse = await page.evaluate(async () => {
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const btn = document.querySelector('[data-testid="nav-collapse"]');
+    if (!btn) return { before: true, afterClick: true, expandBtn: false, afterExpand: false, stored: null };
+    const before = !!document.querySelector('aside.vrc-sidebar');
+    btn.click();
+    await wait(250);
+    const afterClick = !!document.querySelector('aside.vrc-sidebar');
+    const expandBtn = !!document.querySelector('[data-testid="nav-expand"]');
+    const stored = localStorage.getItem('vrc-nav-collapsed');
+    document.querySelector('[data-testid="nav-expand"]')?.click();
+    await wait(250);
+    const afterExpand = !!document.querySelector('aside.vrc-sidebar');
+    return { before, afterClick, expandBtn, afterExpand, stored };
+  });
+  rows.push({
+    id: 'footer:collapse', hash: '-',
+    title: `${collapse.before ? 'nav' : 'no'}→${collapse.afterClick ? 'nav' : 'no'}→${collapse.afterExpand ? 'nav' : 'no'}`,
+    want: 'nav→no→nav', active: '-',
+    ok: collapse.before && !collapse.afterClick && collapse.expandBtn && collapse.afterExpand && collapse.stored === '1',
+    error: null
+  });
 } finally {
   await browser.close();
 }
