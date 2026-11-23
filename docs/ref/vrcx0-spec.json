@@ -203,7 +203,28 @@
    "topbar_of_inner": 0.0379,
    "statusbar_of_inner": 0.034
   },
-  "stable": true
+  "stable": false,
+  "rail": {
+   "_source": "measured docs/ref/vrcx0-{feed,settings,notifications}.png（scripts/measure_ref_rail.py）",
+   "divider_x": 1323,
+   "x": 1328,
+   "w": 353,
+   "right": 1680,
+   "resizer_w": 10,
+   "right_gap": 13,
+   "self_card_h": 59,
+   "avatar_w": 57,
+   "filter_h": 30,
+   "icon_rail_w": 36,
+   "row_pitch": 60,
+   "section_head_h": 21,
+   "zoom_note": "截图 UI 缩放 110%：CSS 320px×1.1≈352，resizer8×1.1≈9（VRCX-0 AppShellLayout 默认 320，clamp 240–700）",
+   "vs_source": {
+    "side_panel_default_css": 320,
+    "expected_device_w_at_110pct": 352,
+    "match": true
+   }
+  }
  },
  "pages": {
   "favorites": {

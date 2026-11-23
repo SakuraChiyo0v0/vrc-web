@@ -9,7 +9,7 @@
  *     所以我们的 DOM 坐标减去视口原点就能和 spec 里的 inner 相对坐标直接比。
  *   - 容差 ±2px；内容面板高度单独给 4px（真机窗口上下各 2px 内缩：inner 从 y6 起、
  *     状态栏底 1032 而 inner 底 1034），其余项一律 2px。
- *   - 数值全部来自截图量测（scripts/measure_ref_chrome.py），本脚本不自拟断言。
+ *   - 数值全部来自截图量测（scripts/measure_ref_chrome.py / measure_ref_rail.py），本脚本不自拟断言。
  * 产出 docs/ref/chrome-parity.json；有 FAIL 则 exit 1。
  */
 import fs from 'node:fs';
@@ -48,7 +48,19 @@ const want = {
   'content.h': SPEC.content.h,
   'content.right_gap': rel(SPEC.inner.x + SPEC.inner.w, SPEC.inner.x) - rel(SPEC.content.x + SPEC.content.w, SPEC.inner.x)
 };
-const tol = { 'content.h': 4 };
+// 右栏（好友面板）内部结构：docs/ref/vrcx0-spec.json → chrome.rail（measure_ref_rail.py 多页中位数）
+const RAIL = SPEC.rail;
+want['rail.w'] = RAIL.w;                                        // 353
+want['rail.x'] = rel(RAIL.x, SPEC.inner.x);                     // 1328-6=1322（相对 inner）
+want['rail.divider_x'] = rel(RAIL.divider_x, SPEC.inner.x);      // 1323-6=1317（线在 resizer 正中）
+want['rail.resizer_w'] = RAIL.resizer_w;                        // 10
+want['rail.self_h'] = RAIL.self_card_h;                         // 59
+want['rail.filter_h'] = RAIL.filter_h;                          // 30
+want['rail.icon_rail_w'] = RAIL.icon_rail_w;                    // 36
+want['rail.section_head_h'] = RAIL.section_head_h;              // 21
+want['rail.row_pitch'] = RAIL.row_pitch;                        // 60
+want['rail.flush_right'] = 0;                                   // 栏右缘 = 内容面板右缘（真机 1680/1681）
+const tol = { 'content.h': 4, 'rail.row_pitch': 3, 'rail.flush_right': 2 };
 
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
@@ -73,6 +85,25 @@ try {
       statusbar: r('#vrc-statusbar'),
       content: r('.workspace'),
       roster: r('[data-testid="roster-rail"]'),
+      resize: r('[data-testid="roster-resize"]'),
+      self: r('[data-testid="roster-self"]'),
+      filter: r('[data-testid="roster-filter"]'),
+      iconrail: r('[data-testid="roster-iconrail"]'),
+      // 行距：同一 section 内相邻好友行的 y 差中位数（跨分组不算）
+      rowPitch: (() => {
+        const ds = [];
+        for (const sec of document.querySelectorAll('.roster-body section[data-section]')) {
+          const ys = [...sec.querySelectorAll('.roster-row')].map((el) => el.getBoundingClientRect().y);
+          for (let i = 1; i < ys.length; i += 1) ds.push(ys[i] - ys[i - 1]);
+        }
+        if (!ds.length) return null;
+        ds.sort((a, b) => a - b);
+        return Math.round(ds[Math.floor(ds.length / 2)] * 10) / 10;
+      })(),
+      sectionHeadH: (() => {
+        const el = document.querySelector('.roster-body .group-head');
+        return el ? Math.round(el.getBoundingClientRect().height * 10) / 10 : null;
+      })(),
       vw: window.innerWidth,
       vh: window.innerHeight
     };
@@ -89,7 +120,18 @@ try {
     'content.y': got.content.y,
     'content.w': got.content.w,
     'content.h': got.content.h,
-    'content.right_gap': Math.round((got.vw - (got.content.x + got.content.w)) * 10) / 10
+    'content.right_gap': Math.round((got.vw - (got.content.x + got.content.w)) * 10) / 10,
+    'rail.w': got.roster?.w ?? null,
+    // 我们的视口 x 已是「相对 inner 原点」口径（内容面板 x=277=spec 283−6），不再减 6
+    'rail.x': got.roster?.x ?? null,
+    'rail.divider_x': got.resize ? Math.round((got.resize.x + got.resize.w / 2) * 10) / 10 : null,
+    'rail.resizer_w': got.resize?.w ?? null,
+    'rail.self_h': got.self?.h ?? null,
+    'rail.filter_h': got.filter?.h ?? null,
+    'rail.icon_rail_w': got.iconrail?.w ?? null,
+    'rail.section_head_h': got.sectionHeadH ?? null,
+    'rail.row_pitch': got.rowPitch ?? null,
+    'rail.flush_right': got.roster ? Math.round((got.roster.x + got.roster.w - (got.content.x + got.content.w)) * 10) / 10 : null
   };
 
   for (const k of Object.keys(want)) {
@@ -102,7 +144,8 @@ try {
   // 壳体自洽（不依赖真机）：三段高度正好铺满视口、内容面板贴侧栏右侧
   rows.push({ metric: 'shell.fill', ours: Math.round(got.topbar.h + got.statusbar.h + got.content.h), ref: H, diff: Math.round(got.topbar.h + got.statusbar.h + got.content.h - H), tol: 0, ok: Math.abs(got.topbar.h + got.statusbar.h + got.content.h - H) <= 1 });
   rows.push({ metric: 'content.flush_sidebar', ours: ours['content.x'], ref: ours['sidebar.x'] + ours['sidebar.w'], diff: Math.round((ours['content.x'] - ours['sidebar.x'] - ours['sidebar.w']) * 10) / 10, tol: 1, ok: Math.abs(ours['content.x'] - ours['sidebar.x'] - ours['sidebar.w']) <= 1 });
-  rows.push({ metric: 'roster.default_off', ours: got.roster ? 'open' : 'closed', ref: 'closed', diff: '-', tol: '-', ok: !got.roster });
+  // 真机 1700 宽下右栏是展开的（截图里就在），所以默认应为 open
+  rows.push({ metric: 'roster.default_on', ours: got.roster ? 'open' : 'closed', ref: 'open', diff: '-', tol: '-', ok: !!got.roster });
 
   fs.mkdirSync(SHOT, { recursive: true });
   await page.screenshot({ path: path.join(SHOT, 'chrome-1688.png') });

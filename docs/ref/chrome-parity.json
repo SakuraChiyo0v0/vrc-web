@@ -73,9 +73,9 @@
   },
   {
    "metric": "content.w",
-   "ours": 1400,
+   "ours": 1398,
    "ref": 1398,
-   "diff": 2,
+   "diff": 0,
    "tol": 2,
    "ok": true
   },
@@ -89,9 +89,89 @@
   },
   {
    "metric": "content.right_gap",
-   "ours": 11,
+   "ours": 13,
    "ref": 13,
-   "diff": -2,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "rail.w",
+   "ours": 353,
+   "ref": 353,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "rail.x",
+   "ours": 1322,
+   "ref": 1322,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "rail.divider_x",
+   "ours": 1317,
+   "ref": 1317,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "rail.resizer_w",
+   "ours": 10,
+   "ref": 10,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "rail.self_h",
+   "ours": 59,
+   "ref": 59,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "rail.filter_h",
+   "ours": 30,
+   "ref": 30,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "rail.icon_rail_w",
+   "ours": 36,
+   "ref": 36,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "rail.section_head_h",
+   "ours": 21,
+   "ref": 21,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "rail.row_pitch",
+   "ours": 60,
+   "ref": 60,
+   "diff": 0,
+   "tol": 3,
+   "ok": true
+  },
+  {
+   "metric": "rail.flush_right",
+   "ours": 0,
+   "ref": 0,
+   "diff": 0,
    "tol": 2,
    "ok": true
   },
@@ -112,9 +192,9 @@
    "ok": true
   },
   {
-   "metric": "roster.default_off",
-   "ours": "closed",
-   "ref": "closed",
+   "metric": "roster.default_on",
+   "ours": "open",
+   "ref": "open",
    "diff": "-",
    "tol": "-",
    "ok": true

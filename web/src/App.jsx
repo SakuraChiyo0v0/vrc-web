@@ -72,7 +72,12 @@ export default function App() {
   const [nav, setNav] = useState(false);
   const [palette, setPalette] = useState(false);
   const [help, setHelp] = useState(false);
-  const [roster, setRoster] = useState(() => localStorage.getItem('vrc-roster-open') === '1');
+  // 187 右栏默认展开（真机 1700 宽下内容面板内就有右栏）；窄屏(<1280)由 CSS 隐藏
+  const [roster, setRoster] = useState(() => {
+    const v = localStorage.getItem('vrc-roster-open');
+    if (v === null) return typeof window !== 'undefined' ? window.innerWidth >= 1280 : false;
+    return v === '1';
+  });
   const [theme, toggleTheme] = useTheme();
   const Page = PAGES[page] ?? PAGES.friends;
 
@@ -179,18 +184,20 @@ export default function App() {
             {/* 65 主内容 workspace：1px ring + 顶部内高光，卡片不再裸贴页面 */}
             {/* 115 断网提示 + 页面级错误边界：换页自动重挂载，错误不串页 */}
             <OfflineBanner />
-            <div className="workspace min-h-0 flex-1 overflow-auto">
-              <ErrorBoundary key={page}>
-                <Suspense fallback={<div className="p-4"><Skeleton rows={6} cols={4} /></div>}>
-                  <Page onNavigate={setPage} />
-                </Suspense>
-              </ErrorBoundary>
+            {/* 187 真机内容面板 =「页面 + 右栏」同一个白底面板（分割线 x1323 在面板内部），
+                所以右栏放进 .workspace 里，外壳 content.w 仍是 1398 */}
+            <div className="workspace min-h-0 flex-1 overflow-hidden flex">
+              <div className="min-h-0 min-w-0 flex-1 overflow-auto">
+                <ErrorBoundary key={page}>
+                  <Suspense fallback={<div className="p-4"><Skeleton rows={6} cols={4} /></div>}>
+                    <Page onNavigate={setPage} />
+                  </Suspense>
+                </ErrorBoundary>
+              </div>
+              {/* 好友页自身已是全量列表，不重复显示 */}
+              {roster && page !== 'friends' ? <RosterPanel /> : null}
             </div>
           </main>
-
-          {/* 186 右栏好友面板默认收起（真机 1700 宽下没有常驻右栏，内容面板直接顶到右边距 11px），
-              顶栏「好友栏」开关记住偏好；好友页自身已是全量列表，不重复显示 */}
-          {roster && page !== 'friends' ? <RosterPanel /> : null}
         </div>
 
         <StatusBar status={status} theme={theme} page={page} />

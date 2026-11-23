@@ -5,9 +5,12 @@ import { useDrawer } from '../components/drawers.jsx';
 import UserHoverCard from '../components/UserHoverCard.jsx';
 import { matchText } from '../lib/pinyin.js';
 
-const MIN_W = 200;
-const MAX_W = 420;
-const DEF_W = 244;
+// 187 尺寸全部来自真机量测 docs/ref/vrcx0-spec.json → chrome.rail（scripts/measure_ref_rail.py）：
+// 栏宽 353 / resizer 10 / 自身账号卡 59 / 头像 57 / 筛选框 30 / 右侧图标竖条 36 / 行距 60 / 分组标题 21
+// 真机 CSS 是 320px、截图 UI 缩放 110%，所以 353 是「设备像素」口径，与外壳 277/39/35 一致。
+const MIN_W = 264;   // 真机 clamp 240 CSS ×1.1
+const MAX_W = 770;   // 真机 clamp 700 CSS ×1.1
+const DEF_W = 353;
 const W_KEY = 'vrc-roster-w';
 
 const STATUS_COLOR = {
@@ -18,11 +21,11 @@ const STATUS_COLOR = {
   offline: 'var(--status-offline)'
 };
 
-/** 与好友页同一份 roster 数据，这里只做「右栏」这一种排法 */
+/** 与好友页同一份 roster 数据，这里只做「右栏」这一种排法（分组顺序照真机 SidePanel） */
 const SECTIONS = [
   ['favorite', '已分组的好友'],
-  ['online', '在线'],
   ['same_room', '同一房间'],
+  ['online', '在线'],
   ['active', '活跃中'],
   ['offline', '离线']
 ];
@@ -68,13 +71,15 @@ function Row({ f }) {
 }
 
 /**
- * 76 右侧常驻好友面板（非好友页显示，可折叠成一条 32px 竖条）。
- * 分组标题带计数，来自 /api/roster facets；点人开抽屉，不跳页。
+ * 187 右栏好友面板：真机 VRCX-0 SidePanel 的结构——
+ * 自身账号卡（头像/名字/状态/⋯）→ 筛选框（内嵌放大镜）→ 分组列表 → 右侧 36px 图标竖条（带计数）。
+ * 可折叠成 36px 竖条；宽度可拖，记忆在 localStorage。
  */
 export default function RosterPanel() {
   const [q, setQ] = useState('');
+  const [tab, setTab] = useState('all');
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem('vrc-roster-collapsed') === '1');
-  // 93 宽度记忆：默认 244，可拖到 200–420，双击复位
+  // 93 宽度记忆：默认 353（真机量测），可拖到 264–770，双击复位
   const [w, setW] = useState(() => {
     const v = Number(localStorage.getItem(W_KEY));
     return Number.isFinite(v) && v >= MIN_W && v <= MAX_W ? v : DEF_W;
@@ -82,13 +87,18 @@ export default function RosterPanel() {
   const wRef = useRef(w);
   wRef.current = w;
   const [dragging, setDragging] = useState(false);
+  const { data: status } = useQuery({ queryKey: ['status'], queryFn: () => api('status'), refetchInterval: 15_000 });
   const { data } = useQuery({ queryKey: ['roster'], queryFn: () => api('roster'), refetchInterval: 30_000 });
   const facets = data?.facets ?? {};
+  const me = status?.account;
 
-  // 往左拖变宽：width = 视口右边缘 − 指针 x；松手才落 localStorage（避免每帧写盘）
+  // 往左拖变宽：width = 内容面板右缘 − 指针 x；松手才落 localStorage（避免每帧写盘）
   useEffect(() => {
     if (!dragging) return;
-    const move = (e) => setW(Math.min(MAX_W, Math.max(MIN_W, window.innerWidth - e.clientX)));
+    const move = (e) => {
+      const panelRight = document.querySelector('.workspace')?.getBoundingClientRect().right ?? window.innerWidth;
+      setW(Math.min(MAX_W, Math.max(MIN_W, panelRight - e.clientX)));
+    };
     const up = () => {
       setDragging(false);
       localStorage.setItem(W_KEY, String(Math.round(wRef.current)));
@@ -113,15 +123,16 @@ export default function RosterPanel() {
     });
   };
 
-  // 一人只出现在一个分组：收藏优先，其次在线，再按状态/离线
+  // 一人只出现在一个分组：收藏优先，其次同一房间，再在线/活跃/离线
   const sections = useMemo(() => {
-    const friends = (data?.friends ?? []).filter((f) =>
-      matchText(f.display_name, q));
+    const friends = (data?.friends ?? [])
+      .filter((f) => (tab === 'favorite' ? f.favorite : true))
+      .filter((f) => matchText(f.display_name, q));
     const taken = new Set();
     const match = (key, f) => {
       if (key === 'favorite') return f.favorite;
-      if (key === 'online') return f.online;
       if (key === 'same_room') return f.same_room;
+      if (key === 'online') return f.online;
       if (key === 'active') return f.active;
       return !f.online;
     };
@@ -130,7 +141,7 @@ export default function RosterPanel() {
       rows.forEach((f) => taken.add(f.user_id));
       return { key, label, count: facets[key] ?? 0, rows };
     }).filter((s) => s.rows.length > 0 || (s.key !== 'same_room' && s.key !== 'active' && !q));
-  }, [data, q, facets]);
+  }, [data, q, tab, facets]);
 
   if (collapsed) {
     return (
@@ -141,6 +152,11 @@ export default function RosterPanel() {
     );
   }
 
+  const tabs = [
+    { key: 'all', icon: '👥', count: facets.online ?? 0, label: '好友' },
+    { key: 'favorite', icon: '★', count: facets.favorite ?? 0, label: '收藏' }
+  ];
+
   return (
     <aside
       className="roster-rail"
@@ -149,7 +165,7 @@ export default function RosterPanel() {
       data-width={w}
       style={{ width: `${w}px`, flexBasis: `${w}px` }}
     >
-      {/* 93 左边缘拖宽手柄（双击复位 244） */}
+      {/* 93 拖宽手柄：真机 10px 轨道 + 居中 1px 分割线（截图量到 x1323 / 宽10） */}
       <div
         className="roster-resize"
         data-testid="roster-resize"
@@ -161,33 +177,65 @@ export default function RosterPanel() {
         onDoubleClick={resetW}
         data-dragging={dragging ? 'true' : 'false'}
       />
-      <div className="roster-head">
-        <span className="text-[12px] font-medium">好友</span>
-        <span className="tabular-nums text-[11px] text-fg3">在线 {facets.online ?? 0}</span>
-        <button className="roster-toggle ml-auto" onClick={toggle} title="折叠好友面板" aria-label="折叠好友面板">›</button>
+      <div className="roster-body">
+        {/* 自身账号卡（真机 h59） */}
+        <div className="roster-self" data-testid="roster-self">
+          <span className="roster-self-avatar">
+            {me?.icon_url ? (
+              <img src={imgUrl(me.icon_url)} alt="" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} />
+            ) : null}
+            <span className="dot" style={{ background: 'var(--status-active)' }} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="roster-self-name">{me?.display_name ?? '未登录'}</span>
+            <span className="roster-self-status">{status?.online ? '在线' : '离线'}</span>
+          </span>
+          <button className="roster-self-menu" onClick={toggle} title="折叠好友面板" aria-label="折叠好友面板">⋯</button>
+        </div>
+
+        {/* 筛选框（真机 h30，放大镜在右端） */}
+        <div className="roster-filter" data-testid="roster-filter">
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="筛选好友"
+            className="h-full w-full bg-transparent text-[12px] outline-none"
+            style={{ color: 'var(--content-primary)' }}
+          />
+          <span className="roster-filter-icon" aria-hidden="true">⌕</span>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-auto pb-2" data-testid="roster-list">
+          {sections.map((s) => (
+            <section key={s.key} data-section={s.key}>
+              <div className="group-head">
+                <span className="truncate font-medium">{s.label}</span>
+                <span className="shrink-0 tabular-nums text-fg3">{s.count}</span>
+              </div>
+              {s.rows.map((f) => <Row key={f.user_id} f={f} />)}
+            </section>
+          ))}
+          {sections.every((s) => s.rows.length === 0) ? (
+            <div className="px-3 py-4 text-[11px] text-fg3">{q ? '没有匹配的好友' : '暂无好友数据'}</div>
+          ) : null}
+        </div>
       </div>
-      <div className="px-2 pb-2">
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="筛选好友"
-          className="h-7 w-full rounded-lg border px-2 text-[12px] outline-none"
-          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-raised)', color: 'var(--content-primary)' }}
-        />
-      </div>
-      <div className="min-h-0 flex-1 overflow-auto pb-2">
-        {sections.map((s) => (
-          <section key={s.key} data-section={s.key}>
-            <div className="group-head">
-              <span className="truncate font-medium">{s.label}</span>
-              <span className="shrink-0 tabular-nums text-fg3">{s.count}</span>
-            </div>
-            {s.rows.map((f) => <Row key={f.user_id} f={f} />)}
-          </section>
+
+      {/* 右侧图标竖条（真机 w36，竖排 tab + 计数） */}
+      <div className="roster-tabbar" data-testid="roster-iconrail">
+        {tabs.map((t) => (
+          <button
+            key={t.key}
+            className="roster-tab"
+            data-active={tab === t.key ? 'true' : undefined}
+            onClick={() => setTab(t.key)}
+            title={t.label}
+            aria-label={t.label}
+          >
+            <span>{t.icon}</span>
+            <span className="tabular-nums">{t.count}</span>
+          </button>
         ))}
-        {sections.every((s) => s.rows.length === 0) ? (
-          <div className="px-3 py-4 text-[11px] text-fg3">{q ? '没有匹配的好友' : '暂无好友数据'}</div>
-        ) : null}
       </div>
     </aside>
   );

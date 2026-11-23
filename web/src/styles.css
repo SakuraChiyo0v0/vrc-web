@@ -275,7 +275,7 @@ body {
     color: var(--content-primary);
   }
 
-  .group-head { height: 26px; display: flex; align-items: center; gap: .5rem; padding: 0 .5rem; font-size: 11px; color: var(--content-secondary); }
+  .group-head { height: 21px; display: flex; align-items: center; gap: .5rem; padding: 0 .5rem; font-size: 11px; color: var(--content-secondary); }
 
   /* 64 平台徽章：PC/Quest 用品牌色描边徽章，不是一行灰字 */
   .plat {
@@ -319,9 +319,10 @@ body {
   .ek[data-kind='friend_delete'] { color: var(--ev-danger); }
 
   /* 65 workspace 描边层：inset 顶部高光 + 1px ring（VRCX-0 globals.css:851-862） */
-  /* 184 外边距按真机量测：贴侧栏 0 左 / 0 顶 / 右 11 / 底 0（spec.chrome.content 283,47,1398x950） */
+  /* 184 外边距按真机量测：贴侧栏 0 左 / 0 顶 / 右 13 / 底 0
+   * 右 13 = chrome.rail.right_gap（inner 右缘 − 面板右缘）；面板宽因此正好 1398（spec.chrome.content） */
   .workspace {
-    margin: 0 11px 0 0; border-radius: 12px;
+    margin: 0 13px 0 0; border-radius: 12px;
     background: var(--surface-panel);
     box-shadow:
       inset 0 1px 0 var(--workspace-highlight),
@@ -446,30 +447,96 @@ body {
   .world-head .sort-btn { font-size: 11px; }
 }
 
-/* 76/93 右侧常驻好友面板：三栏的最右一栏，默认 244px，可拖 200–420 并记忆，折叠成 40px 竖条；<1280px 让位给主区 */
+/* 76/93 右侧常驻好友面板：三栏的最右一栏，默认 353（真机量测），可拖 264–770 并记忆，折叠成 36 竖条；<1280px 让位给主区
+ * 内部结构照 docs/ref/vrcx0-spec.json → chrome.rail：左侧列表 body + 右侧 36px 图标竖条 */
 .roster-rail {
-  width: 244px;
-  flex: 0 0 244px;
+  width: 353px;
+  flex: 0 0 353px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   min-height: 0;
   position: relative;
   border-left: 1px solid var(--stroke-subtle);
   background: var(--surface-panel);
 }
-.roster-rail[data-collapsed='true'] {
+.roster-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+/* 自身账号卡（真机 h59；圆形头像 40，名字 + 状态两行，右上「…」） */
+.roster-self {
+  height: 59px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: 0 .375rem 0 .5rem;
+}
+.roster-self-avatar {
+  position: relative;
   width: 40px;
-  flex-basis: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  overflow: visible;
+  box-shadow: 0 0 0 2px color-mix(in oklch, #c77dff 45%, transparent);
+}
+.roster-self-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+.roster-self-avatar .dot {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--surface-panel);
+}
+.roster-self-name { display: block; font-size: 13px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.roster-self-status { display: block; font-size: 11px; line-height: 1.3; color: var(--content-tertiary); }
+.roster-self-menu {
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--content-secondary);
+  font-size: 14px;
+}
+.roster-self-menu:hover { background: var(--state-hover-surface); color: var(--content-primary); }
+/* 筛选框（真机 h30，放大镜在右端） */
+.roster-filter {
+  height: 30px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: .375rem;
+  margin: 0 .5rem .375rem;
+  padding: 0 .5rem;
+  border: 1px solid var(--stroke-subtle);
+  border-radius: 8px;
+  background: var(--surface-raised);
+}
+.roster-filter-icon { color: var(--content-tertiary); font-size: 13px; }
+.roster-rail[data-collapsed='true'] {
+  width: 36px;
+  flex-basis: 36px;
   align-items: center;
   gap: .25rem;
   padding-top: .25rem;
 }
 .roster-resize {
   position: absolute;
-  left: -3px;
+  /* 轨道宽 10（量测 resizer_w）；线画在轨道正中、距栏左 5px：栏有 1px 左边框，故 left = -(5+1+5) */
+  left: -11px;
   top: 0;
   bottom: 0;
-  width: 6px;
+  width: 10px;
   cursor: col-resize;
   z-index: 3;
   touch-action: none;
@@ -497,25 +564,54 @@ body {
   cursor: default;
 }
 .roster-toggle:hover { color: var(--content-primary); }
+/* 右侧图标竖条（真机 w36，竖排 tab + 计数，贯穿全高） */
+.roster-tabbar {
+  width: 36px;
+  flex: 0 0 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: .5rem 0;
+  border-left: 1px solid var(--stroke-subtle);
+}
+.roster-tab {
+  width: 30px;
+  height: 46px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--content-tertiary);
+  font-size: 10px;
+  line-height: 1;
+}
+.roster-tab[data-active='true'] { background: var(--state-hover-surface); color: var(--content-primary); }
+.roster-tab:hover { color: var(--content-primary); }
 .roster-spine {
   writing-mode: vertical-rl;
   font-size: 11px;
   color: var(--content-secondary);
   letter-spacing: .05em;
 }
+/* 好友行：真机行距 60（量测 row_pitch=60），36 圆头像上下排两行 */
 .roster-row {
   display: flex;
   align-items: center;
-  gap: .45rem;
-  min-height: 34px;
-  padding: .1875rem .5rem;
+  gap: .5rem;
+  height: 60px;
+  padding: 0 .5rem;
   cursor: default;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 .roster-row:hover { background: var(--state-hover-surface); }
-.roster-row .avatar { width: 20px; height: 20px; border-radius: 5px; flex: none; }
-.roster-row .avatar img { border-radius: 4px; }
-.roster-row .dot { width: 7px; height: 7px; right: -2px; bottom: -2px; }
+.roster-row .avatar { width: 36px; height: 36px; border-radius: 50%; flex: none; }
+.roster-row .avatar img { border-radius: 50%; }
+.roster-row .dot { width: 9px; height: 9px; right: 0; bottom: 0; border: 2px solid var(--surface-panel); }
 .roster-name {
   display: block;
   font-size: 12px;
