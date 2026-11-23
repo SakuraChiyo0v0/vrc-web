@@ -445,3 +445,16 @@ VRCX-0 的「导出 / 迁移」在 Web 端的对应物：CSV 多表导出、全�
 | 223 | `spec.chrome.topbar.search` 补 `placeholder_x / placeholder_w / shortcut_x1 / shortcut_w`（量测值，非自拟） | spec 与 `topbar-measure.json` 一致 |
 | 224 | `chrome_parity.mjs` 新增 20 项 topbar 断言（品牌/帮助/搜索/占位的 x+w、actions 数/首 x/pitch/gap、窗口控制数/首 x/pitch/right_pad、底色 rgb(245,245,245)、无可见页面标题）；窗口控制按 glyph（svg）量，`right_pad` 容忍 4px（真机字形宽 11-12，我们 svg 14） | chrome_parity **60/60（100%）** |
 | 225 | 回归 | `npm run build` ✓、`npm test` 40/40、nav_coverage **20/20**、structure_parity **31/31**、visual_parity **166/166（100%）** |
+
+---
+
+# 第二十三轮：世界库卡片按 1700 真机量测复刻（2026-11-24）
+
+世界卡片的盒模型此前只对了一半：列距/缩进/圆角/4:3 都断言，但**卡片宽 316 与行距 319 没有断言**，于是两个真问题一直没暴露——(1) `@media (min-width:1700px){html{zoom:1.15}}` 正好覆盖全部真机截图的量测视口（1700×1040），把 316 的卡压成 296；(2) 世界库用通用的 `p-4`（16px 内边），而真机内容是左缩 23、右侧让出 rail 分隔条 10 + 右留白 13。本轮按量测改到 316×237 / 行距 319，并把两项变成断言。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 231 | 整页 zoom 起点 1700 → **1800**（`styles.css`）：1700 是全部 `vrcx0-*.png` 的量测视口，该视口下任何整页缩放都会让量测失真；2K/4K 的 1.35/1.7 档不变 | 1700 视口 `getComputedStyle(html).zoom === '1'`，卡片从 296 → 312 |
+| 232 | 世界库专用容器 `.worlds-page`（替换 `p-4`）：≥1600px 时 padding `23px 52px 24px 23px`（真机左缩 23、右侧 35 + rail 分隔条/右留白 29），<1600 保持 16px | 网格 982、卡片 **317**、缩略图 317×237、行距 **320**（真机 316/319，±2 内） |
+| 233 | `scripts/worlds_realcovers.mjs` 接 PG 实例（1220 个世界）实测真封面：首屏 49 张真图全部解码、512×384；占位灰块断言改成「与库内无缩略图的世界数一致」（原来写死 0，把 1 条数据缺口算成几何 DIFF） | 封面实测 **10/10 PASS**，截图 `docs/screenshots/compare/worlds-real-covers-1700.png` |
+| 234 | 回归：`npm run build` ✓、visual_parity worlds **78/78**、总 **214/215（100%）**、structure_parity **58/59**（唯一 DIFF 是 feed 行高 46/44，与本轮无关，留待下轮） | 三端截图 18 页齐、`ref_coverage.py` 待办 0 |

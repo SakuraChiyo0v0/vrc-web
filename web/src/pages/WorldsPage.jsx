@@ -10,13 +10,13 @@ import { usePref, useSort } from '../lib/prefs.js';
 
 const fmt = (v) => (v ? new Date(v).toLocaleString('zh-CN', { hour12: false }) : '—');
 
-// 90 缩略图 16:9 铺满卡片；没有图就留同比例灰底 +首字，网格不会跳
+// 90 缩略图 4:3 圆角铺满卡片（真机 316×237）；没有图就留同比例灰底 +首字，网格不会跳
 function Thumb({ w }) {
   if (w.thumbnail) {
     return (
       <img
         className="thumb"
-        src={imgUrl(w.thumbnail)}
+        src={imgUrl(w.thumbnail, 512)}
         alt=""
         loading="lazy"
         onError={(e) => { e.currentTarget.replaceWith(Object.assign(document.createElement('div'), { className: 'thumb thumb-empty', textContent: (w.name ?? '?').slice(0, 1) })); }}
@@ -79,7 +79,7 @@ export default function WorldsPage() {
   };
 
   return (
-    <div className="p-4">
+    <div className="worlds-page">
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <input
           value={q}
@@ -146,17 +146,15 @@ export default function WorldsPage() {
       ) : (
         <div className="world-grid">
           {rows.map((w) => (
-            <div key={w.id} className="world-card" onClick={() => openWorld(w.id)} title={w.name}>
+            <div key={w.id} className="world-card" onClick={() => openWorld(w.id)} title={`${w.name}\n最近活跃 ${fmt(w.last_at)}`}>
               <Thumb w={w} />
               <div className="wc-body">
                 <div className="wc-name">{w.fav ? <span data-fav="1" title="已收藏">★ </span> : null}{w.name}</div>
+                {/* 真机卡片文字只有「标题 + 一行元信息」（左作者·容量 / 右次数·好友数），
+                    最近活跃时间放 title 提示里，不额外占一行 */}
                 <div className="wc-meta">
-                  <span>{w.author_name ?? '未知作者'}</span>
-                  <span>{w.visits} 次 · {w.friends_seen} 人</span>
-                </div>
-                <div className="wc-meta">
-                  <span>{fmt(w.last_at)}</span>
-                  {w.capacity ? <span>容量 {w.capacity}</span> : null}
+                  <span>{w.author_name ?? '未知作者'}{w.capacity ? ` ·容量 ${w.capacity}` : ''}</span>
+                  <span>{w.visits}次 · {w.friends_seen}人</span>
                 </div>
               </div>
             </div>

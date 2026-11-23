@@ -330,19 +330,21 @@ body {
     .graph-legend { position: static; width: auto; margin-top: .5rem; }
   }
 
-  /* 90 世界库缩略图网格：桌面 3 列、≤1023px 2 列，一屏至少 9 个（1080p 3×3） */
-  .world-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .625rem; }
+  /* 90 世界库缩略图网格：桌面 3 列、≤1023px 2 列
+     几何按 docs/ref/worlds-measure.json（真机截图量测）：4:3 缩略图、圆角 9、
+     列距 16、文字左缩进 14、卡与卡之间无边框无底色（缩略图直接浮在白底上） */
+  .world-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 16px; }
   @media (max-width: 1023px) { .world-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .world-card {
     display: flex; flex-direction: column; overflow: hidden; cursor: pointer;
-    border: 1px solid var(--stroke-subtle); border-radius: var(--radius); background: var(--surface-panel);
+    border: 0; border-radius: 0; background: transparent;
   }
-  .world-card:hover { border-color: var(--stroke-strong); }
-  .world-card .thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: var(--surface-raised); }
+  .world-card:hover .wc-name { color: var(--primary, #0078d4); }
+  .world-card .thumb { width: 100%; aspect-ratio: 4 / 3; border-radius: 9px; object-fit: cover; display: block; background: var(--surface-raised); }
   .world-card .thumb-empty { display: grid; place-items: center; color: var(--content-tertiary); font-size: 18px; }
-  .world-card .wc-body { padding: .5rem .625rem .625rem; min-width: 0; }
-  .world-card .wc-name { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .world-card .wc-meta { margin-top: 3px; display: flex; gap: .5rem; font-size: 11px; color: var(--content-tertiary); }
+  .world-card .wc-body { padding: 14px 14px 0; min-width: 0; }
+  .world-card .wc-name { font-size: 13px; line-height: 16px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .world-card .wc-meta { margin-top: 10px; display: flex; gap: .5rem; font-size: 12px; line-height: 14px; color: var(--content-tertiary); }
   .world-card .wc-meta > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .world-card .wc-meta > span:last-child { margin-left: auto; flex: none; }
 
@@ -392,6 +394,8 @@ body {
   .feed-tbl thead th { height: 44px; font-size: 12px; }
   .feed-tbl thead th, .feed-tbl tbody td { padding-left: 58px; padding-right: 12px; }
   .feed-tbl tbody td { height: 44px; font-size: 12px; }
+  /* 时间列只有 106 宽（文字起点 78）：跨日行是「月-日\n时:分」两行，行距压到 15 才装得进 44px 行 */
+  .feed-tbl tbody td[data-label='时间'] { white-space: pre-line; line-height: 15px; }
   /* 118 时间线分段头：今天/昨天/更早，整行浅底、粘在滚动容器顶部 */
   .feed-tbl tbody tr.feed-day td {
     height: 26px; padding: 0 .75rem; font-size: 11px; font-weight: 600;
@@ -728,8 +732,10 @@ body {
   .roster-rail { display: none; }
 }
 
-/* 大屏适配：2K/4K 下按比例放大整页，避免文字小得看不清（缩放不改变布局逻辑，窄屏不受影响） */
-@media (min-width: 1700px) {
+/* 大屏适配：2K/4K 下按比例放大整页，避免文字小得看不清（缩放不改变布局逻辑，窄屏不受影响）
+ * 起点必须 >1700：1700 是全部真机截图（vrcx0-*.png，1700×1040）的量测视口，
+ * 该视口下 zoom 会把每张卡从真机 316 缩成 296（实测），整页量测全部失真。 */
+@media (min-width: 1800px) {
   html { zoom: 1.15; }
 }
 @media (min-width: 2200px) {
@@ -1353,4 +1359,12 @@ html[data-phone='1'] #root {
   .loc-card { height: auto; min-height: 76px; }
   .loc-card .avatar { width: 40px; height: 40px; }
   .loc-name { font-size: 12px; }
+}
+
+/* 世界库页面容器：真机 #/explore 网格 x306 w982（content 283..1323，左缩进 23、右侧 35），
+ * 组件里 rail 的分隔条 10 + 右留白 13 + inner 右边 6 = 29 也在这里让出来，
+ * 于是 1700 视口下 网格 = 1700-277(侧栏)-353(rail)-13(inner右留白)-23-52 = 982 → 卡片 316（spec.worlds.card_w） */
+.worlds-page { padding: 16px; }
+@media (min-width: 1600px) {
+  .worlds-page { padding: 23px 52px 24px 23px; }
 }
