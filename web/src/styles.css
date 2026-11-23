@@ -478,10 +478,14 @@ body {
     border-bottom: 0;
     overflow-wrap: anywhere;
   }
-  /* 列名：只给带 data-label 的格子（首格=标题行不给，分组/日期头也没有） */
+  /* 列名：只给带 data-label 的格子（首格=标题行不给，分组/日期头也没有）。
+     min-width 7em（11px 字号 = 77px，即最长列名「一起玩过的时长」7 个汉字）：
+     列名宽度不一（22/44/66/77）时每个值的起点都不同，卡片里看起来是斜的；
+     统一占位后所有值从同一 x 起排，右侧仍由 space-between 顶到卡片右缘。 */
   .tbl tbody td[data-label]::before {
     content: attr(data-label);
     flex: 0 0 auto;
+    min-width: 7em;
     font-size: 11px;
     font-weight: 400;
     color: var(--content-tertiary);
@@ -1365,10 +1369,40 @@ html[data-phone='1'] #root {
   .loc-name { font-size: 12px; }
 }
 
+/* 搜索页 hero 封面：桌面 420 定宽（原为 JSX 内联 width:420），移动端在 27 段里压成整行 */
+.res-hero-thumb { width: 420px; flex: none; }
+
 /* 世界库页面容器：真机 #/explore 网格 x306 w982（content 283..1323，左缩进 23、右侧 35），
  * 组件里 rail 的分隔条 10 + 右留白 13 + inner 右边 6 = 29 也在这里让出来，
  * 于是 1700 视口下 网格 = 1700-277(侧栏)-353(rail)-13(inner右留白)-23-52 = 982 → 卡片 316（spec.worlds.card_w） */
 .worlds-page { padding: 16px; }
 @media (min-width: 1600px) {
   .worlds-page { padding: 23px 52px 24px 23px; }
+}
+
+/* ── 27 移动端触控 / 排版下限（<768px）─────────────────────────
+ * 桌面密度档（chip 26 / 图标按钮 18–24 / 徽标 10.5px）是 1700 视口真机量测的结果，
+ * 直接搬到手机上点不中、看不清。这里只在移动断点放宽，桌面量测不受影响：
+ *   触控 ≥32（iOS 44 是纯移动 App 标准；本应用是桌面客户端的响应式版，32 是可达折中，
+ *   mobile_parity 断言取 28 保底）、可见正文最小 11px。
+ */
+@media (max-width: 767px) {
+  button, [role='button'], select, input { min-height: 32px; }
+  /* 文本搜索框原来靠 .inp 的 26 定高，min-height 会被 height 压回 26，这里显式抬到 32 */
+  .inp { height: 32px; }
+  input[type='range'] { height: 32px; }
+  .feed-search { min-height: 32px; }
+  /* 工具栏搜索框桌面写死 min-width 300，360 视口会顶出屏幕 → 允许换行、可压缩 */
+  .feed-toolbar { flex-wrap: wrap; height: auto; min-height: 54px; padding: 10px 16px; row-gap: 8px; }
+  .feed-search { min-width: 0; flex: 1 1 180px; }
+  .feed-search input[type='date'] { width: 96px; }
+  /* 搜索页 hero 封面：桌面 420 定宽，手机上压成整行 */
+  .res-hero-thumb { width: 100%; flex: none; max-width: 420px; }
+  /* 徽标 / 区域码 / 侧栏次级行：10.5px 在 390 视口糊成一团 */
+  .badge, .reg, .roster-meta { font-size: 11px; }
+  /* 关系图标签是 SVG 的 fontSize=10 表现属性，CSS 优先 */
+  .graph-canvas text { font-size: 11px; }
+  /* 设置行：右值+按钮固定 shrink-0，360 视口顶出卡片（实测 right=378）→ 右块换行占满 */
+  .set-row { flex-wrap: wrap; }
+  .set-row-right { flex: 1 1 100%; justify-content: flex-end; }
 }

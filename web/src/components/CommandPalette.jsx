@@ -74,6 +74,7 @@ export default function CommandPalette({ open, onClose, onOpen, onNavigate }) {
   return (
     <div className="fixed inset-0 z-50 flex justify-center pt-[12vh]" style={{ background: 'rgba(0,0,0,.32)' }} onClick={() => setOpen(false)}>
       <div
+        data-testid="palette"
         className="h-fit w-[560px] max-w-[92vw] overflow-hidden rounded-[12px] border shadow-xl"
         style={{ background: 'var(--surface-panel)', borderColor: 'var(--stroke-subtle)' }}
         onClick={(e) => e.stopPropagation()}

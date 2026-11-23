@@ -166,6 +166,15 @@ export default function App() {
           <h1 className="whitespace-nowrap text-[13px] font-medium md:sr-only">{TITLES[page]?.[0] ?? ''}</h1>
 
           <div className="ml-auto flex shrink-0 items-center">
+            {/* 手机端没有键盘：桌面靠 Ctrl K 打开的快速搜索，移动端给一个看得见的入口 */}
+            <button
+              data-topbar="search-mobile"
+              className="chip md:hidden"
+              onClick={() => setPalette(true)}
+              aria-label="快速搜索"
+            >
+              <IconSearch size={15} />
+            </button>
             <button
               data-topbar="search"
               onClick={() => setPalette(true)}
