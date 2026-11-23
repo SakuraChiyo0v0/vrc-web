@@ -1,96 +1,95 @@
-1|import { useInfiniteQuery } from '@tanstack/react-query';
-2|import { useState } from 'react';
-3|import { api } from '../api.js';
-4|import Empty from '../components/Empty.jsx';
-5|import Skeleton from '../components/Skeleton.jsx';
-6|import { ErrorCard } from '../components/ErrorBoundary.jsx';
-7|import { useDrawer } from '../components/drawers.jsx';
-8|import RowMenu, { Hint, friendItems, useHint, useRowMenu } from '../components/RowMenu.jsx';
-9|import UserHoverCard from '../components/UserHoverCard.jsx';
-10|import { useListNav } from '../lib/listnav.js';
-11|12|
-13|/**
-14| * 80 动态页改表格（规格取自 VRCX-0 真机截图）：
-15| *   列 = 时间 / 玩家 / 类型 / 详细信息；行高 40–48px；无头像
-16| *   类型图标色走 CSS 语义变量（87：上线绿 / 下线灰 / 换房青 / 改资料紫），行内不再写死颜色
-17| *   详细信息 = 区域 + 世界名 + 访问级别（好友+ / 群组公开 / 仅好友）
-18| */
-19|const KIND = {
-20|  online: ['上线', '▲'],
-21|  active: ['活跃', '◆'],
-22|  offline: ['下线', '▼'],
-23|  location: ['换房', '→'],
-24|  profile: ['资料变更', '✎'],
-25|  friend_add: ['加好友', '+'],
-26|  friend_delete: ['删好友', '−'],
-27|  self_profile: ['自己变更', '✎']
-28|};
-29|
-30|const KINDS = [['', '全部'], ['online', '上线'], ['location', '换房'], ['offline', '下线'], ['active', '活跃'], ['profile', '资料变更']];
-31|const LIMIT = 80;
-32|
-33|const ACCESS_LABEL = { public: '公开', 'friends+': '好友+', friends: '仅好友', group: '群组公开' };
-34|
-35|/** 真机时间列只给「时:分」（不带前导 0），不是今天时补「月-日」 */
-36|function clock(iso) {
-37|  const d = new Date(iso);
-38|  const now = new Date();
-39|  const sameDay = d.toDateString() === now.toDateString();
-40|  const hh = `${d.getHours()}`;
-41|  const mm = String(d.getMinutes()).padStart(2, '0');
-42|  if (sameDay) return `${hh}:${mm}`;
-43|  return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${hh}:${mm}`;
-44|}
-45|
-46|/** location 串 → 区域 / 访问级别（wrld_x:inst~hidden(usr)~region(jp)） */
-47|function locMeta(loc) {
-48|  const s = String(loc ?? '');
-49|  if (!s || s === 'offline' || s === 'private' || s === 'traveling') return { region: null, access: null };
-50|  const region = (s.match(/~region\(([^)]+)\)/) || [])[1] ?? null;
-51|  let access = 'public';
-52|  if (/~hidden\(/.test(s)) access = 'friends';
-53|  else if (/~friends\(/.test(s)) access = 'friends+';
-54|  else if (/~group\(/.test(s)) access = 'group';
-55|  return { region, access: ACCESS_LABEL[access] };
-56|}
-57|
-58|function sinceFor(range) {
-59|  const now = Date.now();
-60|  if (range === '1h') return new Date(now - 3600_000).toISOString();
-61|  if (range === '24h') return new Date(now - 86400_000).toISOString();
-62|  if (range === '7d') return new Date(now - 7 * 86400_000).toISOString();
-63|  return '';
-64|}
-65|
-66|const stamp = (iso) =>
-67|  new Date(iso).toLocaleString('zh-CN', {
-68|    month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
-69|  });
-70|
-71|/** 详细信息列：`JP Alpha Club · 仅好友`，私密/离线退化成短语 */
-72|function Detail({ e }) {
-73|  const { openWorld } = useDrawer();
-74|  if (!e.location || e.location === 'offline') return <span className="text-fg3">—</span>;
-75|  if (e.location === 'private') return <span className="text-fg3">私密世界</span>;
-76|  if (e.location === 'traveling') return <span className="text-fg3">切换中</span>;
-77|  const { region, access } = locMeta(e.location);
-78|  const name = e.world_name ?? (String(e.location).startsWith('wrld_') ? '未知世界' : e.location);
-79|  return (
-80|    <span className="flex min-w-0 items-center gap-1.5">
-81|      {region ? <span className="reg">{region.toUpperCase()}</span> : null}
-82|      {e.world_id ? (
-83|        <button className="min-w-0 truncate text-left hover:underline" onClick={() => openWorld(e.world_id)}>
-84|          {name}
-85|        </button>
-86|      ) : (
-87|        <span className="min-w-0 truncate">{name}</span>
-88|      )}
-89|      {access ? <span className="shrink-0 text-[11px] text-fg3">· {access}</span> : null}
-90|    </span>
-91|  );
-92|}
-93|
-94|export default function FeedPage() {
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { api } from '../api.js';
+import Empty from '../components/Empty.jsx';
+import Skeleton from '../components/Skeleton.jsx';
+import { ErrorCard } from '../components/ErrorBoundary.jsx';
+import { useDrawer } from '../components/drawers.jsx';
+import RowMenu, { Hint, friendItems, useHint, useRowMenu } from '../components/RowMenu.jsx';
+import UserHoverCard from '../components/UserHoverCard.jsx';
+import { useListNav } from '../lib/listnav.js';
+/**
+ * 80 动态页改表格（规格取自 VRCX-0 真机截图）：
+ *   列 = 时间 / 玩家 / 类型 / 详细信息；行高 40–48px；无头像
+ *   类型图标色走 CSS 语义变量（87：上线绿 / 下线灰 / 换房青 / 改资料紫），行内不再写死颜色
+ *   详细信息 = 区域 + 世界名 + 访问级别（好友+ / 群组公开 / 仅好友）
+ */
+const KIND = {
+  online: ['上线', '▲'],
+  active: ['活跃', '◆'],
+  offline: ['下线', '▼'],
+  location: ['换房', '→'],
+  profile: ['资料变更', '✎'],
+  friend_add: ['加好友', '+'],
+  friend_delete: ['删好友', '−'],
+  self_profile: ['自己变更', '✎']
+};
+
+const KINDS = [['', '全部'], ['online', '上线'], ['location', '换房'], ['offline', '下线'], ['active', '活跃'], ['profile', '资料变更']];
+const LIMIT = 80;
+
+const ACCESS_LABEL = { public: '公开', 'friends+': '好友+', friends: '仅好友', group: '群组公开' };
+
+/** 真机时间列只给「时:分」（不带前导 0），不是今天时补「月-日」 */
+function clock(iso) {
+  const d = new Date(iso);
+  const now = new Date();
+  const sameDay = d.toDateString() === now.toDateString();
+  const hh = `${d.getHours()}`;
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  if (sameDay) return `${hh}:${mm}`;
+  return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${hh}:${mm}`;
+}
+
+/** location 串 → 区域 / 访问级别（wrld_x:inst~hidden(usr)~region(jp)） */
+function locMeta(loc) {
+  const s = String(loc ?? '');
+  if (!s || s === 'offline' || s === 'private' || s === 'traveling') return { region: null, access: null };
+  const region = (s.match(/~region\(([^)]+)\)/) || [])[1] ?? null;
+  let access = 'public';
+  if (/~hidden\(/.test(s)) access = 'friends';
+  else if (/~friends\(/.test(s)) access = 'friends+';
+  else if (/~group\(/.test(s)) access = 'group';
+  return { region, access: ACCESS_LABEL[access] };
+}
+
+function sinceFor(range) {
+  const now = Date.now();
+  if (range === '1h') return new Date(now - 3600_000).toISOString();
+  if (range === '24h') return new Date(now - 86400_000).toISOString();
+  if (range === '7d') return new Date(now - 7 * 86400_000).toISOString();
+  return '';
+}
+
+const stamp = (iso) =>
+  new Date(iso).toLocaleString('zh-CN', {
+    month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+  });
+
+/** 详细信息列：`JP Alpha Club · 仅好友`，私密/离线退化成短语 */
+function Detail({ e }) {
+  const { openWorld } = useDrawer();
+  if (!e.location || e.location === 'offline') return <span className="text-fg3">—</span>;
+  if (e.location === 'private') return <span className="text-fg3">私密世界</span>;
+  if (e.location === 'traveling') return <span className="text-fg3">切换中</span>;
+  const { region, access } = locMeta(e.location);
+  const name = e.world_name ?? (String(e.location).startsWith('wrld_') ? '未知世界' : e.location);
+  return (
+    <span className="flex min-w-0 items-center gap-1.5">
+      {region ? <span className="reg">{region.toUpperCase()}</span> : null}
+      {e.world_id ? (
+        <button className="min-w-0 truncate text-left hover:underline" onClick={() => openWorld(e.world_id)}>
+          {name}
+        </button>
+      ) : (
+        <span className="min-w-0 truncate">{name}</span>
+      )}
+      {access ? <span className="shrink-0 text-[11px] text-fg3">· {access}</span> : null}
+    </span>
+  );
+}
+
+export default function FeedPage() {
   const [kind, setKind] = useState('');
   const [view, setView] = useState('table');
   const [q, setQ] = useState('');
