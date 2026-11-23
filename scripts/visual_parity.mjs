@@ -18,7 +18,7 @@ let _pw;
 try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json')('playwright'); }
 const { chromium } = _pw;
 
-const BASE = process.argv[2] || 'http://localhost:8790';
+const BASE = process.argv[2] || process.env.VRC_BASE || 'http://127.0.0.1:8899';
 const ROOT = process.env.VRC_ROOT || path.resolve(import.meta.dirname, '..');
 const SPEC = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/ref/vrcx0-spec.json'), 'utf8'));
 const OUT = path.join(ROOT, 'docs/screenshots/compare');
@@ -35,6 +35,15 @@ const pageKeyOf = (cur) => String(cur ?? '').split('@')[0];
 const check = (name, ours, want, ok) => {
   rows.push({ page: CUR, key: pageKeyOf(CUR), name, ours, want, ok });
 };
+
+// 预检：baseUrl 不通时整轮会量到空页面、给出假分数（曾经对死端口跑出 95/166），必须硬失败
+try {
+  const res = await fetch(BASE, { redirect: 'manual' });
+  if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+} catch (e) {
+  console.error(`✗ baseUrl 不可用：${BASE}（${e.message}）\n  先起 mock+构建产物：node server/scripts/demo.mjs 8899`);
+  process.exit(2);
+}
 
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 
