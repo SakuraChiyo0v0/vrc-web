@@ -3,17 +3,18 @@
  *
  *   node scripts/mobile_parity.mjs [baseUrl] [--all]
  *
- * 覆盖 STRUCT_PAGES + friends（14 页）× 9 个移动视口（360/375/390/414/430 竖屏 + 844×390/932×430 横屏 + 768×1024/820×1180 平板竖屏），
- * 外加 1023 / 1024 与 900×500 / 900×501 两对「断点两侧」检查（窄≤1023/矮≤500 → 移动形态，否则桌面形态）。
+ * 覆盖 STRUCT_PAGES + friends（13 页）× 10 个移动视口（360/375/390/414/430 竖屏 + 844×390/932×430 横屏 + 768×1024/820×1180 平板竖屏），
+ * 外加 1023 / 1024 与 1024×500 / 1024×501 两对「断点两侧」检查（窄≤1023/矮≤500 → 移动形态，否则桌面形态）。
  *
  * 每页断言：
  *   1) 无横向溢出：documentElement.scrollWidth ≤ innerWidth+1，且列出右溢元素
  *   2) 表格卡片化（≤1023 或矮≤500）：thead display:none、tbody tr display:flex/flex-direction:column
- *      ≥768：thead 可见、tbody tr 不是 flex 卡片
- *   3) 触控目标：所有可见 button/a/[role=button] 高度 ≥ 32（报告最小值与违规清单；390 竖屏另列 <44 的控件）
- *   4) 字号：可见文本最小字号 ≥ 11（低于 11 视为移动端可读性破线）
- *   5) 抽屉：默认侧栏移出视口；点 ☰ 后 data-open=true 且左边缘 ≥ -1；点 ✕ 关闭
- *   6) 内容区不被压成 0 宽
+ *      ≥1024：thead 可见、tbody tr 不是 flex 卡片
+ *   3) 触控目标分层：顶栏/抽屉导航 ≥44、chip/表单 ≥36、行内与表格 ≥32
+ *   4) 字号：可见文本最小字号 ≥ 11；表单控件 ≥16（iOS 聚焦自动放大）
+ *   5) 抽屉：默认移出视口；☰/✕/Esc/遮罩都能关；焦点陷阱；关闭后焦点回 ☰
+ *   6) 内容区不被压成 0 宽；安全区（刘海/home 条）让位；命令面板按 --app-vh 算高
+ *   7) 长列表滚动位置在抽屉开合/旋转后保持；极端数据（超长昵称/缺头像/空值）不撑破卡片
  *
  * 任一 FAIL 退出码 1；全部 PASS 打印 MOBILE OK。
  */
@@ -516,6 +517,103 @@ for (const [w, h] of [[844, 390], [932, 430]]) {
   check(`drawer-landscape@${w}x${h}`, '收起按钮不压状态栏', `按钮底=${r.btnBottom} 状态栏顶=${r.sbTop}`, '≤', r.btnBottom == null || r.btnBottom <= r.sbTop);
   check(`drawer-landscape@${w}x${h}`, '状态栏区不被按钮吃掉', `y=状态栏中点命中 ${r.hitStatus}`, '≠collapse', r.hitStatus !== 'collapse');
   check(`drawer-landscape@${w}x${h}`, '收起按钮本身仍可点', `按钮中点命中 ${r.hitBtn}`, 'collapse', r.hitBtn === 'collapse');
+  await tab.close();
+}
+
+// 长列表滚动位置：开合抽屉、旋转屏幕后不能跳回顶部（真机最烦的丢失阅读位置）；深滚 30 次耗时锁 300ms 防布局抖动
+for (const [page, w, h] of [['friendlist', 390, 844], ['feed', 390, 844]]) {
+  const tab = await open(page, w, h);
+  await tab.waitForTimeout(800);
+  const SCROLLER = `(() => {
+    let best = null;
+    for (const el of document.querySelectorAll('body *')) {
+      const cs = getComputedStyle(el);
+      if (!/(auto|scroll)/.test(cs.overflowY)) continue;
+      if (el.scrollHeight - el.clientHeight > 40 && (!best || el.scrollHeight > best.scrollHeight)) best = el;
+    }
+    return best;
+  })()`;
+  const top = () => tab.evaluate(([src]) => { const b = eval(src); return b ? Math.round(b.scrollTop) : -1; }, [SCROLLER]);
+  const start = await tab.evaluate(([src]) => {
+    const b = eval(src); if (!b) return null;
+    b.scrollTop = 250;
+    return { top: Math.round(b.scrollTop), sh: b.scrollHeight, ch: b.clientHeight, rows: document.querySelectorAll('tbody tr').length };
+  }, [SCROLLER]);
+  const tag = `scroll@${page}@${w}`;
+  if (!start) { check(tag, '有可滚容器', 'n/a', '存在', false); await tab.close(); continue; }
+  await tab.click('button[aria-label="菜单"]');
+  await tab.waitForTimeout(400);
+  await tab.click('.vrc-sidebar-close');
+  await tab.waitForTimeout(500);
+  const afterDrawer = await top();
+  check(tag, '开合抽屉后滚动位置保持', `${start.top}→${afterDrawer}`, `±2px`, Math.abs(afterDrawer - start.top) <= 2);
+  await tab.setViewportSize({ width: 844, height: 390 });
+  await tab.waitForTimeout(700);
+  await tab.setViewportSize({ width: w, height: h });
+  await tab.waitForTimeout(700);
+  const afterRotate = await top();
+  check(tag, '旋转回竖屏后滚动位置保持', `${start.top}→${afterRotate}`, `±2px`, Math.abs(afterRotate - start.top) <= 2);
+  const perf = await tab.evaluate(([src]) => {
+    const b = eval(src); if (!b) return null;
+    const t0 = performance.now();
+    for (let i = 0; i < 30; i += 1) b.scrollTop = (i * 97) % Math.max(1, b.scrollHeight - b.clientHeight);
+    b.getBoundingClientRect();
+    return Math.round(performance.now() - t0);
+  }, [SCROLLER]);
+  check(tag, '30 次深滚 ≤300ms', `${perf}ms（${start.rows} 行）`, '≤300ms', perf != null && perf <= 300);
+  await tab.close();
+}
+
+// 表格卡片化后的极端数据（360 宽）：超长昵称写进真实 truncate 容器、头像缺失、末格空值
+// —— 要求页面不被撑破；内容要么换行、要么省略号裁剪，不能画到卡片外
+for (const page of ['friendlist', 'feed']) {
+  const tab = await open(page, 360, 800);
+  await tab.waitForTimeout(600);
+  const r = await tab.evaluate(() => {
+    const tr = document.querySelector('tbody tr');
+    if (!tr) return null;
+    const clone = tr.cloneNode(true);
+    const tds = [...clone.querySelectorAll('td')];
+    // 昵称：找最深且 truncate/wrap 的近文本元素写入，保留原有裁剪容器
+    const nameTd = tds.find((td) => /昵称|玩家/.test(td.dataset.label || ''));
+    const host = nameTd && (nameTd.querySelector('.truncate') || nameTd.querySelector('button') || nameTd.lastElementChild || nameTd);
+    if (host) host.textContent = '异常漫长的昵称'.repeat(14);
+    // 头像缺失
+    clone.querySelectorAll('img, .avatar').forEach((n) => n.remove());
+    // 末格空值
+    if (tds[tds.length - 1]) tds[tds.length - 1].textContent = '';
+    tr.parentElement.insertBefore(clone, tr.nextSibling);
+    const vw = document.documentElement.clientWidth;
+    const row = clone.getBoundingClientRect();
+    const cells = [...clone.querySelectorAll('td')].map((td) => {
+      const b = td.getBoundingClientRect();
+      const cs = getComputedStyle(td);
+      const inner = td.querySelector('.truncate, .avatar');
+      return {
+        label: td.dataset.label,
+        right: Math.round(b.right),
+        clippedOut: b.right > vw + 1,
+        // 溢出但父级不裁剪 = 文字画到卡片外
+        leaks: td.scrollWidth > td.clientWidth + 1 && !/(hidden|clip|auto|scroll)/.test(cs.overflowX)
+          && !(inner && /hidden/.test(getComputedStyle(inner).overflowX)),
+        textOverflow: cs.textOverflow,
+        truncated: td.scrollWidth > td.clientWidth + 1 && /ellipsis/.test(cs.textOverflow),
+      };
+    });
+    const nameCell = cells.find((c) => /昵称|玩家/.test(c.label || ''));
+    return {
+      docW: document.documentElement.scrollWidth, vw,
+      rowW: Math.round(row.width), rowH: Math.round(row.height),
+      cells, leaks: cells.filter((c) => c.leaks).map((c) => c.label),
+      clipped: cells.filter((c) => c.clippedOut).map((c) => `${c.label}:${c.right}`),
+      nameTrunc: nameCell ? nameCell.truncated : null,
+    };
+  });
+  const tag = `extreme@${page}@360`;
+  check(tag, '超长昵称不撑破页面', r ? `scrollW=${r.docW} vw=${r.vw}` : 'n/a（无表格行）', '≤vw+1', !r || r.docW <= r.vw + 1);
+  check(tag, '卡片行不超出容器', r ? `row=${r.rowW} 越界格 ${r.clipped.join(',') || '无'}` : 'n/a', '无越界', !r || r.clipped.length === 0);
+  check(tag, '长文本不画到卡片外', r ? r.leaks.join(',') || '无泄漏' : 'n/a', '无泄漏', !r || r.leaks.length === 0);
+  check(tag, '超长昵称被省略或换行', r ? `truncate=${r.nameTrunc} 行高=${r.rowH}` : 'n/a', 'true 或行高>44', !r || r.nameTrunc === true || r.rowH > 44);
   await tab.close();
 }
 
