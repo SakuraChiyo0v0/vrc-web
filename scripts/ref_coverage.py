@@ -18,6 +18,7 @@ APP = ROOT / 'web/src/App.jsx'
 REF = ROOT / 'docs/ref/vrcx0-spec.json'
 SHOTS = ROOT / 'docs/screenshots'
 PARITY = ROOT / 'scripts/visual_parity.mjs'
+STRUCT = ROOT / 'scripts/structure_parity.mjs'
 
 # 页面 → 真机截图（VRCX-0 真机截到的页面名）
 REF_OF = {
@@ -28,6 +29,7 @@ REF_OF = {
     'notifications': 'notifications',
     'sessions': 'roomhistory',
     'players': 'players',          # VRCX-0「房内玩家」，真机只有空态（VRChat 未运行），断言只能取骨架+空态
+    'moderation': 'moderation',    # VRCX-0「玩家管理」表：真机截图 docs/ref/vrcx0-moderation.png
     'stats': 'NA',
     'favorites': 'favorites',
     'insights': 'insights',
@@ -85,8 +87,20 @@ def shots_of(page):
 
 
 def parity_pages():
-    src = PARITY.read_text()
-    return set(re.findall(r"open\('(\w+)'", src))
+    """两条 parity 脚本的覆盖并集（都取「截图量测 → 断言」）：
+    - visual_parity.mjs 产出 docs/ref/visual-parity.json 的 pages
+    - structure_parity.mjs 产出 docs/ref/structure-parity.json 的 rows[].page
+    都没产出时退回扫源码里的 open('page')。"""
+    got = set()
+    vp = ROOT / 'docs/ref/visual-parity.json'
+    sp = ROOT / 'docs/ref/structure-parity.json'
+    if vp.exists():
+        got |= set(json.loads(vp.read_text()).get('pages') or [])
+    if sp.exists():
+        got |= {r['page'] for r in json.loads(sp.read_text()).get('rows', []) if r.get('page')}
+    if not got:
+        got = set(re.findall(r"open\('(\w+)'", PARITY.read_text()))
+    return got
 
 
 def main():

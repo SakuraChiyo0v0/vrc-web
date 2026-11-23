@@ -250,7 +250,7 @@ function Sessions({ id, limit = 6 }) {
         (sess.sessions ?? []).map((s) => (
           <div key={s.id} className="flex items-center justify-between gap-3 px-1 py-1 text-[12px]">
             <span className="flex min-w-0 items-center gap-2">
-              <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 10 }}>{s.status ?? '在线'}</span>
+              <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 11 }}>{s.status ?? '在线'}</span>
               <span className="truncate text-fg2">{s.world ?? '—'}</span>
             </span>
             <span className="shrink-0 text-fg3 tabular-nums">
@@ -296,7 +296,7 @@ function Footprints({ id }) {
           {items.map((it, i) => (
             <div key={`${it.type}-${it.at}-${i}`} className="flex items-center justify-between gap-3 px-1 py-1 text-[12px]">
               <span className="flex min-w-0 items-center gap-2">
-                <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 10 }}>
+                <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 11 }}>
                   {TL_LABEL[it.type] ?? it.type}
                 </span>
                 <span className="truncate text-fg2">{tlText(it)}</span>

@@ -5,7 +5,7 @@ export function ErrorCard({ title = '接口没连上', error, onRetry, hint }) {
   return (
     <div className="card m-4 p-4" role="alert" data-error-card="1">
       <div className="flex items-start gap-3">
-        <span className="text-[15px] leading-6" aria-hidden>⚠</span>
+        <span className="text-[14px] leading-6" aria-hidden>⚠</span>
         <div className="min-w-0 flex-1">
           <div className="text-[13px] font-medium">{title}</div>
           <div className="mt-0.5 break-words text-[12px] text-fg3">

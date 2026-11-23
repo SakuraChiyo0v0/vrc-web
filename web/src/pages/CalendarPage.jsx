@@ -115,7 +115,7 @@ export default function CalendarPage() {
             <div key={e.id} className="flex items-center justify-between gap-3 px-3 py-1.5">
               <span className="flex min-w-0 items-center gap-2">
                 <span className="tabular-nums text-[11px] text-fg3">{fmtTime(e.at)}</span>
-                <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 10 }}>{KIND[e.kind] ?? e.kind}</span>
+                <span className="chip" style={{ height: 20, padding: '0 .4rem', fontSize: 11 }}>{KIND[e.kind] ?? e.kind}</span>
                 <button className="min-w-0 truncate text-left text-[12px] hover:underline" onClick={() => e.user_id && openFriend(e.user_id)}>
                   {e.display_name ?? e.user_id ?? '—'}
                 </button>

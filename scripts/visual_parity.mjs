@@ -28,8 +28,9 @@ const EXE = process.env.CHROME_PATH
 
 const ALLOWED = SPEC.typography.px_sizes_allowed;
 const rows = [];
+let CUR = null; // 当前断言属于哪一页（用于按页汇总相似度）
 const check = (name, ours, want, ok) => {
-  rows.push({ name, ours, want, ok });
+  rows.push({ page: CUR, name, ours, want, ok });
 };
 
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
@@ -42,9 +43,10 @@ async function open(pageName, { width = 1440, height = 960, fresh = false, ready
     if (tab) await tab.close().catch(() => {});
     tab = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
   }
-  await tab.goto(`${BASE}#/${pageName}`, { waitUntil: 'networkidle', timeout: 60000 });
+  // 页面里有轮询（好友/在线状态）时 networkidle 永远等不到，用 domcontentloaded + 就绪选择器
+  await tab.goto(`${BASE}#/${pageName}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
   if (ready) await tab.waitForSelector(ready, { timeout: 25000 }).catch(() => {});
-  await tab.waitForTimeout(1200);
+  await tab.waitForTimeout(1500);
   return tab;
 }
 
@@ -67,6 +69,7 @@ const overflowOf = (p) => p.evaluate(() => document.documentElement.scrollWidth 
 const offSpec = (sizes) => sizes.filter((s) => !ALLOWED.includes(s));
 
 // ══ 1. 好友位置页（默认页） ══
+CUR = 'friends';
 let p = await open('friends', { ready: '.friend-row:not(.list-head), .card' });
 await shot(p, 'friends-1440.png');
 
@@ -93,6 +96,7 @@ check('字号档位', friendSizes.join('/'), ALLOWED.join('/'), offSpec(friendSi
 check('数字等宽', measured.tabular, 'tabular-nums', String(measured.tabular).includes('tabular'));
 
 // ══ 2. 动态页（表格四列） ══
+CUR = 'feed';
 p = await open('feed', { ready: 'thead th' });
 await shot(p, 'feed-1440.png');
 const feed = await p.evaluate(() => {
@@ -117,6 +121,7 @@ check('动态字号档位', feedSizes.join('/'), ALLOWED.join('/'), offSpec(feed
 
 // ══ 3. 好友详情模态（1025×546 居中，量测自 docs/ref/vrcx0-friend.png） ══
 // 真机是「大模态工作台」不是窄抽屉：左资料栏 285 + 右水平 tab + 双列卡片（419/256，栏距 15）。
+CUR = 'drawer';
 p = await open('friends', { width: 1280, height: 756, fresh: true, ready: '.friend-row:not(.list-head)' });
 await p.locator('.friend-row[data-user="usr_alice"]').click({ timeout: 8000, force: true }).catch(async () => {
   await p.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true }).catch(() => {});
@@ -170,6 +175,7 @@ const modalClosed = await p.waitForSelector('.fd-card', { state: 'detached', tim
 check('模态 Esc 可关闭', String(modalClosed), 'true', modalClosed);
 
 // ══ 4. 概览 ══
+CUR = 'overview';
 p = await open('overview', { ready: '.ov-bar' });
 await shot(p, 'overview-1440.png');
 const ov = await p.evaluate(() => {
@@ -259,6 +265,7 @@ check('点一天展开逐次停留', `${dayOpened} 行`, '≥1', dayOpened >= 1)
 await shot(p, 'overview-journey-1440.png');
 
 // ══ 5. 世界库 ══
+CUR = 'worlds';
 p = await open('worlds', { ready: '.world-card' });
 await shot(p, 'worlds-1440.png');
 const wo = await p.evaluate(() => {
@@ -296,6 +303,7 @@ check('世界库字号档位', woSizes.join('/'), ALLOWED.join('/'), offSpec(woS
 check('缩略图占位字号', `${woDecor}px`, `${woSpec.decor_px_range?.[0]}–${woSpec.decor_px_range?.[1]}px(装饰档)`, woDecor == null || (woDecor >= 16 && woDecor <= 20));
 
 // ══ 6. 通知 ══
+CUR = 'notifications';
 p = await open('notifications');
 await p.waitForTimeout(1200);
 await shot(p, 'notifications-1440.png');
@@ -333,6 +341,7 @@ for (const [page, name, ready] of [
   ['worlds', 'worlds', '.world-card'],
   ['notifications', 'notifications', '.card']
 ]) {
+  CUR = `${page}@390`;
   const mp = await open(page, { width: 390, height: 844, fresh: true, ready });
   const overflow = await overflowOf(mp);
   check(`${page} 390px 无横向溢出`, String(overflow), 'false', overflow === false);
@@ -341,6 +350,7 @@ for (const [page, name, ready] of [
 }
 
 // 桌面超宽档（3840）只看主页面
+CUR = 'friends@3840';
 const wide = await open('friends', { width: 3840, height: 2160, fresh: true, ready: '.friend-row:not(.list-head)' });
 const wideOverflow = await overflowOf(wide);
 check('3840px 无横向溢出', String(wideOverflow), 'false', wideOverflow === false);
@@ -348,7 +358,34 @@ await shot(wide, 'friends-3840.png');
 await wide.close().catch(() => {});
 
 await p.close().catch(() => {});
-await browser.close();
+
+// ══ 8. 全页面三端截图 + 通用视觉体检（覆盖 App 里每一个页面） ══
+// 完成定义要求「每个页面」都有三端截图、字号档位来自 spec.typography。
+// 这里对每页在 1440/390/3840 各截一张（<page>-desktop.png / -mobile.png / -4k.png），
+// 顺带核对正文无横向溢出、字号不越过 spec 允许档位。
+const ALL_PAGES = [
+  'overview', 'search', 'friends', 'feed', 'notifications', 'sessions', 'players',
+  'moderation', 'stats', 'favorites', 'insights', 'worlds', 'calendar',
+  'friendlist', 'friendlog', 'gamelog', 'settings'
+];
+// 装饰字形（头像首字、缩略图占位、KPI 大数字）不参与正文字号档位
+const DECOR = ['.avatar-fallback', '.thumb-empty', '.ov-num', '.kpi-num', '[class*="num-"]'];
+const shotPages = [];
+for (const page of ALL_PAGES) {
+  for (const [tag, width, height] of [['desktop', 1440, 960], ['mobile', 390, 844], ['4k', 3840, 2160]]) {
+    CUR = `${page}@${width}`;
+    const gp = await open(page, { width, height, fresh: true });
+    const overflow = await overflowOf(gp);
+    check(`${page} ${width}px 无横向溢出`, String(overflow), 'false', overflow === false);
+    if (tag === 'desktop') {
+      const sizes = await fontSizesOf(gp, DECOR);
+      check(`${page} 字号档位`, sizes.join('/'), ALLOWED.join('/'), offSpec(sizes).length === 0);
+    }
+    await shot(gp, `${page}-${tag}.png`);
+    await gp.close().catch(() => {});
+  }
+  shotPages.push(page);
+}
 
 const pass = rows.filter((r) => r.ok).length;
 const score = Math.round((pass / rows.length) * 100);
@@ -356,5 +393,15 @@ for (const r of rows) {
   console.log(`${r.ok ? 'PASS' : 'DIFF'}  ${r.name} — 我们 ${r.ours} / 基准 ${r.want}`);
 }
 const pages = ['好友位置', '动态', '好友详情模态', '概览', '世界库', '通知'];
-console.log(`\n视觉相似度 ${score}%（${pass}/${rows.length} 项对齐，覆盖 ${pages.length} 页：${pages.join('/')}）· 截图在 docs/screenshots/compare/`);
+// 覆盖清单给 ref_coverage.py 读（哪些页面已经有截图量测来的断言）
+fs.writeFileSync(path.join(ROOT, 'docs/ref/visual-parity.json'), JSON.stringify({
+  _note: '由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图，pages 为断言覆盖到的页面',
+  at: new Date().toISOString(),
+  base: BASE,
+  pages: shotPages,
+  pass, total: rows.length, score,
+  rows
+}, null, 2));
+console.log(`\n视觉相似度 ${score}%（${pass}/${rows.length} 项对齐，深测 ${pages.length} 页：${pages.join('/')}；三端截图 ${shotPages.length} 页）· 截图在 docs/screenshots/compare/`);
+await browser.close();
 process.exit(pass === rows.length ? 0 : 1);

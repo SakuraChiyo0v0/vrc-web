@@ -1,0 +1,815 @@
+{
+  "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图，pages 为断言覆盖到的页面",
+  "at": "2026-11-23T06:47:03.967Z",
+  "base": "http://127.0.0.1:8899",
+  "pages": [
+    "overview",
+    "search",
+    "friends",
+    "feed",
+    "notifications",
+    "sessions",
+    "players",
+    "moderation",
+    "stats",
+    "favorites",
+    "insights",
+    "worlds",
+    "calendar",
+    "friendlist",
+    "friendlog",
+    "gamelog",
+    "settings"
+  ],
+  "pass": 128,
+  "total": 131,
+  "score": 98,
+  "rows": [
+    {
+      "name": "好友行高",
+      "ours": "32px",
+      "want": "32–40px",
+      "ok": true
+    },
+    {
+      "name": "头像尺寸",
+      "ours": "22px",
+      "want": "≈56px(大方块)/40px(列表)",
+      "ok": true
+    },
+    {
+      "name": "行无边框底色",
+      "ours": "0px/rgba(0, 0, 0, 0)",
+      "want": "0px / transparent",
+      "ok": true
+    },
+    {
+      "name": "字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "数字等宽",
+      "ours": "tabular-nums",
+      "want": "tabular-nums",
+      "ok": true
+    },
+    {
+      "name": "动态表头列数",
+      "ours": 4,
+      "want": 4,
+      "ok": true
+    },
+    {
+      "name": "动态列名",
+      "ours": "时间/玩家/类型/详细信息",
+      "want": "时间/玩家/类型/详细信息",
+      "ok": true
+    },
+    {
+      "name": "动态行高",
+      "ours": "44px",
+      "want": "≤48px",
+      "ok": true
+    },
+    {
+      "name": "动态无头像",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "表头不大写",
+      "ours": "none",
+      "want": "none",
+      "ok": true
+    },
+    {
+      "name": "动态字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "模态宽",
+      "ours": "1024px",
+      "want": "1025px",
+      "ok": true
+    },
+    {
+      "name": "模态高",
+      "ours": "544px",
+      "want": "546px",
+      "ok": true
+    },
+    {
+      "name": "模态水平居中",
+      "ours": "0px 偏移",
+      "want": "±2px",
+      "ok": true
+    },
+    {
+      "name": "模态内边距",
+      "ours": "14px",
+      "want": "14px",
+      "ok": true
+    },
+    {
+      "name": "模态圆角",
+      "ours": "14px",
+      "want": "14px",
+      "ok": true
+    },
+    {
+      "name": "左资料栏宽",
+      "ours": "285px",
+      "want": "285px",
+      "ok": true
+    },
+    {
+      "name": "左栏占比",
+      "ours": 0.278,
+      "want": "0.278",
+      "ok": true
+    },
+    {
+      "name": "双列卡片宽",
+      "ours": "423/258",
+      "want": "419/256",
+      "ok": true
+    },
+    {
+      "name": "卡片栏距",
+      "ours": "15px",
+      "want": "15px",
+      "ok": true
+    },
+    {
+      "name": "模态 tab 数",
+      "ours": 8,
+      "want": "8",
+      "ok": true
+    },
+    {
+      "name": "模态 tab 名",
+      "ours": "信息/共同好友/群组/创建的世界/收藏的世界/创建的模型/活动记录/原始 JSON 信息",
+      "want": "信息/共同好友/群组/创建的世界/收藏的世界/创建的模型/活动记录/原始 JSON 信息",
+      "ok": true
+    },
+    {
+      "name": "信息 tab 四张卡",
+      "ours": "当前状态/个人资料详情/个人简介/活动摘要",
+      "want": "当前状态/个人资料详情/个人简介/活动摘要",
+      "ok": true
+    },
+    {
+      "name": "模态字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "模态 Esc 可关闭",
+      "ours": "true",
+      "want": "true",
+      "ok": true
+    },
+    {
+      "name": "概览每日柱数",
+      "ours": 7,
+      "want": "7–31",
+      "ok": true
+    },
+    {
+      "name": "概览柱体不溢出容器",
+      "ours": "true",
+      "want": "true",
+      "ok": true
+    },
+    {
+      "name": "活跃时段 24 格",
+      "ours": 24,
+      "want": "24",
+      "ok": true
+    },
+    {
+      "name": "概览时间档",
+      "ours": "全部/近30天/近90天/近180天/近365天/自定义",
+      "want": "全部/近30天/近90天/近180天/近365天/自定义",
+      "ok": true
+    },
+    {
+      "name": "概览 tab",
+      "ours": "概览/旅程",
+      "want": "概览/旅程",
+      "ok": true
+    },
+    {
+      "name": "概览字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "KPI 大数字档位",
+      "ours": "28",
+      "want": "20–32px",
+      "ok": true
+    },
+    {
+      "name": "KPI 数字等宽",
+      "ours": "true",
+      "want": "true",
+      "ok": true
+    },
+    {
+      "name": "旅程按月分组",
+      "ours": "1 个月",
+      "want": "≥1",
+      "ok": true
+    },
+    {
+      "name": "旅程默认只开最新月",
+      "ours": "1/1 展开",
+      "want": "1",
+      "ok": true
+    },
+    {
+      "name": "折叠月不渲染日行",
+      "ours": "0",
+      "want": "0",
+      "ok": true
+    },
+    {
+      "name": "展开月有日行",
+      "ours": "7",
+      "want": "≥1",
+      "ok": true
+    },
+    {
+      "name": "旅程日柱不溢出",
+      "ours": "true",
+      "want": "true",
+      "ok": true
+    },
+    {
+      "name": "月头是「YYYY 年 M 月」",
+      "ours": "2026-11",
+      "want": "YYYY-M",
+      "ok": true
+    },
+    {
+      "name": "月份头点开/再点收起",
+      "ours": "演示数据只有一个月",
+      "want": "跳过",
+      "ok": true
+    },
+    {
+      "name": "点一天展开逐次停留",
+      "ours": "3 行",
+      "want": "≥1",
+      "ok": true
+    },
+    {
+      "name": "世界库网格列数",
+      "ours": 3,
+      "want": "3",
+      "ok": true
+    },
+    {
+      "name": "世界卡片数",
+      "ours": 5,
+      "want": "≥3",
+      "ok": true
+    },
+    {
+      "name": "世界缩略图比例",
+      "ours": "1:0.56",
+      "want": "≈16:9 (1.78)",
+      "ok": true
+    },
+    {
+      "name": "世界表头列数",
+      "ours": 4,
+      "want": "4",
+      "ok": true
+    },
+    {
+      "name": "世界表头行高",
+      "ours": "26px",
+      "want": "≤32px",
+      "ok": true
+    },
+    {
+      "name": "卡片圆角",
+      "ours": "10px",
+      "want": "10px",
+      "ok": true
+    },
+    {
+      "name": "卡片描边",
+      "ours": "1px",
+      "want": "1px",
+      "ok": true
+    },
+    {
+      "name": "世界库字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "缩略图占位字号",
+      "ours": "18px",
+      "want": "16–20px(装饰档)",
+      "ok": true
+    },
+    {
+      "name": "通知卡片数",
+      "ours": 5,
+      "want": "≥1",
+      "ok": true
+    },
+    {
+      "name": "通知筛选 chip",
+      "ours": 15,
+      "want": "≥5",
+      "ok": true
+    },
+    {
+      "name": "通知默认筛选",
+      "ours": "好友栏/全部/全部类型",
+      "want": "全部/全部类型",
+      "ok": true
+    },
+    {
+      "name": "通知类型标签数",
+      "ours": 8,
+      "want": "≥1",
+      "ok": true
+    },
+    {
+      "name": "通知卡片圆角",
+      "ours": "10px",
+      "want": "10px",
+      "ok": true
+    },
+    {
+      "name": "通知卡片描边",
+      "ours": "1px",
+      "want": "1px",
+      "ok": true
+    },
+    {
+      "name": "通知字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "通知无「加载中」残留",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "friends 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "overview 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "worlds 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "notifications 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "overview 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "overview 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "overview 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "overview 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "search 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "search 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "search 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "search 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "friends 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "friends 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "friends 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "friends 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "feed 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "feed 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "feed 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "feed 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "notifications 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "notifications 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "notifications 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "notifications 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "sessions 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "sessions 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "sessions 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "sessions 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "players 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "players 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "players 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "players 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "moderation 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "moderation 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "moderation 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "moderation 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "stats 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "stats 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "stats 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "stats 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "favorites 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "favorites 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "favorites 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "favorites 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "insights 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "insights 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "insights 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "insights 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "worlds 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "worlds 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "worlds 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "worlds 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "calendar 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "calendar 字号档位",
+      "ours": "10/11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": false
+    },
+    {
+      "name": "calendar 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "calendar 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "friendlist 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "friendlist 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "friendlist 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "friendlist 3840px 无横向溢出",
+      "ours": "true",
+      "want": "false",
+      "ok": false
+    },
+    {
+      "name": "friendlog 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "friendlog 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "friendlog 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "friendlog 3840px 无横向溢出",
+      "ours": "true",
+      "want": "false",
+      "ok": false
+    },
+    {
+      "name": "gamelog 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "gamelog 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "gamelog 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "gamelog 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "settings 1440px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "settings 字号档位",
+      "ours": "11/12/13/14",
+      "want": "11/12/13/14",
+      "ok": true
+    },
+    {
+      "name": "settings 390px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    },
+    {
+      "name": "settings 3840px 无横向溢出",
+      "ours": "false",
+      "want": "false",
+      "ok": true
+    }
+  ]
+}

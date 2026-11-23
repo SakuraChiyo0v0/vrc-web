@@ -133,17 +133,17 @@ export default function InsightsPage() {
               </div>
             ))}
             {[...new Set(graph.nodes.map((n) => n.world))].length > graph.clusters.length ? (
-              <div className="mt-1 text-[10px] text-fg3">另有 {new Set(graph.nodes.map((n) => n.world)).size - graph.clusters.length} 个世界的人未画</div>
+              <div className="mt-1 text-[11px] text-fg3">另有 {new Set(graph.nodes.map((n) => n.world)).size - graph.clusters.length} 个世界的人未画</div>
             ) : null}
-            <div className="mt-2 space-y-0.5 text-[10px] text-fg3">
+            <div className="mt-2 space-y-0.5 text-[11px] text-fg3">
               <div>点越大，同房次数越多</div>
               <div>连线 = 最近同一世界、同房遇到过</div>
               <div>按最近所在世界分圈</div>
             </div>
-            <div className="mt-2 text-[10px] tabular-nums text-fg3" data-graph-count>
+            <div className="mt-2 text-[11px] tabular-nums text-fg3" data-graph-count>
               已获取 {players.length} 位玩家
             </div>
-            <label className="mt-1 flex items-center gap-2 text-[10px] text-fg3">
+            <label className="mt-1 flex items-center gap-2 text-[11px] text-fg3">
               最少连接数
               <input
                 type="range" min="0" max="3" step="1" value={minLinks}

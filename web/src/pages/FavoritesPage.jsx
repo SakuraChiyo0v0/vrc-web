@@ -216,7 +216,7 @@ export default function FavoritesPage() {
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-1.5">
                     <span className="truncate text-[12px] font-medium">{f.name}</span>
-                    <span className="shrink-0 text-[10px] text-fg3">{KIND[f.kind] ?? f.kind}</span>
+                    <span className="shrink-0 text-[11px] text-fg3">{KIND[f.kind] ?? f.kind}</span>
                   </span>
                   <span className="block truncate text-[11px] text-fg3">
                     {f.location ?? f.note ?? `收藏于 ${fmtDay(f.created_at)}`}
