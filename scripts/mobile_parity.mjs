@@ -281,6 +281,56 @@ for (const [w, h] of [[390, 844], [844, 390]]) {
   await tab.close();
 }
 
+// iOS Safari 输入框防自动放大：移动形态所有可见文本框/下拉 ≥16px（12px 一聚焦就把整页放大且不还原）
+// feed 量全部竖屏档；feed/sessions/settings/friendlist 覆盖带表单的几页
+for (const [page, w, h] of [
+  ['feed', 360, 800], ['feed', 390, 844], ['feed', 430, 932], ['feed', 844, 390],
+  ['sessions', 390, 844], ['settings', 390, 844], ['friendlist', 390, 844]
+]) {
+  const tab = await open(page, w, h);
+  await tab.waitForTimeout(600);
+  const r = await tab.evaluate(() => {
+    const els = [...document.querySelectorAll("input:not([type='checkbox']):not([type='radio']), select, textarea")]
+      .filter((el) => (el.offsetParent !== null || el.getClientRects().length) && el.getBoundingClientRect().height > 0);
+    return {
+      n: els.length,
+      min: els.length ? Math.min(...els.map((el) => parseFloat(getComputedStyle(el).fontSize))) : null,
+      date: (() => { const d = document.querySelector("input[type='date']"); if (!d) return null; const b = d.getBoundingClientRect(); return { w: Math.round(b.width), scroll: d.scrollWidth, client: d.clientWidth }; })(),
+    };
+  });
+  check(`${page}@${w}x${h}`, '输入框字号≥16（iOS 不放大）', r.min == null ? 'n/a' : `${r.min}px ×${r.n}`, '≥16px', r.min == null || r.min >= 16);
+  check(`${page}@${w}x${h}`, '日期框容得下 16px 文本', r.date ? `${r.date.w}px 内宽 ${r.date.client}` : 'n/a', 'clientWidth≥96', !r.date || r.date.client >= 96);
+  await tab.close();
+}
+
+// 安全区：把 env() 变量按刘海机/带指示条真机的值注入，量顶栏是否加高、抽屉是否让位
+for (const [w, h, top, bottom] of [[390, 844, 47, 34], [844, 390, 0, 21]]) {
+  const tab = await open('friends', w, h);
+  await tab.waitForTimeout(500);
+  const base = await tab.evaluate(() => ({
+    bar: Math.round(document.querySelector('.vrc-topbar').getBoundingClientRect().height),
+    vars: ['--safe-top', '--safe-bottom'].map((k) => getComputedStyle(document.documentElement).getPropertyValue(k).trim()),
+  }));
+  const r = await tab.evaluate(([t, b]) => {
+    document.documentElement.style.setProperty('--safe-top', `${t}px`);
+    document.documentElement.style.setProperty('--safe-bottom', `${b}px`);
+    const bar = document.querySelector('.vrc-topbar');
+    const sd = document.querySelector('.vrc-sidebar');
+    return {
+      barH: Math.round(bar.getBoundingClientRect().height),
+      barPad: parseFloat(getComputedStyle(bar).paddingTop),
+      sdPadTop: parseFloat(getComputedStyle(sd).paddingTop),
+      sdPadBottom: parseFloat(getComputedStyle(sd).paddingBottom),
+    };
+  }, [top, bottom]);
+  check(`safe-area@${w}x${h}`, '安全区变量已定义', base.vars.join('/'), '全是长度值（0px 起）', base.vars.every((v) => /px$/.test(v)));
+  check(`safe-area@${w}x${h}`, '顶栏让出刘海', `bar=${r.barH} pad=${r.barPad}（原 ${base.bar}）`, `≤39+${top} 且 pad=${top}`,
+    r.barPad === top && r.barH >= 39 + top - 0.5 && r.barH <= 39 + top + 0.5);
+  check(`safe-area@${w}x${h}`, '抽屉上下让位', `top=${r.sdPadTop} bottom=${r.sdPadBottom}`, `top=${top} bottom=${bottom}`,
+    r.sdPadTop === top && r.sdPadBottom === bottom);
+  await tab.close();
+}
+
 await browser.close();
 
 const fail = rows.filter((r) => !r.ok);

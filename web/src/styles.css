@@ -18,6 +18,10 @@
   --stroke-subtle: color-mix(in oklch, var(--foreground) 6%, transparent);
   --stroke-default: color-mix(in oklch, var(--foreground) 9%, transparent);
   --stroke-strong: color-mix(in oklch, var(--foreground) 16%, transparent);
+  /* 安全区（刘海 / home 指示条）：默认 0，真机上由 env() 给出实际内边距。
+     桌面与无刘海设备算出来就是 0px，不影响任何桌面量测。 */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
   --state-hover-surface: color-mix(in oklch, var(--foreground) 6%, transparent);
   --state-pressed-surface: color-mix(in oklch, var(--foreground) 10%, transparent);
   --state-selected-surface: color-mix(in oklab, var(--primary) 9%, transparent);
@@ -1421,4 +1425,21 @@ html[data-phone='1'] #root {
   .set-row-right { flex: 1 1 100%; justify-content: flex-end; }
   /* 设置页开关：命中区 44×44（轨道视觉不变），32px 的轨道拇指点不中 */
   .vrc-switch { width: 44px; height: 44px; min-height: 44px; }
+
+  /* 安全区：刘海机顶栏加高、抽屉上下让位，底部按钮不被 home 指示条盖住 */
+  .vrc-topbar { height: calc(39px + var(--safe-top)); padding-top: var(--safe-top); }
+  .vrc-sidebar { padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+
+  /* iOS Safari：表单控件字号 <16px 时聚焦会把整页放大且不会自动还原（真机实测 12px 一碰就放大）。
+     真机可用性优先于设计稿 12px —— 只在移动形态生效，桌面量测不受影响。
+     前四条与源码里带父级/属性的规则同权重，靠排在后面生效（否则选择器优先级低的会被压回 11/12px）。 */
+  .feed-select select,
+  .feed-search input[data-testid='feed-search'],
+  .feed-search input[type='date'],
+  .sess-search input,
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea { font-size: 16px; }
+  /* 16px 的日期框原先 96px 放不下「2026/11/24」，给到 112（工具栏已允许换行） */
+  .feed-search input[type='date'] { width: 112px; }
 }
