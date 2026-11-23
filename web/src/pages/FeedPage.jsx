@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { api } from '../api.js';
 import Empty from '../components/Empty.jsx';
 import Skeleton from '../components/Skeleton.jsx';
@@ -9,23 +9,24 @@ import RowMenu, { Hint, friendItems, useHint, useRowMenu } from '../components/R
 import UserHoverCard from '../components/UserHoverCard.jsx';
 import { useListNav } from '../lib/listnav.js';
 /**
- * 80 动态页改表格（规格取自 VRCX-0 真机截图）：
- *   列 = 时间 / 玩家 / 类型 / 详细信息；行高 40–48px；无头像
- *   类型图标色走 CSS 语义变量（87：上线绿 / 下线灰 / 换房青 / 改资料紫），行内不再写死颜色
- *   详细信息 = 区域 + 世界名 + 访问级别（好友+ / 群组公开 / 仅好友）
+ * 80 动态页改表格（规格取自 VRCX-0 真机截图 docs/ref/feed-measure.json）：
+ *   列 = 时间 / 玩家 / 类型 / 详细信息；表头 44 / 行高 44；表格左边距 19、宽 988（不铺满面板）
+ *   工具条单行：视图切换 + 类型下拉 → 右侧搜索框（内含日期）
+ *   类型文案照真机：位置变动 / 上线 / 模型变动；无页脚（连续滚动）
  */
 const KIND = {
   online: ['上线', '▲'],
   active: ['活跃', '◆'],
   offline: ['下线', '▼'],
-  location: ['换房', '→'],
-  profile: ['资料变更', '✎'],
+  location: ['位置变动', '⌖'],
+  profile: ['模型变动', '◉'],
+  status: ['状态变动', '◌'],
   friend_add: ['加好友', '+'],
   friend_delete: ['删好友', '−'],
   self_profile: ['自己变更', '✎']
 };
 
-const KINDS = [['', '全部'], ['online', '上线'], ['location', '换房'], ['offline', '下线'], ['active', '活跃'], ['profile', '资料变更']];
+const KINDS = [['', '类型'], ['online', '上线'], ['location', '位置变动'], ['offline', '下线'], ['active', '活跃'], ['status', '状态变动'], ['profile', '模型变动']];
 const LIMIT = 80;
 
 const ACCESS_LABEL = { public: '公开', 'friends+': '好友+', friends: '仅好友', group: '群组公开' };
@@ -132,7 +133,20 @@ export default function FeedPage() {
   const rowMenu = (ev, e) =>
     menu.open(ev, friendItems({ id: e.user_id, name: e.display_name ?? e.user_id, openFriend, say }));
 
-  // 工具条按真机排列：表格/卡片 两个视图按钮 →「类型」下拉 → 搜索 → 日历
+  // 真机无页脚（feed-measure.footer=false）：滚到底自动续页，不摆「加载更多」按钮/条数文案
+  const sentinel = useRef(null);
+  useEffect(() => {
+    const el = sentinel.current;
+    if (!el || !hasNextPage) return undefined;
+    const io = new IntersectionObserver(
+      (es) => { if (es.some((x) => x.isIntersecting) && !isFetching) fetchNextPage(); },
+      { root: el.closest('.feed-scroll') || null, rootMargin: '200px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasNextPage, isFetching, fetchNextPage]);
+
+  // 工具条按真机单行排列：视图切换 →「类型」下拉 → 右侧搜索框（右侧内嵌日期选择）
   const toolbar = (
     <div className="feed-toolbar" data-testid="feed-toolbar">
       <div className="feed-views" role="group" aria-label="视图">
@@ -141,16 +155,14 @@ export default function FeedPage() {
       </div>
       <label className="feed-select">
         <select data-testid="feed-kind" value={kind} onChange={(e) => setKind(e.target.value)} aria-label="类型">
-          {KINDS.map(([v, label]) => <option key={v || 'all'} value={v}>{v ? label : '类型'}</option>)}
+          {KINDS.map(([v, label]) => <option key={v || 'all'} value={v}>{label}</option>)}
         </select>
       </label>
       <div className="feed-search">
         <span aria-hidden="true">⌕</span>
         <input data-testid="feed-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="搜索" />
+        <input data-testid="feed-day" type="date" value={day} onChange={(e) => setDay(e.target.value)} aria-label="日期" title="按日期筛选" />
       </div>
-      <label className="feed-date" title="按日期筛选">
-        <input data-testid="feed-day" type="date" value={day} onChange={(e) => setDay(e.target.value)} aria-label="日期" />
-      </label>
     </div>
   );
 
@@ -212,12 +224,19 @@ export default function FeedPage() {
           ))}
         </div>
       ) : (
+        <div className="feed-scroll" data-testid="feed-scroll">
         <table className="tbl feed-tbl" data-testid="feed-table">
+          <colgroup>
+            <col style={{ width: 104 }} />
+            <col style={{ width: 199 }} />
+            <col style={{ width: 169 }} />
+            <col />
+          </colgroup>
           <thead>
             <tr>
-              <th style={{ width: 64 }}>时间</th>
-              <th style={{ width: 150 }}>玩家</th>
-              <th style={{ width: 104 }}>类型</th>
+              <th>时间</th>
+              <th>玩家</th>
+              <th>类型</th>
               <th>详细信息</th>
             </tr>
           </thead>
@@ -250,17 +269,10 @@ export default function FeedPage() {
             ))}
           </tbody>
         </table>
+        <div ref={sentinel} data-testid="feed-sentinel" style={{ height: 1 }} />
+        </div>
       )}
 
-      <div className="mt-2 flex items-center justify-center gap-2">
-        {hasNextPage ? (
-          <button className="chip" onClick={() => fetchNextPage()} disabled={isFetching}>
-            {isFetching ? '加载中…' : '加载更多'}
-          </button>
-        ) : (
-          <span className="text-[11px] text-fg3">共 {events.length} 条，到底了</span>
-        )}
-      </div>
       <RowMenu menu={menu.menu} onClose={menu.close} />
       <Hint text={hint} />
     </div>

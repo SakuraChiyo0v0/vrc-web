@@ -1,6 +1,6 @@
 {
   "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言",
-  "at": "2026-11-23T10:26:43.931Z",
+  "at": "2026-11-23T11:42:06.205Z",
   "base": "http://127.0.0.1:8899",
   "pages": [
     "friends",
@@ -53,8 +53,8 @@
       "diff": []
     },
     "feed": {
-      "pass": 70,
-      "total": 70,
+      "pass": 77,
+      "total": 77,
       "score": 100,
       "na": null,
       "diff": []
@@ -95,8 +95,8 @@
       "diff": []
     },
     "sessions": {
-      "pass": 71,
-      "total": 71,
+      "pass": 72,
+      "total": 72,
       "score": 100,
       "na": null,
       "diff": []
@@ -109,8 +109,8 @@
       "diff": []
     },
     "moderation": {
-      "pass": 68,
-      "total": 68,
+      "pass": 69,
+      "total": 69,
       "score": 100,
       "na": null,
       "diff": []
@@ -130,15 +130,15 @@
       "diff": []
     },
     "favorites": {
-      "pass": 66,
-      "total": 66,
+      "pass": 67,
+      "total": 67,
       "score": 100,
       "na": null,
       "diff": []
     },
     "insights": {
-      "pass": 66,
-      "total": 66,
+      "pass": 67,
+      "total": 67,
       "score": 100,
       "na": null,
       "diff": []
@@ -151,29 +151,29 @@
       "diff": []
     },
     "friendlist": {
-      "pass": 67,
-      "total": 67,
-      "score": 100,
-      "na": null,
-      "diff": []
-    },
-    "friendlog": {
       "pass": 68,
       "total": 68,
       "score": 100,
       "na": null,
       "diff": []
     },
+    "friendlog": {
+      "pass": 69,
+      "total": 69,
+      "score": 100,
+      "na": null,
+      "diff": []
+    },
     "gamelog": {
-      "pass": 67,
-      "total": 67,
+      "pass": 68,
+      "total": 68,
       "score": 100,
       "na": null,
       "diff": []
     },
     "settings": {
-      "pass": 67,
-      "total": 67,
+      "pass": 68,
+      "total": 68,
       "score": 100,
       "na": null,
       "diff": []
@@ -200,8 +200,8 @@
     "settings"
   ],
   "chrome_rows": 60,
-  "pass": 166,
-  "total": 166,
+  "pass": 181,
+  "total": 181,
   "score": 100,
   "rows": [
     {
@@ -1301,6 +1301,62 @@
       "key": "search"
     },
     {
+      "page": "feed",
+      "name": "列数",
+      "ours": "4",
+      "want": "4",
+      "ok": true,
+      "key": "feed"
+    },
+    {
+      "page": "feed",
+      "name": "列名",
+      "ours": "时间/玩家/类型/详细信息",
+      "want": "时间/玩家/类型/详细信息",
+      "ok": true,
+      "key": "feed"
+    },
+    {
+      "page": "feed",
+      "name": "行高",
+      "ours": "44",
+      "want": "44",
+      "ok": true,
+      "key": "feed"
+    },
+    {
+      "page": "feed",
+      "name": "列宽",
+      "ours": "105/199/169",
+      "want": "106/198/169",
+      "ok": true,
+      "key": "feed"
+    },
+    {
+      "page": "feed",
+      "name": "工具条",
+      "ours": "类型/搜索",
+      "want": "类型/搜索",
+      "ok": true,
+      "key": "feed"
+    },
+    {
+      "page": "feed",
+      "name": "类型文案",
+      "ours": "位置变动/上线/模型变动",
+      "want": "位置变动/上线/模型变动",
+      "ok": true,
+      "key": "feed"
+    },
+    {
+      "page": "feed",
+      "name": "一屏行数",
+      "ours": "21",
+      "want": "≈19",
+      "ok": true,
+      "key": "feed"
+    },
+    {
       "page": "sessions",
       "name": "列数",
       "ours": "4",
@@ -1313,6 +1369,14 @@
       "name": "列名",
       "ours": "时间/地区/房间名/时长",
       "want": "时间/地区/房间名/时长",
+      "ok": true,
+      "key": "sessions"
+    },
+    {
+      "page": "sessions",
+      "name": "工具条",
+      "ours": "自己/搜索/按日",
+      "want": "自己/搜索/按日",
       "ok": true,
       "key": "sessions"
     },
@@ -1382,6 +1446,14 @@
     },
     {
       "page": "moderation",
+      "name": "工具条",
+      "ours": "筛选/搜索",
+      "want": "筛选/搜索",
+      "ok": true,
+      "key": "moderation"
+    },
+    {
+      "page": "moderation",
       "name": "tab 数",
       "ours": "0",
       "want": "0",
@@ -1398,6 +1470,14 @@
     },
     {
       "page": "favorites",
+      "name": "工具条",
+      "ours": "按日期排序/搜索",
+      "want": "按日期排序/搜索",
+      "ok": true,
+      "key": "favorites"
+    },
+    {
+      "page": "favorites",
       "name": "网格列数",
       "ours": "2",
       "want": "2",
@@ -1411,6 +1491,14 @@
       "want": "true",
       "ok": true,
       "key": "favorites"
+    },
+    {
+      "page": "insights",
+      "name": "工具条",
+      "ours": "查找好友/再次拉取",
+      "want": "查找好友/再次拉取",
+      "ok": true,
+      "key": "insights"
     },
     {
       "page": "insights",
@@ -1446,6 +1534,14 @@
     },
     {
       "page": "friendlist",
+      "name": "工具条",
+      "ours": "筛选/搜索好友/加载共同好友/拉取缺失的字段",
+      "want": "筛选/搜索好友/加载共同好友/拉取缺失的字段",
+      "ok": true,
+      "key": "friendlist"
+    },
+    {
+      "page": "friendlist",
       "name": "一屏行数",
       "ours": "20",
       "want": "≈20",
@@ -1465,6 +1561,14 @@
       "name": "列名",
       "ours": "时间↓/类型↕/玩家↕/操作",
       "want": "时间/类型/玩家/操作",
+      "ok": true,
+      "key": "friendlog"
+    },
+    {
+      "page": "friendlog",
+      "name": "工具条",
+      "ours": "搜索好友日志",
+      "want": "搜索好友日志",
       "ok": true,
       "key": "friendlog"
     },
@@ -1502,11 +1606,27 @@
     },
     {
       "page": "gamelog",
+      "name": "工具条",
+      "ours": "类型/搜索",
+      "want": "类型/搜索",
+      "ok": true,
+      "key": "gamelog"
+    },
+    {
+      "page": "gamelog",
       "name": "一屏行数",
       "ours": "21",
       "want": "≈21",
       "ok": true,
       "key": "gamelog"
+    },
+    {
+      "page": "settings",
+      "name": "工具条",
+      "ours": "搜索设置",
+      "want": "搜索设置",
+      "ok": true,
+      "key": "settings"
     },
     {
       "page": "settings",

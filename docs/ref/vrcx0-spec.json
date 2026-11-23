@@ -17,8 +17,9 @@
   ],
   "row_height": 44,
   "has_avatar": false,
-  "header_height": 32,
-  "header_text_transform": "none"
+  "header_height": 44,
+  "header_text_transform": "none",
+  "_source": "docs/ref/feed-measure.json（scripts/measure_ref_feed.py 像素量测）"
  },
  "friends_locations": {
   "columns": 2,
@@ -421,7 +422,37 @@
    },
    "nav_pill": null,
    "row_bands": 26,
-   "row_pitch": 30.5
+   "row_pitch": 30.5,
+   "structure": {
+    "_source": "docs/ref/feed-measure.json（scripts/measure_ref_feed.py）+ vision 读 docs/ref/crop-feed-head.png / crop-feed-types.png",
+    "kind": "table",
+    "columns": [
+     "时间",
+     "玩家",
+     "类型",
+     "详细信息"
+    ],
+    "columns_n": 4,
+    "column_widths": [
+     106,
+     198,
+     169
+    ],
+    "row_h": 44,
+    "header_h": 44,
+    "rows_visible": 19,
+    "toolbar": [
+     "类型",
+     "搜索"
+    ],
+    "type_labels": [
+     "位置变动",
+     "上线",
+     "模型变动"
+    ],
+    "footer": false,
+    "inset": 19
+   }
   },
   "friendlist": {
    "_source": "measured docs/ref/vrcx0-friendlist.png（scripts/measure_ref_chrome.py）",

@@ -1,9 +1,9 @@
 {
   "_note": "由 scripts/structure_parity.mjs 生成：spec.pages[*].structure（真机截图量测）vs 我们的 DOM",
-  "at": "2026-11-23T10:03:29.950Z",
+  "at": "2026-11-23T11:39:23.140Z",
   "base": "http://127.0.0.1:8899",
-  "pass": 31,
-  "total": 31,
+  "pass": 46,
+  "total": 46,
   "rows": [
     {
       "page": "search",
@@ -20,6 +20,55 @@
       "ok": true
     },
     {
+      "page": "feed",
+      "name": "列数",
+      "ours": "4",
+      "want": "4",
+      "ok": true
+    },
+    {
+      "page": "feed",
+      "name": "列名",
+      "ours": "时间/玩家/类型/详细信息",
+      "want": "时间/玩家/类型/详细信息",
+      "ok": true
+    },
+    {
+      "page": "feed",
+      "name": "行高",
+      "ours": "44",
+      "want": "44",
+      "ok": true
+    },
+    {
+      "page": "feed",
+      "name": "列宽",
+      "ours": "105/199/169",
+      "want": "106/198/169",
+      "ok": true
+    },
+    {
+      "page": "feed",
+      "name": "工具条",
+      "ours": "类型/搜索",
+      "want": "类型/搜索",
+      "ok": true
+    },
+    {
+      "page": "feed",
+      "name": "类型文案",
+      "ours": "位置变动/上线/模型变动",
+      "want": "位置变动/上线/模型变动",
+      "ok": true
+    },
+    {
+      "page": "feed",
+      "name": "一屏行数",
+      "ours": "21",
+      "want": "≈19",
+      "ok": true
+    },
+    {
       "page": "sessions",
       "name": "列数",
       "ours": "4",
@@ -31,6 +80,13 @@
       "name": "列名",
       "ours": "时间/地区/房间名/时长",
       "want": "时间/地区/房间名/时长",
+      "ok": true
+    },
+    {
+      "page": "sessions",
+      "name": "工具条",
+      "ours": "自己/搜索/按日",
+      "want": "自己/搜索/按日",
       "ok": true
     },
     {
@@ -91,6 +147,13 @@
     },
     {
       "page": "moderation",
+      "name": "工具条",
+      "ours": "筛选/搜索",
+      "want": "筛选/搜索",
+      "ok": true
+    },
+    {
+      "page": "moderation",
       "name": "tab 数",
       "ours": "0",
       "want": "0",
@@ -105,6 +168,13 @@
     },
     {
       "page": "favorites",
+      "name": "工具条",
+      "ours": "按日期排序/搜索",
+      "want": "按日期排序/搜索",
+      "ok": true
+    },
+    {
+      "page": "favorites",
       "name": "网格列数",
       "ours": "2",
       "want": "2",
@@ -115,6 +185,13 @@
       "name": "收藏夹侧栏",
       "ours": "true",
       "want": "true",
+      "ok": true
+    },
+    {
+      "page": "insights",
+      "name": "工具条",
+      "ours": "查找好友/再次拉取",
+      "want": "查找好友/再次拉取",
       "ok": true
     },
     {
@@ -147,6 +224,13 @@
     },
     {
       "page": "friendlist",
+      "name": "工具条",
+      "ours": "筛选/搜索好友/加载共同好友/拉取缺失的字段",
+      "want": "筛选/搜索好友/加载共同好友/拉取缺失的字段",
+      "ok": true
+    },
+    {
+      "page": "friendlist",
       "name": "一屏行数",
       "ours": "20",
       "want": "≈20",
@@ -164,6 +248,13 @@
       "name": "列名",
       "ours": "时间↓/类型↕/玩家↕/操作",
       "want": "时间/类型/玩家/操作",
+      "ok": true
+    },
+    {
+      "page": "friendlog",
+      "name": "工具条",
+      "ours": "搜索好友日志",
+      "want": "搜索好友日志",
       "ok": true
     },
     {
@@ -196,9 +287,23 @@
     },
     {
       "page": "gamelog",
+      "name": "工具条",
+      "ours": "类型/搜索",
+      "want": "类型/搜索",
+      "ok": true
+    },
+    {
+      "page": "gamelog",
       "name": "一屏行数",
       "ours": "21",
       "want": "≈21",
+      "ok": true
+    },
+    {
+      "page": "settings",
+      "name": "工具条",
+      "ours": "搜索设置",
+      "want": "搜索设置",
       "ok": true
     },
     {

@@ -1,0 +1,51 @@
+{
+ "_source": "scripts/measure_ref_feed.py（像素分段）+ vision 逐字读 docs/ref/crop-feed-head.png、crop-feed-types.png",
+ "ref": "docs/ref/vrcx0-feed.png",
+ "panel": {
+  "x": 283,
+  "y": 47,
+  "w": 1398,
+  "h": 950
+ },
+ "table": {
+  "x": 283,
+  "w": 1040,
+  "top": 101,
+  "header_h": 44,
+  "row_h": 44,
+  "rows_visible": 19,
+  "first_row_y": 145,
+  "inset": 19,
+  "footer": false
+ },
+ "columns": {
+  "names": [
+   "时间",
+   "玩家",
+   "类型",
+   "详细信息"
+  ],
+  "text_x_rel": [
+   78,
+   184,
+   382,
+   551
+  ],
+  "widths": [
+   106,
+   198,
+   169,
+   489
+  ]
+ },
+ "toolbar": [
+  "类型",
+  "搜索"
+ ],
+ "type_labels": [
+  "位置变动",
+  "上线",
+  "模型变动"
+ ],
+ "crop": "docs/ref/crop-feed-head.png"
+}

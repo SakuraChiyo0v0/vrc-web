@@ -34,8 +34,14 @@ export const probeMain = (p) => p.evaluate(() => {
       : cellsOf(visRows[0] || listRows[0] || document.createElement('div')).length,
     cellNames: cellsOf(visRows[0] || listRows[0] || document.createElement('div')),
     leftListW: Math.round((main.querySelector('.sess-list')?.getBoundingClientRect().width ?? 0) * 10) / 10,
-    rowH: Math.round(((visRows[0] || listRows[0])?.getBoundingClientRect().height ?? 0) * 10) / 10,
+    thWidths: ths.map((_, i) => Math.round([...main.querySelectorAll('thead th')][i].getBoundingClientRect().width)),
+    rowH: Math.round(((visRows[0] || listRows[0] || trs[0])?.getBoundingClientRect().height ?? 0) * 10) / 10,
     emptyTitle: txt(main.querySelector('.empty-title, .empty h2, .sess-detail-title')),
+    // 工具条里输入框的 placeholder / aria-label 在截图上是看得见的文字（真机搜索框就是
+    // 灰色 placeholder「搜索」），innerText 读不到，单独收一份给工具条断言
+    formText: [...main.querySelectorAll('input, textarea, select')]
+      .map((el) => [el.placeholder, el.getAttribute('aria-label'), el.getAttribute('title')].filter(Boolean).join(' '))
+      .join(' '),
     text: main.innerText,
   };
 });
@@ -62,6 +68,25 @@ export function structureRows(page, got, want, pitch) {
       check('列名', (got.cellNames || []).join('/'), want.columns.join('/'),
         JSON.stringify(got.cellNames) === JSON.stringify(want.columns));
     }
+  }
+  if (want.row_h) {
+    // 表格行高（真机像素量测）：行距与表头高度都直接可比
+    check('行高', got.rowH, String(want.row_h), Math.abs(got.rowH - want.row_h) <= 1.5);
+  }
+  if (want.column_widths?.length && got.thWidths?.length) {
+    const diffs = want.column_widths.map((w, i) => Math.abs((got.thWidths[i] ?? 0) - w));
+    check('列宽', got.thWidths.slice(0, want.column_widths.length).join('/'), want.column_widths.join('/'),
+      diffs.every((d) => d <= 3));
+  }
+  if (want.toolbar?.length) {
+    const bar = `${got.text} ${got.formText || ''}`;
+    check('工具条', want.toolbar.filter((t) => bar.includes(t)).join('/'), want.toolbar.join('/'),
+      want.toolbar.every((t) => bar.includes(t)));
+  }
+  if (want.type_labels?.length) {
+    // 类型列文案各至少出现一次（表格数据里应有这些事件）
+    check('类型文案', want.type_labels.filter((t) => got.text.includes(t)).join('/'), want.type_labels.join('/'),
+      want.type_labels.every((t) => got.text.includes(t)));
   }
   if (want.kind === 'master_detail' && pitch) {
     // 主从列表：一屏行数取决于数据里有几天（真机 27 条只跨 2 天），改为核对行距
@@ -104,4 +129,4 @@ export function structureRows(page, got, want, pitch) {
 }
 
 /** 有 structure 量测的页面（新增页面时加这里） */
-export const STRUCT_PAGES = ['search', 'sessions', 'players', 'moderation', 'favorites', 'insights', 'friendlist', 'friendlog', 'gamelog', 'settings'];
+export const STRUCT_PAGES = ['search', 'feed', 'sessions', 'players', 'moderation', 'favorites', 'insights', 'friendlist', 'friendlog', 'gamelog', 'settings'];

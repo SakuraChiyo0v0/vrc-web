@@ -375,6 +375,21 @@ body {
   }
 
   /* 80 动态页表格：四列 时间/玩家/类型/详细信息，行高 44px（真机 40–48），类型列带图标不是头像 */
+  /* 121 几何按 docs/ref/feed-measure.json 重定：表格内容左边距 19（分隔线从那里起）、
+     单元格 padding-left 58（首列文字落在表格左 +77）、表头 44、行 44、一屏 19 行、无页脚 */
+  .feed-page { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+  .feed-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding-left: 19px; }
+  .feed-toolbar { display: flex; align-items: center; gap: 8px; flex: 0 0 54px; height: 54px; box-sizing: border-box; padding: 14px 24px 0 29px; }
+  .feed-views { display: inline-flex; border: 1px solid var(--stroke-default); border-radius: 6px; overflow: hidden; }
+  .feed-views button { width: 30px; height: 24px; display: grid; place-items: center; font-size: 12px; color: var(--content-secondary); }
+  .feed-views button[data-active='true'] { background: var(--surface-raised); color: var(--content-primary); }
+  .feed-select select { height: 24px; padding: 0 .25rem; font-size: 12px; color: var(--content-secondary); background: transparent; border: 0; }
+  .feed-search { margin-left: auto; display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px;
+    border: 1px solid var(--stroke-default); border-radius: 6px; min-width: 300px; color: var(--content-tertiary); }
+  .feed-search input[data-testid='feed-search'] { flex: 1 1 auto; min-width: 0; background: transparent; border: 0; outline: 0; font-size: 12px; }
+  .feed-search input[type='date'] { width: 108px; background: transparent; border: 0; color: var(--content-tertiary); font-size: 11px; }
+  .feed-tbl thead th { height: 44px; font-size: 12px; }
+  .feed-tbl thead th, .feed-tbl tbody td { padding-left: 58px; padding-right: 12px; }
   .feed-tbl tbody td { height: 44px; font-size: 12px; }
   /* 118 时间线分段头：今天/昨天/更早，整行浅底、粘在滚动容器顶部 */
   .feed-tbl tbody tr.feed-day td {
