@@ -1,0 +1,235 @@
+{
+ "_note": "由 scripts/ref_coverage.py 生成；ref=真机截图，measured=spec 内有像素量测块，parity=visual_parity 覆盖，shots=三端截图",
+ "pages": {
+  "overview": {
+   "ref": "docs/ref/vrcx0-overview.png",
+   "measured": false,
+   "parity": true,
+   "shots": {
+    "desktop": 6,
+    "mobile": 3,
+    "4k": 2
+   },
+   "shots_missing": []
+  },
+  "search": {
+   "ref": null,
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 1,
+    "mobile": 1,
+    "4k": 0
+   },
+   "shots_missing": [
+    "4k"
+   ]
+  },
+  "friends": {
+   "ref": "docs/ref/vrcx0-locations.png",
+   "measured": false,
+   "parity": true,
+   "shots": {
+    "desktop": 4,
+    "mobile": 2,
+    "4k": 1
+   },
+   "shots_missing": []
+  },
+  "feed": {
+   "ref": "docs/ref/vrcx0-feed.png",
+   "measured": false,
+   "parity": true,
+   "shots": {
+    "desktop": 7,
+    "mobile": 1,
+    "4k": 0
+   },
+   "shots_missing": [
+    "4k"
+   ]
+  },
+  "notifications": {
+   "ref": null,
+   "measured": false,
+   "parity": true,
+   "shots": {
+    "desktop": 1,
+    "mobile": 1,
+    "4k": 0
+   },
+   "shots_missing": [
+    "4k"
+   ]
+  },
+  "sessions": {
+   "ref": "docs/ref/vrcx0-roomhistory.png",
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 0,
+    "mobile": 1,
+    "4k": 0
+   },
+   "shots_missing": [
+    "desktop",
+    "4k"
+   ]
+  },
+  "players": {
+   "ref": null,
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 1,
+    "mobile": 1,
+    "4k": 0
+   },
+   "shots_missing": [
+    "4k"
+   ]
+  },
+  "stats": {
+   "ref": null,
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 0,
+    "mobile": 0,
+    "4k": 0
+   },
+   "shots_missing": [
+    "desktop",
+    "mobile",
+    "4k"
+   ]
+  },
+  "favorites": {
+   "ref": null,
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 0,
+    "mobile": 1,
+    "4k": 1
+   },
+   "shots_missing": [
+    "desktop"
+   ]
+  },
+  "insights": {
+   "ref": null,
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 0,
+    "mobile": 0,
+    "4k": 0
+   },
+   "shots_missing": [
+    "desktop",
+    "mobile",
+    "4k"
+   ]
+  },
+  "worlds": {
+   "ref": null,
+   "measured": false,
+   "parity": true,
+   "shots": {
+    "desktop": 3,
+    "mobile": 1,
+    "4k": 2
+   },
+   "shots_missing": []
+  },
+  "calendar": {
+   "ref": null,
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 0,
+    "mobile": 0,
+    "4k": 0
+   },
+   "shots_missing": [
+    "desktop",
+    "mobile",
+    "4k"
+   ]
+  },
+  "friendlist": {
+   "ref": null,
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 4,
+    "mobile": 1,
+    "4k": 0
+   },
+   "shots_missing": [
+    "4k"
+   ]
+  },
+  "friendlog": {
+   "ref": null,
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 4,
+    "mobile": 0,
+    "4k": 0
+   },
+   "shots_missing": [
+    "mobile",
+    "4k"
+   ]
+  },
+  "gamelog": {
+   "ref": "docs/ref/vrcx0-gamelog.png",
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 5,
+    "mobile": 0,
+    "4k": 0
+   },
+   "shots_missing": [
+    "mobile",
+    "4k"
+   ]
+  },
+  "settings": {
+   "ref": null,
+   "measured": false,
+   "parity": false,
+   "shots": {
+    "desktop": 1,
+    "mobile": 0,
+    "4k": 0
+   },
+   "shots_missing": [
+    "mobile",
+    "4k"
+   ]
+  }
+ },
+ "friend_modal": {
+  "ref": "docs/ref/vrcx0-friend.png",
+  "measured": true,
+  "parity": false,
+  "shots": {
+   "desktop": 7,
+   "mobile": 2,
+   "4k": 1
+  },
+  "shots_missing": []
+ },
+ "summary": {
+  "pages": 16,
+  "ref": 5,
+  "measured": 0,
+  "parity": 5,
+  "shots3": 3
+ }
+}

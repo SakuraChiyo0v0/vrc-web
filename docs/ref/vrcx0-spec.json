@@ -1,111 +1,170 @@
 {
-  "_note": "VRCX-0 真机实测规格（1700x1040 窗口，来自 docs/ref 截图）。只记可量化的东西，避免主观打分。 第十六轮补：概览/世界库/通知三页的密度与档位规则（按 VRCX-0 的设计语言推得：正文档位 11–14、卡片圆角 10、列表网格列数），不是逐像素实测。",
-  "measured_at": "2026-11-16",
-  "nav": {
-    "group_label_height": 24,
-    "item_height": 30,
-    "icon_size": 16,
-    "active_weight": 500
+ "_note": "VRCX-0 真机实测规格（1700x1040 窗口，来自 docs/ref 截图）。只记可量化的东西，避免主观打分。 第十六轮补：概览/世界库/通知三页的密度与档位规则（按 VRCX-0 的设计语言推得：正文档位 11–14、卡片圆角 10、列表网格列数），不是逐像素实测。",
+ "measured_at": "2026-11-16",
+ "nav": {
+  "group_label_height": 24,
+  "item_height": 30,
+  "icon_size": 16,
+  "active_weight": 500
+ },
+ "feed_table": {
+  "columns": 4,
+  "column_names": [
+   "时间",
+   "玩家",
+   "类型",
+   "详细信息"
+  ],
+  "row_height": 44,
+  "has_avatar": false,
+  "header_height": 32,
+  "header_text_transform": "none"
+ },
+ "friends_locations": {
+  "columns": 2,
+  "card_height": 96,
+  "avatar_size": 56,
+  "card_border": "none",
+  "card_background": "transparent",
+  "lines_per_card": 4
+ },
+ "detail_panel": {
+  "width": 244,
+  "header_height": 32
+ },
+ "typography": {
+  "body_px": 14,
+  "meta_px": 12,
+  "row_px": 13,
+  "tabular_nums": true,
+  "px_sizes_allowed": [
+   11,
+   12,
+   13,
+   14
+  ]
+ },
+ "tokens": {
+  "radius": 10,
+  "status_active": "#f4e05e",
+  "status_offline": "#737f8d",
+  "platform_pc": "#0078d4",
+  "platform_quest": "#3ddc84"
+ },
+ "user_dialog": {
+  "avatar_size": 80,
+  "tab_count": 4,
+  "tab_labels": [
+   "概览",
+   "足迹",
+   "数据",
+   "备注"
+  ],
+  "badge_row": true,
+  "header_px": 14
+ },
+ "overview": {
+  "_source": "design-derived",
+  "kpi_px_range": [
+   20,
+   32
+  ],
+  "daily_bars_min": 7,
+  "daily_bars_max": 31,
+  "hour_bars": 24,
+  "range_buttons": 6,
+  "range_labels": [
+   "全部",
+   "近30天",
+   "近90天",
+   "近180天",
+   "近365天",
+   "自定义"
+  ],
+  "tabs": [
+   "概览",
+   "旅程"
+  ]
+ },
+ "worlds": {
+  "_source": "design-derived",
+  "grid_columns": 3,
+  "grid_columns_md": 2,
+  "thumb_aspect": 1.78,
+  "head_columns": 4,
+  "min_cards": 3,
+  "decor_px_range": [
+   16,
+   20
+  ]
+ },
+ "notifications": {
+  "_source": "design-derived",
+  "min_chips": 5,
+  "default_filters": [
+   "全部",
+   "全部类型"
+  ],
+  "card_radius": 10,
+  "card_border": "1px"
+ },
+ "friend_modal": {
+  "_source": "measured docs/ref/vrcx0-friend.png（像素边界；scripts/measure_ref_friend.py；校验图 docs/ref/friend-measure.png）",
+  "ref_size": [
+   1280,
+   756
+  ],
+  "modal": {
+   "w": 1025,
+   "h": 546,
+   "width_ratio": 0.801,
+   "height_ratio": 0.722,
+   "padding": 14,
+   "radius": 14
   },
-  "feed_table": {
-    "columns": 4,
-    "column_names": [
-      "时间",
-      "玩家",
-      "类型",
-      "详细信息"
-    ],
-    "row_height": 44,
-    "has_avatar": false,
-    "header_height": 32,
-    "header_text_transform": "none"
+  "left_column": {
+   "w": 285,
+   "ratio_of_modal": 0.278
   },
-  "friends_locations": {
-    "columns": 2,
-    "card_height": 96,
-    "avatar_size": 56,
-    "card_border": "none",
-    "card_background": "transparent",
-    "lines_per_card": 4
+  "columns": [
+   {
+    "x": 445,
+    "w": 419
+   },
+   {
+    "x": 879,
+    "w": 256
+   }
+  ],
+  "column_gap": 15,
+  "tab_strip": {
+   "y0": 134,
+   "height": 108
   },
-  "detail_panel": {
-    "width": 244,
-    "header_height": 32
-  },
-  "typography": {
-    "body_px": 14,
-    "meta_px": 12,
-    "row_px": 13,
-    "tabular_nums": true,
-    "px_sizes_allowed": [
-      11,
-      12,
-      13,
-      14
-    ]
-  },
-  "tokens": {
-    "radius": 10,
-    "status_active": "#f4e05e",
-    "status_offline": "#737f8d",
-    "platform_pc": "#0078d4",
-    "platform_quest": "#3ddc84"
-  },
-  "user_dialog": {
-    "avatar_size": 80,
-    "tab_count": 4,
-    "tab_labels": [
-      "概览",
-      "足迹",
-      "数据",
-      "备注"
-    ],
-    "badge_row": true,
-    "header_px": 14
-  },
-  "overview": {
-    "_source": "design-derived",
-    "kpi_px_range": [
-      20,
-      32
-    ],
-    "daily_bars_min": 7,
-    "daily_bars_max": 31,
-    "hour_bars": 24,
-    "range_buttons": 6,
-    "range_labels": [
-      "全部",
-      "近30天",
-      "近90天",
-      "近180天",
-      "近365天",
-      "自定义"
-    ],
-    "tabs": [
-      "概览",
-      "旅程"
-    ]
-  },
-  "worlds": {
-    "_source": "design-derived",
-    "grid_columns": 3,
-    "grid_columns_md": 2,
-    "thumb_aspect": 1.78,
-    "head_columns": 4,
-    "min_cards": 3,
-    "decor_px_range": [
-      16,
-      20
-    ]
-  },
-  "notifications": {
-    "_source": "design-derived",
-    "min_chips": 5,
-    "default_filters": [
-      "全部",
-      "全部类型"
-    ],
-    "card_radius": 10,
-    "card_border": "1px"
-  }
+  "tab_count": 8,
+  "tab_labels": [
+   "信息",
+   "共同好友",
+   "群组",
+   "创建的世界",
+   "收藏的世界",
+   "创建的模型",
+   "活动记录",
+   "原始 JSON 信息"
+  ],
+  "card_columns": [
+   {
+    "x": 445,
+    "w": 419,
+    "ratio_of_modal": 0.409
+   },
+   {
+    "x": 879,
+    "w": 256,
+    "ratio_of_modal": 0.25
+   }
+  ],
+  "card_radius": null,
+  "layout": "two independent columns (masonry), left wider than right (419 vs 256 px at 1280 width)"
+ }
 }
