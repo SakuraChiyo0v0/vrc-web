@@ -374,6 +374,9 @@ for (const [w, h, top, bottom, lr] of [[390, 844, 47, 34, 0], [844, 390, 0, 21, 
       mainPadL: parseFloat(getComputedStyle(document.querySelector('main')).paddingLeft),
       sdPadL: parseFloat(getComputedStyle(sd).paddingLeft),
       sbPadBottom: parseFloat(getComputedStyle(sb).paddingBottom),
+      // 抽屉底边整体上移到状态栏上沿（不再靠 padding 让位），两者不能重叠
+      sdBottom: Math.round(sd.getBoundingClientRect().bottom),
+      sbTop: Math.round(sbBox.top),
       // 内容（图标/文字行）底边到视口底边的余量：home 指示条就压在这段里
       sbGap: sb.firstElementChild ? Math.round(window.innerHeight - sb.firstElementChild.getBoundingClientRect().bottom) : -1,
       over: getComputedStyle(document.querySelector('.workspace > div')).overscrollBehaviorY,
@@ -386,8 +389,8 @@ for (const [w, h, top, bottom, lr] of [[390, 844, 47, 34, 0], [844, 390, 0, 21, 
   check(`safe-area@${w}x${h}`, '安全区变量已定义', base.vars.join('/'), '全是长度值（0px 起）', base.vars.every((v) => /px$/.test(v)));
   check(`safe-area@${w}x${h}`, '顶栏让出刘海', `bar=${r.barH} pad=${r.barPad}（无刘海 ${base.bar}）`, `=44+${top} 且 pad=${top}`,
     r.barPad === top && r.barH >= 44 + top - 0.5 && r.barH <= 44 + top + 0.5);
-  check(`safe-area@${w}x${h}`, '抽屉上下让位', `top=${r.sdPadTop} bottom=${r.sdPadBottom}`, `top=${top} bottom=${bottom}`,
-    r.sdPadTop === top && r.sdPadBottom === bottom);
+  check(`safe-area@${w}x${h}`, '抽屉上边让出刘海', `top=${r.sdPadTop} bottom=${r.sdBottom} 状态栏顶=${r.sbTop}`, `top=${top} 且 抽屉底≤状态栏顶`,
+    r.sdPadTop === top && r.sdBottom <= r.sbTop);
   check(`safe-area@${w}x${h}`, '抽屉左右让位（横屏刘海）', `left=${r.sdPadL}`, `left=${lr}`,
     r.sdPadL === lr);
   check(`safe-area@${w}x${h}`, '顶栏左右让位（横屏刘海）', `left=${r.barPadL} right=${r.barPadR}`, `left=${14 + lr} right=${8 + lr}`,
@@ -397,6 +400,75 @@ for (const [w, h, top, bottom, lr] of [[390, 844, 47, 34, 0], [844, 390, 0, 21, 
   check(`safe-area@${w}x${h}`, '状态栏不被 home 指示条盖住', `内容底边距=${r.sbGap}px pad=${r.sbPadBottom}`, `≥${bottom} 且 pad=${bottom}`,
     r.sbGap >= bottom - 0.5 && r.sbPadBottom === bottom);
   check(`safe-area@${w}x${h}`, '滚动不外溢（不发下拉刷新）', r.over, 'contain', r.over === 'contain');
+  await tab.close();
+}
+
+// 旋转残留（390×844 开抽屉 → 1024×768 桌面形态）：抽屉消失后 data-open 必须清掉、焦点陷阱卸载、Esc 不改状态；
+// 转回 390 时抽屉默认收起。此前 bug：data-open 残留 true，桌面连按 Tab 焦点全锁在侧栏，Esc 还能「关」一次桌面侧栏。
+{
+  const tab = await open('friends', 390, 844);
+  await tab.click('button[aria-label="菜单"]');
+  await tab.waitForTimeout(350);
+  const before = await tab.evaluate(() => document.querySelector('.vrc-sidebar')?.dataset.open);
+  await tab.setViewportSize({ width: 1024, height: 768 });
+  await tab.waitForTimeout(600);
+  const desk = await tab.evaluate(() => {
+    const s = document.querySelector('.vrc-sidebar');
+    const b = s.getBoundingClientRect();
+    const items = [...s.querySelectorAll('button, a[href], input, select, [tabindex]:not([tabindex="-1"])')]
+      .filter((n) => n.getBoundingClientRect().width > 0);
+    items[items.length - 1]?.focus();
+    return { open: s.dataset.open, left: Math.round(b.left), width: Math.round(b.width), items: items.length };
+  });
+  await tab.keyboard.press('Tab');
+  const tabbed = await tab.evaluate(() => ({
+    inside: !!document.activeElement?.closest?.('.vrc-sidebar'),
+    what: document.activeElement?.getAttribute?.('aria-label') || document.activeElement?.textContent?.trim().slice(0, 8),
+  }));
+  check('rotate@390→1024', '开抽屉后转桌面：data-open 清掉', `打开时 ${before} → 转后 ${desk.open}`, 'false', desk.open === 'false');
+  check('rotate@390→1024', '桌面侧栏常驻可见', `left=${desk.left} w=${desk.width}`, 'left=0', desk.left === 0);
+  check('rotate@390→1024', '焦点陷阱已卸载（Tab 能出侧栏）', `${desk.items} 项，末项 Tab 后 → ${tabbed.what}（侧栏内=${tabbed.inside}）`, 'false', tabbed.inside === false);
+  await tab.keyboard.press('Escape');
+  await tab.waitForTimeout(300);
+  const afterEsc = await tab.evaluate(() => {
+    const s = document.querySelector('.vrc-sidebar');
+    return { open: s.dataset.open, left: Math.round(s.getBoundingClientRect().left) };
+  });
+  check('rotate@390→1024', '桌面 Esc 不改抽屉状态', `data-open=${afterEsc.open} left=${afterEsc.left}`, 'false/0',
+    afterEsc.open === 'false' && afterEsc.left === 0);
+  await tab.setViewportSize({ width: 390, height: 844 });
+  await tab.waitForTimeout(600);
+  const back = await tab.evaluate(() => {
+    const s = document.querySelector('.vrc-sidebar');
+    return { open: s.dataset.open, left: Math.round(s.getBoundingClientRect().left) };
+  });
+  check('rotate@390→1024', '转回 390 抽屉默认收起', `data-open=${back.open} left=${back.left}`, 'false 且 <0',
+    back.open === 'false' && back.left < 0);
+  await tab.close();
+}
+
+// 横屏抽屉底边 / 状态栏：抽屉不再盖住状态栏，底部「收起导航栏」也不压状态栏文字
+for (const [w, h] of [[844, 390], [932, 430]]) {
+  const tab = await open('friends', w, h);
+  await tab.click('button[aria-label="菜单"]');
+  await tab.waitForTimeout(350);
+  const r = await tab.evaluate(() => {
+    const sd = document.querySelector('.vrc-sidebar').getBoundingClientRect();
+    const sbEl = document.querySelector('#vrc-statusbar');
+    const sb = sbEl.getBoundingClientRect();
+    const btn = document.querySelector('[data-testid="nav-collapse"]')?.getBoundingClientRect();
+    const hit = (x, y) => { const e = document.elementFromPoint(x, y); return e ? (e.closest('#vrc-statusbar') ? 'statusbar' : (e.closest('[data-testid="nav-collapse"]') ? 'collapse' : e.tagName)) : 'null'; };
+    return {
+      sdBottom: Math.round(sd.bottom), sbTop: Math.round(sb.top),
+      btnBottom: btn ? Math.round(btn.bottom) : null,
+      hitStatus: hit(100, sb.top + sb.height / 2),      // 抽屉脚下、状态栏行上
+      hitBtn: hit(100, btn ? btn.top + btn.height / 2 : 0),
+    };
+  });
+  check(`drawer-landscape@${w}x${h}`, '抽屉不压状态栏', `抽屉底=${r.sdBottom} 状态栏顶=${r.sbTop}`, '≤', r.sdBottom <= r.sbTop);
+  check(`drawer-landscape@${w}x${h}`, '收起按钮不压状态栏', `按钮底=${r.btnBottom} 状态栏顶=${r.sbTop}`, '≤', r.btnBottom == null || r.btnBottom <= r.sbTop);
+  check(`drawer-landscape@${w}x${h}`, '状态栏区不被按钮吃掉', `y=状态栏中点命中 ${r.hitStatus}`, '≠collapse', r.hitStatus !== 'collapse');
+  check(`drawer-landscape@${w}x${h}`, '收起按钮本身仍可点', `按钮中点命中 ${r.hitBtn}`, 'collapse', r.hitBtn === 'collapse');
   await tab.close();
 }
 

@@ -452,10 +452,12 @@ body {
 .vrc-sidebar-close { display: none; }
 
 @media (max-width: 1023px), (max-height: 500px) {
-  /* 侧栏：默认移出屏幕，data-open=true 时滑入，盖住内容 */
+  /* 侧栏：默认移出屏幕，data-open=true 时滑入，盖住内容。
+     底边让出状态栏（35 + home 指示条），否则抽屉底部的「收起导航栏」压在状态栏文字上
+     （844×390 实测按钮 bottom=378 / 状态栏 top=355，点那片区域命中的是按钮）。 */
   .vrc-sidebar {
     position: fixed;
-    inset: 0 auto 0 0;
+    inset: 0 auto calc(35px + var(--safe-bottom)) 0;
     z-index: 50;
     transform: translateX(-100%);
     transition: transform .18s ease;
@@ -1452,9 +1454,9 @@ html[data-phone='1'] #root {
   .vrc-sidebar .nav-item { height: 44px; flex: none; }
   .vrc-sidebar .nav-sub .nav-item { height: 40px; flex: none; }
 
-  /* 安全区：刘海机顶栏加高、抽屉上下让位，底部按钮不被 home 指示条盖住 */
+  /* 安全区：刘海机顶栏加高、抽屉上左右让位（底边已整体上移让出状态栏，不再补 padding-bottom） */
   .vrc-topbar { height: calc(44px + var(--safe-top)); padding-top: var(--safe-top); }
-  .vrc-sidebar { padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); padding-left: var(--safe-left); padding-right: var(--safe-right); }
+  .vrc-sidebar { padding-top: var(--safe-top); padding-left: var(--safe-left); padding-right: var(--safe-right); }
   /* 横屏刘海在左右两侧：内容区整体内缩，否则最左的 ☰ 与最右的图标落在刘海下 */
   main { padding-left: var(--safe-left); padding-right: var(--safe-right); }
   /* 底部状态栏：home 指示条会盖住最后 34px（原来 bottom 正好等于视口底边） */

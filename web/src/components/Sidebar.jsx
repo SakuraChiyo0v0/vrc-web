@@ -82,16 +82,38 @@ function NavFolder({ item, page, onNavigate }) {
   );
 }
 
+/** 移动形态判据与 styles.css 的 @media 一致：窄 ≤1023 或矮 ≤500。侧栏在这些形态下才是抽屉。 */
+const MOBILE_FORM = '(max-width: 1023px), (max-height: 500px)';
+
+function useIsMobileForm() {
+  const [matches, setMatches] = useState(() => window.matchMedia(MOBILE_FORM).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_FORM);
+    const on = () => setMatches(mq.matches);
+    on();
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  return matches;
+}
+
 export default function Sidebar({ page, onNavigate, me, open = false, onClose, onCollapse }) {
   const ref = useRef(null);
+  const mobile = useIsMobileForm();
+  // 旋转/拉宽到桌面形态后抽屉概念消失：清掉 open（否则 data-open 残留、Esc 还能「关」一次桌面侧栏），
+  // 同时卸载下面的焦点陷阱。onClose 每帧都是新箭头函数，用 ref 拿最新的，避免 effect 反复触发。
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+  useEffect(() => {
+    if (open && !mobile) closeRef.current?.();
+  }, [open, mobile]);
 
   // 44 抽屉打开时焦点进侧栏并困在里面（手机没有 Tab 键，但外接键盘/读屏要能走完菜单且不漏到背后的内容区）；
   // 关闭时焦点还给 ☰。Esc 关闭在 App 的全局 keydown 里（它管 sidebar 的开关状态）。
   useEffect(() => {
-    if (!open) return;
+    if (!open || !mobile) return;
     const el = ref.current;
     if (!el) return;
-    if (!window.matchMedia('(max-width: 1023px), (max-height: 500px)').matches) return;
     const prev = document.activeElement;
     const items = () => [...el.querySelectorAll('button, a[href], input, select, [tabindex]:not([tabindex="-1"])')]
       .filter((n) => n.getBoundingClientRect().width > 0 && !n.hasAttribute('disabled'));
@@ -112,7 +134,7 @@ export default function Sidebar({ page, onNavigate, me, open = false, onClose, o
       el.removeEventListener('keydown', onKey);
       if (prev?.isConnected && typeof prev.focus === 'function') prev.focus();
     };
-  }, [open]);
+  }, [open, mobile]);
 
   return (
     <aside

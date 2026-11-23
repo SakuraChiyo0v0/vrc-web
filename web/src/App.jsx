@@ -116,7 +116,8 @@ export default function App() {
   useEffect(() => {
     const onKey = (e) => {
       if (palette) return; // 搜索浮层自己处理按键
-      if (e.key === 'Escape' && nav) { e.preventDefault(); setNav(false); return; }
+      // 抽屉只在移动形态存在：桌面形态下 nav 若还留着 true（旋转残留）不能让 Esc 去改它
+      if (e.key === 'Escape' && nav && window.matchMedia('(max-width: 1023px), (max-height: 500px)').matches) { e.preventDefault(); setNav(false); return; }
       if (help && e.key === 'Escape') { e.preventDefault(); setHelp(false); return; }
       const hit = resolveShortcut(e);
       if (!hit) return;
