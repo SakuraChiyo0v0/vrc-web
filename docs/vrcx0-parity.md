@@ -431,3 +431,17 @@ VRCX-0 的「导出 / 迁移」在 Web 端的对应物：CSV 多表导出、全�
 | 213 | StatusBar 改 4 项「圆点 + 文字」（服务器状态 / 实时连接 / VRChat / SteamVR），绿灰只跟真实信号（`/api/status` 有数据、collector.connected、账号 last_ok_at < 10 分钟；SteamVR 采集未接入恒灰），右侧不放东西 | `statusbar.items 4/4`、`first_dot_x 10/10`、`item_gap 23/23`、`dot_w 8/8`、`labels 一致`、`left_aligned 337<=844` |
 | 214 | 收起/展开闭环断言进 `scripts/nav_coverage.mjs`（点收起 → 侧栏消失 + 展开按钮出现 + localStorage=1 → 点展开 → 侧栏回来） | nav_coverage **20/20**（18 页 + folder 3→0→3 + footer:collapse nav→no→nav） |
 | 215 | 回归 | chrome_parity **40/40（100%）**、structure_parity **31/31**、visual_parity **166/166（100%）**、`npm run build` ✓、`npm test` 40/40 |
+
+---
+
+# 第二十二轮：顶栏按真机量测收敛（2026-11-23）
+
+真机顶栏是页面无关的自定义标题栏：左「VRCX-0 + 帮助」，右「快速搜索（Ctrl K）+ 6 图标 + 3 窗口控制」，无 logo 方块/账号名/页面标题。上一轮量完（`docs/ref/topbar-measure.json`，16 张截图逐项一致），本轮落到实现并变成断言。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 221 | 品牌加 `letter-spacing .85` → w 49；帮助去 `px-1` → w 24；搜索块宽 225 去 `paddingLeft`（放大镜 x1110、占位 x1125、Ctrl K 右端 1335）；actions 左距 22、窗口控制左距 15、顶栏右 padding 8（真机量的是字形，按钮内留白已扣） | `topbar.brand_x 14/14`、`brand_w 49/49`、`help_x 88/88`、`search_icon_x 1110/1110`、`placeholder_x 1125/1125`、`actions_first_x 1361/1362`、`wc_first_x 1581/1582` |
+| 222 | Ctrl K 压到真机宽 34 且不破字号白名单：11px + `letter-spacing -1`（10px/9.5px 版本会把 `typography.px_sizes_allowed` 顶成含 10px，visual_parity 掉 24 项） | `topbar.shortcut_x 1301.3/1301`、`shortcut_w 33.8/34` |
+| 223 | `spec.chrome.topbar.search` 补 `placeholder_x / placeholder_w / shortcut_x1 / shortcut_w`（量测值，非自拟） | spec 与 `topbar-measure.json` 一致 |
+| 224 | `chrome_parity.mjs` 新增 20 项 topbar 断言（品牌/帮助/搜索/占位的 x+w、actions 数/首 x/pitch/gap、窗口控制数/首 x/pitch/right_pad、底色 rgb(245,245,245)、无可见页面标题）；窗口控制按 glyph（svg）量，`right_pad` 容忍 4px（真机字形宽 11-12，我们 svg 14） | chrome_parity **60/60（100%）** |
+| 225 | 回归 | `npm run build` ✓、`npm test` 40/40、nav_coverage **20/20**、structure_parity **31/31**、visual_parity **166/166（100%）** |
