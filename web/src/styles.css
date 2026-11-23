@@ -388,6 +388,7 @@ body {
     border: 1px solid var(--stroke-default); border-radius: 6px; min-width: 300px; color: var(--content-tertiary); }
   .feed-search input[data-testid='feed-search'] { flex: 1 1 auto; min-width: 0; background: transparent; border: 0; outline: 0; font-size: 12px; }
   .feed-search input[type='date'] { width: 108px; background: transparent; border: 0; color: var(--content-tertiary); font-size: 11px; }
+  .feed-tbl { table-layout: fixed; }
   .feed-tbl thead th { height: 44px; font-size: 12px; }
   .feed-tbl thead th, .feed-tbl tbody td { padding-left: 58px; padding-right: 12px; }
   .feed-tbl tbody td { height: 44px; font-size: 12px; }

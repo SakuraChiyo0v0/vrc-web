@@ -18,7 +18,7 @@ try { pw = req('playwright'); } catch { pw = createRequire(process.env.PW_HOME |
 const { chromium } = pw;
 
 const BASE = (process.argv[2] || process.env.VRC_BASE || 'http://127.0.0.1:8891').replace(/\/$/, '');
-await assertVrcServer(BASE);
+const roster = await assertVrcServer(BASE);
 const ROOT = process.env.VRC_ROOT || path.resolve(import.meta.dirname, '..');
 const SPEC = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/ref/vrcx0-spec.json'), 'utf8'));
 const EXE = process.env.CHROME_PATH
@@ -56,14 +56,25 @@ async function go(page, want = {}) {
     await p.waitForTimeout(2500);
     got = await probeMain(p);
   }
+  // 网格页首屏结果没回来（搜索页偶发空列表）同样不是结构差异：重载一次再量
+  if (want.grid_columns && got.gridCols !== want.grid_columns) {
+    await p.reload({ waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+    await p.waitForTimeout(2500);
+    got = await probeMain(p);
+  }
   return got;
 }
 
 for (const page of STRUCT_PAGES) {
   const want = SPEC.pages?.[page]?.structure;
   if (!want) { rows.push({ page, name: '结构记录', ours: '无', want: 'spec.pages 有 structure', ok: true }); continue; }
-  const got = await go(PAGE_ROUTES[page] || page, want);
-  rows.push(...structureRows(page, got, want, SPEC.pages?.[page]?.row_pitch));
+  // 空桶不出栏：真机基准截图里有收藏好友在线，账号没有收藏好友时不该要求「好友收藏」这栏
+  let w = want;
+  if (page === 'locations' && want.groups && !(roster.facets?.favorite > 0)) {
+    w = { ...want, groups: want.groups.filter((g) => g !== '好友收藏') };
+  }
+  const got = await go(PAGE_ROUTES[page] || page, w);
+  rows.push(...structureRows(page, got, w, SPEC.pages?.[page]?.row_pitch));
 }
 
 await browser.close();
