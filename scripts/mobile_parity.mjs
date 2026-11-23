@@ -82,18 +82,29 @@ const audit = (tab) => tab.evaluate(() => {
       if (fs > 0 && el.children.length === 0) minFont = Math.min(minFont, Math.round(fs * 10) / 10);
     }
     if (el.matches('button, a[href], [role="button"], input, select')) {
-      if (r.width > 0 && r.height > 0) tap.push({ h: Math.round(r.height), w: Math.round(r.width), t: (el.getAttribute('aria-label') || text).slice(0, 18) });
+      if (r.width > 0 && r.height > 0) {
+        const layer = el.closest('#vrc-topbar') ? 'topbar' : el.closest('.vrc-sidebar') ? 'nav'
+          : el.matches('.chip') ? 'chip' : el.matches('input, select') ? 'field' : 'rest';
+        tap.push({ h: Math.round(r.height), w: Math.round(r.width), t: (el.getAttribute('aria-label') || text).slice(0, 18), layer });
+      }
     }
   });
   const th = document.querySelector('thead');
   const tr = document.querySelector('tbody tr');
   const main = document.querySelector('main') || document.querySelector('#root > div > div:last-child');
+  const minOf = (layer) => {
+    const hs = tap.filter((x) => x.layer === layer).map((x) => x.h);
+    if (!hs.length) return null;
+    const m = Math.min(...hs);
+    return { h: m, worst: [...new Map(tap.filter((x) => x.layer === layer && x.h < m + 1).map((x) => [x.t, x])).values()].slice(0, 3) };
+  };
   return {
     vw,
     docScrollW: de.scrollWidth,
     offenders: offenders.slice(0, 6),
     minFont,
     tapMin: tap.length ? Math.min(...tap.map((x) => x.h)) : null,
+    layers: { topbar: minOf('topbar'), nav: minOf('nav'), chip: minOf('chip'), field: minOf('field'), rest: minOf('rest') },
     tapSmall: tap.filter((x) => x.h < 32).slice(0, 6),
     tapUnder44: [...new Map(tap.filter((x) => x.h < 44).map((x) => [x.t, x])).values()].slice(0, 10),
     theadDisplay: th ? getComputedStyle(th).display : null,
@@ -122,6 +133,14 @@ for (const page of PAGES) {
     if (a.tapSmall.length) console.log(`      过小触控: ${a.tapSmall.map((t) => `${t.t}(${t.h}px)`).join(' ')}`);
     // 390 竖屏（真机主档）列出仍 <44 的控件，作为是否继续抬阈值的依据
     if (width === 390 && a.tapUnder44.length) console.log(`      <44 触控: ${a.tapUnder44.map((t) => `${t.t}(${t.h}px)`).join(' ')}`);
+    if (width === 390) {
+      // 分层命中区（真机主档逐页）：chip 与表单控件 36、其余（表格单元格/行内链接）32；顶栏与抽屉导航另有 44 断言
+      const L = a.layers;
+      const fmt = (x) => (x ? `${x.h}px${x.worst.length ? ' ' + x.worst.map((t) => `${t.t}(${t.h})`).join(' ') : ''}` : 'n/a');
+      check(tag, 'chip 命中区≥36', fmt(L.chip), '≥36px', !L.chip || L.chip.h >= 36);
+      check(tag, '表单控件≥36', fmt(L.field), '≥36px', !L.field || L.field.h >= 36);
+      check(tag, '行内/表格目标≥32', fmt(L.rest), '≥32px', !L.rest || L.rest.h >= 32);
+    }
     check(tag, '最小字号≥11', `${a.minFont}px`, '≥11px', a.minFont >= 11);
     check(tag, '内容区非零宽', `${a.mainW}px`, '>0', a.mainW == null || a.mainW > 0);
     check(tag, '侧栏默认收起', `left=${a.sidebarLeft}`, '<0', a.sidebarLeft == null || a.sidebarLeft < 0);
@@ -244,6 +263,34 @@ for (const [w, h, vh] of [[390, 844, 560], [844, 390, 300]]) {
   });
   check('drawer@390', '抽屉导航 ≥44/40', `顶层 ${navTap.n} 项 ${navTap.top}px / 二级 ${navTap.ns} 项 ${navTap.sub}px`, '顶层≥44 二级≥40',
     (navTap.top == null || navTap.top >= 44) && (navTap.sub == null || navTap.sub >= 40));
+  // 抽屉导航文字可读性：13px/12px 灰字在 245 底上实测 6.73:1，锁 ≥4.5:1 防回退
+  const contrast = await tab.evaluate(() => {
+    const cv = document.createElement('canvas'); cv.width = cv.height = 1;
+    const ctx = cv.getContext('2d', { willReadFrequently: true });
+    const rgba = (c) => { ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = '#000'; ctx.fillStyle = c; ctx.fillRect(0, 0, 1, 1); const d = ctx.getImageData(0, 0, 1, 1).data; return { r: d[0], g: d[1], b: d[2], a: d[3] / 255 }; };
+    const lum = ({ r, g, b }) => [r, g, b].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); })
+      .reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0);
+    const bgOf = (el) => {
+      const layers = [];
+      for (let n = el; n; n = n.parentElement) {
+        const c = getComputedStyle(n).backgroundColor;
+        if (!c || c === 'rgba(0, 0, 0, 0)') continue;
+        const x = rgba(c);
+        if (x.a > 0) layers.push(x);
+      }
+      let o = { r: 255, g: 255, b: 255 };
+      for (const x of layers.reverse()) o = { r: x.r * x.a + o.r * (1 - x.a), g: x.g * x.a + o.g * (1 - x.a), b: x.b * x.a + o.b * (1 - x.a) };
+      return o;
+    };
+    const items = [...document.querySelectorAll('.vrc-sidebar .nav-item')].filter((n) => n.getBoundingClientRect().width > 0);
+    const rs = items.map((n) => {
+      const L1 = lum(rgba(getComputedStyle(n).color)), L2 = lum(bgOf(n));
+      return Math.round(((Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05)) * 100) / 100;
+    });
+    return { min: Math.min(...rs), n: items.length, fontMin: Math.min(...items.map((n) => parseFloat(getComputedStyle(n).fontSize))) };
+  });
+  check('drawer@390', '导航文字对比度≥4.5:1', `${contrast.min}:1（${contrast.n} 项，最小字号 ${contrast.fontMin}px）`, '≥4.5:1',
+    contrast.min >= 4.5);
   check('drawer@390', '✕ 关闭抽屉', `left=${closed}`, '<0', closed < 0);
   await tab.close();
 }

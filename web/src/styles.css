@@ -1428,6 +1428,11 @@ html[data-phone='1'] #root {
   /* 文本搜索框原来靠 .inp 的 26 定高，min-height 会被 height 压回 26，这里显式抬到 32 */
   .inp { height: 32px; }
   input[type='range'] { height: 32px; }
+  /* 分层命中区（本轮定档）：顶栏/抽屉导航 44、行内 chip 与表单控件 36、表格单元格/行内链接 32。
+     36 档留给斜向拇指点选（chip 32 实测难中），表格行内仍按 32 折中避免卡片被撑散。 */
+  .chip, select.chip { min-height: 36px; }
+  input:not([type='checkbox']):not([type='radio']), select { min-height: 36px; }
+  .inp { height: 36px; }
   .feed-search { min-height: 32px; }
   /* 工具栏搜索框桌面写死 min-width 300，360 视口会顶出屏幕 → 允许换行、可压缩 */
   .feed-toolbar { flex-wrap: wrap; height: auto; min-height: 54px; padding: 10px 16px; row-gap: 8px; }
