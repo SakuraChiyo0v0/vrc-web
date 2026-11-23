@@ -72,6 +72,7 @@ export default function App() {
   const [nav, setNav] = useState(false);
   const [palette, setPalette] = useState(false);
   const [help, setHelp] = useState(false);
+  const [roster, setRoster] = useState(() => localStorage.getItem('vrc-roster-open') === '1');
   const [theme, toggleTheme] = useTheme();
   const Page = PAGES[page] ?? PAGES.friends;
 
@@ -89,6 +90,7 @@ export default function App() {
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
+  useEffect(() => { localStorage.setItem('vrc-roster-open', roster ? '1' : '0'); }, [roster]);
   // 状态必须自动刷新：否则采集器重连后页面还挂着「离线」，看着像故障
   const { data: status } = useQuery({ queryKey: ['status'], queryFn: () => api('status'), refetchInterval: 15_000, refetchOnWindowFocus: true });
 
@@ -111,66 +113,87 @@ export default function App() {
 
   return (
     <DrawerProvider>
-      <div className="flex h-full" style={{ background: 'var(--surface-canvas)' }}>
-        {/* 33 <768px：侧栏收成抽屉，页头汉堡开，选完页面自动关 */}
-        {nav ? (
-          <button
-            className="fixed inset-0 z-40 cursor-default border-0 md:hidden"
-            style={{ background: 'rgb(0 0 0 / 0.28)' }}
-            aria-label="关闭菜单"
-            onClick={() => setNav(false)}
-          />
-        ) : null}
-        <Sidebar
-          page={page}
-          onNavigate={(p) => { setPage(p); setNav(false); }}
-          me={status?.account}
-          open={nav}
-          onClose={() => setNav(false)}
-        />
-
-        <main className="flex min-w-0 flex-1 flex-col">
-          <header
-            className="flex h-14 shrink-0 items-center justify-between gap-3 border-b px-3 sm:px-5"
-            style={{ borderColor: 'var(--stroke-subtle)' }}
+      {/* 184 外壳按真机量测（docs/ref/vrcx0-spec.json → chrome）：
+          通栏顶栏 h39 / 侧栏 277 / 内容面板贴侧栏、右边距 11 / 底部状态栏 h35 */}
+      <div className="flex h-full flex-col" style={{ background: 'var(--surface-canvas)' }}>
+        <header
+          id="vrc-topbar"
+          className="vrc-topbar flex h-[39px] shrink-0 items-center gap-2 border-b px-2"
+          style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-shell)' }}
+        >
+          <button className="chip md:hidden" onClick={() => setNav(true)} aria-label="菜单">☰</button>
+          <div
+            className="grid size-6 shrink-0 place-items-center rounded-[7px] text-[11px] font-medium"
+            style={{ background: 'var(--surface-raised)', border: '1px solid var(--stroke-subtle)' }}
           >
-            <div className="flex min-w-0 items-center gap-2">
-              <button className="chip md:hidden" onClick={() => setNav(true)} aria-label="菜单">☰</button>
-              <div className="flex items-center gap-2">
-                <h1 className="whitespace-nowrap text-[14px] font-medium leading-tight">{TITLES[page]?.[0] ?? ''}</h1>
-              </div>
-              <p className="hidden truncate text-[11px] text-fg3 sm:block">{TITLES[page]?.[1] ?? ''}</p>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
-              <button onClick={() => setPalette(true)} className="chip" title="全局搜索（⌘K）">
-                <span className="opacity-60">⌕</span><span className="hidden sm:inline"> 搜索</span>
-                <kbd className="ml-1 hidden text-[11px] opacity-50 sm:inline">⌘K</kbd>
-              </button>
-              <button onClick={() => setHelp(true)} className="chip" title="快捷键（?）">
-                <span className="opacity-60">?</span>
-              </button>
-              <StatusBar status={status} />
-              <button onClick={toggleTheme} className="chip" title="切换主题">
-                {theme === 'light' ? '◐' : '☀'}
-              </button>
-            </div>
-          </header>
-
-          {/* 65 主内容 workspace：1px ring + 顶部内高光，卡片不再裸贴页面 */}
-          {/* 115 断网提示 + 页面级错误边界：换页自动重挂载，错误不串页 */}
-          <OfflineBanner />
-          <div className="workspace min-h-0 flex-1 overflow-auto">
-            <ErrorBoundary key={page}>
-              <Suspense fallback={<div className="p-4"><Skeleton rows={6} cols={4} /></div>}>
-                <Page onNavigate={setPage} />
-              </Suspense>
-            </ErrorBoundary>
+            V
           </div>
-        </main>
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="max-w-[140px] truncate text-[12px] font-medium">{status?.account?.display_name ?? 'VRC'}</span>
+            <span className="hidden h-3 w-px sm:block" style={{ background: 'var(--stroke-subtle)' }} />
+            <h1 className="whitespace-nowrap text-[13px] font-medium leading-tight">{TITLES[page]?.[0] ?? ''}</h1>
+            <p className="hidden truncate text-[11px] text-fg3 lg:block">{TITLES[page]?.[1] ?? ''}</p>
+          </div>
 
-        {/* 76 右栏常驻好友面板：好友页自身已经是全量列表，不重复显示 */}
-        {page !== 'friends' ? <RosterPanel /> : null}
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
+            <button onClick={() => setPalette(true)} className="chip" title="全局搜索（⌘K）">
+              <span className="opacity-60">⌕</span><span className="hidden sm:inline"> 搜索</span>
+              <kbd className="ml-1 hidden text-[11px] opacity-50 sm:inline">⌘K</kbd>
+            </button>
+            <button
+              onClick={() => setRoster((v) => !v)}
+              className="chip hidden md:inline-flex"
+              data-active={roster ? 'true' : undefined}
+              title="右栏好友面板"
+            >
+              好友栏
+            </button>
+            <button onClick={() => setHelp(true)} className="chip" title="快捷键（?）">
+              <span className="opacity-60">?</span>
+            </button>
+            <button onClick={toggleTheme} className="chip" title="切换主题">
+              {theme === 'light' ? '◐' : '☀'}
+            </button>
+          </div>
+        </header>
+
+        <div className="flex min-h-0 flex-1">
+          {/* 33 <768px：侧栏收成抽屉，顶栏汉堡开，选完页面自动关 */}
+          {nav ? (
+            <button
+              className="fixed inset-0 z-40 cursor-default border-0 md:hidden"
+              style={{ background: 'rgb(0 0 0 / 0.28)' }}
+              aria-label="关闭菜单"
+              onClick={() => setNav(false)}
+            />
+          ) : null}
+          <Sidebar
+            page={page}
+            onNavigate={(p) => { setPage(p); setNav(false); }}
+            me={status?.account}
+            open={nav}
+            onClose={() => setNav(false)}
+          />
+
+          <main className="flex min-w-0 flex-1 flex-col">
+            {/* 65 主内容 workspace：1px ring + 顶部内高光，卡片不再裸贴页面 */}
+            {/* 115 断网提示 + 页面级错误边界：换页自动重挂载，错误不串页 */}
+            <OfflineBanner />
+            <div className="workspace min-h-0 flex-1 overflow-auto">
+              <ErrorBoundary key={page}>
+                <Suspense fallback={<div className="p-4"><Skeleton rows={6} cols={4} /></div>}>
+                  <Page onNavigate={setPage} />
+                </Suspense>
+              </ErrorBoundary>
+            </div>
+          </main>
+
+          {/* 186 右栏好友面板默认收起（真机 1700 宽下没有常驻右栏，内容面板直接顶到右边距 11px），
+              顶栏「好友栏」开关记住偏好；好友页自身已是全量列表，不重复显示 */}
+          {roster && page !== 'friends' ? <RosterPanel /> : null}
+        </div>
+
+        <StatusBar status={status} theme={theme} page={page} />
       </div>
 
       <CommandPalette

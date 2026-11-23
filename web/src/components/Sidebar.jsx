@@ -75,23 +75,14 @@ function PinnedWorlds({ onNavigate }) {
 export default function Sidebar({ page, onNavigate, me, open = false, onClose }) {
   return (
     <aside
-      className="vrc-sidebar flex w-52 shrink-0 flex-col border-r"
+      className="vrc-sidebar flex w-[214px] shrink-0 flex-col border-r md:w-[277px]"
       data-open={open ? 'true' : 'false'}
       style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-shell)' }}
     >
-      <div className="flex h-14 items-center gap-2.5 px-4">
-        <div
-          className="grid size-7 place-items-center rounded-[8px] text-[12px] font-medium"
-          style={{ background: 'var(--surface-raised)', border: '1px solid var(--stroke-subtle)' }}
-        >
-          V
-        </div>
-        <div className="min-w-0">
-          <div className="truncate text-[12px] font-medium">{me?.display_name ?? 'VRC'}</div>
-          <div className="truncate text-[11px] text-fg3">self-hosted panel</div>
-        </div>
-        {/* 33 只在移动端抽屉里出现 */}
-        <button className="vrc-sidebar-close chip ml-auto" onClick={onClose} aria-label="关闭菜单">✕</button>
+      {/* 184 品牌与账号已上移到通栏顶栏（真机侧栏从顶栏下方开始，头部只有导航） */}
+      <div className="flex h-9 items-center justify-between px-3 md:hidden">
+        <span className="truncate text-[12px] font-medium">{me?.display_name ?? 'VRC'}</span>
+        <button className="vrc-sidebar-close chip" onClick={onClose} aria-label="关闭菜单">✕</button>
       </div>
 
       <nav className="flex flex-1 flex-col gap-5 px-2.5 py-2">

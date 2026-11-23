@@ -1,0 +1,123 @@
+{
+ "_note": "chrome_parity.mjs：视口 1688×1028（真机 inner），逐项比 spec.chrome，容差 ±2px（content.h 4px 见脚本头注释）",
+ "base": "http://127.0.0.1:8899",
+ "viewport": {
+  "w": 1688,
+  "h": 1028
+ },
+ "score": 100,
+ "rows": [
+  {
+   "metric": "topbar.h",
+   "ours": 39,
+   "ref": 39,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "topbar.y",
+   "ours": 0,
+   "ref": 2,
+   "diff": -2,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "sidebar.x",
+   "ours": 0,
+   "ref": 0,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "sidebar.w",
+   "ours": 277,
+   "ref": 277,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "sidebar.y",
+   "ours": 39,
+   "ref": 41,
+   "diff": -2,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "statusbar.h",
+   "ours": 35,
+   "ref": 35,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "content.x",
+   "ours": 277,
+   "ref": 277,
+   "diff": 0,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "content.y",
+   "ours": 39,
+   "ref": 41,
+   "diff": -2,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "content.w",
+   "ours": 1400,
+   "ref": 1398,
+   "diff": 2,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "content.h",
+   "ours": 954,
+   "ref": 950,
+   "diff": 4,
+   "tol": 4,
+   "ok": true
+  },
+  {
+   "metric": "content.right_gap",
+   "ours": 11,
+   "ref": 13,
+   "diff": -2,
+   "tol": 2,
+   "ok": true
+  },
+  {
+   "metric": "shell.fill",
+   "ours": 1028,
+   "ref": 1028,
+   "diff": 0,
+   "tol": 0,
+   "ok": true
+  },
+  {
+   "metric": "content.flush_sidebar",
+   "ours": 277,
+   "ref": 277,
+   "diff": 0,
+   "tol": 1,
+   "ok": true
+  },
+  {
+   "metric": "roster.default_off",
+   "ours": "closed",
+   "ref": "closed",
+   "diff": "-",
+   "tol": "-",
+   "ok": true
+  }
+ ]
+}
