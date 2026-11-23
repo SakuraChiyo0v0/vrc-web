@@ -3,12 +3,12 @@
  *
  *   node scripts/mobile_parity.mjs [baseUrl] [--all]
  *
- * 覆盖 STRUCT_PAGES + friends（14 页）× 7 个移动视口（360/375/390/414/430 竖屏 + 844×390/932×430 横屏），
- * 外加 767 / 768 与 900×500 / 900×501 两对「断点两侧」检查（窄/矮 → 移动形态，否则桌面形态）。
+ * 覆盖 STRUCT_PAGES + friends（14 页）× 9 个移动视口（360/375/390/414/430 竖屏 + 844×390/932×430 横屏 + 768×1024/820×1180 平板竖屏），
+ * 外加 1023 / 1024 与 900×500 / 900×501 两对「断点两侧」检查（窄≤1023/矮≤500 → 移动形态，否则桌面形态）。
  *
  * 每页断言：
  *   1) 无横向溢出：documentElement.scrollWidth ≤ innerWidth+1，且列出右溢元素
- *   2) 表格卡片化（≤767）：thead display:none、tbody tr display:flex/flex-direction:column
+ *   2) 表格卡片化（≤1023 或矮≤500）：thead display:none、tbody tr display:flex/flex-direction:column
  *      ≥768：thead 可见、tbody tr 不是 flex 卡片
  *   3) 触控目标：所有可见 button/a/[role=button] 高度 ≥ 28（报告最小值与违规清单）
  *   4) 字号：可见文本最小字号 ≥ 11（低于 11 视为移动端可读性破线）
@@ -32,8 +32,10 @@ const EXE = process.env.CHROME_PATH
 
 const PAGES = ['friends', ...STRUCT_PAGES.filter((p) => p !== 'locations')];
 // 竖屏 360/375/390/414/430 + 手机横屏 844×390 / 932×430。
-// 横屏宽 >767，命中的是「矮视口」那一支移动规则（styles.css: max-width:767px, max-height:500px）。
-const WIDTHS = [[360, 800], [375, 667], [390, 844], [414, 896], [430, 932], [844, 390], [932, 430]];
+// 横屏宽 >767（≤1023 仍在移动档），命中的是「矮视口」那一支移动规则（styles.css: max-width:767px, max-height:500px）。
+const WIDTHS = [[360, 800], [375, 667], [390, 844], [414, 896], [430, 932], [844, 390], [932, 430],
+  // 平板竖屏（iPad 768×1024 / iPad Air 820×1180）：曾走桌面形态，侧栏 277 + main 491 时 feed/friendlist 表格被 clip 却滚不出来
+  [768, 1024], [820, 1180]];
 
 await assertVrcServer(BASE);
 
@@ -124,7 +126,7 @@ for (const page of PAGES) {
   }
 }
 
-// 断点两侧：767 移动形态 / 768 桌面形态（只测一页，形态判定同页）
+// 断点两侧：1023 移动 / 1024 桌面；矮档 500 移动 / 501 桌面（宽取 1024，避免被窄档同时命中）
 // 表格可能还没渲染出来（feed 首屏要等接口），先等 thead / tbody tr 出现；仍无则退到 friendlist 重开一次。
 async function openWithTable(p, width, height) {
   let tab = await open(p, width, height);
@@ -135,7 +137,7 @@ async function openWithTable(p, width, height) {
   return tab;
 }
 
-for (const [w, h, mobile] of [[767, 900, true], [768, 900, false], [900, 500, true], [900, 501, false]]) {
+for (const [w, h, mobile] of [[1023, 900, true], [1024, 900, false], [1024, 500, true], [1024, 501, false]]) {
   const tab = await openWithTable('feed', w, h);
   const a = await audit(tab);
   check(`breakpoint@${w}x${h}`, '断点形态', `thead=${a.theadDisplay} tr=${a.trDisplay}`, mobile ? 'thead=none tr=flex' : 'thead=table-row 不是 flex',

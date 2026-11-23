@@ -2,10 +2,10 @@
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
-    // 移动形态 = 窄 (≤767) 或矮 (≤500，手机横屏 844×390 一类)。
+    // 移动形态 = 窄 (≤1023，手机 + iPad 竖屏) 或矮 (≤500，手机横屏 844×390 一类)。
     // 用 raw 让 md: 前缀跟着 styles.css 的同一条件走，否则横屏会出现「抽屉侧栏 + 桌面顶栏（☰ 被隐藏）」的死锁。
     screens: {
-      md: { raw: '(min-width: 768px) and (min-height: 501px)' }
+      md: { raw: '(min-width: 1024px) and (min-height: 501px)' }
     },
     extend: {
       colors: {

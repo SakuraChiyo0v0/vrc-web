@@ -91,7 +91,7 @@ export default function Sidebar({ page, onNavigate, me, open = false, onClose, o
     if (!open) return;
     const el = ref.current;
     if (!el) return;
-    if (!window.matchMedia('(max-width: 767px), (max-height: 500px)').matches) return;
+    if (!window.matchMedia('(max-width: 1023px), (max-height: 500px)').matches) return;
     const prev = document.activeElement;
     const items = () => [...el.querySelectorAll('button, a[href], input, select, [tabindex]:not([tabindex="-1"])')]
       .filter((n) => n.getBoundingClientRect().width > 0 && !n.hasAttribute('disabled'));
