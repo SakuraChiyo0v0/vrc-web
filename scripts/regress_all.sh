@@ -32,11 +32,25 @@ fi
 
 FAILED=()
 SKIPPED=()
+. "$ROOT/scripts/lib/seg_retry.sh"
+
+# 宿主内存紧张时 Chromium 会被 OOM 杀掉（日志只有一行 Killed）：等内存缓过来再起，最多等 120s
+wait_mem() {
+  local need="${REGRESS_MIN_MB:-600}" i=0 av
+  while [ $i -lt 24 ]; do
+    av=$(awk '/MemAvailable/{print int($2/1024)}' /proc/meminfo)
+    [ "$av" -ge "$need" ] && return 0
+    sleep 5; i=$((i + 1))
+  done
+  echo "MEM LOW 可用 ${av}MB < ${need}MB，仍继续（段内可能被 OOM 杀掉后重试）"
+}
+
 run() {  # run <名字> <命令…>   exit 3 = 本环境不适用（如视觉基准在真实库上），记 SKIP 不算失败
   local name="$1"; shift
   local log="$OUT/$name.log"
   printf '── %-16s' "$name"
-  "$@" >"$log" 2>&1
+  wait_mem
+  seg_retry "$log" "$@"
   local rc=$?
   if [ $rc -eq 0 ]; then
     echo "OK   $(tail -1 "$log" | cut -c1-110)"
