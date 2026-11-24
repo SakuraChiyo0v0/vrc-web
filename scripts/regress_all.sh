@@ -10,6 +10,13 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 OUT="$ROOT/cache/regress"; mkdir -p "$OUT"
 
+# 单实例锁：并发跑两个 regress 会互抢 Chromium（7G 容器里 frame/grid 直接崩、mobile 量到无样式的 36/40px 假红）
+exec 9>"$OUT/.lock"
+if ! flock -n 9; then
+  echo "REGRESS BUSY 已有 regress 在跑（锁 $OUT/.lock，看 cache/regress_all_*.log 最新那份），本实例退出以免抢 Chromium"
+  exit 0
+fi
+
 BASE="${1:-http://127.0.0.1:8891}"
 STARTED=""
 cleanup() { [ -n "$STARTED" ] && kill "$STARTED" 2>/dev/null; }
