@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T06:51:20.745Z",
+ "at": "2026-11-24T06:57:38.947Z",
  "base": "http://127.0.0.1:8891",
- "pass": 1020,
- "total": 1020,
+ "pass": 1059,
+ "total": 1059,
  "rows": [
   {
    "view": "1024x600",
@@ -4233,6 +4233,27 @@
    "ok": true
   },
   {
+   "view": "1024x600",
+   "name": "dcoll.same_width_as_light",
+   "ours": "1011/1011 roster0/0",
+   "want": "面板宽与右栏宽均等于浅色收起态",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.friends.content_w",
+   "ours": 1011,
+   "want": "≥720",
+   "ok": true
+  },
+  {
    "view": "1024x768",
    "name": "dark.theme",
    "ours": "dark",
@@ -4594,6 +4615,27 @@
    "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.same_width_as_light",
+   "ours": "1011/1011 roster0/0",
+   "want": "面板宽与右栏宽均等于浅色收起态",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.friends.content_w",
+   "ours": 1011,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -4961,6 +5003,27 @@
    "ok": true
   },
   {
+   "view": "1100x800",
+   "name": "dcoll.same_width_as_light",
+   "ours": "1087/1087 roster0/0",
+   "want": "面板宽与右栏宽均等于浅色收起态",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.friends.content_w",
+   "ours": 1087,
+   "want": "≥720",
+   "ok": true
+  },
+  {
    "view": "1280x600",
    "name": "dark.theme",
    "ours": "dark",
@@ -5322,6 +5385,27 @@
    "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.same_width_as_light",
+   "ours": "1267/1267 roster0/0",
+   "want": "面板宽与右栏宽均等于浅色收起态",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.friends.content_w",
+   "ours": 1267,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -5689,6 +5773,27 @@
    "ok": true
   },
   {
+   "view": "1280x800",
+   "name": "dcoll.same_width_as_light",
+   "ours": "1267/1267 roster0/0",
+   "want": "面板宽与右栏宽均等于浅色收起态",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.friends.content_w",
+   "ours": 1267,
+   "want": "≥720",
+   "ok": true
+  },
+  {
    "view": "1366x768",
    "name": "dark.theme",
    "ours": "dark",
@@ -6050,6 +6155,27 @@
    "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.same_width_as_light",
+   "ours": "1353/1353 roster0/0",
+   "want": "面板宽与右栏宽均等于浅色收起态",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.friends.content_w",
+   "ours": 1353,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -6417,6 +6543,55 @@
    "ok": true
   },
   {
+   "view": "1440x900",
+   "name": "dcoll.same_width_as_light",
+   "ours": "1427/1427 roster353/353",
+   "want": "面板宽与右栏宽均等于浅色收起态",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.roster.btn",
+   "ours": "present",
+   "want": "present",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.roster.off",
+   "ours": "hidden content 1074→1427 / roster353 ws1427 ovf0",
+   "want": "hidden 且内容列 += 右栏宽、workspace 不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.roster.restore",
+   "ours": "content 1074/1074 shown w353",
+   "want": "content 回1074 且右栏353 回来",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.roster.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.friends.content_w",
+   "ours": 1427,
+   "want": "≥720",
+   "ok": true
+  },
+  {
    "view": "1600x900",
    "name": "dark.theme",
    "ours": "dark",
@@ -6781,6 +6956,55 @@
    "ok": true
   },
   {
+   "view": "1600x900",
+   "name": "dcoll.same_width_as_light",
+   "ours": "1587/1587 roster353/353",
+   "want": "面板宽与右栏宽均等于浅色收起态",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.roster.btn",
+   "ours": "present",
+   "want": "present",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.roster.off",
+   "ours": "hidden content 1234→1587 / roster353 ws1587 ovf0",
+   "want": "hidden 且内容列 += 右栏宽、workspace 不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.roster.restore",
+   "ours": "content 1234/1234 shown w353",
+   "want": "content 回1234 且右栏353 回来",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.roster.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.friends.content_w",
+   "ours": 1587,
+   "want": "≥720",
+   "ok": true
+  },
+  {
    "view": "1700x1040",
    "name": "dark.theme",
    "ours": "dark",
@@ -7142,6 +7366,55 @@
    "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.same_width_as_light",
+   "ours": "1687/1687 roster353/353",
+   "want": "面板宽与右栏宽均等于浅色收起态",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.roster.btn",
+   "ours": "present",
+   "want": "present",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.roster.off",
+   "ours": "hidden content 1334→1687 / roster353 ws1687 ovf0",
+   "want": "hidden 且内容列 += 右栏宽、workspace 不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.roster.restore",
+   "ours": "content 1334/1334 shown w353",
+   "want": "content 回1334 且右栏353 回来",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.roster.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.friends.content_w",
+   "ours": 1687,
+   "want": "≥720",
    "ok": true
   }
  ]

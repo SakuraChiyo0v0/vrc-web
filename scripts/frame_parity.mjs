@@ -33,6 +33,8 @@
  *      收起态跑两遍：浅色收起 + 深色收起（组合态），主题与折叠互不影响几何。
  *  11) 收起 × 右栏开关（≥1440）：右栏是 .workspace 内部的 flex 列，关掉它面板本身不变宽，
  *      内容列必须正好多出右栏宽（353）、无横向溢出，再开回来内容列/右栏宽度复原。
+ *      浅色收起与深色收起各跑一遍；收起态 friends 页则要右栏不渲染、内容 ≥720、无溢出。
+ *  12) 主题不改宽度：同一视口浅色收起与深色收起的面板宽、右栏宽必须相等。
  *
  * 任一 FAIL 退出码 1；全 PASS 打印 FRAME OK，并把结果写 docs/ref/frame-parity.json。
  */
@@ -59,6 +61,8 @@ const VIEWS = [[1024, 600], [1024, 768], [1100, 800], [1280, 600], [1280, 800], 
 const PAGES = ['friends', 'feed', 'friendlist', 'gamelog', 'worlds', 'settings'];
 
 const rows = [];
+// 浅色收起态的内容宽/右栏宽（深色收起轮要用它比「主题不改宽度」）
+const lightColl = new Map();
 const check = (view, name, ours, want, ok) => {
   rows.push({ view, name, ours, want, ok });
   if (!ok) console.log(`  ✗ ${view} ${name}: 我们 ${ours} / 期望 ${want}`);
@@ -296,6 +300,60 @@ const checkCollapsedPages = async (tab, view, prefix, baseline) => {
   }
 };
 
+// 收起 × 右栏开关（≥1440 才有右栏）：右栏是 .workspace 内部的 flex 列，所以关掉它
+// .workspace 本身不变宽（仍是整块面板），让出来的是**内容列**——内容列必须正好多出一个右栏宽、
+// 且不撑出横向溢出；再开回来内容列/右栏宽度复原（收起/右栏两个开关不该互相打架）。
+// 浅色收起 / 深色收起共用这一套（主题不该改变让宽结果）。
+const checkRosterCombo = async (tab, view, p) => {
+  const combo = await tab.evaluate(async () => {
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const me = () => ({
+      ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width),
+      content: Math.round(document.querySelector('.workspace > div')?.getBoundingClientRect().width ?? 0),
+      roster: !!document.querySelector('.roster-rail'),
+      rosterW: Math.round(document.querySelector('.roster-rail')?.getBoundingClientRect().width ?? 0),
+      ovf: document.documentElement.scrollWidth - window.innerWidth
+    });
+    const btn = document.querySelector('#vrc-topbar .roster-toggle');
+    if (!btn) return { btn: false };
+    const a = me();
+    btn.click();
+    await wait(350);
+    const off = me();
+    btn.click();
+    await wait(350);
+    const on = me();
+    return { btn: true, a, off, on, asideGone: !document.querySelector('aside.vrc-sidebar') };
+  });
+  check(view, `${p}roster.btn`, combo.btn ? 'present' : 'missing', 'present', combo.btn === true);
+  if (!combo.btn) return;
+  check(view, `${p}roster.off`,
+    `${combo.off.roster ? 'shown' : 'hidden'} content ${combo.a.content}→${combo.off.content} / roster${combo.a.rosterW} ws${combo.off.ws} ovf${combo.off.ovf}`,
+    'hidden 且内容列 += 右栏宽、workspace 不变、无溢出',
+    !combo.off.roster && Math.abs(combo.off.content - (combo.a.content + combo.a.rosterW)) <= 2
+      && combo.off.ws === combo.a.ws && combo.off.ovf <= 0);
+  check(view, `${p}roster.restore`,
+    `content ${combo.on.content}/${combo.a.content} ${combo.on.roster ? 'shown' : 'hidden'} w${combo.on.rosterW}`,
+    `content 回${combo.a.content} 且右栏${combo.a.rosterW} 回来`,
+    combo.on.roster && combo.on.content === combo.a.content && combo.on.rosterW === combo.a.rosterW);
+  check(view, `${p}roster.aside_gone`, combo.asideGone ? 'gone' : 'back', 'gone', combo.asideGone);
+};
+
+// 收起态 friends 页：右栏本身就不该渲染（App.jsx roster && page!=='friends'），
+// 内容也不能因为没了侧栏而宽度塌掉（≥720 是外壳契约，9 视口全跑）。
+const checkCollapsedFriends = async (tab, view, p) => {
+  await gotoVrc(tab, `${PAGE}#/friends`);
+  await tab.waitForTimeout(700);
+  const fd = await tab.evaluate(() => ({
+    roster: !!document.querySelector('.roster-rail'),
+    ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width),
+    asideGone: !document.querySelector('aside.vrc-sidebar'),
+    ovf: document.documentElement.scrollWidth - window.innerWidth
+  }));
+  check(view, `${p}friends.roster`, fd.roster ? 'rendered' : 'not rendered', 'not rendered', !fd.roster);
+  check(view, `${p}friends.content_w`, fd.ws, '≥720', fd.ws >= 720 && fd.asideGone && fd.ovf <= 0);
+};
+
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 
 // ── 第一轮：浅色 + 侧栏展开 → 收起（同一页面顺序做，收起态不必重载）──────────
@@ -352,57 +410,9 @@ for (const [width, height] of VIEWS) {
   const lc = await tab.evaluate(measureCollapsed);
   assertCollapsed(view, lc, width, 'lcoll.', got.workspace.x - lc.workspace.x);
 
-  // 收起 × 右栏开关（≥1440 才有右栏）：右栏是 .workspace 内部的 flex 列，所以关掉它
-  // .workspace 本身不变宽（仍是整块面板），让出来的是**内容列**——内容列必须正好多出一个右栏宽、
-  // 且不撑出横向溢出；再开回来内容列/右栏宽度复原（收起/右栏两个开关不该互相打架）。
-  if (width >= 1440) {
-    const combo = await tab.evaluate(async () => {
-      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-      const me = () => ({
-        ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width),
-        content: Math.round(document.querySelector('.workspace > div')?.getBoundingClientRect().width ?? 0),
-        roster: !!document.querySelector('.roster-rail'),
-        rosterW: Math.round(document.querySelector('.roster-rail')?.getBoundingClientRect().width ?? 0),
-        ovf: document.documentElement.scrollWidth - window.innerWidth
-      });
-      const btn = document.querySelector('#vrc-topbar .roster-toggle');
-      if (!btn) return { btn: false };
-      const a = me();
-      btn.click();
-      await wait(350);
-      const off = me();
-      btn.click();
-      await wait(350);
-      const on = me();
-      return { btn: true, a, off, on, asideGone: !document.querySelector('aside.vrc-sidebar') };
-    });
-    check(view, 'lcoll.roster.btn', combo.btn ? 'present' : 'missing', 'present', combo.btn === true);
-    if (combo.btn) {
-      check(view, 'lcoll.roster.off',
-        `${combo.off.roster ? 'shown' : 'hidden'} content ${combo.a.content}→${combo.off.content} / roster${combo.a.rosterW} ws${combo.off.ws} ovf${combo.off.ovf}`,
-        'hidden 且内容列 += 右栏宽、workspace 不变、无溢出',
-        !combo.off.roster && Math.abs(combo.off.content - (combo.a.content + combo.a.rosterW)) <= 2
-          && combo.off.ws === combo.a.ws && combo.off.ovf <= 0);
-      check(view, 'lcoll.roster.restore',
-        `content ${combo.on.content}/${combo.a.content} ${combo.on.roster ? 'shown' : 'hidden'} w${combo.on.rosterW}`,
-        `content 回${combo.a.content} 且右栏${combo.a.rosterW} 回来`,
-        combo.on.roster && combo.on.content === combo.a.content && combo.on.rosterW === combo.a.rosterW);
-      check(view, 'lcoll.roster.aside_gone', combo.asideGone ? 'gone' : 'back', 'gone', combo.asideGone);
-    }
-  }
-
-  // 收起态 friends 页：右栏本身就不该渲染（App.jsx roster && page!=='friends'），
-  // 内容也不能因为没了侧栏而宽度塌掉（≥720 是外壳契约）。
-  await gotoVrc(tab, `${PAGE}#/friends`);
-  await tab.waitForTimeout(700);
-  const fd = await tab.evaluate(() => ({
-    roster: !!document.querySelector('.roster-rail'),
-    ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width),
-    asideGone: !document.querySelector('aside.vrc-sidebar'),
-    ovf: document.documentElement.scrollWidth - window.innerWidth
-  }));
-  check(view, 'lcoll.friends.roster', fd.roster ? 'rendered' : 'not rendered', 'not rendered', !fd.roster);
-  check(view, 'lcoll.friends.content_w', fd.ws, '≥720', fd.ws >= 720 && fd.asideGone && fd.ovf <= 0);
+  if (width >= 1440) await checkRosterCombo(tab, view, 'lcoll.');
+  await checkCollapsedFriends(tab, view, 'lcoll.');
+  lightColl.set(view, { ws: Math.round(lc.workspace.w), rosterW: Math.round(lc.roster?.w ?? 0) });
   await tab.close();
 }
 
@@ -442,6 +452,17 @@ for (const [width, height] of VIEWS) {
   const dc = await tab.evaluate(measureCollapsed);
   check(view, 'dcoll.theme', dc.theme, 'dark', dc.theme === 'dark');
   assertCollapsed(view, dc, width, 'dcoll.', got.workspace.x - dc.workspace.x);
+
+  // 主题不该改宽度：同一视口浅色收起与深色收起的内容面板宽必须一致（右栏宽同理）
+  const light = lightColl.get(view);
+  check(view, 'dcoll.same_width_as_light',
+    `${Math.round(dc.workspace.w)}/${light?.ws} roster${Math.round(dc.roster?.w ?? 0)}/${light?.rosterW}`,
+    '面板宽与右栏宽均等于浅色收起态',
+    !!light && Math.round(dc.workspace.w) === light.ws && Math.round(dc.roster?.w ?? 0) === light.rosterW);
+
+  // 深色收起也跑「收起 × 右栏开关」与 friends 页（此前只有浅色轮有，主题+折叠组合态没量过）
+  if (width >= 1440) await checkRosterCombo(tab, view, 'dcoll.');
+  await checkCollapsedFriends(tab, view, 'dcoll.');
   await ctx.close();
 }
 

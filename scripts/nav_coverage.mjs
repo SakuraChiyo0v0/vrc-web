@@ -19,6 +19,9 @@
  * （localStorage.vrc-nav-collapsed=1）、展开回来当前页项仍高亮/仍点得到/再点不换页。
  * 最后验收起态快捷键 Ctrl+1..9：每个数字 hash=PAGE_ORDER[d-1]（读 web/src/lib/shortcuts.js）、
  * 标题跟变、侧栏仍不出现；展开回来当前项已高亮且过命中测试。
+ * 收起态另验 `?` 快捷键表（收起后只能靠这张表记数字键）：跳页组必须正好 9 项、标签与按键
+ * 顺序跟 PAGE_ORDER/PAGE_LABEL 一致（从源文件解析，不从 DOM 反推）、面板整块在视口内、
+ * Esc 关掉后仍是收起态、再按 Ctrl+5 照旧跳页。
  * 断言「能到 + 标题对 + 点得到」；密度/像素交给 frame_parity.mjs。
  * 产出 docs/ref/nav-coverage.json；有 FAIL 则 exit 1。
  */
@@ -63,6 +66,17 @@ const WANT = Object.fromEntries(
 const shortcutsSrc = fs.readFileSync(path.join(ROOT, 'web/src/lib/shortcuts.js'), 'utf8');
 const ORDER = (shortcutsSrc.match(/export const PAGE_ORDER = \[([\s\S]*?)\]/)?.[1] ?? '')
   .split(',').map((s) => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+
+// `?` 面板跳页组的期望：标签与按键都来自 PAGE_LABEL / PAGE_ORDER（面板内容由 SHORTCUT_GROUPS 生成，
+// 这里独立解析源文件，不从 DOM 反推，才能抓住「面板顺序跟快捷键对不上」这类错）。
+const labelBlock = shortcutsSrc.slice(
+  shortcutsSrc.indexOf('export const PAGE_LABEL = {'),
+  shortcutsSrc.indexOf('};', shortcutsSrc.indexOf('export const PAGE_LABEL = {'))
+);
+const LABEL = Object.fromEntries(
+  [...labelBlock.matchAll(/^\s{2}(\w+):\s*'([^']*)'/gm)].map((m) => [m[1], m[2]])
+);
+const JUMP_WANT = ORDER.slice(0, 9).map((id, i) => ({ id, label: LABEL[id] ?? id, key: `⌘/Ctrl ${i + 1}` }));
 
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 const rows = [];
@@ -325,6 +339,66 @@ for (const [width, height] of VIEWS) {
       hit: '-', ok: presses.length === N && badPress.length === 0,
       error: badPress.length ? `快捷键失配：${badPress.map((p) => `Ctrl${p.d} 期望#/${p.want} 实得${p.hash}/${p.title}`).join('；')}` : null
     });
+    // 收起态浮层：`?`（Shift+/）打开快捷键表 —— 收起侧栏后「记不住数字键」只能靠这张表，
+    // 所以跳页组必须正好 9 项、标签与按键顺序都跟着 PAGE_ORDER 走；Esc 关掉后仍处于收起态
+    // （浮层不该把侧栏带回来），关掉后数字键照旧生效。
+    // 注意：headless shell 对 Shift+/ 报 e.key='/'（真实浏览器是 '?'），所以这里直接发 '?'，
+    // 断言的仍是「用户按 Shift+/ 能开表」这条路径（App 判 e.key==='?'）。
+    await page.keyboard.press('?');
+    await page.waitForTimeout(300);
+    const helpOpen = await page.evaluate(() => {
+      const panel = document.querySelector('.shortcut-panel');
+      const grp = panel?.querySelector('[data-shortcut-group="跳页"]');
+      const items = grp ? [...grp.children].slice(1).map((row) => ({
+        label: row.querySelector('span')?.textContent?.trim() ?? '',
+        key: row.querySelector('kbd')?.textContent?.trim() ?? ''
+      })) : [];
+      return {
+        panel: !!panel,
+        asideGone: !document.querySelector('aside.vrc-sidebar'),
+        count: items.length,
+        items,
+        // 浮层得真的画在视口里（收起后浮层居中/尺寸算错会飘到屏外）
+        inView: panel ? (() => { const b = panel.getBoundingClientRect(); return b.width > 100 && b.height > 100 && b.top >= 0 && b.left >= 0 && b.bottom <= window.innerHeight + 1; })() : false
+      };
+    });
+    const wantJump = JUMP_WANT;
+    const jumpOk = helpOpen.count === wantJump.length
+      && helpOpen.items.every((it, i) => it.label === wantJump[i].label && it.key === wantJump[i].key);
+    push({
+      id: `help:collapsed_jump@${view}`, view, theme, nav: 'help:collapsed_jump', hash: '-',
+      title: `${helpOpen.count} 项`, want: `${wantJump.length} 项：${wantJump.map((w) => w.label).join('/')}`,
+      active: helpOpen.items.map((it) => it.label).join('/'), hit: `inView=${helpOpen.inView}`,
+      ok: helpOpen.panel && jumpOk && helpOpen.asideGone && helpOpen.inView,
+      error: jumpOk ? null : `跳页组失配：${helpOpen.items.map((it) => `${it.label}(${it.key})`).join('，')}`
+    });
+    // Esc 关闭 → 浮层消失、仍是收起态；关掉后 Ctrl+5 照旧跳到 PAGE_ORDER[4]
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(250);
+    const lvl5 = ORDER[4];
+    const afterEsc = await page.evaluate(() => ({
+      panel: !!document.querySelector('.shortcut-panel'),
+      asideGone: !document.querySelector('aside.vrc-sidebar'),
+      expand: !!document.querySelector('[data-testid="nav-expand"]')
+    }));
+    await page.keyboard.press('Control+5');
+    await page.waitForTimeout(300);
+    const afterKey = await page.evaluate(() => ({
+      hash: location.hash,
+      title: document.querySelector('#vrc-topbar h1')?.textContent?.trim() ?? '',
+      asideGone: !document.querySelector('aside.vrc-sidebar')
+    }));
+    push({
+      id: `help:collapsed_esc@${view}`, view, theme, nav: 'help:collapsed_esc', hash: afterKey.hash,
+      title: `${afterEsc.panel ? 'still open' : 'closed'} → ${afterKey.title}`, want: `${WANT[lvl5] ?? ''}`,
+      active: `expand=${afterEsc.expand} asideGone=${afterKey.asideGone}`, hit: '-',
+      ok: !afterEsc.panel && afterEsc.asideGone && afterEsc.expand
+        && afterKey.hash === `#/${lvl5}` && afterKey.title === (WANT[lvl5] ?? '') && afterKey.asideGone,
+      error: null
+    });
+    // 快捷键落到 Ctrl+N 那页（shortcut:expand 用它验「快捷键跳过的页展开后仍高亮、仍点得到」）
+    await page.keyboard.press(`Control+${N}`);
+    await page.waitForTimeout(300);
     const lastWant = ORDER[N - 1];
     const sk = await page.evaluate(async (want) => {
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));
