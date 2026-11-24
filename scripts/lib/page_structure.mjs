@@ -230,10 +230,22 @@ export async function gotoVrc(page, url, attempts = 3) {
 /** 页面真的渲染出应用了（不是 404 JSON / 白屏）。三个 parity 脚本首屏后都调一次，
  *  防止「截了一排同样的 404 图还报 PASS」。 */
 export async function assertVrcPage(page, label = '') {
-  const got = await page.evaluate(() => {
-    const text = (document.body?.innerText || '').replace(/\s+/g, ' ').trim();
-    return { text, rootKids: document.getElementById('root')?.children.length ?? -1 };
-  });
+  let got;
+  for (let i = 1; ; i++) {
+    try {
+      got = await page.evaluate(() => {
+        const text = (document.body?.innerText || '').replace(/\s+/g, ' ').trim();
+        return { text, rootKids: document.getElementById('root')?.children.length ?? -1 };
+      });
+      break;
+    } catch (e) {
+      // 首次进入带前缀的线上地址时，应用可能还在做一次跳转，evaluate 会撞上
+      // "Execution context was destroyed"；这不是页面坏，重试一次即可，别当白屏。
+      if (i >= 3 || !/context was destroyed|navigation/i.test(e.message)) throw e;
+      await page.waitForLoadState('domcontentloaded').catch(() => {});
+      await page.waitForTimeout(400 * i);
+    }
+  }
   const why = got.rootKids <= 0 && got.text.length < 200
     ? `页面没渲染（root children=${got.rootKids}，文本 ${got.text.slice(0, 80)}）`
     : /"statusCode"\s*:\s*404/.test(got.text) ? '服务端 404（页面地址缺尾斜杠？用 pageBase()）' : null;

@@ -83,6 +83,13 @@ for (const [width, height] of VIEWS) {
       return (cs.display === 'none' || cs.visibility === 'hidden') ? null
         : { x: Math.round(b.x), w: Math.round(b.width) };
     }).filter(Boolean) : [];
+    const tbEl = document.querySelector('#vrc-topbar');
+    const tbKids = [...tbEl.children].map((e) => {
+      const b = e.getBoundingClientRect();
+      const cs = getComputedStyle(e);
+      return (cs.display === 'none' || cs.visibility === 'hidden' || b.width < 1) ? null : b.right;
+    }).filter((v) => v !== null);
+    const searchBtn = [...tbEl.querySelectorAll('button')].find((e) => /快速搜索/.test(e.textContent || ''));
     const last = kinds[kinds.length - 1];
     nav.scrollTop = nav.scrollHeight;
     const navRect = nav.getBoundingClientRect();
@@ -103,10 +110,16 @@ for (const [width, height] of VIEWS) {
       footCount: footRows.length,
       footBottom: foot && footRows.length ? Math.round(Math.max(...footRows.map((el) => el.getBoundingClientRect().bottom))) : null,
       sidebarBottom: Math.round(aside.getBoundingClientRect().bottom),
-      sbItems
+      sbItems,
+      tbRightPad: tbKids.length ? Math.round(window.innerWidth - Math.max(...tbKids)) : null,
+      searchW: searchBtn ? Math.round(searchBtn.getBoundingClientRect().width) : null
     };
   });
 
+  // 顶栏右侧留白：真机上搜索簇右边还有 3 个窗口按钮（120px），浏览器版没有，
+  // 所以只锁「我们自己的内容右端距窗口边 8px」这一密度不变量，形态差不进 FAIL（见 README）。
+  check(view, 'topbar.right_pad', got.tbRightPad, '8±1', got.tbRightPad !== null && Math.abs(got.tbRightPad - 8) <= 1);
+  check(view, 'topbar.search_w', got.searchW, '200–240', got.searchW !== null && got.searchW >= 200 && got.searchW <= 240);
   const wide = width >= 1280;
   check(view, 'sidebar.w', Math.round(got.sidebar.w), wide ? 277 : 214, Math.abs(got.sidebar.w - (wide ? 277 : 214)) <= 1);
   check(view, 'topbar.h', Math.round(got.topbar.h), 39, Math.abs(got.topbar.h - 39) <= 1);

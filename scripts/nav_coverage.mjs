@@ -9,6 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { normBase, pageBase, assertVrcPage, gotoVrc } from './lib/page_structure.mjs';
 
 const PW_HOME = process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json';
 const req = createRequire(import.meta.url);
@@ -16,7 +17,8 @@ let pw;
 try { pw = req('playwright'); } catch { pw = createRequire(PW_HOME)('playwright'); }
 const { chromium } = pw;
 
-const BASE = process.argv[2] || 'http://127.0.0.1:8899';
+const BASE = normBase(process.argv[2]?.startsWith('http') ? process.argv[2] : (process.env.VRC_BASE || 'http://127.0.0.1:8899'));
+const PAGE = pageBase(BASE);
 const ROOT = process.env.VRC_ROOT || path.resolve(import.meta.dirname, '..');
 const OUT = path.join(ROOT, 'docs/ref/nav-coverage.json');
 const EXE = process.env.CHROME_PATH
@@ -33,7 +35,8 @@ const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbo
 const page = await browser.newPage({ viewport: { width: 1688, height: 1028 }, deviceScaleFactor: 1 });
 const rows = [];
 try {
-  await page.goto(BASE, { waitUntil: 'domcontentloaded' });
+  await gotoVrc(page, PAGE);
+  await assertVrcPage(page, 'nav@1688x1028');
   // 等侧栏渲染出至少一个导航项（demo 种子要一点时间）
   await page.waitForSelector('aside.vrc-sidebar [data-nav-id]', { timeout: 30_000 });
   const ids = await page.evaluate(() => [...document.querySelectorAll('aside.vrc-sidebar [data-nav-id]')].map((el) => el.dataset.navId));

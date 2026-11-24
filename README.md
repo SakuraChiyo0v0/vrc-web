@@ -99,13 +99,14 @@ cd web && npm run build && cd ..
 scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 ```
 
-五段全过才打印 `REGRESS OK 5/5`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
+六段全过才打印 `REGRESS OK 6/6`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
 
 | 环节 | 脚本 | 现在跑出来的数 |
 |---|---|---|
 | 桌面结构 | `node scripts/structure_parity.mjs` | 59/59 |
 | 桌面视觉 | `node scripts/visual_parity.mjs` | 215/215（100%） |
-| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 140/140 |
+| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 154/154 |
+| 导航可达 | `node scripts/nav_coverage.mjs` | 20/20 |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
@@ -117,18 +118,23 @@ node scripts/mobile_parity.mjs                 # 默认 http://127.0.0.1:8891，
 
 ### 跑线上容器
 
-四个 parity 脚本可以直接指向线上容器，不必先起 demo：
+五个脚本可以直接指向线上容器，不必先起 demo：
 
 ```bash
-node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 140/140
+node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 154/154
 node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
+node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 20/20（逐个点侧栏项验可达）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 ```
 
 两条硬规则（`scripts/lib/page_structure.mjs`）：
 
 - **接口去尾斜杠、页面补尾斜杠**：接口地址走 `normBase()`（否则拼出 `/vrc//api/roster` 回 403，被误判「不是本服务」）；hash 路由的页面地址走 `pageBase()`（`/vrc#/settings` 会被服务端当 `GET /vrc` 回 404 JSON，而预检照样 200，整轮截成同一张 404 页）。
-- **首屏断言 `assertVrcPage()`**：root 为空或 body 出现 `"statusCode":404` 直接 exit 2，不允许在假页面上量出分数；`gotoVrc()` 只对 `chrome-error://` 重试 3 次（容器瞬断），404/白屏仍硬拦。
+- **首屏断言 `assertVrcPage()`**：root 为空或 body 出现 `"statusCode":404` 直接 exit 2，不允许在假页面上量出分数；`gotoVrc()` 只对 `chrome-error://` 重试 3 次（容器瞬断），404/白屏仍硬拦。`assertVrcPage()` 自身对 `Execution context was destroyed`（页面还在做一次跳转）重试 3 次，别把瞬跳当白屏。
+
+### 已知形态差（不进 FAIL）
+
+真机窗口顶栏右侧有 3 个窗口按钮（最小化/最大化/关闭，合计 120px），浏览器版没有，所以 1700 宽下「快速搜索 / Ctrl K」簇比真机偏右约 6px（真机 Ctrl K 徽标 x=1307，我们 1313）。这条不做像素对齐，`frame_parity` 只锁两条密度不变量：顶栏内容右端距窗口边 `topbar.right_pad = 8px`、搜索按钮宽 `topbar.search_w = 225px`（允许 200–240）。
 
 `visual_parity` 另有一条环境判据：真机基准是在种子数据上量的（动态 4 列、模态 8 个 tab、概览 24 格柱、收藏 150 条），真实库数据形态不同，分数无意义 —— 检测到 `/api/health` 的 `db.kind !== 'sqlite'` 时打 `SKIP` exit 3（回归里记 SKIP 不算失败）；确实要在真实库上看就加 `VRC_ALLOW_REAL=1`，结果只作参考。同理，结构断言碰上线上库本身为空的数据（收藏夹 0 条、没有屏蔽/静音记录）记 `SKIP` 而不是 `DIFF`，既混不进分母也不会把线上跑红。
 

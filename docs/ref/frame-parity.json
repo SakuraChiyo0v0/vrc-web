@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T03:30:37.464Z",
+ "at": "2026-11-24T03:48:56.283Z",
  "base": "http://127.0.0.1:8891",
- "pass": 140,
- "total": 140,
+ "pass": 154,
+ "total": 154,
  "rows": [
   {
    "view": "1024x768",
@@ -44,6 +44,20 @@
    "name": "overflow.settings",
    "ours": 1024,
    "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
@@ -188,6 +202,20 @@
   },
   {
    "view": "1100x800",
+   "name": "topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "sidebar.w",
    "ours": 214,
    "want": 214,
@@ -324,6 +352,20 @@
    "name": "overflow.settings",
    "ours": 1280,
    "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
@@ -468,6 +510,20 @@
   },
   {
    "view": "1366x768",
+   "name": "topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "sidebar.w",
    "ours": 277,
    "want": 277,
@@ -604,6 +660,20 @@
    "name": "overflow.settings",
    "ours": 1440,
    "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
@@ -748,6 +818,20 @@
   },
   {
    "view": "1600x900",
+   "name": "topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "sidebar.w",
    "ours": 277,
    "want": 277,
@@ -884,6 +968,20 @@
    "name": "overflow.settings",
    "ours": 1700,
    "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {

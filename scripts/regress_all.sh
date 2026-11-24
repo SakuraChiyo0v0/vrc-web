@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 一键回归：桌面结构（structure_parity）+ 桌面视觉（visual_parity）+ 主框架/导航密度（frame_parity）+ 移动断点（mobile_parity）+ web 单测。
+# 一键回归：桌面结构（structure_parity）+ 桌面视觉（visual_parity）+ 主框架/导航密度（frame_parity）+ 导航可达（nav_coverage）+ 移动断点（mobile_parity）+ web 单测。
 #   用法：scripts/regress_all.sh [baseUrl]     默认 http://127.0.0.1:8891（server/scripts/demo.mjs）
 # 不传 baseUrl 时若 8891 没起，会自动起一个 demo 实例并跑完杀掉。
 # 线上（容器）：http://172.30.0.7:8790/vrc/   —— 带不带尾斜杠都行：
@@ -45,14 +45,15 @@ run() {  # run <名字> <命令…>   exit 3 = 本环境不适用（如视觉基
 run structure node scripts/structure_parity.mjs "$BASE"
 run visual    node scripts/visual_parity.mjs "$BASE"
 run frame     node scripts/frame_parity.mjs "$BASE"
+run nav       node scripts/nav_coverage.mjs "$BASE"
 run mobile    node scripts/mobile_parity.mjs "$BASE"
 run unittest  bash -lc "cd '$ROOT/web' && npm test --silent"
 
 echo
 if [ ${#FAILED[@]} -gt 0 ]; then
-  echo "REGRESS FAIL ${#FAILED[@]}/5 环节未过："
+  echo "REGRESS FAIL ${#FAILED[@]}/6 环节未过："
   printf '  %s\n' "${FAILED[@]}"
   exit 1
 fi
-echo "REGRESS OK 5/5（structure / visual / frame / mobile / unittest）  base=$BASE"
+echo "REGRESS OK 6/6（structure / visual / frame / nav / mobile / unittest）  base=$BASE"
 [ ${#SKIPPED[@]} -gt 0 ] && echo "  SKIP: ${SKIPPED[*]}（本环境不适用，见各自 log）"
