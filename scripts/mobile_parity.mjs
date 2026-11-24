@@ -920,6 +920,50 @@ for (const [w, h, kbH] of [[844, 390, 220], [932, 430, 240]]) {
   }
 }
 
+// 竖屏 + 键盘矩阵（最小宽 320×568 kb216 / 390×844 kb336）：横屏那套矩阵只覆盖矮视口，
+// 竖屏键盘弹起后可视仍有 352/508px，是靠 --app-vh 跟随 visualViewport 让位；此前只测了 feed/friends 两页，
+// 其余页若把内容顶出可视区（如 settings 首卡、sessions 首行）没有断言守着。
+// 判据（每页每档五项）：键盘已弹起 / 外壳跟随可视高 / 状态栏不被盖 / 主区≥200 / 首块内容露出≥40。
+for (const [w, h, kbH] of [[320, 568, 216], [390, 844, 336]]) {
+  for (const page of PAGES) {
+    const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 3 });
+    await tab.goto(`${BASE}#/${page}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await tab.waitForTimeout(1400);
+    await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
+    await tab.evaluate((hh) => {
+      const vv = window.visualViewport;
+      Object.defineProperty(vv, 'height', { configurable: true, get: () => hh });
+      vv.dispatchEvent(new Event('resize')); window.dispatchEvent(new Event('resize'));
+    }, h - kbH);
+    await tab.waitForTimeout(450);
+    const d = await tab.evaluate((sel) => {
+      const vvH = window.visualViewport.height;
+      const shell = document.querySelector('#root > div');
+      const sb = document.querySelector('#vrc-statusbar');
+      const main = document.querySelector('main');
+      const els = [...document.querySelectorAll(sel)].filter((e) => e.getBoundingClientRect().height > 0);
+      const f = els[0] ? els[0].getBoundingClientRect() : null;
+      return {
+        vvH: Math.round(vvH),
+        appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(),
+        kb: document.documentElement.getAttribute('data-kb'),
+        shell: shell ? Math.round(shell.getBoundingClientRect().height) : null,
+        sbBottom: sb ? Math.round(sb.getBoundingClientRect().bottom) : null,
+        mainH: main ? Math.round(main.getBoundingClientRect().height) : null,
+        n: els.length,
+        vis: f ? Math.max(0, Math.min(Math.round(f.bottom), Math.round(vvH)) - Math.max(0, Math.round(f.top))) : 0,
+      };
+    }, CONTENT_SEL[page]);
+    const tag = `kb-portrait@${page}@${w}x${h}`;
+    check(tag, '键盘弹起（data-kb=1）', `data-kb=${d.kb}`, '1', d.kb === '1');
+    check(tag, '外壳跟随可视高', `appVh=${d.appVh} shell=${d.shell} vv=${d.vvH}`, 'shell=vv(±1)', d.shell != null && Math.abs(d.shell - d.vvH) <= 1);
+    check(tag, '状态栏不被键盘盖住', `sbBottom=${d.sbBottom}`, `≤${d.vvH}`, d.sbBottom != null && d.sbBottom <= d.vvH + 1);
+    check(tag, '主内容≥200', `main=${d.mainH}`, '≥200', d.mainH != null && d.mainH >= 200);
+    check(tag, '首块内容露出≥40', d.n ? `${d.n} 块 露出=${d.vis}` : '未找到内容块', '≥40', d.n > 0 && d.vis >= 40);
+    await tab.close();
+  }
+}
+
 // 底部状态栏在极窄屏的信息完整性：320（iPhone SE 初代）曾把最右 SteamVR 段裁掉 17px 且滚不出来。
 // 判据：最后一段的右缘不越过状态栏右缘；横向无不可滚的溢出（scrollWidth ≤ clientWidth+1）。
 for (const [w, h] of [[320, 568], [360, 800], [390, 844]]) {
