@@ -1362,8 +1362,9 @@ html[data-phone='1'] #root {
  * 真机裁图（docs/ref/vrcx0-locations.png 283,80 起放大）确认：白底卡片 + 1px 浅灰边框 + 圆角，
  * 头像为正圆（不是圆角方形）。 */
 .loc-card {
-  display: flex; align-items: flex-start; gap: 8px;
-  height: 96px; min-height: 0; padding: 8px;
+  /* 排版修正：头像与文字列留 11px（原来 8px 会被状态角标吃掉），上下留白也放宽 */
+  display: flex; align-items: flex-start; gap: 11px;
+  height: 96px; min-height: 0; padding: 10px;
   border: 1px solid var(--stroke-subtle); border-radius: 10px; background: var(--surface-panel);
   grid-template-columns: none; grid-template-areas: none;
 }
@@ -1371,15 +1372,15 @@ html[data-phone='1'] #root {
 .loc-card:hover { background: var(--state-hover-surface); }
 .loc-card .avatar { flex: none; width: 56px; height: 56px; border-radius: 50%; }
 .loc-card .avatar img { border-radius: 50%; }
-.loc-card .dot { width: 10px; height: 10px; right: -2px; bottom: -2px; }
-.loc-body { min-width: 0; display: flex; flex-direction: column; gap: 1px; font-size: 11px; }
+.loc-card .dot { width: 9px; height: 9px; right: 1px; bottom: 1px; border: 2px solid var(--surface-panel); }
+.loc-body { min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 11px; line-height: 1.45; }
 .loc-name {
-  min-width: 0; display: flex; align-items: center; gap: 3px;
-  font-size: 13px; color: var(--content-primary);
+  min-width: 0; display: flex; align-items: center; gap: 3px; line-height: 1.3;
+  font-size: 13px; font-weight: 500; color: var(--content-primary);
 }
 .loc-star { flex: none; font-size: 11px; color: var(--status-joinme); }
 .loc-dur { color: var(--content-tertiary); }
-.loc-world { min-width: 0; display: flex; align-items: center; gap: 4px; color: var(--content-tertiary); }
+.loc-world { min-width: 0; display: flex; align-items: center; gap: 4px; color: var(--content-tertiary); line-height: 1.35; }
 .loc-status {
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   color: var(--content-secondary);
