@@ -197,7 +197,12 @@ export const PAGE_ROUTES = { locations: 'friends' };
  * 端口预检：8899 在 NAS 上常被图片墙（imagewall）容器占着，对那种端口会截出「别人的 200」，
  * 之后所有断言要么假通过要么全红。所以除了 HTTP 200，还要求 /api/roster 是本服务的 JSON。
  */
-export async function assertVrcServer(base) {
+/** 去掉末尾斜杠：`http://h/vrc/` 与 `http://h/vrc` 等价。带斜杠时前端会拼出 `//api/roster`（403），
+ *  服务端 rewriteUrl 只认单个 `/vrc/` 前缀，必须在这里归一。 */
+export const normBase = (u) => String(u).replace(/\/+$/, '');
+
+export async function assertVrcServer(rawBase) {
+  const base = normBase(rawBase);
   const fail = (why) => {
     console.error(`✗ baseUrl 不是本服务：${base}（${why}）\n  先起 mock+构建产物：node server/scripts/demo.mjs 8891`);
     process.exit(2);

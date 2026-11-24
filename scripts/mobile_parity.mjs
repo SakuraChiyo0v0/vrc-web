@@ -23,14 +23,14 @@
  */
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { STRUCT_PAGES, assertVrcServer } from './lib/page_structure.mjs';
+import { STRUCT_PAGES, assertVrcServer, normBase } from './lib/page_structure.mjs';
 
 const _req = createRequire(import.meta.url);
 let _pw;
 try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json')('playwright'); }
 const { chromium } = _pw;
 
-const BASE = process.argv[2]?.startsWith('http') ? process.argv[2] : (process.env.VRC_BASE || 'http://127.0.0.1:8891');
+const BASE = normBase(process.argv[2]?.startsWith('http') ? process.argv[2] : (process.env.VRC_BASE || 'http://127.0.0.1:8891'));
 const EXE = process.env.CHROME_PATH
   || '/opt/data/cache/pw-browsers/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell';
 

@@ -11,14 +11,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { probeMain, structureRows, STRUCT_PAGES, assertVrcServer, dataDependentWant } from './lib/page_structure.mjs';
+import { probeMain, structureRows, STRUCT_PAGES, assertVrcServer, normBase, dataDependentWant } from './lib/page_structure.mjs';
 // playwright 不在本仓库依赖里（容器只有一份装在 hermes 模板目录），ESM 不吃 NODE_PATH，按路径 require
 const _req = createRequire(import.meta.url);
 let _pw;
 try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json')('playwright'); }
 const { chromium } = _pw;
 
-const BASE = process.argv[2] || process.env.VRC_BASE || 'http://127.0.0.1:8891';
+const BASE = normBase(process.argv[2] || process.env.VRC_BASE || 'http://127.0.0.1:8891');
 const ROOT = process.env.VRC_ROOT || path.resolve(import.meta.dirname, '..');
 const SPEC = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/ref/vrcx0-spec.json'), 'utf8'));
 const OUT = path.join(ROOT, 'docs/screenshots/compare');
