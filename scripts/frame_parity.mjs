@@ -57,7 +57,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { normBase, pageBase, assertVrcPage, gotoVrc } from './lib/page_structure.mjs';
+import { normBase, pageBase, assertVrcPage, gotoVrc, reloadVrcHard } from './lib/page_structure.mjs';
 
 const _req = createRequire(import.meta.url);
 let _pw;
@@ -447,7 +447,9 @@ const checkRosterDirtyW = async (tab, view, p) => {
   const CASES = [['abc', 353], ['99999', 353], ['-5', 353], ['0', 353], ['264', 264], ['280', 280], ['770', 770]];
   for (const [stored, want] of CASES) {
     await tab.evaluate((v) => localStorage.setItem('vrc-roster-w', v), stored);
-    await tab.reload();
+    // reloadVrcHard 会验「文档真的换新了」，静默失败（超时 + goto 兜底也没成）时再硬刷一次：
+    // 否则 DOM 还是上一条用例的，读出来的宽度会假 PASS/假 FAIL（第 30 轮 exp.dirty.264/280 就这么红过）。
+    const ok = await reloadVrcHard(tab);
     await tab.waitForSelector('[data-testid="roster-resize"]', { timeout: 30_000 }).catch(() => {});
     await tab.waitForTimeout(500);
     const m = await tab.evaluate(() => {
@@ -461,13 +463,13 @@ const checkRosterDirtyW = async (tab, view, p) => {
       };
     });
     check(view, `${p}dirty.${stored}`,
-      `w${m.w}/${want} 内容${m.content} ws${m.ws} ovf${m.ovf} 手柄${m.handle ? 'present' : 'none'}`,
+      `w${m.w}/${want} 内容${m.content} ws${m.ws} ovf${m.ovf} 手柄${m.handle ? 'present' : 'none'} reload${ok ? 'fresh' : 'STALE'}`,
       `右栏 ${want}、内容列 = ws−${want}、无溢出、手柄在`,
-      m.w === want && m.handle && m.ws === m.content + want && m.ovf <= 0);
+      ok && m.w === want && m.handle && m.ws === m.content + want && m.ovf <= 0);
   }
   // 复位成默认 353，不给后面的收起轮留脏值
   await tab.evaluate(() => localStorage.setItem('vrc-roster-w', '353'));
-  await tab.reload();
+  await reloadVrcHard(tab);
   await tab.waitForTimeout(600);
   await tab.evaluate(installChrome);
 };
@@ -653,7 +655,7 @@ const checkRosterDrag = async (tab, view, p) => {
     '右栏 <353−50，内容列 += 右栏差值(±2)，无溢出，宽度已落盘',
     off.rail < a.rail - 50 && Math.abs((off.content - a.content) - (a.rail - off.rail)) <= 2
       && off.ovf <= 0 && off.stored === String(off.rail));
-  await tab.reload();
+  await reloadVrcHard(tab);
   await tab.waitForSelector('[data-testid="roster-resize"]', { timeout: 30_000 });
   await tab.waitForTimeout(800);
   const rl = await probe();

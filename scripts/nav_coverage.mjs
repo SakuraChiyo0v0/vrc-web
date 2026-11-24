@@ -41,7 +41,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { normBase, pageBase, assertVrcPage, gotoVrc } from './lib/page_structure.mjs';
+import { normBase, pageBase, assertVrcPage, gotoVrc, reloadVrcHard } from './lib/page_structure.mjs';
 
 const PW_HOME = process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json';
 const req = createRequire(import.meta.url);
@@ -274,7 +274,7 @@ for (const [width, height] of VIEWS) {
       error: null
     });
     // 收起态写在 localStorage，reload 必须还是收起（刷新后不弹回展开）
-    await page.reload();
+    await reloadVrcHard(page);
     await page.waitForFunction(() => !!document.querySelector('#vrc-topbar h1')?.textContent?.trim(), { timeout: 30_000 }).catch(() => {});
     await page.waitForTimeout(500);
     const persist = await page.evaluate(() => ({
@@ -1002,7 +1002,7 @@ for (const [width, height] of VIEWS) {
     });
     // 展开态不该被持久化成收起：reload 后侧栏仍在、没有顶栏展开按钮、localStorage.vrc-nav-collapsed ≠ '1'
     // （与收起态 reload 那条互为对照，防「收起一次以后永远起不来」）。
-    await page.reload();
+    await reloadVrcHard(page);
     await page.waitForSelector('aside.vrc-sidebar [data-nav-id]', { timeout: 30_000 }).catch(() => {});
     await page.waitForTimeout(400);
     const expPersist = await page.evaluate(() => ({

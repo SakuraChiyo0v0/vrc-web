@@ -6,3 +6,7 @@
 - [2026-11-24 19:22] 核对上一轮「nav 收起侧栏×右栏36竖条只跑浅色」这条待办：读 scripts/nav_coverage.mjs，rail:collapsed_strip/strip_toggle/strip_unfold 三例在 THEMES 循环内（L98），且 366 = 4 视口×2 主题×45 + 3 例×2 主题，即深色已在跑，这条待办本身不成立，不需要 +18 扩项。
 
 - [2026-11-24 19:22] 下一步：① 单人跑一次干净端到端：先确认 ps 里没有 regress/parity/chrome-headless 残留，再 `bash scripts/regress_all.sh http://localhost:8891 > cache/regress_all_r31.log 2>&1`（前台 timeout 不设 300s 以内、用 background+notify），期望末行 REGRESS OK 7/7，把真实数字写进 STATE；② 若 frame/nav 仍崩，疑似并发或内存（容器 7.4G，playedwright 常驻 4.7G used）→ 串行降到 NAV_THEME 单主题分两次跑，先定位是并发还是单脚本不稳；③ 探针归位后抽 2 个跑过实际执行（不止 --check）：node scripts/probes/_probe_under44.mjs http://localhost:8891 与 node scripts/probes/_probe_topbar_gaps.mjs http://localhost:8891，证 import 路径真能解析，输出落 cache/probes/。
+
+- [2026-11-24 20:30] 定位并修掉 1929/1932 的根因（不是右栏宽校验）：reloadVrc 等 waitUntil 'load'，demo 长连接让 load 永不落地 → 两次 60s 超时后页面仍是旧文档、#vrc-topbar h1 照旧在，调用方读到上一条用例的 353（exp.dirty.264/280 假 FAIL），run3 更是直接挂住 618s 无输出。改法：reload 只等 domcontentloaded(30s) + <html> dataset.reloadStamp 打戳验「文档真换新」，失败整页 goto 兜底（新增 reloadVrcHard）；frame 4 处 / nav 2 处全改 reloadVrcHard，checkRosterDirtyW 把 reload 新鲜度计入断言（detail 标 fresh/STALE）。证据：探针 cache/probes/dirty_reload.mjs 7 例全对、cache/probes/reload_stress.mjs 连刷 20 次 bad=0 maxMs=117（旧版 0.5s 且偶发卡死）；web npm test 48 pass。全量 frame_parity 尚未复跑（预算到顶）。
+
+- [2026-11-24 20:30] 下一步：① 后台单跑 frame_parity 期望 1932/1932 EXIT=0 且日志无 STALE；② 单跑 nav_coverage 期望 366/366；③ regress_all 取 REGRESS OK 7/7；④ README 数字同步 + 补「reload 别等 load」说明后提交（page_structure.mjs + frame_parity.mjs + nav_coverage.mjs + README）
