@@ -15,6 +15,10 @@
  *   6) 内容面板 ≥720：右栏（353）只在 ≥1440 出现，且顶栏右栏开关与之一致显隐。
  *   7) 6 个密度最高的页面（好友位置 / 动态 / 好友列表 / 游戏日志 / 世界库 / 设置）
  *      在以上视口都无横向溢出（documentElement.scrollWidth ≤ innerWidth+1）。
+ *   8) 顶栏右簇（快速搜索/Ctrl K → 图标组 → 3 窗口控制）的簇内间距恒定：
+ *      kbd 宽 34、kbd→图标组 22、图标组→窗口控制 15、窗口控制 3×24 pitch 40、末项距右缘 8。
+ *      注：真机 Ctrl K 绝对 x=1307 是在 1689 宽的截图上量的，契约视口是 1700，
+ *      差 11px 属窗口宽度差（不是布局差），所以这里只锁间距不锁绝对 x。
  *
  * 任一 FAIL 退出码 1；全 PASS 打印 FRAME OK，并把结果写 docs/ref/frame-parity.json。
  */
@@ -94,13 +98,39 @@ for (const [width, height] of VIEWS) {
     nav.scrollTop = nav.scrollHeight;
     const navRect = nav.getBoundingClientRect();
     const lastRect = last.getBoundingClientRect();
+    // 顶栏右簇（快速搜索/Ctrl K → 图标组 → 3 窗口控制）：只量簇内可见元素之间的间距，
+    // 不量绝对 x。原因：真机 topbar-measure.json 是字形坐标、且截图宽 1689（我们契约视口 1700），
+    // 绝对 x 会随窗口宽整体平移、随 roster-toggle 显隐整体让位；间距才是布局契约。
+    const tbRight = tbEl.getBoundingClientRect().right;
+    const relRight = (el) => Math.round((tbRight - el.getBoundingClientRect().right) * 10) / 10;
+    const relLeft = (el) => Math.round((tbRight - el.getBoundingClientRect().left) * 10) / 10;
+    const vis = (el) => {
+      const b = el.getBoundingClientRect();
+      const cs = getComputedStyle(el);
+      return cs.display !== 'none' && cs.visibility !== 'hidden' && b.width > 1;
+    };
+    const kbd = document.querySelector('[data-topbar="search"] kbd');
+    const actEls = [...(document.querySelector('[data-topbar="actions"]')?.children ?? [])].filter(vis);
+    const winEls = [...(document.querySelector('[data-topbar="window-controls"]')?.children ?? [])].filter(vis);
+    const winRects = winEls.map((e) => e.getBoundingClientRect());
     return {
       sidebar: box(aside),
-      topbar: box(document.querySelector('#vrc-topbar')),
+      topbar: box(tbEl),
       statusbar: sb,
       workspace: box(document.querySelector('.workspace')),
       roster: box(document.querySelector('.roster-rail')),
       toggle: box(document.querySelector('.roster-toggle')),
+      tbRight: {
+        kbdRel: kbd ? relRight(kbd) : null,
+        kbdW: kbd ? Math.round(kbd.getBoundingClientRect().width * 10) / 10 : null,
+        actCount: actEls.length,
+        gapSearchActions: actEls.length && kbd ? Math.round(relRight(kbd) - relLeft(actEls[0])) : null,
+        gapActionsWin: winEls.length && actEls.length ? Math.round(relRight(actEls[actEls.length - 1]) - relLeft(winEls[0])) : null,
+        winCount: winEls.length,
+        winW: winRects.length ? Math.round(winRects[0].width) : null,
+        winPitch: winRects.length > 1 ? Math.round(winRects[1].left - winRects[0].left) : null,
+        winLastRel: winEls.length ? relRight(winEls[winEls.length - 1]) : null
+      },
       topH: tops.length ? [...new Set(tops.map((el) => Math.round(el.getBoundingClientRect().height)))] : [],
       subH: subs.length ? [...new Set(subs.map((el) => Math.round(el.getBoundingClientRect().height)))] : [],
       navOverflow: nav.scrollHeight - nav.clientHeight,
@@ -139,6 +169,16 @@ for (const [width, height] of VIEWS) {
   const wantRoster = width >= 1440;
   check(view, 'roster.visible', got.roster ? 'yes' : 'no', wantRoster ? 'yes' : 'no', !!got.roster === wantRoster);
   check(view, 'roster.toggle_visible', got.toggle ? 'yes' : 'no', wantRoster ? 'yes' : 'no', !!got.toggle === wantRoster);
+  // 顶栏右簇：间距是布局契约（真机 topbar-measure.json 的 pitch/gap 同口径）。窗口控制 3 项、宽 24、
+  // pitch 40（真机 pitch 40）、末项距右缘 8（真机 9）；图标组 5 项（<1440 无好友栏开关）/ 6 项（≥1440）。
+  const tb = got.tbRight;
+  check(view, 'topbar.kbd_w', tb.kbdW, '34±1', tb.kbdW !== null && Math.abs(tb.kbdW - 34) <= 1);
+  check(view, 'topbar.gap_search_actions', tb.gapSearchActions, '22±1', tb.gapSearchActions !== null && Math.abs(tb.gapSearchActions - 22) <= 1);
+  check(view, 'topbar.gap_actions_win', tb.gapActionsWin, '15±1', tb.gapActionsWin !== null && Math.abs(tb.gapActionsWin - 15) <= 1);
+  check(view, 'topbar.actions_count', tb.actCount, wantRoster ? '6' : '5', tb.actCount === (wantRoster ? 6 : 5));
+  check(view, 'topbar.win', `${tb.winCount}×${tb.winW} pitch${tb.winPitch} @${tb.winLastRel}`,
+    '3×24 pitch40，末项距右缘 8±1',
+    tb.winCount === 3 && tb.winW === 24 && tb.winPitch === 40 && Math.abs(tb.winLastRel - 8) <= 1);
   check(view, 'content.w', Math.round(got.workspace.w), '≥720', got.workspace.w >= 720);
   await tab.close();
 }
