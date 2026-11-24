@@ -40,8 +40,16 @@
  *  12) 主题不改宽度：同一视口浅色收起与深色收起的面板宽、右栏宽必须相等。
  *  13) 展开态收放折叠夹（收藏 / 社交）：子项归 0 时侧栏宽、内容列宽、顶栏 39、状态栏 35、
  *      内容区 y·h 一律不变、无溢出，展开回来复原；feed / friends 两页 × 浅/深色各一遍。
+ *      另验「夹子真的省高度」：首项→末项实际内容高至少减掉子项高一半，<nav> 本溢出的视口上
+ *      scrollHeight 也必须跟着降（内容矮于视口时 scrollHeight 恒等于 clientHeight，不作要求）。
  *  14) 矮窗（600 高）展开态 <nav> 滚到底：window.scrollY 仍 0、顶栏仍 y0、内容区 y/h 不变、
  *      末项整行在 nav 可视区内、内容区顶部 elementFromPoint 仍命中 .workspace（不被粘性顶盖住）。
+ *  15) 右栏拖宽（1600 / 1700 两档，浅/深各一遍）：手柄中心 elementFromPoint 必须落在手柄上
+ *      （回归：轨道曾放在 left:-11，被栏上的 overflow-x:clip 整条裁掉，拖宽完全失效）；拖窄
+ *      后右栏变窄、内容列正好加同样差值、无溢出、松手落 localStorage、reload 保持、拖回 353
+ *      复原、双击复位到 353。
+ *  16) 右栏自身折成 36px 竖条（⋯ 按钮，≥1600 × 浅/深）：竖条无拖宽手柄、在竖条左缘
+ *      按下左拖也不改宽/不写盘，点 ‹ 展开回来宽度=折叠前且手柄回来。
  *
  * 任一 FAIL 退出码 1；全 PASS 打印 FRAME OK，并把结果写 docs/ref/frame-parity.json。
  */
@@ -373,6 +381,56 @@ const checkRosterCombo = async (tab, view, p, expRosterW = null) => {
   check(view, `${p}roster.aside_gone`, combo.asideGone ? 'gone' : 'back', 'gone', combo.asideGone);
 };
 
+// 右栏自身折叠成 36px 竖条（RosterPanel 里的 ⋯ 折叠按钮）时，拖宽手柄必须消失、也不许被误拖：
+// 竖条分支（RosterPanel collapsed）根本不渲染 roster-resize，但折叠/展开切换若不重建元素，
+// 残留手柄会让竖条仍可拖、把宽度写进 localStorage，破坏「展开回来还是 353」。
+// 展开回来还要复原到展开前宽度（浅/深各一遍，只在 ≥1600 有拖宽能力的档位跑）。
+const checkRosterDragCollapsed = async (tab, view, p, baseW) => {
+  const probe = () => tab.evaluate(() => {
+    const rail = document.querySelector('[data-testid="roster-rail"]');
+    const b = rail?.getBoundingClientRect();
+    return {
+      present: !!rail,
+      collapsed: rail?.dataset.collapsed,
+      w: Math.round(b?.width ?? 0), x: Math.round(b?.x ?? 0),
+      y: Math.round(b?.y ?? 0), h: Math.round(b?.h ?? b?.height ?? 0),
+      handle: !!document.querySelector('[data-testid="roster-resize"]'),
+      stored: localStorage.getItem('vrc-roster-w'),
+      ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width),
+      ovf: document.documentElement.scrollWidth - window.innerWidth
+    };
+  });
+  const a = await probe();
+  await tab.evaluate(() => document.querySelector('.roster-self-menu')?.click());
+  await tab.waitForTimeout(350);
+  const c = await probe();
+  check(view, `${p}rs_coll.gone`, `w${a.w}→${c.w} collapsed=${c.collapsed} handle=${c.handle ? 'present' : 'none'}`,
+    '折成 36px 竖条、拖宽手柄消失',
+    a.handle && c.present && c.collapsed === 'true' && Math.abs(c.w - 36) <= 1 && !c.handle);
+  // 在「手柄本该在的位置」（竖条左缘）按下向左拖 120px：宽度/落盘都不许动
+  const gy = c.y + Math.round(c.h / 2);
+  await tab.mouse.move(c.x + 4, gy);
+  await tab.waitForTimeout(100);
+  await tab.mouse.down();
+  await tab.waitForTimeout(120);
+  await tab.mouse.move(c.x + 4 - 120, gy, { steps: 5 });
+  await tab.waitForTimeout(120);
+  await tab.mouse.up();
+  await tab.waitForTimeout(300);
+  const d = await probe();
+  check(view, `${p}rs_coll.inert`, `w${c.w}→${d.w} ws${c.ws}→${d.ws} stored ${c.stored}→${d.stored}`,
+    `拖不动：竖条宽/内容列不变、落盘仍是 ${baseW}`,
+    d.w === c.w && d.ws === c.ws && d.ovf <= 0 && d.stored === c.stored
+      && (d.stored === null || d.stored === String(baseW)));
+  // 点竖条上的 ‹ 展开：回到展开前宽度、手柄回来
+  await tab.evaluate(() => document.querySelector('.roster-rail [aria-label="展开好友面板"]')?.click());
+  await tab.waitForTimeout(350);
+  const e = await probe();
+  check(view, `${p}rs_coll.restore`, `w${d.w}→${e.w}/${a.w} handle=${e.handle ? 'present' : 'none'}`,
+    '展开回来宽度=展开前、手柄回来',
+    e.present && e.collapsed === 'false' && e.w === a.w && e.handle && e.ovf <= 0);
+};
+
 // 收起态 friends 页：右栏本身就不该渲染（App.jsx roster && page!=='friends'），
 // 内容也不能因为没了侧栏而宽度塌掉（≥720 是外壳契约，9 视口全跑）。
 const checkCollapsedFriends = async (tab, view, p) => {
@@ -402,6 +460,13 @@ const checkFoldImpact = async (tab, view, p) => {
         const ws = document.querySelector('.workspace').getBoundingClientRect();
         const tb = document.querySelector('#vrc-topbar').getBoundingClientRect();
         const sb = document.querySelector('#vrc-statusbar').getBoundingClientRect();
+        // 侧栏内容真的变短了吗：<nav> 的 scrollHeight 只在溢出时才反映内容高（内容比视口矮时
+        // 会被拉到 clientHeight），所以同时量「首项 top → 末项 bottom」的实际高度，任何视口都成立。
+        const nav = document.querySelector('aside.vrc-sidebar nav');
+        nav.scrollTop = 0;
+        const items = [...nav.querySelectorAll('[data-nav-kind]')];
+        const firstR = items[0].getBoundingClientRect();
+        const lastR = items[items.length - 1].getBoundingClientRect();
         return {
           asideW: as ? Math.round(as.width) : 0,
           ws: Math.round(ws.width),
@@ -410,6 +475,11 @@ const checkFoldImpact = async (tab, view, p) => {
           tbH: Math.round(tb.height * 10) / 10,
           sbH: Math.round(sb.height * 10) / 10,
           subs: document.querySelectorAll('aside.vrc-sidebar [data-nav-kind="sub"]').length,
+          navSh: nav.scrollHeight,
+          navCh: nav.clientHeight,
+          extent: Math.round(lastR.bottom - firstR.top),
+          subH: Math.round([...nav.querySelectorAll('[data-nav-kind="sub"]')]
+            .reduce((s, el) => s + el.getBoundingClientRect().height, 0)),
           ovf: document.documentElement.scrollWidth - window.innerWidth
         };
       };
@@ -433,9 +503,18 @@ const checkFoldImpact = async (tab, view, p) => {
         && Math.abs(r.off.wsY - r.a.wsY) <= 1 && Math.abs(r.off.wsH - r.a.wsH) <= 1
         && Math.abs(r.off.tbH - r.a.tbH) <= 1 && Math.abs(r.off.sbH - r.a.sbH) <= 1
         && r.off.ovf <= 0);
-    check(view, `${p}fold.${p2}.restore`, `ws ${r.on.ws}/${r.a.ws} aside ${r.on.asideW}/${r.a.asideW} sub${r.on.subs}`,
-      `ws 回 ${r.a.ws}、侧栏宽回 ${r.a.asideW}`,
-      r.on.ws === r.a.ws && r.on.asideW === r.a.asideW && r.on.ovf <= 0 && r.on.subs === r.a.subs);
+    // 夹子收起来必须真的省下侧栏高度（此前只验「几何不变」，可折叠却没折叠住内容也量不到）：
+    // 首项→末项的实际内容高至少减掉「子项高之和的一半」；在 <nav> 本来溢出的视口上，
+    // scrollHeight 也必须跟着变小（内容矮于视口时 scrollHeight 恒等于 clientHeight，不作要求）。
+    const shrink = r.a.extent - r.off.extent;
+    check(view, `${p}fold.${p2}.shrink`,
+      `extent ${r.a.extent}→${r.off.extent} (−${shrink}，子项 ${r.a.subH}) sh ${r.a.navSh}→${r.off.navSh} ch${r.a.navCh}`,
+      '内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降',
+      r.a.subs > 0 && shrink >= r.a.subH / 2 && (r.a.navSh <= r.a.navCh || r.off.navSh < r.a.navSh));
+    check(view, `${p}fold.${p2}.restore`, `ws ${r.on.ws}/${r.a.ws} aside ${r.on.asideW}/${r.a.asideW} sub${r.on.subs} extent ${r.on.extent}/${r.a.extent}`,
+      `ws 回 ${r.a.ws}、侧栏宽回 ${r.a.asideW}、内容高回 ${r.a.extent}`,
+      r.on.ws === r.a.ws && r.on.asideW === r.a.asideW && r.on.ovf <= 0 && r.on.subs === r.a.subs
+        && r.on.extent === r.a.extent && r.on.navSh === r.a.navSh);
   }
 };
 
@@ -487,6 +566,71 @@ const checkNavScroll = async (tab, view, p) => {
     r.lastBottom <= r.navBottom + 1);
   check(view, `${p}navscroll.no_cover`, r.inWs ? 'inside workspace' : `covered by ${r.hitEl}`,
     '内容区顶部仍点到内容区（不被顶栏盖住）', r.inWs === true);
+};
+
+// 右栏拖宽（≥1600 两档）：手柄必须真的点得到（此前 left:-11 被栏上的 overflow-x:clip 整条裁掉，
+// elementFromPoint 命中的是内容列，拖宽完全失效）；拖窄后右栏变窄、内容列正好加上这个差值、无溢出，
+// 松手落 localStorage 且 reload 后宽度保持；再拖回 353 复原；双击手柄复位到 353。
+const checkRosterDrag = async (tab, view, p) => {
+  await gotoVrc(tab, `${PAGE}#/settings`);
+  await tab.waitForTimeout(800);
+  const probe = () => tab.evaluate(() => {
+    const rail = document.querySelector('.roster-rail').getBoundingClientRect();
+    const h = document.querySelector('[data-testid="roster-resize"]').getBoundingClientRect();
+    const tip = document.elementFromPoint(h.x + h.width / 2, h.y + h.height / 2);
+    return {
+      rail: Math.round(rail.width),
+      content: Math.round(document.querySelector('.workspace > div').getBoundingClientRect().width),
+      hx: h.x + h.width / 2, hy: h.y + h.height / 2,
+      wsRight: Math.round(document.querySelector('.workspace').getBoundingClientRect().right),
+      hitHandle: !!tip && (tip.dataset?.testid === 'roster-resize' || tip.closest?.('[data-testid="roster-resize"]') !== null),
+      stored: localStorage.getItem('vrc-roster-w'),
+      ovf: document.documentElement.scrollWidth - window.innerWidth
+    };
+  });
+  // 按「目标右栏宽」拖动：宽度公式是 workspaceRight − 指针 x，直接算落点，免去每拖一次差几像素
+  const dragTo = async (want) => {
+    const h = await probe();
+    const dx = (h.wsRight - want) - h.hx;
+    await tab.mouse.move(h.hx, h.hy);
+    await tab.waitForTimeout(120);
+    await tab.mouse.down();
+    await tab.waitForTimeout(160); // 等 React 装上 pointermove 监听（太快会整段漏掉）
+    await tab.mouse.move(h.hx + dx / 2, h.hy, { steps: 4 });
+    await tab.waitForTimeout(90);
+    await tab.mouse.move(h.hx + dx, h.hy, { steps: 4 });
+    await tab.waitForTimeout(90);
+    await tab.mouse.up();
+    await tab.waitForTimeout(400);
+    return probe();
+  };
+  const a = await probe();
+  check(view, `${p}rs.handle`, a.hitHandle ? 'handle' : 'covered', '手柄中心 elementFromPoint 落在手柄上', a.hitHandle);
+  const off = await dragTo(280); // 收窄到 280
+  check(view, `${p}rs.narrow`,
+    `${a.rail}→${off.rail}，内容 ${a.content}→${off.content}（+${off.content - a.content}）stored ${off.stored}`,
+    '右栏 <353−50，内容列 += 右栏差值(±2)，无溢出，宽度已落盘',
+    off.rail < a.rail - 50 && Math.abs((off.content - a.content) - (a.rail - off.rail)) <= 2
+      && off.ovf <= 0 && off.stored === String(off.rail));
+  await tab.reload();
+  await tab.waitForSelector('[data-testid="roster-resize"]', { timeout: 30_000 });
+  await tab.waitForTimeout(800);
+  const rl = await probe();
+  check(view, `${p}rs.persist`, `${rl.rail}/${off.rail} 内容 ${rl.content}/${off.content}`, '宽与内容列宽度保持',
+    rl.rail === off.rail && rl.content === off.content && rl.ovf <= 0);
+  // 拖回 353：手柄中心在栏左内 5px，一次拖动的落点会差几个像素，按实测误差再补一次
+  let back = await dragTo(a.rail);
+  if (back.rail !== a.rail) back = await dragTo(a.rail);
+  check(view, `${p}rs.restore`, `${back.rail}/${a.rail} 内容 ${back.content}/${a.content}`,
+    '回到 353、内容列回到基线', back.rail === a.rail && back.content === a.content && back.ovf <= 0);
+  const h = await probe();
+  await tab.mouse.dblclick(h.hx, h.hy);
+  await tab.waitForTimeout(350);
+  const dbl = await probe();
+  check(view, `${p}rs.dblclick_reset`, `${dbl.rail}/${a.rail} stored ${dbl.stored}`, '双击复位到 353 并落盘',
+    dbl.rail === a.rail && dbl.stored === '353');
+  // reload 会清掉注入的 window.__chrome（下面 assertFrame 还要用），补装一次
+  await tab.evaluate(installChrome);
 };
 
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
@@ -561,6 +705,7 @@ for (const [width, height] of VIEWS) {
   // 展开态：侧栏折叠夹收放不该动内容列/外壳（浅色）；矮窗还要验「nav 滚到底不带动整页」
   await checkFoldImpact(tab, view, 'exp.');
   if (height <= 600) await checkNavScroll(tab, view, 'exp.');
+  if (width >= 1600) await checkRosterDrag(tab, view, 'exp.');
 
   // 浅色 + 收起：外壳同一套断言 + 整列让宽（此前收起态只在深色轮量 4 个高度）
   await gotoVrc(tab, `${PAGE}#/settings`);
@@ -576,6 +721,7 @@ for (const [width, height] of VIEWS) {
   assertCollapsed(view, lc, width, 'lcoll.', got.workspace.x - lc.workspace.x);
 
   if (width >= 1440) await checkRosterCombo(tab, view, 'lcoll.', expRosterW);
+  if (width >= 1600) await checkRosterDragCollapsed(tab, view, 'lcoll.', expRosterW);
   await checkCollapsedFriends(tab, view, 'lcoll.');
   lightColl.set(view, { ws: Math.round(lc.workspace.w), rosterW: Math.round(lc.roster?.w ?? 0) });
   await tab.close();
@@ -609,6 +755,7 @@ for (const [width, height] of VIEWS) {
   // 深色展开：折叠夹收放同样不动内容列/外壳；矮窗 nav 滚到底也不带动整页
   await checkFoldImpact(tab, view, 'dark.exp.');
   if (height <= 600) await checkNavScroll(tab, view, 'dark.exp.');
+  if (width >= 1600) await checkRosterDrag(tab, view, 'dark.exp.');
   await gotoVrc(tab, `${PAGE}#/settings`);
   await tab.waitForTimeout(300);
   await collapse(tab);
@@ -631,6 +778,7 @@ for (const [width, height] of VIEWS) {
 
   // 深色收起也跑「收起 × 右栏开关」与 friends 页（此前只有浅色轮有，主题+折叠组合态没量过）
   if (width >= 1440) await checkRosterCombo(tab, view, 'dcoll.', expDarkRosterW);
+  if (width >= 1600) await checkRosterDragCollapsed(tab, view, 'dcoll.', expDarkRosterW);
   await checkCollapsedFriends(tab, view, 'dcoll.');
   await ctx.close();
 }

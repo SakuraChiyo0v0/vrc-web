@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T08:09:16.478Z",
+ "at": "2026-11-24T09:10:21.537Z",
  "base": "http://127.0.0.1:8891",
- "pass": 1837,
- "total": 1837,
+ "pass": 1905,
+ "total": 1905,
  "rows": [
   {
    "view": "1024x600",
@@ -405,9 +405,16 @@
   },
   {
    "view": "1024x600",
+   "name": "exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 797/797 aside 214/214 sub7",
-   "want": "ws 回 797、侧栏宽回 214",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
@@ -426,15 +433,22 @@
   },
   {
    "view": "1024x600",
+   "name": "exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 797/797 aside 214/214 sub7",
-   "want": "ws 回 797、侧栏宽回 214",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
    "view": "1024x600",
    "name": "exp.navscroll.moved",
-   "ours": "303→303 overflow303",
+   "ours": "0→303 overflow303",
    "want": ">0 且溢出 ≥0",
    "ok": true
   },
@@ -1231,9 +1245,16 @@
   },
   {
    "view": "1024x768",
+   "name": "exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 797/797 aside 214/214 sub7",
-   "want": "ws 回 797、侧栏宽回 214",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
@@ -1252,9 +1273,16 @@
   },
   {
    "view": "1024x768",
+   "name": "exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 797/797 aside 214/214 sub7",
-   "want": "ws 回 797、侧栏宽回 214",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
@@ -2029,9 +2057,16 @@
   },
   {
    "view": "1100x800",
+   "name": "exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 873/873 aside 214/214 sub7",
-   "want": "ws 回 873、侧栏宽回 214",
+   "ours": "ws 873/873 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 873、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
@@ -2050,9 +2085,16 @@
   },
   {
    "view": "1100x800",
+   "name": "exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 873/873 aside 214/214 sub7",
-   "want": "ws 回 873、侧栏宽回 214",
+   "ours": "ws 873/873 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 873、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
@@ -2827,9 +2869,16 @@
   },
   {
    "view": "1280x600",
+   "name": "exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 990/990 aside 277/277 sub7",
-   "want": "ws 回 990、侧栏宽回 277",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -2848,15 +2897,22 @@
   },
   {
    "view": "1280x600",
+   "name": "exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 990/990 aside 277/277 sub7",
-   "want": "ws 回 990、侧栏宽回 277",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
    "view": "1280x600",
    "name": "exp.navscroll.moved",
-   "ours": "303→303 overflow303",
+   "ours": "0→303 overflow303",
    "want": ">0 且溢出 ≥0",
    "ok": true
   },
@@ -3653,9 +3709,16 @@
   },
   {
    "view": "1280x800",
+   "name": "exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 990/990 aside 277/277 sub7",
-   "want": "ws 回 990、侧栏宽回 277",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -3674,9 +3737,16 @@
   },
   {
    "view": "1280x800",
+   "name": "exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 990/990 aside 277/277 sub7",
-   "want": "ws 回 990、侧栏宽回 277",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -4451,9 +4521,16 @@
   },
   {
    "view": "1366x768",
+   "name": "exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 1076/1076 aside 277/277 sub7",
-   "want": "ws 回 1076、侧栏宽回 277",
+   "ours": "ws 1076/1076 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1076、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -4472,9 +4549,16 @@
   },
   {
    "view": "1366x768",
+   "name": "exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 1076/1076 aside 277/277 sub7",
-   "want": "ws 回 1076、侧栏宽回 277",
+   "ours": "ws 1076/1076 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1076、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -5249,9 +5333,16 @@
   },
   {
    "view": "1440x900",
+   "name": "exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 1150/1150 aside 277/277 sub7",
-   "want": "ws 回 1150、侧栏宽回 277",
+   "ours": "ws 1150/1150 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1150、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -5270,9 +5361,16 @@
   },
   {
    "view": "1440x900",
+   "name": "exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 1150/1150 aside 277/277 sub7",
-   "want": "ws 回 1150、侧栏宽回 277",
+   "ours": "ws 1150/1150 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1150、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -6082,9 +6180,16 @@
   },
   {
    "view": "1600x900",
+   "name": "exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 1310/1310 aside 277/277 sub7",
-   "want": "ws 回 1310、侧栏宽回 277",
+   "ours": "ws 1310/1310 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1310、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -6103,9 +6208,51 @@
   },
   {
    "view": "1600x900",
+   "name": "exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 1310/1310 aside 277/277 sub7",
-   "want": "ws 回 1310、侧栏宽回 277",
+   "ours": "ws 1310/1310 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1310、侧栏宽回 277、内容高回 729",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.rs.handle",
+   "ours": "handle",
+   "want": "手柄中心 elementFromPoint 落在手柄上",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.rs.narrow",
+   "ours": "353→280，内容 957→1030（+73）stored 280",
+   "want": "右栏 <353−50，内容列 += 右栏差值(±2)，无溢出，宽度已落盘",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.rs.persist",
+   "ours": "280/280 内容 1030/1030",
+   "want": "宽与内容列宽度保持",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.rs.restore",
+   "ours": "353/353 内容 957/957",
+   "want": "回到 353、内容列回到基线",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.rs.dblclick_reset",
+   "ours": "353/353 stored 353",
+   "want": "双击复位到 353 并落盘",
    "ok": true
   },
   {
@@ -6498,6 +6645,27 @@
    "name": "lcoll.roster.aside_gone",
    "ours": "gone",
    "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.rs_coll.gone",
+   "ours": "w353→36 collapsed=true handle=none",
+   "want": "折成 36px 竖条、拖宽手柄消失",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.rs_coll.inert",
+   "ours": "w36→36 ws1587→1587 stored 353→353",
+   "want": "拖不动：竖条宽/内容列不变、落盘仍是 353",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.rs_coll.restore",
+   "ours": "w36→353/353 handle=present",
+   "want": "展开回来宽度=展开前、手柄回来",
    "ok": true
   },
   {
@@ -6915,9 +7083,16 @@
   },
   {
    "view": "1700x1040",
+   "name": "exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 878→878 ch878",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 1410/1410 aside 277/277 sub7",
-   "want": "ws 回 1410、侧栏宽回 277",
+   "ours": "ws 1410/1410 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1410、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -6936,9 +7111,51 @@
   },
   {
    "view": "1700x1040",
+   "name": "exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 878→878 ch878",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 1410/1410 aside 277/277 sub7",
-   "want": "ws 回 1410、侧栏宽回 277",
+   "ours": "ws 1410/1410 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1410、侧栏宽回 277、内容高回 729",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.rs.handle",
+   "ours": "handle",
+   "want": "手柄中心 elementFromPoint 落在手柄上",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.rs.narrow",
+   "ours": "353→280，内容 1057→1130（+73）stored 280",
+   "want": "右栏 <353−50，内容列 += 右栏差值(±2)，无溢出，宽度已落盘",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.rs.persist",
+   "ours": "280/280 内容 1130/1130",
+   "want": "宽与内容列宽度保持",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.rs.restore",
+   "ours": "353/353 内容 1057/1057",
+   "want": "回到 353、内容列回到基线",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.rs.dblclick_reset",
+   "ours": "353/353 stored 353",
+   "want": "双击复位到 353 并落盘",
    "ok": true
   },
   {
@@ -7335,6 +7552,27 @@
   },
   {
    "view": "1700x1040",
+   "name": "lcoll.rs_coll.gone",
+   "ours": "w353→36 collapsed=true handle=none",
+   "want": "折成 36px 竖条、拖宽手柄消失",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.rs_coll.inert",
+   "ours": "w36→36 ws1687→1687 stored 353→353",
+   "want": "拖不动：竖条宽/内容列不变、落盘仍是 353",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.rs_coll.restore",
+   "ours": "w36→353/353 handle=present",
+   "want": "展开回来宽度=展开前、手柄回来",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "lcoll.friends.roster",
    "ours": "not rendered",
    "want": "not rendered",
@@ -7531,9 +7769,16 @@
   },
   {
    "view": "1024x600",
+   "name": "dark.exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 797/797 aside 214/214 sub7",
-   "want": "ws 回 797、侧栏宽回 214",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
@@ -7552,15 +7797,22 @@
   },
   {
    "view": "1024x600",
+   "name": "dark.exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 797/797 aside 214/214 sub7",
-   "want": "ws 回 797、侧栏宽回 214",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
    "view": "1024x600",
    "name": "dark.exp.navscroll.moved",
-   "ours": "303→303 overflow303",
+   "ours": "0→303 overflow303",
    "want": ">0 且溢出 ≥0",
    "ok": true
   },
@@ -8154,9 +8406,16 @@
   },
   {
    "view": "1024x768",
+   "name": "dark.exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 797/797 aside 214/214 sub7",
-   "want": "ws 回 797、侧栏宽回 214",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
@@ -8175,9 +8434,16 @@
   },
   {
    "view": "1024x768",
+   "name": "dark.exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 797/797 aside 214/214 sub7",
-   "want": "ws 回 797、侧栏宽回 214",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
@@ -8749,9 +9015,16 @@
   },
   {
    "view": "1100x800",
+   "name": "dark.exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 873/873 aside 214/214 sub7",
-   "want": "ws 回 873、侧栏宽回 214",
+   "ours": "ws 873/873 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 873、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
@@ -8770,9 +9043,16 @@
   },
   {
    "view": "1100x800",
+   "name": "dark.exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 873/873 aside 214/214 sub7",
-   "want": "ws 回 873、侧栏宽回 214",
+   "ours": "ws 873/873 aside 214/214 sub7 extent 729/729",
+   "want": "ws 回 873、侧栏宽回 214、内容高回 729",
    "ok": true
   },
   {
@@ -9344,9 +9624,16 @@
   },
   {
    "view": "1280x600",
+   "name": "dark.exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 990/990 aside 277/277 sub7",
-   "want": "ws 回 990、侧栏宽回 277",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -9365,15 +9652,22 @@
   },
   {
    "view": "1280x600",
+   "name": "dark.exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 990/990 aside 277/277 sub7",
-   "want": "ws 回 990、侧栏宽回 277",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
    "view": "1280x600",
    "name": "dark.exp.navscroll.moved",
-   "ours": "303→303 overflow303",
+   "ours": "0→303 overflow303",
    "want": ">0 且溢出 ≥0",
    "ok": true
   },
@@ -9967,9 +10261,16 @@
   },
   {
    "view": "1280x800",
+   "name": "dark.exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 990/990 aside 277/277 sub7",
-   "want": "ws 回 990、侧栏宽回 277",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -9988,9 +10289,16 @@
   },
   {
    "view": "1280x800",
+   "name": "dark.exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 990/990 aside 277/277 sub7",
-   "want": "ws 回 990、侧栏宽回 277",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -10562,9 +10870,16 @@
   },
   {
    "view": "1366x768",
+   "name": "dark.exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 1076/1076 aside 277/277 sub7",
-   "want": "ws 回 1076、侧栏宽回 277",
+   "ours": "ws 1076/1076 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1076、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -10583,9 +10898,16 @@
   },
   {
    "view": "1366x768",
+   "name": "dark.exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 1076/1076 aside 277/277 sub7",
-   "want": "ws 回 1076、侧栏宽回 277",
+   "ours": "ws 1076/1076 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1076、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -11157,9 +11479,16 @@
   },
   {
    "view": "1440x900",
+   "name": "dark.exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 1150/1150 aside 277/277 sub7",
-   "want": "ws 回 1150、侧栏宽回 277",
+   "ours": "ws 1150/1150 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1150、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -11178,9 +11507,16 @@
   },
   {
    "view": "1440x900",
+   "name": "dark.exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 1150/1150 aside 277/277 sub7",
-   "want": "ws 回 1150、侧栏宽回 277",
+   "ours": "ws 1150/1150 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1150、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -11787,9 +12123,16 @@
   },
   {
    "view": "1600x900",
+   "name": "dark.exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 1310/1310 aside 277/277 sub7",
-   "want": "ws 回 1310、侧栏宽回 277",
+   "ours": "ws 1310/1310 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1310、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -11808,9 +12151,51 @@
   },
   {
    "view": "1600x900",
+   "name": "dark.exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 1310/1310 aside 277/277 sub7",
-   "want": "ws 回 1310、侧栏宽回 277",
+   "ours": "ws 1310/1310 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1310、侧栏宽回 277、内容高回 729",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.exp.rs.handle",
+   "ours": "handle",
+   "want": "手柄中心 elementFromPoint 落在手柄上",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.exp.rs.narrow",
+   "ours": "353→280，内容 957→1030（+73）stored 280",
+   "want": "右栏 <353−50，内容列 += 右栏差值(±2)，无溢出，宽度已落盘",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.exp.rs.persist",
+   "ours": "280/280 内容 1030/1030",
+   "want": "宽与内容列宽度保持",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.exp.rs.restore",
+   "ours": "353/353 内容 957/957",
+   "want": "回到 353、内容列回到基线",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.exp.rs.dblclick_reset",
+   "ours": "353/353 stored 353",
+   "want": "双击复位到 353 并落盘",
    "ok": true
   },
   {
@@ -12221,6 +12606,27 @@
   },
   {
    "view": "1600x900",
+   "name": "dcoll.rs_coll.gone",
+   "ours": "w353→36 collapsed=true handle=none",
+   "want": "折成 36px 竖条、拖宽手柄消失",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.rs_coll.inert",
+   "ours": "w36→36 ws1587→1587 stored 353→353",
+   "want": "拖不动：竖条宽/内容列不变、落盘仍是 353",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.rs_coll.restore",
+   "ours": "w36→353/353 handle=present",
+   "want": "展开回来宽度=展开前、手柄回来",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "dcoll.friends.roster",
    "ours": "not rendered",
    "want": "not rendered",
@@ -12417,9 +12823,16 @@
   },
   {
    "view": "1700x1040",
+   "name": "dark.exp.fold.feed.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 878→878 ch878",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 1410/1410 aside 277/277 sub7",
-   "want": "ws 回 1410、侧栏宽回 277",
+   "ours": "ws 1410/1410 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1410、侧栏宽回 277、内容高回 729",
    "ok": true
   },
   {
@@ -12438,9 +12851,51 @@
   },
   {
    "view": "1700x1040",
+   "name": "dark.exp.fold.friends.shrink",
+   "ours": "extent 729→476 (−253，子项 217) sh 878→878 ch878",
+   "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 1410/1410 aside 277/277 sub7",
-   "want": "ws 回 1410、侧栏宽回 277",
+   "ours": "ws 1410/1410 aside 277/277 sub7 extent 729/729",
+   "want": "ws 回 1410、侧栏宽回 277、内容高回 729",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.rs.handle",
+   "ours": "handle",
+   "want": "手柄中心 elementFromPoint 落在手柄上",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.rs.narrow",
+   "ours": "353→280，内容 1057→1130（+73）stored 280",
+   "want": "右栏 <353−50，内容列 += 右栏差值(±2)，无溢出，宽度已落盘",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.rs.persist",
+   "ours": "280/280 内容 1130/1130",
+   "want": "宽与内容列宽度保持",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.rs.restore",
+   "ours": "353/353 内容 1057/1057",
+   "want": "回到 353、内容列回到基线",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.rs.dblclick_reset",
+   "ours": "353/353 stored 353",
+   "want": "双击复位到 353 并落盘",
    "ok": true
   },
   {
@@ -12847,6 +13302,27 @@
    "name": "dcoll.roster.aside_gone",
    "ours": "gone",
    "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.rs_coll.gone",
+   "ours": "w353→36 collapsed=true handle=none",
+   "want": "折成 36px 竖条、拖宽手柄消失",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.rs_coll.inert",
+   "ours": "w36→36 ws1687→1687 stored 353→353",
+   "want": "拖不动：竖条宽/内容列不变、落盘仍是 353",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.rs_coll.restore",
+   "ours": "w36→353/353 handle=present",
+   "want": "展开回来宽度=展开前、手柄回来",
    "ok": true
   },
   {
