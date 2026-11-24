@@ -1,6 +1,6 @@
 {
  "_note": "nav_coverage.mjs：逐视口逐个点侧栏项，断言 hash=#/<id>、顶栏标题=TITLES[id][0]、无错误边界，可见项还要过命中测试（elementFromPoint 落在自身且整行在 nav 可视区）；最后验折叠夹收起/展开与收起导航栏",
- "base": "http://127.0.0.1:8891",
+ "base": "http://127.0.0.1:8899",
  "views": [
   "1024x600",
   "1024x768",
@@ -20,110 +20,110 @@
   {
    "view": "1024x600",
    "theme": "light",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1024x768",
    "theme": "light",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1100x800",
    "theme": "light",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1280x600",
    "theme": "light",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1280x800",
    "theme": "light",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1366x768",
    "theme": "light",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1440x900",
    "theme": "light",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1600x900",
    "theme": "light",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1700x1040",
    "theme": "light",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1024x600/dark",
    "theme": "dark",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1024x768/dark",
    "theme": "dark",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1100x800/dark",
    "theme": "dark",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1280x600/dark",
    "theme": "dark",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1280x800/dark",
    "theme": "dark",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1366x768/dark",
    "theme": "dark",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1440x900/dark",
    "theme": "dark",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1600x900/dark",
    "theme": "dark",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   },
   {
    "view": "1700x1040/dark",
    "theme": "dark",
-   "pass": 33,
-   "total": 33
+   "pass": 37,
+   "total": 37
   }
  ],
  "score": 100,
@@ -558,6 +558,58 @@
    "error": null
   },
   {
+   "id": "palette:expanded_open@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
+  },
+  {
    "id": "overview@1024x768",
    "view": "1024x768",
    "theme": "light",
@@ -985,6 +1037,58 @@
    "hit": true,
    "ok": true,
    "error": null
+  },
+  {
+   "id": "palette:expanded_open@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
   },
   {
    "id": "overview@1100x800",
@@ -1416,6 +1520,58 @@
    "error": null
   },
   {
+   "id": "palette:expanded_open@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
+  },
+  {
    "id": "overview@1280x600",
    "view": "1280x600",
    "theme": "light",
@@ -1843,6 +1999,58 @@
    "hit": true,
    "ok": true,
    "error": null
+  },
+  {
+   "id": "palette:expanded_open@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
   },
   {
    "id": "overview@1280x800",
@@ -2274,6 +2482,58 @@
    "error": null
   },
   {
+   "id": "palette:expanded_open@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
+  },
+  {
    "id": "overview@1366x768",
    "view": "1366x768",
    "theme": "light",
@@ -2701,6 +2961,58 @@
    "hit": true,
    "ok": true,
    "error": null
+  },
+  {
+   "id": "palette:expanded_open@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
   },
   {
    "id": "overview@1440x900",
@@ -3132,6 +3444,58 @@
    "error": null
   },
   {
+   "id": "palette:expanded_open@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
+  },
+  {
    "id": "overview@1600x900",
    "view": "1600x900",
    "theme": "light",
@@ -3559,6 +3923,58 @@
    "hit": true,
    "ok": true,
    "error": null
+  },
+  {
+   "id": "palette:expanded_open@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
   },
   {
    "id": "overview@1700x1040",
@@ -3990,6 +4406,58 @@
    "error": null
   },
   {
+   "id": "palette:expanded_open@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
+  },
+  {
    "id": "overview@1024x600/dark",
    "view": "1024x600/dark",
    "theme": "dark",
@@ -4417,6 +4885,58 @@
    "hit": true,
    "ok": true,
    "error": null
+  },
+  {
+   "id": "palette:expanded_open@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
   },
   {
    "id": "overview@1024x768/dark",
@@ -4848,6 +5368,58 @@
    "error": null
   },
   {
+   "id": "palette:expanded_open@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
+  },
+  {
    "id": "overview@1100x800/dark",
    "view": "1100x800/dark",
    "theme": "dark",
@@ -5275,6 +5847,58 @@
    "hit": true,
    "ok": true,
    "error": null
+  },
+  {
+   "id": "palette:expanded_open@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
   },
   {
    "id": "overview@1280x600/dark",
@@ -5706,6 +6330,58 @@
    "error": null
   },
   {
+   "id": "palette:expanded_open@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
+  },
+  {
    "id": "overview@1280x800/dark",
    "view": "1280x800/dark",
    "theme": "dark",
@@ -6133,6 +6809,58 @@
    "hit": true,
    "ok": true,
    "error": null
+  },
+  {
+   "id": "palette:expanded_open@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
   },
   {
    "id": "overview@1366x768/dark",
@@ -6564,6 +7292,58 @@
    "error": null
   },
   {
+   "id": "palette:expanded_open@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
+  },
+  {
    "id": "overview@1440x900/dark",
    "view": "1440x900/dark",
    "theme": "dark",
@@ -6991,6 +7771,58 @@
    "hit": true,
    "ok": true,
    "error": null
+  },
+  {
+   "id": "palette:expanded_open@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
   },
   {
    "id": "overview@1600x900/dark",
@@ -7422,6 +8254,58 @@
    "error": null
   },
   {
+   "id": "palette:expanded_open@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
+  },
+  {
    "id": "overview@1700x1040/dark",
    "view": "1700x1040/dark",
    "theme": "dark",
@@ -7849,6 +8733,58 @@
    "hit": true,
    "ok": true,
    "error": null
+  },
+  {
+   "id": "palette:expanded_open@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_open",
+   "hash": "-",
+   "title": "open=true focus=true",
+   "want": "面板打开且聚焦，侧栏在位，当前页项仍高亮",
+   "active": "aside=true nav=sessions",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_arrows@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_arrows",
+   "hash": "-",
+   "title": "16 条 sel 0→1→0",
+   "want": "16≥2 条，↓ 到 1，↑ 回 0",
+   "active": "Nova/Nia/Alice",
+   "hit": "-",
+   "ok": true,
+   "error": "选中位移不符：0→1→0"
+  },
+  {
+   "id": "palette:expanded_enter@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_enter",
+   "hash": "-",
+   "title": "「Nia」 id=usr_f12",
+   "want": "抽屉名字 =「Nia」、面板已关、侧栏在位",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": "名字不符：抽屉「Nia」/ 期望「Nia」"
+  },
+  {
+   "id": "palette:expanded_mask@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_mask",
+   "hash": "-",
+   "title": "open=true → closed",
+   "want": "点遮罩关面板，侧栏在位、当前页项仍高亮且点得到",
+   "active": "aside=true nav=sessions",
+   "hit": true,
+   "ok": true,
+   "error": "点遮罩没关掉面板"
   }
  ]
 }

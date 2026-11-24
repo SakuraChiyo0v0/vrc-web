@@ -26,6 +26,9 @@
  * 视口内；面板开着时 Ctrl+3 不许跳页（App.jsx 的 `if (palette) return`）；无匹配串结果归 0 且
  * 给空态文案；Esc 关掉仍收起、再 Ctrl K 能再开；粘 wrld_ ID → 置顶「直接打开」→ Enter 真开
  * 世界抽屉（带该 ID），关掉抽屉仍是收起态。
+ * 展开态也验 Ctrl K（此时侧栏还在，验的是面板不把导航状态弄丢）：打开时输入框聚焦、侧栏在位、
+ * 当前页项仍高亮；输入后 ↓/↑ 真移动选中项（按 index 比对且不越界）；↓+Enter 关面板并开好友
+ * 抽屉且名字对得上；关抽屉再 Ctrl K、点遮罩空白处也能关，侧栏与当前页高亮原样。
  * 断言「能到 + 标题对 + 点得到」；密度/像素交给 frame_parity.mjs。
  * 产出 docs/ref/nav-coverage.json；有 FAIL 则 exit 1。
  */
@@ -575,6 +578,125 @@ for (const [width, height] of VIEWS) {
       title: sk.title, want: WANT[lastWant] ?? null, active: sk.active, hit: sk.hit,
       ok: sk.found && sk.active && sk.hit && sk.hash === `#/${lastWant}` && sk.title === (WANT[lastWant] ?? ''),
       error: null
+    });
+    // 展开态命令面板（Ctrl K）：收起态验的是「找东西只有这条路」，展开态要验的是
+    // ① 打开时侧栏在位、输入框聚焦、当前页导航项仍高亮且过命中测试（面板不该把导航状态弄丢）；
+    // ② 输入后 ↓/↑ 真的移动选中项（拿到列表后按 index 比对，不靠肉眼），且不会越界；
+    // ③ ↓ 到第 2 条后 Enter：面板关掉、好友详情抽屉打开，抽屉里的名字与面板那条对得上；
+    // ④ 关掉抽屉再 Ctrl K，点遮罩空白处（面板外）也要能关掉，侧栏与当前页高亮原样。
+    await page.keyboard.press('Control+k');
+    await page.waitForTimeout(400);
+    const palExp = await page.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const activeNav = () => {
+        const item = document.querySelector('aside.vrc-sidebar [data-nav-id][data-active="true"]');
+        if (!item) return { id: null, hit: false };
+        const b = item.getBoundingClientRect();
+        const t = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2);
+        return { id: item.dataset.navId, hit: !!t && (t === item || item.contains(t) || t.contains(item)) };
+      };
+      await wait(50);
+      const panel = document.querySelector('[data-testid="palette"]');
+      const input = panel?.querySelector('input');
+      const b = panel?.getBoundingClientRect();
+      return {
+        open: !!panel,
+        focused: !!input && document.activeElement === input,
+        aside: !!document.querySelector('aside.vrc-sidebar'),
+        inView: !!b && b.width > 200 && b.top >= -1 && b.bottom <= window.innerHeight + 1,
+        nav: activeNav()
+      };
+    });
+    push({
+      id: `palette:expanded_open@${view}`, view, theme, nav: 'palette:expanded_open', hash: '-',
+      // 面板是 fixed inset-0 的遮罩，开着的时候导航项本来就点不到（命中测试交给关掉之后的遮罩那条），
+      // 这里只要求「高亮还在」（data-active 没被面板打开弄丢）。
+      title: `open=${palExp.open} focus=${palExp.focused}`, want: '面板打开且聚焦，侧栏在位，当前页项仍高亮',
+      active: `aside=${palExp.aside} nav=${palExp.nav.id}`, hit: '-',
+      ok: palExp.open && palExp.focused && palExp.aside && palExp.inView && !!palExp.nav.id,
+      error: palExp.open ? null : 'Ctrl K 在展开态打不开面板'
+    });
+    // 输入 'a' 过滤出多条 → 记下选中 index，↓ 后 +1，↑ 回原位
+    await page.keyboard.type('a');
+    await page.waitForTimeout(900);
+    const sel = () => page.evaluate(() => {
+      const btns = [...(document.querySelector('.cmdk-list')?.querySelectorAll('button') ?? [])];
+      const idx = btns.findIndex((el) => (el.getAttribute('style') ?? '').includes('selected-surface'));
+      return {
+        n: btns.length,
+        idx,
+        labels: btns.map((el) => el.querySelector('span')?.textContent?.trim() ?? '')
+      };
+    });
+    const s0 = await sel();
+    await page.keyboard.press('ArrowDown');
+    await page.waitForTimeout(180);
+    const s1 = await sel();
+    await page.keyboard.press('ArrowUp');
+    await page.waitForTimeout(180);
+    const s2 = await sel();
+    const downWant = Math.min(s0.idx + 1, Math.max(s0.n - 1, 0));
+    push({
+      id: `palette:expanded_arrows@${view}`, view, theme, nav: 'palette:expanded_arrows', hash: '-',
+      title: `${s0.n} 条 sel ${s0.idx}→${s1.idx}→${s2.idx}`,
+      want: `${s0.n}≥2 条，↓ 到 ${downWant}，↑ 回 ${s0.idx}`,
+      active: s0.labels.slice(0, 3).join('/'), hit: '-',
+      ok: s0.n >= 2 && s0.idx === 0 && s1.idx === downWant && s2.idx === s0.idx,
+      error: s0.n < 2 ? `搜索 'a' 只出 ${s0.n} 条，箭头行走无法验证` : `选中位移不符：${s0.idx}→${s1.idx}→${s2.idx}`
+    });
+    // ↓ 到第 2 条 → Enter：面板关、好友抽屉开、名字对得上
+    const wantName = s0.labels[downWant] ?? '';
+    await page.keyboard.press('ArrowDown');
+    await page.waitForTimeout(180);
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(800);
+    const fd = await page.evaluate(() => {
+      const card = document.querySelector('.fd-card');
+      return {
+        palette: !!document.querySelector('[data-testid="palette"]'),
+        card: !!card,
+        name: card?.querySelector('.fd-namepill strong')?.textContent?.trim() ?? '',
+        idTitle: card?.querySelector('.fd-kv b')?.getAttribute('title') ?? '',
+        aside: !!document.querySelector('aside.vrc-sidebar')
+      };
+    });
+    push({
+      id: `palette:expanded_enter@${view}`, view, theme, nav: 'palette:expanded_enter', hash: '-',
+      title: `「${fd.name}」 id=${fd.idTitle.slice(0, 10)}`, want: `抽屉名字 =「${wantName}」、面板已关、侧栏在位`,
+      active: `palette=${fd.palette} aside=${fd.aside}`, hit: '-',
+      ok: !fd.palette && fd.card && fd.aside && (fd.name === wantName || (!!wantName && fd.name.includes(wantName))),
+      error: fd.card ? `名字不符：抽屉「${fd.name}」/ 期望「${wantName}」` : 'Enter 后没打开好友抽屉'
+    });
+    // 关抽屉 → Ctrl K → 点面板外的遮罩 → 必须关掉，侧栏与当前页高亮不变
+    await page.click('.fd-close');
+    await page.waitForTimeout(300);
+    await page.keyboard.press('Control+k');
+    await page.waitForTimeout(350);
+    const beforeMask = await page.evaluate(() => !!document.querySelector('[data-testid="palette"]'));
+    await page.mouse.click(6, 6);
+    await page.waitForTimeout(350);
+    const afterMask = await page.evaluate(() => {
+      const item = document.querySelector('aside.vrc-sidebar [data-nav-id][data-active="true"]');
+      let hit = false;
+      if (item) {
+        const b = item.getBoundingClientRect();
+        const t = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2);
+        hit = !!t && (t === item || item.contains(t) || t.contains(item));
+      }
+      return {
+        palette: !!document.querySelector('[data-testid="palette"]'),
+        aside: !!document.querySelector('aside.vrc-sidebar'),
+        nav: item?.dataset.navId ?? null,
+        hit
+      };
+    });
+    push({
+      id: `palette:expanded_mask@${view}`, view, theme, nav: 'palette:expanded_mask', hash: '-',
+      title: `open=${beforeMask} → ${afterMask.palette ? 'still open' : 'closed'}`,
+      want: '点遮罩关面板，侧栏在位、当前页项仍高亮且点得到',
+      active: `aside=${afterMask.aside} nav=${afterMask.nav}`, hit: afterMask.hit,
+      ok: beforeMask && !afterMask.palette && afterMask.aside && !!afterMask.nav && afterMask.hit,
+      error: !beforeMask ? 'Ctrl K 没能再开面板' : '点遮罩没关掉面板'
     });
   } finally {
     perView.push({ view, theme, pass: viewPass, total: viewRows });

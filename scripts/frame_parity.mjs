@@ -288,12 +288,29 @@ const checkCollapsedPages = async (tab, view, prefix, baseline) => {
   for (const p of PAGES) {
     await gotoVrc(tab, `${PAGE}#/${p}`);
     await tab.waitForTimeout(600);
-    const o = await tab.evaluate(() => ({
-      vw: window.innerWidth,
-      w: document.documentElement.scrollWidth,
-      ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width)
-    }));
+    const o = await tab.evaluate(() => {
+      const tb = document.querySelector('#vrc-topbar').getBoundingClientRect();
+      const sb = document.querySelector('#vrc-statusbar').getBoundingClientRect();
+      const ws = document.querySelector('.workspace').getBoundingClientRect();
+      return {
+        vw: window.innerWidth,
+        vh: window.innerHeight,
+        w: document.documentElement.scrollWidth,
+        ws: Math.round(ws.width),
+        wsY: Math.round(ws.y * 10) / 10,
+        wsH: Math.round(ws.height * 10) / 10,
+        tbH: Math.round(tb.height * 10) / 10,
+        sbH: Math.round(sb.height * 10) / 10
+      };
+    });
     check(view, `${prefix}coll.overflow.${p}`, o.w, `≤${o.vw + 1}`, o.w <= o.vw + 1);
+    // 逐页外壳高度：换页不该让顶栏/状态栏变高，内容区必须正好填满中间那段
+    // （workspace.y=顶栏高、height=视口−顶栏−状态栏，±1）。此前这两项只在 settings 量一次。
+    check(view, `${prefix}coll.topbar_h.${p}`, o.tbH, '39±1', Math.abs(o.tbH - 39) <= 1);
+    check(view, `${prefix}coll.statusbar_h.${p}`, o.sbH, '35±1', Math.abs(o.sbH - 35) <= 1);
+    const fillWant = Math.round(o.vh - o.tbH - o.sbH - 0.5);
+    check(view, `${prefix}coll.fill.${p}`, `y${o.wsY} h${o.wsH}`, `y${o.tbH} h${fillWant}±1`,
+      Math.abs(o.wsY - o.tbH) <= 1 && Math.abs(o.wsH - (o.vh - o.tbH - o.sbH)) <= 1);
     // 收起态每一页的内容列都得留得住 ≥720（此前只有 settings/friends 量过宽度）
     check(view, `${prefix}coll.content.${p}`, o.ws, '≥720', o.ws >= 720);
     const before = baseline[p];
