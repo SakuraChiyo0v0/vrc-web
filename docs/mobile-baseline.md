@@ -1,6 +1,6 @@
 # 移动端验收基线（自动生成，勿手改）
 
-生成：2026-11-23 23:39:33 · 断言 1197/1197 PASS · 页面 13 × 视口 11
+生成：2026-11-24 00:35:58 · 断言 1275/1275 PASS · 页面 14 × 视口 11
 
 移动形态判据：宽 ≤1023 或高 ≤500（styles.css / tailwind md raw / Sidebar matchMedia 三处一致）。
 重新生成：`node scripts/mobile_parity.mjs`（脚本末尾自动写回本文件）。
@@ -119,6 +119,124 @@
 | 无横向溢出 | scrollW=820 vw=820 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
 | 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 820px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## worlds@320
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## worlds@360
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=360 vw=360 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 360px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## worlds@375
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=375 vw=375 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 375px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## worlds@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=390 vw=390 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| chip 命中区≥36 | 36px 收藏(36) 次数不限去过 ≥1 次去过 ≥3 次(36) 容量不限≤8 人9–16 人17–3(36) | ≥36px | PASS |
+| 表单控件≥36 | 36px (36) | ≥36px | PASS |
+| 行内/表格目标≥32 | 32px 按世界排序(32) 按作者排序(32) 按访问次数排序(32) | ≥32px | PASS |
+| 表单控件中心可点（未被遮挡） | 0 处遮挡 | 0 | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 390px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## worlds@414
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=414 vw=414 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 414px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## worlds@430
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=430 vw=430 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 430px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## worlds@844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=844 vw=844 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 844px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+| 横屏内容区非零高 | 311px | ≥200 | PASS |
+| 横屏顶栏高度 | 44px | ≤48 | PASS |
+
+## worlds@932
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=932 vw=932 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 932px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+| 横屏内容区非零高 | 351px | ≥200 | PASS |
+| 横屏顶栏高度 | 44px | ≤48 | PASS |
+
+## worlds@768
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=768 vw=768 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 768px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
+
+## worlds@820
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 无横向溢出 | scrollW=820 vw=820 | ≤vw+1 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 820px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -718,11 +836,11 @@
 | 断言 | 实测 | 期望 | 结果 |
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
-| 表格卡片化 | thead=none tr=flex | thead=none tr=flex | PASS |
-| 触控目标≥32 | 36px | ≥32px | PASS |
-| 最小字号≥11 | 11px | ≥11px | PASS |
-| 内容区非零宽 | 320px | >0 | PASS |
-| 侧栏默认收起 | left=-214 | <0 | PASS |
+| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
+| 触控目标≥32 | n/a | ≥32px | PASS |
+| 最小字号≥11 | 13px | ≥11px | PASS |
+| 内容区非零宽 | nullpx | >0 | PASS |
+| 侧栏默认收起 | left=null | <0 | PASS |
 
 ## moderation@360
 
@@ -1749,7 +1867,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 1ms（20 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 0ms（20 行） | ≤300ms | PASS |
 
 ## scroll@feed@390
 
@@ -1757,7 +1875,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 1ms（36 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 0ms（36 行） | ≤300ms | PASS |
 
 ## extreme@friendlist@360
 
@@ -1889,6 +2007,14 @@
 | 主内容≥60 | main=134 vv=170 | ≥60 | PASS |
 | 内容可用（完整一块 或 首块露出≥60） | 5 块 完整=0 首块 100px top=108 露出=62 | 完整≥1 或 露出≥60 | PASS |
 
+## kb-matrix@worlds@844x390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 主内容≥60 | main=134 vv=170 | ≥60 | PASS |
+| 内容可用（完整一块 或 首块露出≥60） | 5 块 完整=0 首块 110px top=84 露出=86 | 完整≥1 或 露出≥60 | PASS |
+
 ## kb-matrix@overview@844x390
 
 | 断言 | 实测 | 期望 | 结果 |
@@ -1903,7 +2029,7 @@
 | --- | --- | --- | --- |
 | 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
 | 主内容≥60 | main=134 vv=170 | ≥60 | PASS |
-| 内容可用（完整一块 或 首块露出≥60） | 5 块 完整=0 首块 398px top=84 露出=86 | 完整≥1 或 露出≥60 | PASS |
+| 内容可用（完整一块 或 首块露出≥60） | 5 块 完整=0 首块 139px top=84 露出=86 | 完整≥1 或 露出≥60 | PASS |
 
 ## kb-matrix@feed@844x390
 
@@ -1993,6 +2119,14 @@
 | 主内容≥60 | main=154 vv=190 | ≥60 | PASS |
 | 内容可用（完整一块 或 首块露出≥60） | 5 块 完整=1 首块 100px top=84 露出=100 | 完整≥1 或 露出≥60 | PASS |
 
+## kb-matrix@worlds@932x430
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 主内容≥60 | main=154 vv=190 | ≥60 | PASS |
+| 内容可用（完整一块 或 首块露出≥60） | 5 块 完整=0 首块 110px top=84 露出=106 | 完整≥1 或 露出≥60 | PASS |
+
 ## kb-matrix@overview@932x430
 
 | 断言 | 实测 | 期望 | 结果 |
@@ -2007,7 +2141,7 @@
 | --- | --- | --- | --- |
 | 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
 | 主内容≥60 | main=154 vv=190 | ≥60 | PASS |
-| 内容可用（完整一块 或 首块露出≥60） | 5 块 完整=0 首块 398px top=84 露出=106 | 完整≥1 或 露出≥60 | PASS |
+| 内容可用（完整一块 或 首块露出≥60） | 5 块 完整=0 首块 139px top=84 露出=106 | 完整≥1 或 露出≥60 | PASS |
 
 ## kb-matrix@feed@932x430
 
@@ -2158,6 +2292,15 @@
 | <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
 | 无 <32 控件 | 0 个 | 0 | PASS |
 | 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+
+## residue@worlds@390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| <36 控件只在降档白名单内 | 0 个越界 | 0 | PASS |
+| 无 <32 控件 | 0 个 | 0 | PASS |
+| 抽屉二级导航 40 档 | 40px | 40–43px | PASS |
+| 表头排序按钮 32 档 | 32px | 32–35px | PASS |
 
 ## residue@overview@390
 

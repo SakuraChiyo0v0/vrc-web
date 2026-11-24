@@ -1514,7 +1514,12 @@ html[data-phone='1'] #root {
   /* 工具条同排的分段/视图切换（概览·旅程、时间范围、表格·卡片）此前只有 32，
      与同排 chip 的 36 不一致，相邻目标间距仅 2px，手指容易点到隔壁。统一抬到 36；
      行内文字与表格单元格仍留 32（分层阈值见 mobile_parity 的 residue 断言）。 */
-  .ov-tab, .ov-range, .feed-views button { min-height: 36px; }
+  .ov-tab, .ov-range, .feed-views button, .sess-seg { min-height: 36px; }
+  /* sessions 的「自己」来源框与视图段桌面都是 33 高：和同排 chip 的 36 不一致（相邻目标只差几像素，
+     手指容易点到隔壁）。统一抬到 36；段内按钮留 32 与容器内边距对齐（residue 白名单里显式放行
+     .sess-seg button，见 mobile_parity）。 */
+  .sess-self { height: 36px; min-height: 36px; }
+  .sess-seg { height: 36px; }
 }
 
 /* 横屏 + 键盘（844×390 键盘 220 → 可视 170；932×430 → 190）：顶栏 44 + 状态栏 35 + 工具条 58
@@ -1549,6 +1554,9 @@ html[data-phone='1'] #root {
   /* 分组头（「2026年11月23日周一」）28px：键盘弹起时只留结果行，否则首行仍差 8px 看不全 */
   html[data-kb='1'] .sess-group { display: none; }
   html[data-kb='1'] .sess-tools { height: 36px; padding: 2px 6px; justify-content: flex-end; }
+  /* 视图段在移动形态被抬到 36：键盘弹起时工具条只有 36（内边距 2→内容 32），
+     段容器跟着回到 32，否则会溢出工具条压进首行。 */
+  html[data-kb='1'] .sess-seg { height: 32px; min-height: 32px; }
   html[data-kb='1'] .sess-search { padding: 0 6px 2px; }
 
   /* 13 页矩阵审计（scripts/_probe_kb_matrix.mjs）剩下的三类「键盘弹起后首屏内容被头部吃光」：
@@ -1566,4 +1574,19 @@ html[data-phone='1'] #root {
   /* gamelog：筛选行 36 + 日期分组间距把首日卡片顶到 116（可视 170 → 只露 54px） */
   html[data-kb='1'] main .workspace > div > .p-4 > .mb-3 { margin-bottom: 2px; }
   html[data-kb='1'] .mb-4.max-w-\[720px\], html[data-kb='1'] [data-set-body] { margin-top: 4px; }
+}
+/* ══ 世界库（#/worlds）在矮视口下的密度 ══
+ * 844×390 主内容只有 311px，而 4:3 封面在 3 列下把单卡撑到 348px（探针实测 card top=134 h=348）：
+ * 一整张卡都看不全，首块只露出 44px。世界库是浏览型页面，矮屏上少一点封面高度换「一屏看得到两张卡」，
+ * 桌面与竖屏手机（≥600 高）不受影响。 */
+@media (max-height: 500px) {
+  .worlds-page { padding: 8px 12px; }
+  .worlds-page .mb-3 { margin-bottom: 4px; }
+  .world-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 12px; }
+  .world-head { height: 20px; }
+  .world-card .thumb { aspect-ratio: auto; height: 64px; object-fit: cover; }
+  .world-card .wc-body { padding: 6px 8px 0; }
+  /* 横屏 + 键盘（可视 170 / 主内容 134）：工具条只留搜索框、列头让位，否则首卡 still 在屏外 */
+  html[data-kb='1'] .worlds-page .mb-3 > :not(input) { display: none; }
+  html[data-kb='1'] .world-head { display: none; }
 }

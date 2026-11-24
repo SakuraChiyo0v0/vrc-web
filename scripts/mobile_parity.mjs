@@ -34,7 +34,8 @@ const BASE = process.argv[2]?.startsWith('http') ? process.argv[2] : (process.en
 const EXE = process.env.CHROME_PATH
   || '/opt/data/cache/pw-browsers/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell';
 
-const PAGES = ['friends', ...STRUCT_PAGES.filter((p) => p !== 'locations')];
+// worlds（世界库）不在 spec 的 13 页清单里，但它是真实路由且带排序表头/chip 工具条：一并纳入审计（14 页）
+const PAGES = ['friends', 'worlds', ...STRUCT_PAGES.filter((p) => p !== 'locations')];
 // 竖屏 320/360/375/390/414/430 + 手机横屏 844×390 / 932×430。
 // 320×568 是最小常见宽度（SE1/老安卓），状态栏曾在此被裁 17px，故列入全页审计。
 // 横屏宽 >767（≤1023 仍在移动档），命中的是「矮视口」那一支移动规则（styles.css: max-width:767px, max-height:500px）。
@@ -878,7 +879,7 @@ for (const [w, h, kbH] of [[844, 390, 220], [932, 430, 240]]) {
 const CONTENT_SEL = {
   overview: '.ov-shell > *', search: '.world-card', feed: 'tbody tr', sessions: '.sess-row',
   players: '.empty, .card', moderation: 'tbody tr', favorites: '.fav-card', insights: '.graph-wrap',
-  friendlist: 'tbody tr', friendlog: 'tbody tr', gamelog: '.card', settings: '.card', friends: '.loc-group',
+  friendlist: 'tbody tr', friendlog: 'tbody tr', gamelog: '.card', settings: '.card', friends: '.loc-group', worlds: '.world-card',
 };
 for (const [w, h, kbH] of [[844, 390, 220], [932, 430, 240]]) {
   for (const page of PAGES) {
@@ -1020,8 +1021,10 @@ for (const [w, h] of [[390, 844], [360, 800], [844, 390]]) {
 // 断言「<36 的控件只允许出现在白名单选择器里」——新增控件若偷偷缩到 32 以下会在这里报出来；
 // 同时把「二级导航 40」与「表格行内 ≥32」写成显式口径，避免以后被顺手抹平。
 {
-  // 设置页子导航条目已抬到 44，从白名单移除 → 以后若被缩回 32 会直接被这条抓出来
-  const ALLOW = '[data-tab].ov-tab, .sess-seg button, .sess-row, .sess-self, [data-list-row] button, [data-list-row] a, .gl-inst button, .gl-inst a, tbody td button, tbody td a, .vrc-sidebar .nav-sub .nav-item';
+  // 设置页子导航条目已抬到 44、sessions 的「自己」来源框已抬到 36：都从白名单移除 →
+  // 以后若被缩回 32/33 会直接被这条抓出来。.sess-seg button 留在白名单（36 容器内四边 2px 内边距的段内按钮）
+  // .sort-btn（worlds 表头排序）：跟着 26px 列头走，按「表格行内 32」档放行，另有显式 ≥32 断言
+  const ALLOW = '[data-tab].ov-tab, .sess-seg button, .sess-row, .sort-btn, [data-list-row] button, [data-list-row] a, .gl-inst button, .gl-inst a, tbody td button, tbody td a, .vrc-sidebar .nav-sub .nav-item';
   for (const page of PAGES) {
     const tab = await open(page, 390, 844);
     const r = await tab.evaluate((allowSel) => {
@@ -1029,6 +1032,7 @@ for (const [w, h] of [[390, 844], [360, 800], [844, 390]]) {
       const below32 = [];
       let navSubMin = null;
       let cellMin = null;
+      let sortMin = null;
       document.querySelectorAll('button, a[href], [role="button"], input, select').forEach((el) => {
         const b = el.getBoundingClientRect();
         const cs = getComputedStyle(el);
@@ -1037,16 +1041,18 @@ for (const [w, h] of [[390, 844], [360, 800], [844, 390]]) {
         const hh = Math.round(b.height);
         if (el.closest('.vrc-sidebar .nav-sub') && hh >= 24) navSubMin = navSubMin == null ? hh : Math.min(navSubMin, hh);
         if (el.closest('tbody td')) cellMin = cellMin == null ? hh : Math.min(cellMin, hh);
+        if (el.classList.contains('sort-btn')) sortMin = sortMin == null ? hh : Math.min(sortMin, hh);
         if (hh < 32) below32.push(`${label}=${hh}`);
         if (hh < 36 && !el.matches(allowSel)) below36.push(`${label}=${hh}`);
       });
-      return { below36: below36.slice(0, 6), n36: below36.length, below32: below32.slice(0, 6), navSubMin, cellMin };
+      return { below36: below36.slice(0, 6), n36: below36.length, below32: below32.slice(0, 6), navSubMin, cellMin, sortMin };
     }, ALLOW);
     const tag = `residue@${page}@390`;
     check(tag, '<36 控件只在降档白名单内', r.n36 ? r.below36.join(' | ') : '0 个越界', '0', r.n36 === 0);
     check(tag, '无 <32 控件', r.below32.length ? r.below32.join(' | ') : '0 个', '0', r.below32.length === 0);
     if (r.navSubMin != null) check(tag, '抽屉二级导航 40 档', `${r.navSubMin}px`, '40–43px', r.navSubMin >= 40 && r.navSubMin <= 43);
     if (r.cellMin != null) check(tag, '表格行内目标 32 档', `${r.cellMin}px`, '≥32px', r.cellMin >= 32);
+    if (r.sortMin != null) check(tag, '表头排序按钮 32 档', `${r.sortMin}px`, '32–35px', r.sortMin >= 32 && r.sortMin < 36);
     await tab.close();
   }
 }
