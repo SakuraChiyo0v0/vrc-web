@@ -4,7 +4,7 @@
  *   输出 main 高、首块 top/高/可见高、完整可见块数。只打印，不下断言。
  */
 import { createRequire } from 'node:module';
-import { STRUCT_PAGES, assertVrcServer } from './lib/page_structure.mjs';
+import { STRUCT_PAGES, assertVrcServer } from '../lib/page_structure.mjs';
 const _req = createRequire(import.meta.url);
 let _pw;
 try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json')('playwright'); }

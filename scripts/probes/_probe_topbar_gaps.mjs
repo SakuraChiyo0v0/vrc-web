@@ -1,6 +1,6 @@
 /** 探针2：顶栏右簇内部间距（可见元素），不依赖绝对 x。 */
 import { createRequire } from 'node:module';
-import { normBase, pageBase, assertVrcPage, gotoVrc } from './lib/page_structure.mjs';
+import { normBase, pageBase, assertVrcPage, gotoVrc } from '../lib/page_structure.mjs';
 
 const _req = createRequire(import.meta.url);
 let _pw;

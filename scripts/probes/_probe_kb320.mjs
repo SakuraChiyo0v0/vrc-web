@@ -3,7 +3,7 @@
  * 检查外壳是否跟随 visualViewport、状态栏/输入框是否被键盘盖住、主区是否被压成 0。
  */
 import { createRequire } from 'node:module';
-import { assertVrcServer } from './lib/page_structure.mjs';
+import { assertVrcServer } from '../lib/page_structure.mjs';
 const _req = createRequire(import.meta.url);
 let _pw; try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json')('playwright'); }
 const { chromium } = _pw;

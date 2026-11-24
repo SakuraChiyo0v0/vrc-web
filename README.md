@@ -117,6 +117,8 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 node scripts/mobile_parity.mjs                 # 默认 http://127.0.0.1:8891，任一 FAIL exit 1
 ```
 
+一次性探针（历史排查留档，不参与回归）统一放在 `scripts/probes/`：58 个 `_probe_*.mjs`，用法 `node scripts/probes/_probe_xxx.mjs [baseUrl]`（引 `../lib/page_structure.mjs`）。`scripts/` 顶层只留正式回归脚本和截屏/采集工具，别再往顶层加探针。
+
 ### 跑线上容器
 
 五个脚本可以直接指向线上容器，不必先起 demo：

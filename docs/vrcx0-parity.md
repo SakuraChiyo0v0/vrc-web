@@ -483,7 +483,7 @@ VRCX-0 的「导出 / 迁移」在 Web 端的对应物：CSV 多表导出、全�
 | # | 产出 | 验收 |
 |---|---|---|
 | 251 | `WorldsPage.jsx` 缩略图改 `<picture>`：`<source media="(min-width: 2560px)" srcset={imgUrl(w.thumbnail, 1024)}>` + `<img src={imgUrl(w.thumbnail, 512)}>`；`styles.css` 加 `.world-card picture{display:block}`（否则 img 的 `width:100%` 撑不满卡片） | 1700/1920 仍只请求 512（`naturalWidth=512`，体积不涨）；2560/3840 取大档 |
-| 252 | 断点口径实测（`scripts/_probe_zoom_mq.mjs`）：CSS `zoom` **不影响** media query，`innerWidth` = 视口宽（1700/1920/2560/3840 原样），所以 `<source media>` 按视口宽匹配是可靠的 | 探针输出：2560 起 `mq2200/mq2560` 均 true，1700/1920 均 false |
+| 252 | 断点口径实测（`scripts/probes/_probe_zoom_mq.mjs`）：CSS `zoom` **不影响** media query，`innerWidth` = 视口宽（1700/1920/2560/3840 原样），所以 `<source media>` 按视口宽匹配是可靠的 | 探针输出：2560 起 `mq2200/mq2560` 均 true，1700/1920 均 false |
 | 253 | 顺带校准了源图上限：VRChat 世界缩略图 `/1024` 档实际回 **800×600**（8 个世界全一致，`/768` 与 `/1024` 同字节 660KB，`/640` 与 `/512` 同字节 267KB → 只有 256/512/800 三档） | 800 是文件上限，3840 只能做到 855/800 = **1.07×**（原 1.67×） |
 | 254 | `worlds_viewports.mjs` 加两项断言（源档位：<2560 必须 512、≥2560 必须 >512；渲染/源 ≤1.02，源到 800 上限时 ≤1.10）+ 等首图解码后再量 | 四视口 **44/44 PASS**（原 36 项） |
 | 255 | `server/scripts/parity8.mjs` #90 断言过期修正：原来要求字面 `imgUrl(w.thumbnail)`，与 23 轮起的 `imgUrl(w.thumbnail,512)` 已经对不上（一直 FAIL）；改成校验 512 代理 + `<source>` 2 倍档 + `picture{display:block}` 三条 | parity8 世界库段 ok（7/10，其余 3 项是 #82/#88/#91 的历史遗留，与本轮无关） |
@@ -498,7 +498,7 @@ structure_parity 唯一残留 DIFF 是动态页行高「我们 46 / 真机 44」
 | # | 产出 | 验收 |
 |---|---|---|
 | 261 | `styles.css`：`.feed-tbl tbody td[data-label='时间']` 的 `white-space: pre-line` → `pre`（时间串本身已写死「月-日\n时:分」，只认这个换行） | 1688 视口 feed 全行 **44px**；`node scripts/structure_parity.mjs` → **59/59（100%）**，DIFF 清零 |
-| 262 | 探针留档 `scripts/_probe_feedrow.mjs`（逐格 rect/line-height 定位折行）+ `scripts/_probe_feed_mobile.mjs`（390/1688 溢出与裁切） | 390 视口 `docOverflowX=0`、`scrollOwnOverflow=0`、时间列 `scrollWidth=clientWidth`（无裁切）；1688 同上 |
+| 262 | 探针留档 `scripts/probes/_probe_feedrow.mjs`（逐格 rect/line-height 定位折行）+ `scripts/probes/_probe_feed_mobile.mjs`（390/1688 溢出与裁切） | 390 视口 `docOverflowX=0`、`scrollOwnOverflow=0`、时间列 `scrollWidth=clientWidth`（无裁切）；1688 同上 |
 | 263 | 回归：`web npm run build` ✓、`web npm test` 48/48、`visual_parity` **215/215（100%）**（原 214/215，feed 行高是最后一项） | 输出见 STATE.md |
 
 ---

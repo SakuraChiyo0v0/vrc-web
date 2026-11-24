@@ -4,7 +4,7 @@ const _req = createRequire(import.meta.url);
 let _pw;
 try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json')('playwright'); }
 const { chromium } = _pw;
-import { STRUCT_PAGES } from './lib/page_structure.mjs';
+import { STRUCT_PAGES } from '../lib/page_structure.mjs';
 const BASE = process.argv[2] || process.env.VRC_BASE || 'http://127.0.0.1:8891';
 const EXE = process.env.CHROME_PATH || '/opt/data/cache/pw-browsers/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell';
 const PAGES = ['friends', ...STRUCT_PAGES.filter((p) => p !== 'locations')];

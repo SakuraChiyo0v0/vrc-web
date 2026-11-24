@@ -1,6 +1,6 @@
 // 320×568（最小常见宽度）全页体检：右溢 / 卡片化 / 字号 / 命中区 / 内容区
 import { createRequire } from 'node:module';
-import { STRUCT_PAGES } from './lib/page_structure.mjs';
+import { STRUCT_PAGES } from '../lib/page_structure.mjs';
 const _req = createRequire(import.meta.url);
 let _pw; try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json')('playwright'); }
 const { chromium } = _pw;

@@ -245,7 +245,7 @@ for (const [w, h, vh] of [[390, 844, 560], [844, 390, 300]]) {
 }
 
 // 命令面板（移动形态唯一搜索入口——手机没有 ⌘K）：量输入框字号、结果行命中区与可点性，
-// 以及键盘弹起把 --app-vh 压矮后结果列表是否还有可用行（探针 scripts/_probe_palette_mobile.mjs）。
+// 以及键盘弹起把 --app-vh 压矮后结果列表是否还有可用行（探针 scripts/probes/_probe_palette_mobile.mjs）。
 for (const [w, h, vh] of [[390, 844, 0], [320, 568, 0], [844, 390, 0], [390, 844, 380]]) {
   const tab = await open('friends', w, h);
   if (vh) await tab.evaluate((v) => document.documentElement.style.setProperty('--app-vh', `${v}px`), vh);
