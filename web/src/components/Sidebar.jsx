@@ -139,7 +139,7 @@ export default function Sidebar({ page, onNavigate, me, open = false, onClose, o
   return (
     <aside
       ref={ref}
-      className="vrc-sidebar flex w-[214px] shrink-0 flex-col border-r md:w-[277px]"
+      className="vrc-sidebar flex w-[214px] shrink-0 flex-col border-r lg:w-[277px]"
       data-open={open ? 'true' : 'false'}
       style={{ borderColor: 'var(--stroke-subtle)', background: 'var(--surface-shell)' }}
     >

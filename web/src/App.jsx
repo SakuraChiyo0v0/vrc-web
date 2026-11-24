@@ -125,9 +125,11 @@ export default function App() {
   const [palette, setPalette] = useState(false);
   const [help, setHelp] = useState(false);
   // 187 右栏默认展开（真机 1700 宽下内容面板内就有右栏）；窄屏(<1280)由 CSS 隐藏
+  // 1440 起才有右栏（styles.css 的同一条断点）：353 的右栏 + 277 侧栏到 1280–1439
+  // 会把内容压到 637–717，六列表格挤不开
   const [roster, setRoster] = useState(() => {
     const v = localStorage.getItem('vrc-roster-open');
-    if (v === null) return typeof window !== 'undefined' ? window.innerWidth >= 1280 : false;
+    if (v === null) return typeof window !== 'undefined' ? window.innerWidth >= 1440 : false;
     return v === '1';
   });
   const [theme, toggleTheme] = useTheme();
@@ -237,7 +239,7 @@ export default function App() {
               </button>
               <button className="tb-icon" onClick={() => setPage('favorites')} title="收藏（固定的世界）"><IconPin size={16} /></button>
               <button
-                className="tb-icon"
+                className="tb-icon roster-toggle"
                 data-active={roster ? 'true' : undefined}
                 onClick={() => setRoster((v) => !v)}
                 title="右栏好友面板"

@@ -233,6 +233,10 @@ body {
   .nav-item {
     display: flex; align-items: center; gap: .5rem; height: 36px; margin: 0 0 4px; padding: 0 .5rem;
     border-radius: 7px; color: var(--content-secondary); font-size: 13px;
+    /* 导航密度是定值：窗口矮到装不下时让 <nav> 自己滚，条目不许被 flex 压扁。
+       实测 1366×768 / 1024×768 未加这行时行高 36→23（21 项 × 40 > 可用高），
+       文字贴着行边、点选目标也缩水；flex:none 后行高恒 36，nav 出现滚动。 */
+    flex: none;
   }
   .nav-item:hover { background: var(--state-hover-surface); color: var(--content-primary); }
   .nav-chevron { font-size: 13px; line-height: 1; opacity: .55; transition: transform .15s ease; }
@@ -752,8 +756,10 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-@media (max-width: 1279px) {
-  .roster-rail { display: none; }
+@media (max-width: 1439px) {
+  /* 右栏 353 宽，1280–1439 视口下开右栏后内容只剩 637–717：表格六列挤到一条缝，
+     所以右栏只在 1440+ 出现；顶栏的开关一起收掉，不留点了没反应的按钮。 */
+  .roster-rail, #vrc-topbar .roster-toggle { display: none; }
 }
 
 /* 大屏适配：2K/4K 下按比例放大整页，避免文字小得看不清（缩放不改变布局逻辑，窄屏不受影响）

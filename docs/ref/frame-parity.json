@@ -1,0 +1,841 @@
+{
+ "at": "2026-11-24T02:05:44.050Z",
+ "base": "http://vrc-web-r18:8790/vrc/",
+ "pass": 119,
+ "total": 119,
+ "rows": [
+  {
+   "view": "1024x768",
+   "name": "overflow.friends",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "overflow.feed",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "overflow.friendlist",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "overflow.gamelog",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "overflow.worlds",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "overflow.settings",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "sidebar.w",
+   "ours": 214,
+   "want": 214,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.scrollable",
+   "ours": "135px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.footer_visible",
+   "ours": "721 / 733",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "content.w",
+   "ours": 797,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "overflow.friends",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "overflow.feed",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "overflow.friendlist",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "overflow.gamelog",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "overflow.worlds",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "overflow.settings",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "sidebar.w",
+   "ours": 214,
+   "want": 214,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.scrollable",
+   "ours": "103px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.footer_visible",
+   "ours": "753 / 765",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "content.w",
+   "ours": 873,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "overflow.friends",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "overflow.feed",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "overflow.friendlist",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "overflow.gamelog",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "overflow.worlds",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "overflow.settings",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.scrollable",
+   "ours": "103px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.footer_visible",
+   "ours": "753 / 765",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "content.w",
+   "ours": 990,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "overflow.friends",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "overflow.feed",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "overflow.friendlist",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "overflow.gamelog",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "overflow.worlds",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "overflow.settings",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.scrollable",
+   "ours": "135px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.footer_visible",
+   "ours": "721 / 733",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "content.w",
+   "ours": 1076,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "overflow.friends",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "overflow.feed",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "overflow.friendlist",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "overflow.gamelog",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "overflow.worlds",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "overflow.settings",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.scrollable",
+   "ours": "3px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.footer_visible",
+   "ours": "853 / 865",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "content.w",
+   "ours": 1150,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "overflow.friends",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "overflow.feed",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "overflow.friendlist",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "overflow.gamelog",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "overflow.worlds",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "overflow.settings",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.scrollable",
+   "ours": "3px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.footer_visible",
+   "ours": "853 / 865",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "content.w",
+   "ours": 1310,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "overflow.friends",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "overflow.feed",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "overflow.friendlist",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "overflow.gamelog",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "overflow.worlds",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "overflow.settings",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.scrollable",
+   "ours": "0px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.footer_visible",
+   "ours": "993 / 1005",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "content.w",
+   "ours": 1410,
+   "want": "≥720",
+   "ok": true
+  }
+ ]
+}

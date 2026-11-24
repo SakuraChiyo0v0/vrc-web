@@ -5,7 +5,9 @@ export default {
     // 移动形态 = 窄 (≤1023，手机 + iPad 竖屏) 或矮 (≤500，手机横屏 844×390 一类)。
     // 用 raw 让 md: 前缀跟着 styles.css 的同一条件走，否则横屏会出现「抽屉侧栏 + 桌面顶栏（☰ 被隐藏）」的死锁。
     screens: {
-      md: { raw: '(min-width: 1024px) and (min-height: 501px)' }
+      md: { raw: '(min-width: 1024px) and (min-height: 501px)' },
+      // 1280 起才是「宽桌面」：侧栏回到真机 277，1024–1279 用 214 的收窄档
+      lg: { raw: '(min-width: 1280px) and (min-height: 501px)' }
     },
     extend: {
       colors: {

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 一键回归：桌面结构（structure_parity）+ 桌面视觉（visual_parity）+ 移动断点（mobile_parity）+ web 单测。
+# 一键回归：桌面结构（structure_parity）+ 桌面视觉（visual_parity）+ 主框架/导航密度（frame_parity）+ 移动断点（mobile_parity）+ web 单测。
 #   用法：scripts/regress_all.sh [baseUrl]     默认 http://127.0.0.1:8891（server/scripts/demo.mjs）
 # 不传 baseUrl 时若 8891 没起，会自动起一个 demo 实例并跑完杀掉。
 # 任一环节 FAIL 即 exit 1；每段完整输出落在 cache/regress/<环节>.log。
@@ -36,13 +36,14 @@ run() {  # run <名字> <命令…>
 
 run structure node scripts/structure_parity.mjs "$BASE"
 run visual    node scripts/visual_parity.mjs "$BASE"
+run frame     node scripts/frame_parity.mjs "$BASE"
 run mobile    node scripts/mobile_parity.mjs "$BASE"
 run unittest  bash -lc "cd '$ROOT/web' && npm test --silent"
 
 echo
 if [ ${#FAILED[@]} -gt 0 ]; then
-  echo "REGRESS FAIL ${#FAILED[@]}/4 环节未过："
+  echo "REGRESS FAIL ${#FAILED[@]}/5 环节未过："
   printf '  %s\n' "${FAILED[@]}"
   exit 1
 fi
-echo "REGRESS OK 4/4（structure / visual / mobile / unittest）  base=$BASE"
+echo "REGRESS OK 5/5（structure / visual / frame / mobile / unittest）  base=$BASE"
