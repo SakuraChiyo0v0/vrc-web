@@ -1359,7 +1359,13 @@ html[data-phone='1'] #root {
 }
 .loc-caret { flex: none; color: var(--content-tertiary); transition: transform .15s; }
 .loc-caret[data-open='true'] { transform: rotate(90deg); }
-.loc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+/* 列数按真机档（见上）固定，不再用 auto-fill：auto-fill 在 1688 宽只排 5 列，
+ * 与 spec 的 ≥1600 六列不符（structure/visual parity 各挂一项）。用媒体查询按视口宽切档，
+ * 卡片最窄仍有 ~180px；1280–1599 走 4 列保证时长/JP 标签不被截断。 */
+.loc-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 1599px) { .loc-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 1279px) { .loc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .loc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 /* 卡片本体：注意它同时带 .friend-row（旧测试/截图脚本的选择器），这里把行样式整体覆盖成卡片。
  * 真机裁图（docs/ref/vrcx0-locations.png 283,80 起放大）确认：白底卡片 + 1px 浅灰边框 + 圆角，
  * 头像为正圆（不是圆角方形）。 */
