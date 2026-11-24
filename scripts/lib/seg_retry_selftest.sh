@@ -31,4 +31,16 @@ always_killed() { n=$((n + 1)); echo "Killed" >&2; return 137; }
 seg_retry "$TMP/d.log" always_killed; rc=$?
 [ $rc -ne 0 ] && [ "$n" -eq 2 ] && echo "case4 PASS 重试上限后返回 $rc（跑 $n 次）" || { echo "case4 FAIL rc=$rc n=$n"; fail=1; }
 
+# 5) chromium launch 超时（环境性）→ 重试
+n=0
+launch_timeout() { n=$((n + 1)); if [ $n -eq 1 ]; then echo "browserType.launch: Timeout 180000ms exceeded." >&2; return 1; fi; echo ok; }
+seg_retry "$TMP/e.log" launch_timeout; rc=$?
+[ $rc -eq 0 ] && [ "$n" -eq 2 ] && echo "case5 PASS launch Timeout 后重试成功" || { echo "case5 FAIL rc=$rc n=$n"; fail=1; }
+
+# 6) 页面渲染出上游 408 → 重试
+n=0
+upstream_408() { n=$((n + 1)); if [ $n -eq 1 ]; then echo '{"error":"Request Timeout","statusCode":408}' >&2; return 1; fi; echo ok; }
+seg_retry "$TMP/f.log" upstream_408; rc=$?
+[ $rc -eq 0 ] && [ "$n" -eq 2 ] && echo "case6 PASS 上游 408 后重试成功" || { echo "case6 FAIL rc=$rc n=$n"; fail=1; }
+
 [ $fail -eq 0 ] && echo "SEG_RETRY SELFTEST OK" || { echo "SEG_RETRY SELFTEST FAIL"; exit 1; }

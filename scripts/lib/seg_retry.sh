@@ -12,9 +12,9 @@ seg_retry() {
     "$@" >"$log" 2>&1
     rc=$?
     [ $rc -eq 0 ] && return 0
-    # 只有「进程被杀 / 浏览器没了」这种环境性死亡才重试
-    if [ $i -lt $tries ] && grep -qE 'Killed|browser has been closed|Target page, context or browser has been closed|SIGKILL' "$log"; then
-      printf 'RETRY %s 第 %d 次环境性失败（进程被杀/浏览器关闭），重跑\n' "$(basename "$log" .log)" "$i"
+    # 只有「进程被杀 / 浏览器起不来 / 上游接口超时」这种环境性死亡才重试
+    if [ $i -lt $tries ] && grep -qE 'Killed|browser has been closed|Target page, context or browser has been closed|SIGKILL|browserType\.launch: Timeout|"error"[[:space:]]*:[[:space:]]*"Request Timeout"|statusCode\\?"?[[:space:]]*:[[:space:]]*408' "$log"; then
+      printf 'RETRY %s 第 %d 次环境性失败（OOM/浏览器未起/上游超时），重跑\n' "$(basename "$log" .log)" "$i"
       sleep "${SEG_RETRY_WAIT:-20}"
       continue
     fi
