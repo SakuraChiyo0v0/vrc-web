@@ -1,6 +1,6 @@
 {
   "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言",
-  "at": "2026-11-24T03:29:57.190Z",
+  "at": "2026-11-24T03:50:15.342Z",
   "base": "http://127.0.0.1:8891",
   "pages": [
     "friends",

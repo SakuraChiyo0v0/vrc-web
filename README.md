@@ -105,7 +105,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 |---|---|---|
 | 桌面结构 | `node scripts/structure_parity.mjs` | 59/59 |
 | 桌面视觉 | `node scripts/visual_parity.mjs` | 215/215（100%） |
-| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 154/154 |
+| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 189/189 |
 | 导航可达 | `node scripts/nav_coverage.mjs` | 20/20 |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 前端单测 | `cd web && npm test` | 48 pass |
@@ -118,10 +118,10 @@ node scripts/mobile_parity.mjs                 # 默认 http://127.0.0.1:8891，
 
 ### 跑线上容器
 
-五个脚本可以直接指向线上容器，不必先起 demo：
+四个脚本可以直接指向线上容器，不必先起 demo：
 
 ```bash
-node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 154/154
+node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 189/189
 node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
 node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 20/20（逐个点侧栏项验可达）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
@@ -134,7 +134,9 @@ node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 
 ### 已知形态差（不进 FAIL）
 
-真机窗口顶栏右侧有 3 个窗口按钮（最小化/最大化/关闭，合计 120px），浏览器版没有，所以 1700 宽下「快速搜索 / Ctrl K」簇比真机偏右约 6px（真机 Ctrl K 徽标 x=1307，我们 1313）。这条不做像素对齐，`frame_parity` 只锁两条密度不变量：顶栏内容右端距窗口边 `topbar.right_pad = 8px`、搜索按钮宽 `topbar.search_w = 225px`（允许 200–240）。
+真机窗口顶栏右侧有 3 个窗口按钮（最小化/最大化/关闭，合计 120px）。浏览器版现在也放了 3 个**装饰性**按钮（24px、pitch 40，`data-topbar="window-controls"`，不执行真窗控动作），所以「快速搜索 / Ctrl K」簇的相对位置能对齐了；`frame_parity` 锁的是簇内间距而不是绝对 x：`kbd` 宽 34、`kbd→图标组` 22、`图标组→窗口控制` 15、窗口控制 3×24 / pitch 40、簇末项距右缘 8，另加顶栏内容右端 `topbar.right_pad = 8px`、搜索按钮宽 `topbar.search_w = 225px`（允许 200–240）。
+
+真机那条 12px 差已归因清楚：`topbar-measure.json` 是 1689 宽的截图上量的，契约视口是 1700，绝对 x 随宽度整体平移 +11px，不是布局差——所以契约里只留间距，不留绝对 x。
 
 `visual_parity` 另有一条环境判据：真机基准是在种子数据上量的（动态 4 列、模态 8 个 tab、概览 24 格柱、收藏 150 条），真实库数据形态不同，分数无意义 —— 检测到 `/api/health` 的 `db.kind !== 'sqlite'` 时打 `SKIP` exit 3（回归里记 SKIP 不算失败）；确实要在真实库上看就加 `VRC_ALLOW_REAL=1`，结果只作参考。同理，结构断言碰上线上库本身为空的数据（收藏夹 0 条、没有屏蔽/静音记录）记 `SKIP` 而不是 `DIFF`，既混不进分母也不会把线上跑红。
 

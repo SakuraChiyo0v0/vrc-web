@@ -146,8 +146,8 @@ for (const [width, height] of VIEWS) {
     };
   });
 
-  // 顶栏右侧留白：真机上搜索簇右边还有 3 个窗口按钮（120px），浏览器版没有，
-  // 所以只锁「我们自己的内容右端距窗口边 8px」这一密度不变量，形态差不进 FAIL（见 README）。
+  // 顶栏右侧留白：搜索簇右边还有 3 个装饰性窗口按钮（真机形态），只锁「我们自己内容右端距窗口边 8px」
+  // 与簇内间距（见下 topbar.win），绝对 x 随视口宽平移不进 FAIL。
   check(view, 'topbar.right_pad', got.tbRightPad, '8±1', got.tbRightPad !== null && Math.abs(got.tbRightPad - 8) <= 1);
   check(view, 'topbar.search_w', got.searchW, '200–240', got.searchW !== null && got.searchW >= 200 && got.searchW <= 240);
   const wide = width >= 1280;

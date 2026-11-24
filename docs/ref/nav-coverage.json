@@ -1,6 +1,6 @@
 {
  "_note": "nav_coverage.mjs：逐个点侧栏项，断言 hash=#/<id>、顶栏标题=TITLES[id][0]、无错误边界；最后验折叠夹收起/展开",
- "base": "http://127.0.0.1:8899",
+ "base": "http://127.0.0.1:8891",
  "viewport": {
   "w": 1688,
   "h": 1028
