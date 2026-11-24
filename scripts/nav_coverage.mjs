@@ -17,6 +17,8 @@
  * 结束时验「收起导航栏」：按钮与顶栏展开按钮本身要过命中测试（展开按钮还须整颗在顶栏内、
  * 与快速搜索横向不相交、搜索中心仍命中自己）、reload 后仍收起
  * （localStorage.vrc-nav-collapsed=1）、展开回来当前页项仍高亮/仍点得到/再点不换页。
+ * 最后验收起态快捷键 Ctrl+1..9：每个数字 hash=PAGE_ORDER[d-1]（读 web/src/lib/shortcuts.js）、
+ * 标题跟变、侧栏仍不出现；展开回来当前项已高亮且过命中测试。
  * 断言「能到 + 标题对 + 点得到」；密度/像素交给 frame_parity.mjs。
  * 产出 docs/ref/nav-coverage.json；有 FAIL 则 exit 1。
  */
@@ -55,6 +57,12 @@ const titlesBlock = app.slice(app.indexOf('const TITLES = {'), app.indexOf('func
 const WANT = Object.fromEntries(
   [...titlesBlock.matchAll(/^\s{2}(\w+):\s*\['([^']*)'/gm)].map((m) => [m[1], m[2]])
 );
+
+// Ctrl/⌘+数字 的跳页顺序来自 web/src/lib/shortcuts.js 的 PAGE_ORDER（不是 DOM 顺序：
+// 用 DOM 顺序当期望会把「快捷键表和侧栏顺序对不上」这类 bug 一起放过）。
+const shortcutsSrc = fs.readFileSync(path.join(ROOT, 'web/src/lib/shortcuts.js'), 'utf8');
+const ORDER = (shortcutsSrc.match(/export const PAGE_ORDER = \[([\s\S]*?)\]/)?.[1] ?? '')
+  .split(',').map((s) => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
 
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 const rows = [];
@@ -288,6 +296,61 @@ for (const [width, height] of VIEWS) {
       title: back.title, want: collapse.curTitle, active: back.active, hit: back.hit,
       ok: !!collapse.curId && back.expandHit === true && back.found && back.active && back.hit
         && back.hash === `#/${collapse.curId}` && back.title === collapse.curTitle,
+      error: null
+    });
+    // 收起态快捷键：Ctrl+1..9 是「不点侧栏也能跳页」的主路径，收起后必须照样生效——
+    // 每按一个数字：hash=#/<PAGE_ORDER[d-1]>、顶栏标题跟变、侧栏仍不出现、展开按钮还在；
+    // 最后展开回来：当前页那一项必须已高亮、且过命中测试（快捷键跳过的页也要认）。
+    const N = Math.min(9, ORDER.length);
+    await page.click('[data-testid="nav-collapse"]');
+    await page.waitForTimeout(300);
+    const presses = [];
+    for (let d = 1; d <= N; d++) {
+      const want = ORDER[d - 1];
+      await page.keyboard.press(`Control+${d}`);
+      await page.waitForTimeout(260);
+      const st = await page.evaluate(() => ({
+        hash: location.hash,
+        title: document.querySelector('#vrc-topbar h1')?.textContent?.trim() ?? '',
+        asideGone: !document.querySelector('aside.vrc-sidebar'),
+        expand: !!document.querySelector('[data-testid="nav-expand"]')
+      }));
+      presses.push({ d, want, ...st, ok: st.hash === `#/${want}` && st.title === (WANT[want] ?? '') && st.asideGone && st.expand });
+    }
+    const badPress = presses.filter((p) => !p.ok);
+    push({
+      id: `shortcut:collapsed@${view}`, view, theme, nav: 'shortcut:collapsed',
+      hash: presses[presses.length - 1]?.hash ?? '-', title: `${presses.length - badPress.length}/${N}`,
+      want: 'Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起', active: badPress.map((p) => `Ctrl${p.d}→${p.hash}`).join(',') || 'all ok',
+      hit: '-', ok: presses.length === N && badPress.length === 0,
+      error: badPress.length ? `快捷键失配：${badPress.map((p) => `Ctrl${p.d} 期望#/${p.want} 实得${p.hash}/${p.title}`).join('；')}` : null
+    });
+    const lastWant = ORDER[N - 1];
+    const sk = await page.evaluate(async (want) => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const out = { found: false, active: false, hit: false, hash: location.hash, title: '' };
+      const ex = document.querySelector('[data-testid="nav-expand"]');
+      if (!ex) return out;
+      ex.click();
+      await wait(350);
+      const item = [...document.querySelectorAll('aside.vrc-sidebar [data-nav-id]')].find((el) => el.dataset.navId === want);
+      if (item) {
+        out.found = true;
+        item.scrollIntoView({ block: 'nearest' });
+        await wait(120);
+        const b = item.getBoundingClientRect();
+        const t = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2);
+        out.active = item.dataset.active === 'true';
+        out.hit = !!t && (t === item || item.contains(t) || t.contains(item));
+      }
+      out.hash = location.hash;
+      out.title = document.querySelector('#vrc-topbar h1')?.textContent?.trim() ?? '';
+      return out;
+    }, lastWant);
+    push({
+      id: `shortcut:expand@${view}`, view, theme, nav: `shortcut:expand:${lastWant}`, hash: sk.hash,
+      title: sk.title, want: WANT[lastWant] ?? null, active: sk.active, hit: sk.hit,
+      ok: sk.found && sk.active && sk.hit && sk.hash === `#/${lastWant}` && sk.title === (WANT[lastWant] ?? ''),
       error: null
     });
   } finally {

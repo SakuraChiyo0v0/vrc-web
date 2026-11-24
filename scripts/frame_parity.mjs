@@ -19,6 +19,7 @@
  *   7b) 收起态密度：有表格的页面列数不变、首列不变窄、行数不变（内容变宽不靠牺牲密度换）——
  *       浅色收起与深色收起各跑一遍（主题不该改密度）。
  *   7c) 新 context（无 localStorage）必须默认展开：侧栏在、无顶栏展开按钮、vrc-nav-collapsed ≠ 1。
+ *   7d) 收起态 friends 页：右栏不渲染（App.jsx roster && page!=='friends'），内容仍 ≥720、无溢出。
  *   8) 顶栏右簇（快速搜索/Ctrl K → 图标组 → 3 窗口控制）的簇内间距恒定：
  *      kbd 宽 34、kbd→图标组 22、图标组→窗口控制 15、窗口控制 3×24 pitch 40、末项距右缘 8。
  *      注：真机 Ctrl K 绝对 x=1307 是在 1689 宽的截图上量的，契约视口是 1700，
@@ -30,6 +31,8 @@
  *      无横向溢出；且**收起态也跑整套 assertChrome** —— 顶栏右簇/状态栏 4 项项距/右栏显隐/内容宽
  *      与展开态同口径（此前收起轮只量了 4 个高度，收起后顶栏簇错位也量不到）。
  *      收起态跑两遍：浅色收起 + 深色收起（组合态），主题与折叠互不影响几何。
+ *  11) 收起 × 右栏开关（≥1440）：右栏是 .workspace 内部的 flex 列，关掉它面板本身不变宽，
+ *      内容列必须正好多出右栏宽（353）、无横向溢出，再开回来内容列/右栏宽度复原。
  *
  * 任一 FAIL 退出码 1；全 PASS 打印 FRAME OK，并把结果写 docs/ref/frame-parity.json。
  */
@@ -348,6 +351,58 @@ for (const [width, height] of VIEWS) {
   await tab.waitForTimeout(400);
   const lc = await tab.evaluate(measureCollapsed);
   assertCollapsed(view, lc, width, 'lcoll.', got.workspace.x - lc.workspace.x);
+
+  // 收起 × 右栏开关（≥1440 才有右栏）：右栏是 .workspace 内部的 flex 列，所以关掉它
+  // .workspace 本身不变宽（仍是整块面板），让出来的是**内容列**——内容列必须正好多出一个右栏宽、
+  // 且不撑出横向溢出；再开回来内容列/右栏宽度复原（收起/右栏两个开关不该互相打架）。
+  if (width >= 1440) {
+    const combo = await tab.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const me = () => ({
+        ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width),
+        content: Math.round(document.querySelector('.workspace > div')?.getBoundingClientRect().width ?? 0),
+        roster: !!document.querySelector('.roster-rail'),
+        rosterW: Math.round(document.querySelector('.roster-rail')?.getBoundingClientRect().width ?? 0),
+        ovf: document.documentElement.scrollWidth - window.innerWidth
+      });
+      const btn = document.querySelector('#vrc-topbar .roster-toggle');
+      if (!btn) return { btn: false };
+      const a = me();
+      btn.click();
+      await wait(350);
+      const off = me();
+      btn.click();
+      await wait(350);
+      const on = me();
+      return { btn: true, a, off, on, asideGone: !document.querySelector('aside.vrc-sidebar') };
+    });
+    check(view, 'lcoll.roster.btn', combo.btn ? 'present' : 'missing', 'present', combo.btn === true);
+    if (combo.btn) {
+      check(view, 'lcoll.roster.off',
+        `${combo.off.roster ? 'shown' : 'hidden'} content ${combo.a.content}→${combo.off.content} / roster${combo.a.rosterW} ws${combo.off.ws} ovf${combo.off.ovf}`,
+        'hidden 且内容列 += 右栏宽、workspace 不变、无溢出',
+        !combo.off.roster && Math.abs(combo.off.content - (combo.a.content + combo.a.rosterW)) <= 2
+          && combo.off.ws === combo.a.ws && combo.off.ovf <= 0);
+      check(view, 'lcoll.roster.restore',
+        `content ${combo.on.content}/${combo.a.content} ${combo.on.roster ? 'shown' : 'hidden'} w${combo.on.rosterW}`,
+        `content 回${combo.a.content} 且右栏${combo.a.rosterW} 回来`,
+        combo.on.roster && combo.on.content === combo.a.content && combo.on.rosterW === combo.a.rosterW);
+      check(view, 'lcoll.roster.aside_gone', combo.asideGone ? 'gone' : 'back', 'gone', combo.asideGone);
+    }
+  }
+
+  // 收起态 friends 页：右栏本身就不该渲染（App.jsx roster && page!=='friends'），
+  // 内容也不能因为没了侧栏而宽度塌掉（≥720 是外壳契约）。
+  await gotoVrc(tab, `${PAGE}#/friends`);
+  await tab.waitForTimeout(700);
+  const fd = await tab.evaluate(() => ({
+    roster: !!document.querySelector('.roster-rail'),
+    ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width),
+    asideGone: !document.querySelector('aside.vrc-sidebar'),
+    ovf: document.documentElement.scrollWidth - window.innerWidth
+  }));
+  check(view, 'lcoll.friends.roster', fd.roster ? 'rendered' : 'not rendered', 'not rendered', !fd.roster);
+  check(view, 'lcoll.friends.content_w', fd.ws, '≥720', fd.ws >= 720 && fd.asideGone && fd.ovf <= 0);
   await tab.close();
 }
 

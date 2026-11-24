@@ -20,110 +20,110 @@
   {
    "view": "1024x600",
    "theme": "light",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1024x768",
    "theme": "light",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1100x800",
    "theme": "light",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1280x600",
    "theme": "light",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1280x800",
    "theme": "light",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1366x768",
    "theme": "light",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1440x900",
    "theme": "light",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1600x900",
    "theme": "light",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1700x1040",
    "theme": "light",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1024x600/dark",
    "theme": "dark",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1024x768/dark",
    "theme": "dark",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1100x800/dark",
    "theme": "dark",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1280x600/dark",
    "theme": "dark",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1280x800/dark",
    "theme": "dark",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1366x768/dark",
    "theme": "dark",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1440x900/dark",
    "theme": "dark",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1600x900/dark",
    "theme": "dark",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   },
   {
    "view": "1700x1040/dark",
    "theme": "dark",
-   "pass": 23,
-   "total": 23
+   "pass": 25,
+   "total": 25
   }
  ],
  "score": 100,
@@ -422,6 +422,32 @@
    "hash": "#/favorites",
    "title": "收藏",
    "want": "收藏",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:collapsed@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
    "active": true,
    "hit": true,
    "ok": true,
@@ -727,6 +753,32 @@
    "error": null
   },
   {
+   "id": "shortcut:collapsed@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1100x800",
    "view": "1100x800",
    "theme": "light",
@@ -1020,6 +1072,32 @@
    "hash": "#/favorites",
    "title": "收藏",
    "want": "收藏",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:collapsed@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
    "active": true,
    "hit": true,
    "ok": true,
@@ -1325,6 +1403,32 @@
    "error": null
   },
   {
+   "id": "shortcut:collapsed@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1280x800",
    "view": "1280x800",
    "theme": "light",
@@ -1618,6 +1722,32 @@
    "hash": "#/favorites",
    "title": "收藏",
    "want": "收藏",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:collapsed@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
    "active": true,
    "hit": true,
    "ok": true,
@@ -1923,6 +2053,32 @@
    "error": null
   },
   {
+   "id": "shortcut:collapsed@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1440x900",
    "view": "1440x900",
    "theme": "light",
@@ -2216,6 +2372,32 @@
    "hash": "#/favorites",
    "title": "收藏",
    "want": "收藏",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:collapsed@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
    "active": true,
    "hit": true,
    "ok": true,
@@ -2521,6 +2703,32 @@
    "error": null
   },
   {
+   "id": "shortcut:collapsed@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1700x1040",
    "view": "1700x1040",
    "theme": "light",
@@ -2814,6 +3022,32 @@
    "hash": "#/favorites",
    "title": "收藏",
    "want": "收藏",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:collapsed@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
    "active": true,
    "hit": true,
    "ok": true,
@@ -3119,6 +3353,32 @@
    "error": null
   },
   {
+   "id": "shortcut:collapsed@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1024x768/dark",
    "view": "1024x768/dark",
    "theme": "dark",
@@ -3412,6 +3672,32 @@
    "hash": "#/favorites",
    "title": "收藏",
    "want": "收藏",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:collapsed@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
    "active": true,
    "hit": true,
    "ok": true,
@@ -3717,6 +4003,32 @@
    "error": null
   },
   {
+   "id": "shortcut:collapsed@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1280x600/dark",
    "view": "1280x600/dark",
    "theme": "dark",
@@ -4010,6 +4322,32 @@
    "hash": "#/favorites",
    "title": "收藏",
    "want": "收藏",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:collapsed@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
    "active": true,
    "hit": true,
    "ok": true,
@@ -4315,6 +4653,32 @@
    "error": null
   },
   {
+   "id": "shortcut:collapsed@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1366x768/dark",
    "view": "1366x768/dark",
    "theme": "dark",
@@ -4608,6 +4972,32 @@
    "hash": "#/favorites",
    "title": "收藏",
    "want": "收藏",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:collapsed@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
    "active": true,
    "hit": true,
    "ok": true,
@@ -4913,6 +5303,32 @@
    "error": null
   },
   {
+   "id": "shortcut:collapsed@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1600x900/dark",
    "view": "1600x900/dark",
    "theme": "dark",
@@ -5212,6 +5628,32 @@
    "error": null
   },
   {
+   "id": "shortcut:collapsed@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1700x1040/dark",
    "view": "1700x1040/dark",
    "theme": "dark",
@@ -5505,6 +5947,32 @@
    "hash": "#/favorites",
    "title": "收藏",
    "want": "收藏",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:collapsed@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "shortcut:collapsed",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 全部跳到 PAGE_ORDER[d-1]，标题对，侧栏仍收起",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expand@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "shortcut:expand:sessions",
+   "hash": "#/sessions",
+   "title": "我的行程",
+   "want": "我的行程",
    "active": true,
    "hit": true,
    "ok": true,

@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T06:36:58.852Z",
+ "at": "2026-11-24T06:51:20.745Z",
  "base": "http://127.0.0.1:8891",
- "pass": 990,
- "total": 990,
+ "pass": 1020,
+ "total": 1020,
  "rows": [
   {
    "view": "1024x600",
@@ -411,6 +411,20 @@
    "ok": true
   },
   {
+   "view": "1024x600",
+   "name": "lcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.friends.content_w",
+   "ours": 1011,
+   "want": "≥720",
+   "ok": true
+  },
+  {
    "view": "1024x768",
    "name": "fresh.aside",
    "ours": "present",
@@ -814,6 +828,20 @@
    "name": "lcoll.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.friends.content_w",
+   "ours": 1011,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -1223,6 +1251,20 @@
    "ok": true
   },
   {
+   "view": "1100x800",
+   "name": "lcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.friends.content_w",
+   "ours": 1087,
+   "want": "≥720",
+   "ok": true
+  },
+  {
    "view": "1280x600",
    "name": "fresh.aside",
    "ours": "present",
@@ -1626,6 +1668,20 @@
    "name": "lcoll.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.friends.content_w",
+   "ours": 1267,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -2035,6 +2091,20 @@
    "ok": true
   },
   {
+   "view": "1280x800",
+   "name": "lcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.friends.content_w",
+   "ours": 1267,
+   "want": "≥720",
+   "ok": true
+  },
+  {
    "view": "1366x768",
    "name": "fresh.aside",
    "ours": "present",
@@ -2438,6 +2508,20 @@
    "name": "lcoll.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.friends.content_w",
+   "ours": 1353,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -2847,6 +2931,48 @@
    "ok": true
   },
   {
+   "view": "1440x900",
+   "name": "lcoll.roster.btn",
+   "ours": "present",
+   "want": "present",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.roster.off",
+   "ours": "hidden content 1074→1427 / roster353 ws1427 ovf0",
+   "want": "hidden 且内容列 += 右栏宽、workspace 不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.roster.restore",
+   "ours": "content 1074/1074 shown w353",
+   "want": "content 回1074 且右栏353 回来",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.roster.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.friends.content_w",
+   "ours": 1427,
+   "want": "≥720",
+   "ok": true
+  },
+  {
    "view": "1600x900",
    "name": "fresh.aside",
    "ours": "present",
@@ -3253,6 +3379,48 @@
    "ok": true
   },
   {
+   "view": "1600x900",
+   "name": "lcoll.roster.btn",
+   "ours": "present",
+   "want": "present",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.roster.off",
+   "ours": "hidden content 1234→1587 / roster353 ws1587 ovf0",
+   "want": "hidden 且内容列 += 右栏宽、workspace 不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.roster.restore",
+   "ours": "content 1234/1234 shown w353",
+   "want": "content 回1234 且右栏353 回来",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.roster.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.friends.content_w",
+   "ours": 1587,
+   "want": "≥720",
+   "ok": true
+  },
+  {
    "view": "1700x1040",
    "name": "fresh.aside",
    "ours": "present",
@@ -3656,6 +3824,48 @@
    "name": "lcoll.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.roster.btn",
+   "ours": "present",
+   "want": "present",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.roster.off",
+   "ours": "hidden content 1334→1687 / roster353 ws1687 ovf0",
+   "want": "hidden 且内容列 += 右栏宽、workspace 不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.roster.restore",
+   "ours": "content 1334/1334 shown w353",
+   "want": "content 回1334 且右栏353 回来",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.roster.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.friends.roster",
+   "ours": "not rendered",
+   "want": "not rendered",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.friends.content_w",
+   "ours": 1687,
+   "want": "≥720",
    "ok": true
   },
   {
