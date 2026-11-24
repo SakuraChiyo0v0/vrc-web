@@ -1,0 +1,730 @@
+{
+ "base": "http://127.0.0.1:8891",
+ "viewport": {
+  "width": 1688,
+  "height": 1028
+ },
+ "at": "2026-11-24T19:46:19.942Z",
+ "ref": "docs/ref/overview-lists-measure.json",
+ "pass": 45,
+ "total": 45,
+ "rows": [
+  {
+   "name": "三块榜单节数",
+   "got": "3",
+   "want": "3",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "榜单顺序",
+   "got": "companions/shrinking/passersby",
+   "want": "companions/shrinking/passersby",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "榜单标题",
+   "got": "相处最久的人 / 相处变少的人 / 常遇见的路人",
+   "want": "相处最久的人 / 相处变少的人 / 常遇见的路人",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "右栏宽",
+   "got": "300",
+   "want": "300",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "标题字号",
+   "got": "24px",
+   "want": "24px",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "标题字重",
+   "got": "600",
+   "want": "600",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "副标题字号",
+   "got": "18px",
+   "want": "18px",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "副标题文案",
+   "got": "遇到过 8 人",
+   "want": "遇到过 N 人",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "标题→副标题间距",
+   "got": "46",
+   "want": "46",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "有数据榜单块数",
+   "got": "2",
+   "want": "≥2",
+   "ok": true,
+   "extra": "companions:2行 passersby:5行"
+  },
+  {
+   "name": "[companions] 首行是 hero",
+   "got": "是",
+   "want": "是",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] hero 唯一",
+   "got": "1",
+   "want": "1",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] hero 头像 116 圆",
+   "got": "116×116 / 50%",
+   "want": "116×116 / 50%",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] hero 名字 32/600",
+   "got": "32px/600",
+   "want": "32px/600",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] hero 时长 20px",
+   "got": "20px",
+   "want": "20px",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] 名字→时长 25",
+   "got": "25",
+   "want": "25",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] hero 下距 55",
+   "got": "55",
+   "want": "55",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] 列表上距 41",
+   "got": "41",
+   "want": "41",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] 紧凑头像 50~51",
+   "got": "50",
+   "want": "51",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] 紧凑名字 22",
+   "got": "22px",
+   "want": "22px",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] 紧凑行距 71.5",
+   "got": "—",
+   "want": "71.5",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] 灰条左端固定",
+   "got": "1214",
+   "want": "同一 x",
+   "ok": true,
+   "extra": "右栏右缘 1306"
+  },
+  {
+   "name": "[companions] 灰条右内缩 25",
+   "got": "25",
+   "want": "25",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] 灰条槽宽 67",
+   "got": "67",
+   "want": "67",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] 灰条高 7",
+   "got": "7",
+   "want": "7",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[companions] 灰条长度∝榜首",
+   "got": "1 行全对",
+   "want": "±2px",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] 首行是 hero",
+   "got": "是",
+   "want": "是",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] hero 唯一",
+   "got": "1",
+   "want": "1",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] hero 头像 116 圆",
+   "got": "116×116 / 50%",
+   "want": "116×116 / 50%",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] hero 名字 32/600",
+   "got": "32px/600",
+   "want": "32px/600",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] hero 时长 20px",
+   "got": "20px",
+   "want": "20px",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] 名字→时长 25",
+   "got": "25",
+   "want": "25",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] hero 下距 55",
+   "got": "55",
+   "want": "55",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] 列表上距 41",
+   "got": "41",
+   "want": "41",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] 紧凑头像 50~51",
+   "got": "50",
+   "want": "51",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] 紧凑名字 22",
+   "got": "22px",
+   "want": "22px",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] 紧凑行距 71.5",
+   "got": "71.0",
+   "want": "71.5",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] 灰条左端固定",
+   "got": "1214",
+   "want": "同一 x",
+   "ok": true,
+   "extra": "右栏右缘 1306"
+  },
+  {
+   "name": "[passersby] 灰条右内缩 25",
+   "got": "25",
+   "want": "25",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] 灰条槽宽 67",
+   "got": "67",
+   "want": "67",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] 灰条高 7",
+   "got": "7",
+   "want": "7",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[passersby] 灰条长度∝榜首",
+   "got": "4 行全对",
+   "want": "±2px",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "[shrinking] 空态有文案",
+   "got": "「没有明显变少的对象」",
+   "want": "非空",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "companions→shrinking 节间距",
+   "got": "138",
+   "want": "138",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "无横向溢出",
+   "got": "1688/1688",
+   "want": "相等",
+   "ok": true,
+   "extra": ""
+  }
+ ],
+ "measured": {
+  "rail": {
+   "x": 1006,
+   "y": 95,
+   "w": 300,
+   "h": 1159.890625,
+   "right": 1306
+  },
+  "secs": [
+   {
+    "list": "companions",
+    "box": {
+     "x": 1006,
+     "y": 95,
+     "w": 300,
+     "h": 349.890625,
+     "right": 1306
+    },
+    "title": {
+     "text": "相处最久的人",
+     "x": 1006,
+     "y": 95,
+     "w": 300,
+     "h": 24,
+     "right": 1306,
+     "font": "24px",
+     "weight": "600"
+    },
+    "sub": {
+     "text": "遇到过 8 人",
+     "x": 1006,
+     "y": 141,
+     "w": 300,
+     "h": 18.890625,
+     "right": 1306,
+     "font": "18px"
+    },
+    "people": {
+     "x": 1006,
+     "y": 200.890625,
+     "w": 300,
+     "h": 244,
+     "right": 1306,
+     "mt": 41,
+     "gap": 21
+    },
+    "empty": null,
+    "list2": [
+     {
+      "hero": true,
+      "box": {
+       "x": 1006,
+       "y": 200.890625,
+       "w": 300,
+       "h": 116,
+       "right": 1306
+      },
+      "av": {
+       "x": 1006,
+       "y": 200.890625,
+       "w": 116,
+       "h": 116,
+       "right": 1122
+      },
+      "avRadius": "50%",
+      "name": {
+       "x": 1154,
+       "y": 219.59375,
+       "w": 98.1875,
+       "h": 33.59375,
+       "right": 1252.1875,
+       "font": "32px",
+       "weight": "600"
+      },
+      "val": {
+       "x": 1154,
+       "y": 278.1875,
+       "w": 98.1875,
+       "h": 20,
+       "right": 1252.1875,
+       "font": "20px"
+      },
+      "bar": null,
+      "zone": null,
+      "label": "Alice · 6小时38分"
+     },
+     {
+      "hero": false,
+      "box": {
+       "x": 1006,
+       "y": 371.890625,
+       "w": 300,
+       "h": 50,
+       "right": 1306
+      },
+      "av": {
+       "x": 1006,
+       "y": 371.890625,
+       "w": 50,
+       "h": 50,
+       "right": 1056
+      },
+      "avRadius": "50%",
+      "name": {
+       "x": 1078,
+       "y": 385.34375,
+       "w": 42.53125,
+       "h": 23.09375,
+       "right": 1120.53125,
+       "font": "22px",
+       "weight": "400"
+      },
+      "val": null,
+      "bar": {
+       "x": 1214,
+       "y": 393.390625,
+       "w": 5,
+       "h": 7,
+       "right": 1219
+      },
+      "zone": {
+       "x": 1214,
+       "y": 393.390625,
+       "w": 67,
+       "h": 7,
+       "right": 1281
+      },
+      "label": "Bob · 30分钟"
+     }
+    ]
+   },
+   {
+    "list": "shrinking",
+    "box": {
+     "x": 1006,
+     "y": 559.890625,
+     "w": 300,
+     "h": 58,
+     "right": 1306
+    },
+    "title": {
+     "text": "相处变少的人",
+     "x": 1006,
+     "y": 559.890625,
+     "w": 300,
+     "h": 24,
+     "right": 1306,
+     "font": "24px",
+     "weight": "600"
+    },
+    "sub": null,
+    "people": null,
+    "empty": "没有明显变少的对象",
+    "list2": []
+   },
+   {
+    "list": "passersby",
+    "box": {
+     "x": 1006,
+     "y": 732.890625,
+     "w": 300,
+     "h": 522,
+     "right": 1306
+    },
+    "title": {
+     "text": "常遇见的路人",
+     "x": 1006,
+     "y": 732.890625,
+     "w": 300,
+     "h": 24,
+     "right": 1306,
+     "font": "24px",
+     "weight": "600"
+    },
+    "sub": null,
+    "people": {
+     "x": 1006,
+     "y": 797.890625,
+     "w": 300,
+     "h": 457,
+     "right": 1306,
+     "mt": 41,
+     "gap": 21
+    },
+    "empty": null,
+    "list2": [
+     {
+      "hero": true,
+      "box": {
+       "x": 1006,
+       "y": 797.890625,
+       "w": 300,
+       "h": 116,
+       "right": 1306
+      },
+      "av": {
+       "x": 1006,
+       "y": 797.890625,
+       "w": 116,
+       "h": 116,
+       "right": 1122
+      },
+      "avRadius": "50%",
+      "name": {
+       "x": 1154,
+       "y": 816.59375,
+       "w": 90.71875,
+       "h": 33.59375,
+       "right": 1244.71875,
+       "font": "32px",
+       "weight": "600"
+      },
+      "val": {
+       "x": 1154,
+       "y": 875.1875,
+       "w": 90.71875,
+       "h": 20,
+       "right": 1244.71875,
+       "font": "20px"
+      },
+      "bar": null,
+      "zone": null,
+      "label": "Dave · 33 次"
+     },
+     {
+      "hero": false,
+      "box": {
+       "x": 1006,
+       "y": 968.890625,
+       "w": 300,
+       "h": 50,
+       "right": 1306
+      },
+      "av": {
+       "x": 1006,
+       "y": 968.890625,
+       "w": 50,
+       "h": 50,
+       "right": 1056
+      },
+      "avRadius": "50%",
+      "name": {
+       "x": 1078,
+       "y": 982.34375,
+       "w": 46.5625,
+       "h": 23.09375,
+       "right": 1124.5625,
+       "font": "22px",
+       "weight": "400"
+      },
+      "val": null,
+      "bar": {
+       "x": 1214,
+       "y": 990.390625,
+       "w": 32,
+       "h": 7,
+       "right": 1246
+      },
+      "zone": {
+       "x": 1214,
+       "y": 990.390625,
+       "w": 67,
+       "h": 7,
+       "right": 1281
+      },
+      "label": "Yu-V · 16 次"
+     },
+     {
+      "hero": false,
+      "box": {
+       "x": 1006,
+       "y": 1039.890625,
+       "w": 300,
+       "h": 50,
+       "right": 1306
+      },
+      "av": {
+       "x": 1006,
+       "y": 1039.890625,
+       "w": 50,
+       "h": 50,
+       "right": 1056
+      },
+      "avRadius": "50%",
+      "name": {
+       "x": 1078,
+       "y": 1053.34375,
+       "w": 114,
+       "h": 23.09375,
+       "right": 1192,
+       "font": "22px",
+       "weight": "400"
+      },
+      "val": null,
+      "bar": {
+       "x": 1214,
+       "y": 1061.390625,
+       "w": 30,
+       "h": 7,
+       "right": 1244
+      },
+      "zone": {
+       "x": 1214,
+       "y": 1061.390625,
+       "w": 67,
+       "h": 7,
+       "right": 1281
+      },
+      "label": "pomelo0511 · 15 次"
+     },
+     {
+      "hero": false,
+      "box": {
+       "x": 1006,
+       "y": 1110.890625,
+       "w": 300,
+       "h": 50,
+       "right": 1306
+      },
+      "av": {
+       "x": 1006,
+       "y": 1110.890625,
+       "w": 50,
+       "h": 50,
+       "right": 1056
+      },
+      "avRadius": "50%",
+      "name": {
+       "x": 1078,
+       "y": 1124.34375,
+       "w": 110,
+       "h": 23.09375,
+       "right": 1188,
+       "font": "22px",
+       "weight": "400"
+      },
+      "val": null,
+      "bar": {
+       "x": 1214,
+       "y": 1132.390625,
+       "w": 30,
+       "h": 7,
+       "right": 1244
+      },
+      "zone": {
+       "x": 1214,
+       "y": 1132.390625,
+       "w": 67,
+       "h": 7,
+       "right": 1281
+      },
+      "label": "水果蘸水果 · 15 次"
+     },
+     {
+      "hero": false,
+      "box": {
+       "x": 1006,
+       "y": 1181.890625,
+       "w": 300,
+       "h": 50,
+       "right": 1306
+      },
+      "av": {
+       "x": 1006,
+       "y": 1181.890625,
+       "w": 50,
+       "h": 50,
+       "right": 1056
+      },
+      "avRadius": "50%",
+      "name": {
+       "x": 1078,
+       "y": 1195.34375,
+       "w": 50.9375,
+       "h": 23.09375,
+       "right": 1128.9375,
+       "font": "22px",
+       "weight": "400"
+      },
+      "val": null,
+      "bar": {
+       "x": 1214,
+       "y": 1203.390625,
+       "w": 28,
+       "h": 7,
+       "right": 1242
+      },
+      "zone": {
+       "x": 1214,
+       "y": 1203.390625,
+       "w": 67,
+       "h": 7,
+       "right": 1281
+      },
+      "label": "Mika · 14 次"
+     }
+    ]
+   }
+  ],
+  "scrollW": 1688,
+  "clientW": 1688
+ }
+}

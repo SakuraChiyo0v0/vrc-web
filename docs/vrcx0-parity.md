@@ -615,3 +615,21 @@ r35 的 `REGRESS FAIL 2/7` 里 frame 与 nav 各有红，逐条定位后确认�
 踩坑记录：
 - 一个浏览器跑完 9 视口 × 浅/深 × 展开/收起会被 Chromium 自己回收（日志里就是 `Target page... has been closed`），不是超时也不是 OOM 报错；按视口起停 + 捕获关闭后重试一次比调大超时可靠。
 - 点卡片弹窗在窄视口要「点完等状态变化再判」，React 重渲染会换掉节点，单次 `click()` 偶发落在旧节点上。
+
+---
+
+# 第三十八轮：概览三榜单常驻断言（overview_parity 45/45，regress 10/10）（2026-11-25）
+
+structure_parity 只数「右栏榜单节数 0/3」，三块榜单的字号/头像/行距/灰条全是 CSS 里手写的数，没有任何回归保护。本轮把 `docs/ref/overview-lists-measure.json` 的每一条量测变成断言，并修掉一处真实偏差。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 370 | 修节间距：`.ov-sec + .ov-sec` 48 → 115，`.ov-people` 加 `padding-bottom: 23`；对齐真机「末行→下块标题 138」「折叠块标题→标题 139」 | 实测 companions 末行 421.9 → shrinking 标题 559.9 = **138**（原 48） |
+| 371 | 新增 `scripts/overview_parity.mjs`：1688×1028 内窗，等三块节 + 行数稳定两次再量；45 项 = 节数/顺序/标题、栏宽 300、标题 24/600、副标题 18 且标题下 46、列表上距 41、hero 116 圆头像 + 32/600 名字 + 20 时长（名下 25）+ 下距 55、紧凑行 50 头像 + 22 名字 + 行距 71.5、灰条高 7/槽宽 67/左端固定/右内缩 25/长度∝榜首（对 `/api/overview` 同一公式）、hero 唯一且在首行、空态文案、节间距 138、无横向溢出 | `node scripts/overview_parity.mjs` → **45/45 · OVERVIEW LISTS OK · exit 0**（`docs/ref/overview-lists-parity.json`） |
+| 372 | 反向自检 `OV_NEG=1`（标题 18/400、hero 头像 60、灰条高 14、节间距 0） | 37/45，**NEG OK**：标题字号 / hero 头像 116 圆 / 灰条高 7 / companions→shrinking 节间距 被抓（`cache/ov_neg.log`） |
+| 373 | `regress_all.sh` 加第十段 `overview`（`REGRESS OK 10/10`）；README 表格、线上容器命令行、段数口径同步；web 单测 48 pass | `cd web && npm test` → 48 pass / 0 fail |
+
+踩坑记录：
+- 改完 CSS 必须 `cd web && npm run build` 再量，8891 服务的是 `web/dist`，改源码后探针读到的是旧几何（本轮第一次复量数值一字不变就是这个原因）。
+- 空态块自带文案高度，所以「节间距 138」只对**有行的块**成立；断言里跳过空态块，另用「空态有文案」单独验。
+- 空榜（shrinking）只有 1 行时行距无从量，pitch 断言输出 `—` 视为通过；跨行距由 passersby 的 4 行覆盖。

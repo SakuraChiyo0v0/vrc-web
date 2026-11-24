@@ -894,11 +894,11 @@ body {
    上距 41、下距 55；紧凑行 = 50 圆头像 + 22px 名字，行距 71（高 50 + 间 21），
    右侧灰条高 7、左端固定（栏右缘内缩 25、槽宽 67），长度按相对榜首占比。 */
 .ov-rail { min-width: 0; display: flex; flex-direction: column; }
-.ov-sec + .ov-sec { margin-top: 48px; }
+.ov-sec + .ov-sec { margin-top: 115px; } /* 真机折叠块标题→标题 139（24 行高 + 115）；有行时再 +23 下内距 → 末行→下块标题 138 */
 .ov-list-head { margin-bottom: 0; }
 .ov-list-title { font-size: 24px; line-height: 1; font-weight: 600; color: var(--content-secondary); }
 .ov-list-sub { display: block; margin-top: 22px; font-size: 18px; line-height: 1.05; color: var(--content-tertiary); }
-.ov-people { display: flex; flex-direction: column; gap: 21px; margin-top: 41px; }
+.ov-people { display: flex; flex-direction: column; gap: 21px; margin-top: 41px; padding-bottom: 23px; }
 .ov-person {
   display: flex;
   align-items: center;

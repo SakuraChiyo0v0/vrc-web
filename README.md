@@ -99,7 +99,7 @@ cd web && npm run build && cd ..
 scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 ```
 
-九段全过才打印 `REGRESS OK 9/9`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
+十段全过才打印 `REGRESS OK 10/10`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
 
 | 环节 | 脚本 | 现在跑出来的数 |
 |---|---|---|
@@ -111,6 +111,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
 | 动态页表格 | `node scripts/feed_parity.mjs` | 14/14（列名/列序、无头像列、表头行高 44、列文字起点、右缘留白、工具条单行、无页脚、类型四色互异、详细信息三段） |
 | 好友位置分栏 | `node scripts/locations_parity.mjs` | 20/20（栏序、组头人数=卡数、世界栏 ≥2 人同实例、私人房间只收在线且不显示世界行、离线垫底、在线不丢不重、组头区域不重复、卡片 96 高/头像 56 正圆/6 列、列表视图分组一致、私人房间折叠/记忆跨刷新/展开恢复） |
+| 概览三榜单 | `node scripts/overview_parity.mjs` | 45/45（三块榜单顺序与标题、栏宽 300、标题 24/600、副标题 18（标题下 46）、首名 hero 116 圆头像 + 32/600 名字 + 20px 时长（名下 25）/ 下距 55、紧凑行 50 头像 + 22 名字 + 行距 71.5、灰条高 7/槽宽 67/左端固定/右内缩 25/长度∝榜首、hero 唯一且首行、空态文案、末行→下块标题 138、无横向溢出） |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
 端到端实测（第 32 轮，`cache/regress_all_r43.log`）：九段一次性全绿 `REGRESS OK 9/9`（structure 59/59、visual 215/215、frame 1932/1932、nav 366/366、mobile 1479/1479、grid 60/60、feed 14/14、locations 20/20、unittest 0 fail）。frame 此前在串行路径下会中途 `browser has been closed` 崩掉，现在每视口独立起停浏览器并在被关闭时换进程重试一次（`FRAME_VIEWS` / `FRAME_OUT` 可单档复现）。
@@ -143,6 +144,7 @@ node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 node scripts/grid_parity.mjs     http://172.30.0.7:8790/vrc/   # 60/60（.loc-grid 列数阶梯）
 node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 14/14（动态页表格，基线 docs/ref/feed-measure.json）
 node scripts/locations_parity.mjs http://172.30.0.7:8790/vrc/  # 20/20（好友位置分栏，基线 docs/ref/vrcx0-spec.json#friends_locations）
+node scripts/overview_parity.mjs  http://172.30.0.7:8790/vrc/  # 45/45（概览三榜单，基线 docs/ref/overview-lists-measure.json）
 ```
 
 两条硬规则（`scripts/lib/page_structure.mjs`）：
