@@ -197,9 +197,41 @@ export const PAGE_ROUTES = { locations: 'friends' };
  * 端口预检：8899 在 NAS 上常被图片墙（imagewall）容器占着，对那种端口会截出「别人的 200」，
  * 之后所有断言要么假通过要么全红。所以除了 HTTP 200，还要求 /api/roster 是本服务的 JSON。
  */
-/** 去掉末尾斜杠：`http://h/vrc/` 与 `http://h/vrc` 等价。带斜杠时前端会拼出 `//api/roster`（403），
+/** 去掉末尾斜杠：`http://h/vrc/` 与 `http://h/vrc` 等价。带斜杠时请求会拼出 `//api/roster`（403），
  *  服务端 rewriteUrl 只认单个 `/vrc/` 前缀，必须在这里归一。 */
 export const normBase = (u) => String(u).replace(/\/+$/, '');
+
+/** 页面（hash 路由）地址要反着来：必须是带斜杠的 `http://h/vrc/`，再拼 `#/feed`。
+ *  写 `http://h/vrc#/feed` 时服务端收到的是 `GET /vrc`（无尾斜杠）→ 404 JSON，
+ *  而 /api/roster 预检照样通过，结果是整轮截到同一张 404 页却算 PASS（2026-11-24 踩过）。 */
+export const pageBase = (u) => `${normBase(u)}/`;
+
+/** 导航 + 一次重试：线上容器偶发连接断开（chrome-error://chromewebdata/），
+ *  直接断言会把它当「页面没渲染」整轮 exit 2；这里只在真·网络错误时重试，404/白屏仍交给 assertVrcPage。 */
+export async function gotoVrc(page, url, attempts = 3) {
+  for (let i = 1; i <= attempts; i++) {
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    if (!page.url().startsWith('chrome-error:')) return true;
+    await page.waitForTimeout(800 * i);
+  }
+  return false;
+}
+
+/** 页面真的渲染出应用了（不是 404 JSON / 白屏）。三个 parity 脚本首屏后都调一次，
+ *  防止「截了一排同样的 404 图还报 PASS」。 */
+export async function assertVrcPage(page, label = '') {
+  const got = await page.evaluate(() => {
+    const text = (document.body?.innerText || '').replace(/\s+/g, ' ').trim();
+    return { text, rootKids: document.getElementById('root')?.children.length ?? -1 };
+  });
+  const why = got.rootKids <= 0 && got.text.length < 200
+    ? `页面没渲染（root children=${got.rootKids}，文本 ${got.text.slice(0, 80)}）`
+    : /"statusCode"\s*:\s*404/.test(got.text) ? '服务端 404（页面地址缺尾斜杠？用 pageBase()）' : null;
+  if (why) {
+    console.error(`✗ ${label || '页面'} 不可用：${why}\n  当前地址 ${page.url()}`);
+    process.exit(2);
+  }
+}
 
 export async function assertVrcServer(rawBase) {
   const base = normBase(rawBase);

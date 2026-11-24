@@ -2,6 +2,8 @@
 # 一键回归：桌面结构（structure_parity）+ 桌面视觉（visual_parity）+ 主框架/导航密度（frame_parity）+ 移动断点（mobile_parity）+ web 单测。
 #   用法：scripts/regress_all.sh [baseUrl]     默认 http://127.0.0.1:8891（server/scripts/demo.mjs）
 # 不传 baseUrl 时若 8891 没起，会自动起一个 demo 实例并跑完杀掉。
+# 线上（容器）：http://172.30.0.7:8790/vrc/   —— 带不带尾斜杠都行：
+#   接口用 normBase() 去斜杠，页面（hash 路由）用 pageBase() 补回尾斜杠；写错会在首屏被 assertVrcPage 硬拦。
 # 任一环节 FAIL 即 exit 1；每段完整输出落在 cache/regress/<环节>.log。
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

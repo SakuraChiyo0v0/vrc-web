@@ -23,7 +23,7 @@
  */
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { STRUCT_PAGES, assertVrcServer, normBase } from './lib/page_structure.mjs';
+import { STRUCT_PAGES, assertVrcServer, normBase, pageBase, assertVrcPage, gotoVrc } from './lib/page_structure.mjs';
 
 const _req = createRequire(import.meta.url);
 let _pw;
@@ -31,6 +31,7 @@ try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOM
 const { chromium } = _pw;
 
 const BASE = normBase(process.argv[2]?.startsWith('http') ? process.argv[2] : (process.env.VRC_BASE || 'http://127.0.0.1:8891'));
+const PAGE = pageBase(BASE);
 const EXE = process.env.CHROME_PATH
   || '/opt/data/cache/pw-browsers/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell';
 
@@ -56,13 +57,14 @@ const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbo
 
 async function open(p, width, height) {
   const tab = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1, isMobile: false, hasTouch: true });
-  await tab.goto(`${BASE}#/${p}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(tab, `${PAGE}#/${p}`);
   await tab.waitForTimeout(1200);
   // 表格页首屏要等接口：thead 出来了但 tbody 还没行时，卡片化断言会拿到 tr=null（假 FAIL）
   await tab.waitForFunction(() => {
     const th = document.querySelector('thead');
     return !th || !!document.querySelector('tbody tr');
   }, { timeout: 8000 }).catch(() => {});
+  await assertVrcPage(tab, `${p}@${width}x${height}`);
   return tab;
 }
 
@@ -694,7 +696,7 @@ for (const page of ['friendlist', 'feed']) {
 // 聚焦的搜索框仍在可视区内、键盘收起后恢复原高；桌面形态不介入（地址栏伸缩不是键盘）。
 for (const page of ['feed', 'friends']) {
   const tab = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, deviceScaleFactor: 2 });
-  await tab.goto(`${BASE}#/${page}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(tab, `${PAGE}#/${page}`);
   await tab.waitForTimeout(1400);
   await tab.waitForFunction(() => {
     const th = document.querySelector('thead');
@@ -760,7 +762,7 @@ for (const page of ['feed', 'friends']) {
 // 顶栏曾被顶到屏外（top=0 而可视顶边在 120），底部状态栏落到可视区外。外壳按 offsetTop 下移修掉。
 for (const [top, tag] of [[120, 'kb-offset@120'], [400, 'kb-offset@400']]) {
   const tab = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, deviceScaleFactor: 2, isMobile: true });
-  await tab.goto(`${BASE}#/feed`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(tab, `${PAGE}#/feed`);
   await tab.waitForTimeout(1400);
   await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
   await tab.locator('[data-testid="feed-search"]').first().click({ timeout: 5000 }).catch(() => {});
@@ -794,7 +796,7 @@ for (const [top, tag] of [[120, 'kb-offset@120'], [400, 'kb-offset@400']]) {
 // 抽屉在极矮可视区里仍要能滚到最后一项（否则横屏输入时导航全死）。
 for (const [w, h, kb] of [[844, 390, 220], [932, 430, 240]]) {
   const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 2, isMobile: true });
-  await tab.goto(`${BASE}#/feed`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(tab, `${PAGE}#/feed`);
   await tab.waitForTimeout(1400);
   await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
   await tab.locator('[data-testid="feed-search"]').first().click({ timeout: 5000 }).catch(() => {});
@@ -859,7 +861,7 @@ for (const [w, h, kb] of [[844, 390, 220], [932, 430, 240]]) {
 
 {
   const tab = await browser.newPage({ viewport: { width: 1440, height: 900 }, hasTouch: false });
-  await tab.goto(`${BASE}#/feed`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(tab, `${PAGE}#/feed`);
   await tab.waitForFunction(() => !!document.querySelector('#root > div'), { timeout: 15000 }).catch(() => {});
   await tab.waitForTimeout(600);
   await tab.evaluate(() => {
@@ -886,7 +888,7 @@ for (const [w, h, kbH] of [[844, 390, 220], [932, 430, 240]]) {
     ['sessions', 'input[aria-label="搜索房间"]', '.sess-row', true],
   ]) {
     const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
-    await tab.goto(`${BASE}#/${page}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await gotoVrc(tab, `${PAGE}#/${page}`);
     await tab.waitForTimeout(1400);
     await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
     if (needSeg) { await tab.click('.sess-seg button:first-child').catch(() => {}); await tab.waitForTimeout(400); }
@@ -935,7 +937,7 @@ const CONTENT_SEL = {
 for (const [w, h, kbH] of [[844, 390, 220], [932, 430, 240]]) {
   for (const page of PAGES) {
     const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
-    await tab.goto(`${BASE}#/${page}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await gotoVrc(tab, `${PAGE}#/${page}`);
     await tab.waitForTimeout(1400);
     await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
     await tab.evaluate((hh) => {
@@ -978,7 +980,7 @@ for (const [w, h, kbH] of [[844, 390, 220], [932, 430, 240]]) {
 for (const [w, h, kbH] of [[320, 568, 216], [390, 844, 336]]) {
   for (const page of PAGES) {
     const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 3 });
-    await tab.goto(`${BASE}#/${page}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await gotoVrc(tab, `${PAGE}#/${page}`);
     await tab.waitForTimeout(1400);
     await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
     await tab.evaluate((hh) => {
@@ -1019,7 +1021,7 @@ for (const [w, h, kbH] of [[320, 568, 216], [390, 844, 336]]) {
 // 判据：最后一段的右缘不越过状态栏右缘；横向无不可滚的溢出（scrollWidth ≤ clientWidth+1）。
 for (const [w, h] of [[320, 568], [360, 800], [390, 844]]) {
   const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, deviceScaleFactor: 2 });
-  await tab.goto(`${BASE}#/feed`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(tab, `${PAGE}#/feed`);
   await tab.waitForTimeout(1300);
   const sb = await tab.evaluate(() => {
     const bar = document.querySelector('#vrc-statusbar');
@@ -1048,7 +1050,7 @@ for (const [w, h] of [[320, 568], [360, 800], [390, 844]]) {
 for (const [w, h] of [[390, 844], [360, 800], [844, 390]]) {
   const tag = `sessions-search@${w}x${h}`;
   const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
-  await tab.goto(`${BASE}#/sessions`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(tab, `${PAGE}#/sessions`);
   await tab.waitForTimeout(1500);
   const before = await tab.evaluate(() => ({
     inputs: document.querySelectorAll('.sess-search input').length,
@@ -1158,7 +1160,7 @@ for (const [w, h] of [[390, 844], [360, 800], [844, 390]]) {
 for (const c of [{ w: 390, h: 844, kb: 0 }, { w: 360, h: 800, kb: 0 }, { w: 844, h: 390, kb: 0 }, { w: 932, h: 430, kb: 0 }, { w: 844, h: 390, kb: 220 }]) {
   const tag = `setnav@${c.w}x${c.h}${c.kb ? `+kb${c.kb}` : ''}`;
   const tab = await browser.newPage({ viewport: { width: c.w, height: c.h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
-  await tab.goto(`${BASE}#/settings`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(tab, `${PAGE}#/settings`);
   await tab.waitForTimeout(1400);
   await tab.waitForSelector('.settings-subnav [data-subnav-item]', { timeout: 15000 }).catch(() => {});
   if (c.kb) {
@@ -1202,7 +1204,7 @@ for (const c of [{ w: 390, h: 844, kb: 0 }, { w: 360, h: 800, kb: 0 }, { w: 844,
 for (const c of [{ w: 390, h: 844 }, { w: 360, h: 800 }, { w: 430, h: 932 }, { w: 320, h: 568 }, { w: 844, h: 390 }]) {
   const tag = `fdmodal@${c.w}x${c.h}`;
   const tab = await browser.newPage({ viewport: { width: c.w, height: c.h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
-  await tab.goto(`${BASE}#/friends`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(tab, `${PAGE}#/friends`);
   await tab.waitForTimeout(1200);
   await tab.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true }).catch(() => {});
   await tab.waitForSelector('.fd-card', { timeout: 8000 }).catch(() => {});
@@ -1277,6 +1279,10 @@ await browser.close();
     '',
     '移动形态判据：宽 ≤1023 或高 ≤500（styles.css / tailwind md raw / Sidebar matchMedia 三处一致）。',
     '重新生成：`node scripts/mobile_parity.mjs`（脚本末尾自动写回本文件）。',
+    `基准来源：${BASE}${BASE.includes('/vrc') ? '（线上容器）' : '（本地 demo）'}`,
+    '',
+    '> 跑线上 base 必须走 pageBase()（补尾斜杠）：`http://h/vrc#/feed` 会被服务端当 `GET /vrc` 回 404，',
+    '> 而 /api/roster 预检照样通过，整轮截图变成同一张 404 页；现在首屏由 assertVrcPage() 硬拦 exit 2。',
     '',
   ];
   for (const [tag, list] of groups) {

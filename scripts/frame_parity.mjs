@@ -21,13 +21,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { normBase, pageBase, assertVrcPage, gotoVrc } from './lib/page_structure.mjs';
 
 const _req = createRequire(import.meta.url);
 let _pw;
 try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOME || '/opt/data/cache/hermes-daily-template/package.json')('playwright'); }
 const { chromium } = _pw;
 
-const BASE = process.argv[2]?.startsWith('http') ? process.argv[2] : (process.env.VRC_BASE || 'http://127.0.0.1:8891');
+const BASE = normBase(process.argv[2]?.startsWith('http') ? process.argv[2] : (process.env.VRC_BASE || 'http://127.0.0.1:8891'));
+const PAGE = pageBase(BASE);
 const ROOT = path.resolve(import.meta.dirname, '..');
 const OUT = path.join(ROOT, 'docs/ref/frame-parity.json');
 const EXE = process.env.CHROME_PATH
@@ -50,8 +52,9 @@ for (const [width, height] of VIEWS) {
   const overflow = [];
 
   for (const p of PAGES) {
-    await tab.goto(`${BASE}#/${p}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await gotoVrc(tab, `${PAGE}#/${p}`);
     await tab.waitForTimeout(900);
+    await assertVrcPage(tab, `${p}@${view}`);
     await tab.waitForFunction(() => {
       const th = document.querySelector('thead');
       return !th || !!document.querySelector('tbody tr');

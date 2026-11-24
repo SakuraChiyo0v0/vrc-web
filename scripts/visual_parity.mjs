@@ -11,7 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { probeMain, structureRows, STRUCT_PAGES, assertVrcServer, normBase, dataDependentWant } from './lib/page_structure.mjs';
+import { probeMain, structureRows, STRUCT_PAGES, assertVrcServer, normBase, pageBase, assertVrcPage, gotoVrc, dataDependentWant } from './lib/page_structure.mjs';
 // playwright 不在本仓库依赖里（容器只有一份装在 hermes 模板目录），ESM 不吃 NODE_PATH，按路径 require
 const _req = createRequire(import.meta.url);
 let _pw;
@@ -19,6 +19,7 @@ try { _pw = _req('playwright'); } catch { _pw = createRequire(process.env.PW_HOM
 const { chromium } = _pw;
 
 const BASE = normBase(process.argv[2] || process.env.VRC_BASE || 'http://127.0.0.1:8891');
+const PAGE = pageBase(BASE); // hash 路由要用带尾斜杠的地址（见 page_structure.pageBase）
 const ROOT = process.env.VRC_ROOT || path.resolve(import.meta.dirname, '..');
 const SPEC = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/ref/vrcx0-spec.json'), 'utf8'));
 const OUT = path.join(ROOT, 'docs/screenshots/compare');
@@ -51,9 +52,10 @@ async function open(pageName, { width = 1440, height = 960, fresh = false, ready
     tab = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
   }
   // 页面里有轮询（好友/在线状态）时 networkidle 永远等不到，用 domcontentloaded + 就绪选择器
-  await tab.goto(`${BASE}#/${pageName}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(tab, `${PAGE}#/${pageName}`);
   if (ready) await tab.waitForSelector(ready, { timeout: 25000 }).catch(() => {});
   await tab.waitForTimeout(1500);
+  await assertVrcPage(tab, pageName); // 404/白屏当场硬失败，别去量空 DOM
   return tab;
 }
 
@@ -504,7 +506,7 @@ async function openStruct(page, want = {}) {
     }, null, { timeout: 20000 }).catch(() => {});
     await sp.waitForTimeout(1200);
   };
-  await sp.goto(`${BASE}#/${page}`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await gotoVrc(sp, `${PAGE}#/${page}`);
   await settle();
   let got = await probeMain(sp);
   for (let i = 0; i < 2 && got.text.trim().length < 40; i += 1) {
