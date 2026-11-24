@@ -62,6 +62,29 @@ async function go(page, want = {}) {
     await p.waitForTimeout(2500);
     got = await probeMain(p);
   }
+  // 概览右栏三块榜单挂在 `tab==='overview' && data` 后面：/api/overview 慢或失败时整块是 null，
+  // 会把「接口没回来」量成「榜单节数 0/3」的结构差异（第三十一轮 regress 就这样误报 4 项）。
+  // 这里按页面等自己的锚点，仍缺就重载一次，并把接口状态打出来，区分接口红与结构红。
+  if (page === 'overview' || want.lists?.length) {
+    const rail = () => p.evaluate(() => document.querySelectorAll('.ov-rail .ov-sec').length);
+    for (let i = 0; i < 2 && (await rail()) < (want.lists?.length ?? 3); i += 1) {
+      await p
+        .waitForSelector('.ov-rail .ov-sec', { timeout: 25000 })
+        .catch(() => {});
+      if ((await rail()) >= (want.lists?.length ?? 3)) break;
+      const api = await p.evaluate(async (base) => {
+        try {
+          const r = await fetch(`${base}/api/overview?range=all`);
+          const j = await r.json().catch(() => null);
+          return { status: r.status, companions: j?.companions?.length ?? null, sessions: j?.sessions ?? null };
+        } catch (e) { return { status: 'fetch-error', err: String(e).slice(0, 80) }; }
+      }, BASE);
+      console.log(`  [overview] 右栏未渲染（第 ${i + 1} 次），/api/overview → ${JSON.stringify(api)}`);
+      await p.reload({ waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+      await p.waitForTimeout(2500);
+    }
+    got = await probeMain(p);
+  }
   return got;
 }
 

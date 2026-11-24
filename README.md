@@ -115,6 +115,8 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 
 刷新回归说明：脚本里**别用裸 `page.reload()`**。等 `'load'` 会被 demo 的长连接拖过 30s 直接整轮 TimeoutError（拿不到 FAIL 明细）；等 `'domcontentloaded'` 又早于 React 挂载，调用方 `evaluate` 会撞 `Execution context was destroyed`。统一走 `scripts/lib/page_structure.mjs` 的 `reloadVrc/reloadVrcHard`：只等 domcontentloaded，先给 `<html>` 打 `dataset.reloadStamp`，刷新后看不到这枚戳且 `#vrc-topbar h1` 在才算「文档真换新」，否则整页 goto 硬重试——否则旧 DOM 会让「reload 后状态还在」的断言假 PASS（第 30 轮 `exp.dirty.264/280` 读到上一条用例的 353 就是这个原因）。
 
+等接口就绪说明：概览页整块内容挂在 `tab==='overview' && data` 后面，`/api/overview` 慢时 DOM 里连 `.ov-rail` 都没有——探针会把「接口没回来」量成「榜单节数 0/3」（第 31 轮 regress 就这样误报 4 项 DIFF，重启 demo 后复跑即 59/59）。`structure_parity.mjs` 的 `go()` 现在对概览页等 `.ov-rail .ov-sec` 凑满 `want.lists.length`（单次 25s），仍缺则打印 `/api/overview` 的 `status/companions/sessions` 再重载一次——看到那行诊断说明是接口红，不是结构红。
+
 单独只跑移动断点：
 
 ```bash
