@@ -164,8 +164,12 @@ export function structureRows(page, got, want, pitch) {
       check('卡片边框', c.borderW, String(want.card_border_px ?? 1), c.borderW === (want.card_border_px ?? 1));
       check('卡片行数', c.lines, `1~${want.lines_per_card}`, c.lines > 1 && c.lines <= want.lines_per_card);
     }
-    check('分栏标题', (c?.heads ?? []).join('/'), want.groups.join('/'),
-      want.groups.every((g) => (c?.heads ?? []).some((h) => h.includes(g))));
+    // 真机截图里的世界栏标题随房间变化（spec._groups_note：世界栏不计入），
+    // 我们的页面同样按数据出世界栏 → 只比三个固定桶标题，忽略世界栏，避免数据漂移假红。
+    const heads = c?.heads ?? [];
+    const buckets = heads.filter((h) => want.groups.some((g) => h.includes(g)));
+    check('分栏标题', buckets.join('/'), want.groups.join('/'),
+      JSON.stringify(buckets) === JSON.stringify(want.groups));
   }
   if (want.kind !== 'friend_grid' && want.groups) {
     const ok = want.groups.every((g) => got.text.includes(g));
