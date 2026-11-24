@@ -38,6 +38,10 @@
  *      内容列必须正好多出右栏宽（353）、无横向溢出，再开回来内容列/右栏宽度复原。
  *      浅色收起与深色收起各跑一遍；收起态 friends 页则要右栏不渲染、内容 ≥720、无溢出。
  *  12) 主题不改宽度：同一视口浅色收起与深色收起的面板宽、右栏宽必须相等。
+ *  13) 展开态收放折叠夹（收藏 / 社交）：子项归 0 时侧栏宽、内容列宽、顶栏 39、状态栏 35、
+ *      内容区 y·h 一律不变、无溢出，展开回来复原；feed / friends 两页 × 浅/深色各一遍。
+ *  14) 矮窗（600 高）展开态 <nav> 滚到底：window.scrollY 仍 0、顶栏仍 y0、内容区 y/h 不变、
+ *      末项整行在 nav 可视区内、内容区顶部 elementFromPoint 仍命中 .workspace（不被粘性顶盖住）。
  *
  * 任一 FAIL 退出码 1；全 PASS 打印 FRAME OK，并把结果写 docs/ref/frame-parity.json。
  */
@@ -384,6 +388,107 @@ const checkCollapsedFriends = async (tab, view, p) => {
   check(view, `${p}friends.content_w`, fd.ws, '≥720', fd.ws >= 720 && fd.asideGone && fd.ovf <= 0);
 };
 
+// 展开态折叠夹收放：侧栏里的折叠夹（收藏 / 社交）只该改 <nav> 内部的内容高，不该改侧栏宽、
+// 内容面板宽或外壳高度，也不该撑出横向溢出 —— 侧栏是独立列，收放夹子触发的重排最容易把内容
+// 列挤窄、或把整页推宽（这类回归只看「子项 N→0→N」是量不到的）。浅色 / 深色展开各跑一遍。
+const checkFoldImpact = async (tab, view, p) => {
+  for (const p2 of ['feed', 'friends']) {
+    await gotoVrc(tab, `${PAGE}#/${p2}`);
+    await tab.waitForTimeout(650);
+    const r = await tab.evaluate(async () => {
+      const wait = (ms) => new Promise((res) => setTimeout(res, ms));
+      const me = () => {
+        const as = document.querySelector('aside.vrc-sidebar')?.getBoundingClientRect();
+        const ws = document.querySelector('.workspace').getBoundingClientRect();
+        const tb = document.querySelector('#vrc-topbar').getBoundingClientRect();
+        const sb = document.querySelector('#vrc-statusbar').getBoundingClientRect();
+        return {
+          asideW: as ? Math.round(as.width) : 0,
+          ws: Math.round(ws.width),
+          wsY: Math.round(ws.y * 10) / 10,
+          wsH: Math.round(ws.height * 10) / 10,
+          tbH: Math.round(tb.height * 10) / 10,
+          sbH: Math.round(sb.height * 10) / 10,
+          subs: document.querySelectorAll('aside.vrc-sidebar [data-nav-kind="sub"]').length,
+          ovf: document.documentElement.scrollWidth - window.innerWidth
+        };
+      };
+      const heads = [...document.querySelectorAll('aside.vrc-sidebar [data-nav-kind="folder"]')];
+      const a = me();
+      for (const h of heads) { h.click(); await wait(120); }
+      await wait(250);
+      const off = me();
+      for (const h of heads) { h.click(); await wait(120); }
+      await wait(250);
+      const on = me();
+      return { n: heads.length, a, off, on };
+    });
+    check(view, `${p}fold.${p2}.open`, `${r.n} 夹 sub ${r.a.subs}→${r.off.subs}→${r.on.subs}`,
+      '夹子收起后 sub=0，展开回来是原数', r.n >= 1 && r.a.subs > 0 && r.off.subs === 0 && r.on.subs === r.a.subs);
+    // 夹子全收起来 → 侧栏宽/内容列/顶栏/状态栏/内容区 y·h 一律不变，且不撑宽
+    check(view, `${p}fold.${p2}.layout`,
+      `aside ${r.a.asideW}→${r.off.asideW} ws ${r.a.ws}→${r.off.ws} y${r.off.wsY} h${r.off.wsH} ovf${r.off.ovf}`,
+      '侧栏宽/内容列/外壳高度不变、无溢出',
+      r.off.asideW === r.a.asideW && r.off.ws === r.a.ws
+        && Math.abs(r.off.wsY - r.a.wsY) <= 1 && Math.abs(r.off.wsH - r.a.wsH) <= 1
+        && Math.abs(r.off.tbH - r.a.tbH) <= 1 && Math.abs(r.off.sbH - r.a.sbH) <= 1
+        && r.off.ovf <= 0);
+    check(view, `${p}fold.${p2}.restore`, `ws ${r.on.ws}/${r.a.ws} aside ${r.on.asideW}/${r.a.asideW} sub${r.on.subs}`,
+      `ws 回 ${r.a.ws}、侧栏宽回 ${r.a.asideW}`,
+      r.on.ws === r.a.ws && r.on.asideW === r.a.asideW && r.on.ovf <= 0 && r.on.subs === r.a.subs);
+  }
+};
+
+// 矮窗（600 高）展开态：侧栏装不下只能靠 <nav> 内部滚动。滚到底之后页面本身不许跟着滚
+// （window.scrollY 仍是 0）、顶栏仍在 y0、内容区 y/h 不变、末项整行落在 <nav> 可视区内，
+// 内容区顶部那一小块点的还是内容区里的东西（没被「粘性顶」盖住）。
+const checkNavScroll = async (tab, view, p) => {
+  await gotoVrc(tab, `${PAGE}#/settings`);
+  await tab.waitForTimeout(500);
+  const r = await tab.evaluate(async () => {
+    const wait = (ms) => new Promise((res) => setTimeout(res, ms));
+    const nav = document.querySelector('aside.vrc-sidebar nav');
+    const me = () => {
+      const ws = document.querySelector('.workspace').getBoundingClientRect();
+      const tb = document.querySelector('#vrc-topbar').getBoundingClientRect();
+      return {
+        wsY: Math.round(ws.y * 10) / 10,
+        wsH: Math.round(ws.height * 10) / 10,
+        tbY: Math.round(tb.y),
+        scrollY: Math.round(window.scrollY),
+        navTop: Math.round(nav.scrollTop)
+      };
+    };
+    const a = me();
+    nav.scrollTop = nav.scrollHeight;
+    await wait(300);
+    const b = me();
+    const last = [...nav.querySelectorAll('[data-nav-kind]')].pop();
+    const lastR = last.getBoundingClientRect();
+    const navR = nav.getBoundingClientRect();
+    const t = document.elementFromPoint(navR.right + 30, b.wsY + 10);
+    const wsEl = document.querySelector('.workspace');
+    return {
+      a, b,
+      overflow: nav.scrollHeight - nav.clientHeight,
+      lastBottom: Math.round(lastR.bottom),
+      navBottom: Math.round(navR.bottom),
+      inWs: !!t && wsEl.contains(t),
+      hitEl: t ? String(t.className ?? t.tagName).slice(0, 40) : ''
+    };
+  });
+  check(view, `${p}navscroll.moved`, `${r.a.navTop}→${r.b.navTop} overflow${r.overflow}`, '>0 且溢出 ≥0',
+    r.b.navTop > 0 && r.overflow >= 0);
+  check(view, `${p}navscroll.chrome`,
+    `ws y${r.a.wsY}→${r.b.wsY} h${r.a.wsH}→${r.b.wsH} tbY${r.b.tbY} scrollY${r.b.scrollY}`,
+    '页面不跟滚（scrollY=0）、顶栏 y0、内容区 y/h 不变',
+    r.b.scrollY === 0 && r.b.tbY === 0 && r.a.wsY === r.b.wsY && r.a.wsH === r.b.wsH);
+  check(view, `${p}navscroll.last`, `${r.lastBottom} ≤ ${r.navBottom}`, '末项整行在 nav 可视区内',
+    r.lastBottom <= r.navBottom + 1);
+  check(view, `${p}navscroll.no_cover`, r.inWs ? 'inside workspace' : `covered by ${r.hitEl}`,
+    '内容区顶部仍点到内容区（不被顶栏盖住）', r.inWs === true);
+};
+
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 
 // ── 第一轮：浅色 + 侧栏展开 → 收起（同一页面顺序做，收起态不必重载）──────────
@@ -453,6 +558,10 @@ for (const [width, height] of VIEWS) {
   // 展开态密度基线：表格页记录列数/首列宽/表宽（收起后要逐页对比）
   const density = await collectDensity(tab);
 
+  // 展开态：侧栏折叠夹收放不该动内容列/外壳（浅色）；矮窗还要验「nav 滚到底不带动整页」
+  await checkFoldImpact(tab, view, 'exp.');
+  if (height <= 600) await checkNavScroll(tab, view, 'exp.');
+
   // 浅色 + 收起：外壳同一套断言 + 整列让宽（此前收起态只在深色轮量 4 个高度）
   await gotoVrc(tab, `${PAGE}#/settings`);
   await tab.waitForTimeout(300);
@@ -497,6 +606,9 @@ for (const [width, height] of VIEWS) {
 
   // 深色展开态密度基线 → 深色收起逐页（主题不影响密度：列数/首列/行数与深色展开态比）
   const darkDensity = await collectDensity(tab);
+  // 深色展开：折叠夹收放同样不动内容列/外壳；矮窗 nav 滚到底也不带动整页
+  await checkFoldImpact(tab, view, 'dark.exp.');
+  if (height <= 600) await checkNavScroll(tab, view, 'dark.exp.');
   await gotoVrc(tab, `${PAGE}#/settings`);
   await tab.waitForTimeout(300);
   await collapse(tab);

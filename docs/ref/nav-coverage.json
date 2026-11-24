@@ -20,110 +20,110 @@
   {
    "view": "1024x600",
    "theme": "light",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1024x768",
    "theme": "light",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1100x800",
    "theme": "light",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1280x600",
    "theme": "light",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1280x800",
    "theme": "light",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1366x768",
    "theme": "light",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1440x900",
    "theme": "light",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1600x900",
    "theme": "light",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1700x1040",
    "theme": "light",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1024x600/dark",
    "theme": "dark",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1024x768/dark",
    "theme": "dark",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1100x800/dark",
    "theme": "dark",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1280x600/dark",
    "theme": "dark",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1280x800/dark",
    "theme": "dark",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1366x768/dark",
    "theme": "dark",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1440x900/dark",
    "theme": "dark",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1600x900/dark",
    "theme": "dark",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   },
   {
    "view": "1700x1040/dark",
    "theme": "dark",
-   "pass": 41,
-   "total": 41
+   "pass": 43,
+   "total": 43
   }
  ],
  "score": 100,
@@ -608,6 +608,32 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "palette:expanded_click@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "shortcut:expanded@1024x600",
@@ -1143,6 +1169,32 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "palette:expanded_click@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expanded@1024x768",
    "view": "1024x768",
    "theme": "light",
@@ -1674,6 +1726,32 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "palette:expanded_click@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "shortcut:expanded@1100x800",
@@ -2209,6 +2287,32 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "palette:expanded_click@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expanded@1280x600",
    "view": "1280x600",
    "theme": "light",
@@ -2740,6 +2844,32 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "palette:expanded_click@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "shortcut:expanded@1280x800",
@@ -3275,6 +3405,32 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "palette:expanded_click@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expanded@1366x768",
    "view": "1366x768",
    "theme": "light",
@@ -3806,6 +3962,32 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "palette:expanded_click@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "shortcut:expanded@1440x900",
@@ -4341,6 +4523,32 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "palette:expanded_click@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expanded@1600x900",
    "view": "1600x900",
    "theme": "light",
@@ -4872,6 +5080,32 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "palette:expanded_click@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "shortcut:expanded@1700x1040",
@@ -5407,6 +5641,32 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "palette:expanded_click@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expanded@1024x600/dark",
    "view": "1024x600/dark",
    "theme": "dark",
@@ -5938,6 +6198,32 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "palette:expanded_click@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "shortcut:expanded@1024x768/dark",
@@ -6473,6 +6759,32 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "palette:expanded_click@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expanded@1100x800/dark",
    "view": "1100x800/dark",
    "theme": "dark",
@@ -7004,6 +7316,32 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "palette:expanded_click@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "shortcut:expanded@1280x600/dark",
@@ -7539,6 +7877,32 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "palette:expanded_click@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expanded@1280x800/dark",
    "view": "1280x800/dark",
    "theme": "dark",
@@ -8070,6 +8434,32 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "palette:expanded_click@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "shortcut:expanded@1366x768/dark",
@@ -8605,6 +8995,32 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "palette:expanded_click@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expanded@1440x900/dark",
    "view": "1440x900/dark",
    "theme": "dark",
@@ -9138,6 +9554,32 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "palette:expanded_click@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expanded@1600x900/dark",
    "view": "1600x900/dark",
    "theme": "dark",
@@ -9669,6 +10111,32 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "palette:expanded_click@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_click",
+   "hash": "#/sessions",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:expanded_esc_hash@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "palette:expanded_esc_hash",
+   "hash": "#/sessions",
+   "title": "#/sessions → #/sessions",
+   "want": "面板关掉且 hash 不变（#/sessions）",
+   "active": "palette=false aside=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "shortcut:expanded@1700x1040/dark",

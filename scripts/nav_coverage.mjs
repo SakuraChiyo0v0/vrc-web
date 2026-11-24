@@ -29,6 +29,8 @@
  * 展开态也验 Ctrl K（此时侧栏还在，验的是面板不把导航状态弄丢）：打开时输入框聚焦、侧栏在位、
  * 当前页项仍高亮；输入后 ↓/↑ 真移动选中项（按 index 比对且不越界）；↓+Enter 关面板并开好友
  * 抽屉且名字对得上；关抽屉再 Ctrl K、点遮罩空白处也能关，侧栏与当前页高亮原样。
+ * 展开态 Ctrl K 另验「鼠标点结果行」（面板关、好友抽屉名字=那一行 label、hash 不变）与
+ * 「Esc 关面板不改 hash」。
  * 展开态再补两条：Ctrl+1..9 逐键验「跳页 + 标题 + 侧栏在位 + 当前项高亮且点得到」，reload 后
  * 仍是展开（localStorage.vrc-nav-collapsed≠1，与收起态那条互为对照）；`?` 快捷键表在侧栏在场时
  * 跳页组同样 9 项/顺序对、Esc 关掉不动侧栏与高亮、关掉后 Ctrl+7 照旧跳页。
@@ -700,6 +702,81 @@ for (const [width, height] of VIEWS) {
       active: `aside=${afterMask.aside} nav=${afterMask.nav}`, hit: afterMask.hit,
       ok: beforeMask && !afterMask.palette && afterMask.aside && !!afterMask.nav && afterMask.hit,
       error: !beforeMask ? 'Ctrl K 没能再开面板' : '点遮罩没关掉面板'
+    });
+    // ⑤ 点结果行（此前只验了箭头+Enter，鼠标点行是另一半入口）：Ctrl K → 输入 'a' →
+    //    用鼠标点「好友」组第一行的中心 → 面板关、好友抽屉开、抽屉名字=那一行 label、
+    //    侧栏仍在、hash 不变（好友抽屉是浮层，不改路由）。
+    // ⑥ Esc 关面板不改 hash：开着面板输入一串没有匹配的词，Esc 关掉后 hash 必须与打开前一致
+    //    （面板是搜索浮层，不是导航，任何一条路径都不该把当前页带走）。
+    await page.keyboard.press('Control+k');
+    await page.waitForTimeout(350);
+    await page.keyboard.type('a');
+    await page.waitForTimeout(1000);
+    const hashBeforePick = await page.evaluate(() => location.hash);
+    const pickRows = await page.evaluate(() => {
+      const list = document.querySelector('.cmdk-list');
+      if (!list) return [];
+      let g = '';
+      const out = [];
+      for (const n of list.querySelectorAll('div.label-xs, button')) {
+        if (n.tagName !== 'BUTTON') { g = n.textContent.trim(); continue; }
+        const b = n.getBoundingClientRect();
+        out.push({
+          group: g,
+          label: n.querySelector('span')?.textContent?.trim() ?? '',
+          x: b.x + b.width / 2,
+          y: b.y + b.height / 2,
+          h: Math.round(b.height)
+        });
+      }
+      return out;
+    });
+    const pick = pickRows.find((r) => r.group === '好友' && r.h > 0) ?? null;
+    if (pick) {
+      await page.mouse.click(pick.x, pick.y);
+      await page.waitForTimeout(800);
+    }
+    const pickAfter = await page.evaluate(() => {
+      const card = document.querySelector('.fd-card');
+      return {
+        palette: !!document.querySelector('[data-testid="palette"]'),
+        card: !!card,
+        name: card?.querySelector('.fd-namepill strong')?.textContent?.trim() ?? '',
+        aside: !!document.querySelector('aside.vrc-sidebar'),
+        hash: location.hash
+      };
+    });
+    push({
+      id: `palette:expanded_click@${view}`, view, theme, nav: 'palette:expanded_click', hash: pickAfter.hash,
+      title: `点「${pick?.label ?? '-'}」→ 抽屉「${pickAfter.name}」`,
+      want: '点结果行关面板并打开抽屉（名字对得上），侧栏在位，hash 不变',
+      active: `palette=${pickAfter.palette} aside=${pickAfter.aside}`, hit: '-',
+      ok: !!pick && !pickAfter.palette && pickAfter.card && pickAfter.aside
+        && (pickAfter.name === pick.label || (!!pick.label && pickAfter.name.includes(pick.label)))
+        && pickAfter.hash === hashBeforePick,
+      error: !pick ? '搜索 "a" 没有出现「好友」组结果行' : (!pickAfter.card ? '点结果行后没开抽屉' : null)
+    });
+    // ⑥ Esc 不改 hash
+    if (pickAfter.card) await page.click('.fd-close');
+    await page.waitForTimeout(300);
+    const hashBeforeEsc = await page.evaluate(() => location.hash);
+    await page.keyboard.press('Control+k');
+    await page.waitForTimeout(350);
+    await page.keyboard.type('zzzz_no_hit');
+    await page.waitForTimeout(400);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(350);
+    const escHash = await page.evaluate(() => ({
+      palette: !!document.querySelector('[data-testid="palette"]'),
+      hash: location.hash,
+      aside: !!document.querySelector('aside.vrc-sidebar')
+    }));
+    push({
+      id: `palette:expanded_esc_hash@${view}`, view, theme, nav: 'palette:expanded_esc_hash', hash: escHash.hash,
+      title: `${hashBeforeEsc} → ${escHash.hash}`, want: `面板关掉且 hash 不变（${hashBeforeEsc}）`,
+      active: `palette=${escHash.palette} aside=${escHash.aside}`, hit: '-',
+      ok: !escHash.palette && escHash.hash === hashBeforeEsc && escHash.aside,
+      error: escHash.hash !== hashBeforeEsc ? `Esc 关面板把页面带走了：${hashBeforeEsc}→${escHash.hash}` : null
     });
     // 展开态快捷键 Ctrl+1..9：收起态验的是「不点侧栏也能跳页」，展开态要验的是快捷键跳完之后
     // 侧栏仍然在位、当前页那一项真的高亮（data-active 跟着 hash 走）、且仍点得到 —— 侧栏在场时

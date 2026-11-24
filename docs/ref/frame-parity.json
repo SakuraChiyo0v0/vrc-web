@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T07:54:25.311Z",
+ "at": "2026-11-24T08:09:16.478Z",
  "base": "http://127.0.0.1:8891",
- "pass": 1713,
- "total": 1713,
+ "pass": 1837,
+ "total": 1837,
  "rows": [
   {
    "view": "1024x600",
@@ -387,6 +387,76 @@
    "name": "nav.footer_visible",
    "ours": "553 / 565",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fold.feed.layout",
+   "ours": "aside 214→214 ws 797→797 y39 h526 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fold.feed.restore",
+   "ours": "ws 797/797 aside 214/214 sub7",
+   "want": "ws 回 797、侧栏宽回 214",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fold.friends.layout",
+   "ours": "aside 214→214 ws 797→797 y39 h526 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fold.friends.restore",
+   "ours": "ws 797/797 aside 214/214 sub7",
+   "want": "ws 回 797、侧栏宽回 214",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.navscroll.moved",
+   "ours": "303→303 overflow303",
+   "want": ">0 且溢出 ≥0",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.navscroll.chrome",
+   "ours": "ws y39→39 h526→526 tbY0 scrollY0",
+   "want": "页面不跟滚（scrollY=0）、顶栏 y0、内容区 y/h 不变",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.navscroll.last",
+   "ours": "473 ≤ 477",
+   "want": "末项整行在 nav 可视区内",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.navscroll.no_cover",
+   "ours": "inside workspace",
+   "want": "内容区顶部仍点到内容区（不被顶栏盖住）",
    "ok": true
   },
   {
@@ -1143,6 +1213,48 @@
    "name": "nav.footer_visible",
    "ours": "721 / 733",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fold.feed.layout",
+   "ours": "aside 214→214 ws 797→797 y39 h694 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fold.feed.restore",
+   "ours": "ws 797/797 aside 214/214 sub7",
+   "want": "ws 回 797、侧栏宽回 214",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fold.friends.layout",
+   "ours": "aside 214→214 ws 797→797 y39 h694 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fold.friends.restore",
+   "ours": "ws 797/797 aside 214/214 sub7",
+   "want": "ws 回 797、侧栏宽回 214",
    "ok": true
   },
   {
@@ -1903,6 +2015,48 @@
   },
   {
    "view": "1100x800",
+   "name": "exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fold.feed.layout",
+   "ours": "aside 214→214 ws 873→873 y39 h726 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fold.feed.restore",
+   "ours": "ws 873/873 aside 214/214 sub7",
+   "want": "ws 回 873、侧栏宽回 214",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fold.friends.layout",
+   "ours": "aside 214→214 ws 873→873 y39 h726 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fold.friends.restore",
+   "ours": "ws 873/873 aside 214/214 sub7",
+   "want": "ws 回 873、侧栏宽回 214",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "coll.overflow.friends",
    "ours": 1100,
    "want": "≤1101",
@@ -2655,6 +2809,76 @@
    "name": "nav.footer_visible",
    "ours": "553 / 565",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 990→990 y39 h526 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fold.feed.restore",
+   "ours": "ws 990/990 aside 277/277 sub7",
+   "want": "ws 回 990、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 990→990 y39 h526 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fold.friends.restore",
+   "ours": "ws 990/990 aside 277/277 sub7",
+   "want": "ws 回 990、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.navscroll.moved",
+   "ours": "303→303 overflow303",
+   "want": ">0 且溢出 ≥0",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.navscroll.chrome",
+   "ours": "ws y39→39 h526→526 tbY0 scrollY0",
+   "want": "页面不跟滚（scrollY=0）、顶栏 y0、内容区 y/h 不变",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.navscroll.last",
+   "ours": "473 ≤ 477",
+   "want": "末项整行在 nav 可视区内",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.navscroll.no_cover",
+   "ours": "inside workspace",
+   "want": "内容区顶部仍点到内容区（不被顶栏盖住）",
    "ok": true
   },
   {
@@ -3415,6 +3639,48 @@
   },
   {
    "view": "1280x800",
+   "name": "exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 990→990 y39 h726 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fold.feed.restore",
+   "ours": "ws 990/990 aside 277/277 sub7",
+   "want": "ws 回 990、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 990→990 y39 h726 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fold.friends.restore",
+   "ours": "ws 990/990 aside 277/277 sub7",
+   "want": "ws 回 990、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "coll.overflow.friends",
    "ours": 1280,
    "want": "≤1281",
@@ -4171,6 +4437,48 @@
   },
   {
    "view": "1366x768",
+   "name": "exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 1076→1076 y39 h694 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fold.feed.restore",
+   "ours": "ws 1076/1076 aside 277/277 sub7",
+   "want": "ws 回 1076、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 1076→1076 y39 h694 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fold.friends.restore",
+   "ours": "ws 1076/1076 aside 277/277 sub7",
+   "want": "ws 回 1076、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "coll.overflow.friends",
    "ours": 1366,
    "want": "≤1367",
@@ -4923,6 +5231,48 @@
    "name": "nav.footer_visible",
    "ours": "853 / 865",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 1150→1150 y39 h826 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fold.feed.restore",
+   "ours": "ws 1150/1150 aside 277/277 sub7",
+   "want": "ws 回 1150、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 1150→1150 y39 h826 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fold.friends.restore",
+   "ours": "ws 1150/1150 aside 277/277 sub7",
+   "want": "ws 回 1150、侧栏宽回 277",
    "ok": true
   },
   {
@@ -5718,6 +6068,48 @@
   },
   {
    "view": "1600x900",
+   "name": "exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 1310→1310 y39 h826 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fold.feed.restore",
+   "ours": "ws 1310/1310 aside 277/277 sub7",
+   "want": "ws 回 1310、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 1310→1310 y39 h826 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fold.friends.restore",
+   "ours": "ws 1310/1310 aside 277/277 sub7",
+   "want": "ws 回 1310、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "coll.overflow.friends",
    "ours": 1600,
    "want": "≤1601",
@@ -6509,6 +6901,48 @@
   },
   {
    "view": "1700x1040",
+   "name": "exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 1410→1410 y39 h966 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fold.feed.restore",
+   "ours": "ws 1410/1410 aside 277/277 sub7",
+   "want": "ws 回 1410、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 1410→1410 y39 h966 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fold.friends.restore",
+   "ours": "ws 1410/1410 aside 277/277 sub7",
+   "want": "ws 回 1410、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "coll.overflow.friends",
    "ours": 1700,
    "want": "≤1701",
@@ -7083,6 +7517,76 @@
   },
   {
    "view": "1024x600",
+   "name": "dark.exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.exp.fold.feed.layout",
+   "ours": "aside 214→214 ws 797→797 y39 h526 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.exp.fold.feed.restore",
+   "ours": "ws 797/797 aside 214/214 sub7",
+   "want": "ws 回 797、侧栏宽回 214",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.exp.fold.friends.layout",
+   "ours": "aside 214→214 ws 797→797 y39 h526 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.exp.fold.friends.restore",
+   "ours": "ws 797/797 aside 214/214 sub7",
+   "want": "ws 回 797、侧栏宽回 214",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.exp.navscroll.moved",
+   "ours": "303→303 overflow303",
+   "want": ">0 且溢出 ≥0",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.exp.navscroll.chrome",
+   "ours": "ws y39→39 h526→526 tbY0 scrollY0",
+   "want": "页面不跟滚（scrollY=0）、顶栏 y0、内容区 y/h 不变",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.exp.navscroll.last",
+   "ours": "473 ≤ 477",
+   "want": "末项整行在 nav 可视区内",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.exp.navscroll.no_cover",
+   "ours": "inside workspace",
+   "want": "内容区顶部仍点到内容区（不被顶栏盖住）",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "dark.coll.overflow.friends",
    "ours": 1024,
    "want": "≤1025",
@@ -7632,6 +8136,48 @@
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.exp.fold.feed.layout",
+   "ours": "aside 214→214 ws 797→797 y39 h694 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.exp.fold.feed.restore",
+   "ours": "ws 797/797 aside 214/214 sub7",
+   "want": "ws 回 797、侧栏宽回 214",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.exp.fold.friends.layout",
+   "ours": "aside 214→214 ws 797→797 y39 h694 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.exp.fold.friends.restore",
+   "ours": "ws 797/797 aside 214/214 sub7",
+   "want": "ws 回 797、侧栏宽回 214",
    "ok": true
   },
   {
@@ -8189,6 +8735,48 @@
   },
   {
    "view": "1100x800",
+   "name": "dark.exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.exp.fold.feed.layout",
+   "ours": "aside 214→214 ws 873→873 y39 h726 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.exp.fold.feed.restore",
+   "ours": "ws 873/873 aside 214/214 sub7",
+   "want": "ws 回 873、侧栏宽回 214",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.exp.fold.friends.layout",
+   "ours": "aside 214→214 ws 873→873 y39 h726 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.exp.fold.friends.restore",
+   "ours": "ws 873/873 aside 214/214 sub7",
+   "want": "ws 回 873、侧栏宽回 214",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "dark.coll.overflow.friends",
    "ours": 1100,
    "want": "≤1101",
@@ -8738,6 +9326,76 @@
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 990→990 y39 h526 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.exp.fold.feed.restore",
+   "ours": "ws 990/990 aside 277/277 sub7",
+   "want": "ws 回 990、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 990→990 y39 h526 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.exp.fold.friends.restore",
+   "ours": "ws 990/990 aside 277/277 sub7",
+   "want": "ws 回 990、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.exp.navscroll.moved",
+   "ours": "303→303 overflow303",
+   "want": ">0 且溢出 ≥0",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.exp.navscroll.chrome",
+   "ours": "ws y39→39 h526→526 tbY0 scrollY0",
+   "want": "页面不跟滚（scrollY=0）、顶栏 y0、内容区 y/h 不变",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.exp.navscroll.last",
+   "ours": "473 ≤ 477",
+   "want": "末项整行在 nav 可视区内",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.exp.navscroll.no_cover",
+   "ours": "inside workspace",
+   "want": "内容区顶部仍点到内容区（不被顶栏盖住）",
    "ok": true
   },
   {
@@ -9295,6 +9953,48 @@
   },
   {
    "view": "1280x800",
+   "name": "dark.exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 990→990 y39 h726 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.exp.fold.feed.restore",
+   "ours": "ws 990/990 aside 277/277 sub7",
+   "want": "ws 回 990、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 990→990 y39 h726 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.exp.fold.friends.restore",
+   "ours": "ws 990/990 aside 277/277 sub7",
+   "want": "ws 回 990、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "dark.coll.overflow.friends",
    "ours": 1280,
    "want": "≤1281",
@@ -9848,6 +10548,48 @@
   },
   {
    "view": "1366x768",
+   "name": "dark.exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 1076→1076 y39 h694 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.exp.fold.feed.restore",
+   "ours": "ws 1076/1076 aside 277/277 sub7",
+   "want": "ws 回 1076、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 1076→1076 y39 h694 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.exp.fold.friends.restore",
+   "ours": "ws 1076/1076 aside 277/277 sub7",
+   "want": "ws 回 1076、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "dark.coll.overflow.friends",
    "ours": 1366,
    "want": "≤1367",
@@ -10397,6 +11139,48 @@
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 1150→1150 y39 h826 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.exp.fold.feed.restore",
+   "ours": "ws 1150/1150 aside 277/277 sub7",
+   "want": "ws 回 1150、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 1150→1150 y39 h826 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.exp.fold.friends.restore",
+   "ours": "ws 1150/1150 aside 277/277 sub7",
+   "want": "ws 回 1150、侧栏宽回 277",
    "ok": true
   },
   {
@@ -10989,6 +11773,48 @@
   },
   {
    "view": "1600x900",
+   "name": "dark.exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 1310→1310 y39 h826 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.exp.fold.feed.restore",
+   "ours": "ws 1310/1310 aside 277/277 sub7",
+   "want": "ws 回 1310、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 1310→1310 y39 h826 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.exp.fold.friends.restore",
+   "ours": "ws 1310/1310 aside 277/277 sub7",
+   "want": "ws 回 1310、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "dark.coll.overflow.friends",
    "ours": 1600,
    "want": "≤1601",
@@ -11573,6 +12399,48 @@
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.fold.feed.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.fold.feed.layout",
+   "ours": "aside 277→277 ws 1410→1410 y39 h966 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.fold.feed.restore",
+   "ours": "ws 1410/1410 aside 277/277 sub7",
+   "want": "ws 回 1410、侧栏宽回 277",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.fold.friends.open",
+   "ours": "2 夹 sub 7→0→7",
+   "want": "夹子收起后 sub=0，展开回来是原数",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.fold.friends.layout",
+   "ours": "aside 277→277 ws 1410→1410 y39 h966 ovf0",
+   "want": "侧栏宽/内容列/外壳高度不变、无溢出",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.exp.fold.friends.restore",
+   "ours": "ws 1410/1410 aside 277/277 sub7",
+   "want": "ws 回 1410、侧栏宽回 277",
    "ok": true
   },
   {
