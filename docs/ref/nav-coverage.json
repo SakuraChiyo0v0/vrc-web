@@ -20,110 +20,110 @@
   {
    "view": "1024x600",
    "theme": "light",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1024x768",
    "theme": "light",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1100x800",
    "theme": "light",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1280x600",
    "theme": "light",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1280x800",
    "theme": "light",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1366x768",
    "theme": "light",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1440x900",
    "theme": "light",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1600x900",
    "theme": "light",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1700x1040",
    "theme": "light",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1024x600/dark",
    "theme": "dark",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1024x768/dark",
    "theme": "dark",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1100x800/dark",
    "theme": "dark",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1280x600/dark",
    "theme": "dark",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1280x800/dark",
    "theme": "dark",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1366x768/dark",
    "theme": "dark",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1440x900/dark",
    "theme": "dark",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1600x900/dark",
    "theme": "dark",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   },
   {
    "view": "1700x1040/dark",
    "theme": "dark",
-   "pass": 37,
-   "total": 37
+   "pass": 41,
+   "total": 41
   }
  ],
  "score": 100,
@@ -610,6 +610,58 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "shortcut:expanded@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1024x768",
    "view": "1024x768",
    "theme": "light",
@@ -1089,6 +1141,58 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "shortcut:expanded@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "overview@1100x800",
@@ -1572,6 +1676,58 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "shortcut:expanded@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1280x600",
    "view": "1280x600",
    "theme": "light",
@@ -2051,6 +2207,58 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "shortcut:expanded@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "overview@1280x800",
@@ -2534,6 +2742,58 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "shortcut:expanded@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1366x768",
    "view": "1366x768",
    "theme": "light",
@@ -3013,6 +3273,58 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "shortcut:expanded@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "overview@1440x900",
@@ -3496,6 +3808,58 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "shortcut:expanded@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1600x900",
    "view": "1600x900",
    "theme": "light",
@@ -3975,6 +4339,58 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "shortcut:expanded@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "overview@1700x1040",
@@ -4458,6 +4874,58 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "shortcut:expanded@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1024x600/dark",
    "view": "1024x600/dark",
    "theme": "dark",
@@ -4937,6 +5405,58 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "shortcut:expanded@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "overview@1024x768/dark",
@@ -5420,6 +5940,58 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "shortcut:expanded@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1100x800/dark",
    "view": "1100x800/dark",
    "theme": "dark",
@@ -5899,6 +6471,58 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "shortcut:expanded@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "overview@1280x600/dark",
@@ -6382,6 +7006,58 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "shortcut:expanded@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1280x800/dark",
    "view": "1280x800/dark",
    "theme": "dark",
@@ -6861,6 +7537,58 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "shortcut:expanded@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "overview@1366x768/dark",
@@ -7344,6 +8072,58 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "shortcut:expanded@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1440x900/dark",
    "view": "1440x900/dark",
    "theme": "dark",
@@ -7823,6 +8603,58 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "shortcut:expanded@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
   },
   {
    "id": "overview@1600x900/dark",
@@ -8306,6 +9138,58 @@
    "error": "点遮罩没关掉面板"
   },
   {
+   "id": "shortcut:expanded@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1700x1040/dark",
    "view": "1700x1040/dark",
    "theme": "dark",
@@ -8785,6 +9669,58 @@
    "hit": true,
    "ok": true,
    "error": "点遮罩没关掉面板"
+  },
+  {
+   "id": "shortcut:expanded@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded",
+   "hash": "#/sessions",
+   "title": "9/9",
+   "want": "Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到",
+   "active": "all ok",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "shortcut:expanded_persist@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "shortcut:expanded_persist",
+   "hash": "#/sessions",
+   "title": "after reload: expanded",
+   "want": "expanded，留在 #/sessions",
+   "active": "stored=0 expand=false",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_jump@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "help:expanded_jump",
+   "hash": "-",
+   "title": "9 项 nav=sessions",
+   "want": "9 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮",
+   "active": "好友位置/动态/通知/好友列表/好友历史/玩家/统计/洞察/我的行程",
+   "hit": "inView=true",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "help:expanded_esc@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "help:expanded_esc",
+   "hash": "#/stats",
+   "title": "closed → 统计",
+   "want": "Esc 后侧栏/高亮原样（sessions），Ctrl+7 → stats（统计）",
+   "active": "esc.nav=sessions hit=true aside=true/true active=stats",
+   "hit": "-",
+   "ok": true,
+   "error": null
   }
  ]
 }

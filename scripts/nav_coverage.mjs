@@ -29,6 +29,9 @@
  * 展开态也验 Ctrl K（此时侧栏还在，验的是面板不把导航状态弄丢）：打开时输入框聚焦、侧栏在位、
  * 当前页项仍高亮；输入后 ↓/↑ 真移动选中项（按 index 比对且不越界）；↓+Enter 关面板并开好友
  * 抽屉且名字对得上；关抽屉再 Ctrl K、点遮罩空白处也能关，侧栏与当前页高亮原样。
+ * 展开态再补两条：Ctrl+1..9 逐键验「跳页 + 标题 + 侧栏在位 + 当前项高亮且点得到」，reload 后
+ * 仍是展开（localStorage.vrc-nav-collapsed≠1，与收起态那条互为对照）；`?` 快捷键表在侧栏在场时
+ * 跳页组同样 9 项/顺序对、Esc 关掉不动侧栏与高亮、关掉后 Ctrl+7 照旧跳页。
  * 断言「能到 + 标题对 + 点得到」；密度/像素交给 frame_parity.mjs。
  * 产出 docs/ref/nav-coverage.json；有 FAIL 则 exit 1。
  */
@@ -697,6 +700,138 @@ for (const [width, height] of VIEWS) {
       active: `aside=${afterMask.aside} nav=${afterMask.nav}`, hit: afterMask.hit,
       ok: beforeMask && !afterMask.palette && afterMask.aside && !!afterMask.nav && afterMask.hit,
       error: !beforeMask ? 'Ctrl K 没能再开面板' : '点遮罩没关掉面板'
+    });
+    // 展开态快捷键 Ctrl+1..9：收起态验的是「不点侧栏也能跳页」，展开态要验的是快捷键跳完之后
+    // 侧栏仍然在位、当前页那一项真的高亮（data-active 跟着 hash 走）、且仍点得到 —— 侧栏在场时
+    // 「高亮没跟着快捷键走」最容易发生。每按一个数字独立断言，不只看最后一页。
+    const expPresses = [];
+    for (let d = 1; d <= N; d++) {
+      const want = ORDER[d - 1];
+      await page.keyboard.press(`Control+${d}`);
+      await page.waitForTimeout(280);
+      const st = await page.evaluate(async (wantId) => {
+        const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+        const aside = !!document.querySelector('aside.vrc-sidebar');
+        const item = [...document.querySelectorAll('aside.vrc-sidebar [data-nav-id]')]
+          .find((el) => el.dataset.navId === wantId);
+        let active = false, hit = false;
+        if (item) {
+          item.scrollIntoView({ block: 'nearest' });
+          await wait(90);
+          const b = item.getBoundingClientRect();
+          const t = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2);
+          active = item.dataset.active === 'true';
+          hit = !!t && (t === item || item.contains(t) || t.contains(item));
+        }
+        return {
+          hash: location.hash,
+          title: document.querySelector('#vrc-topbar h1')?.textContent?.trim() ?? '',
+          aside, expand: !!document.querySelector('[data-testid=\"nav-expand\"]'),
+          found: !!item, active, hit
+        };
+      }, want);
+      expPresses.push({
+        d, want, ...st,
+        ok: st.hash === `#/${want}` && st.title === (WANT[want] ?? '') && st.aside && !st.expand
+          && st.found && st.active && st.hit
+      });
+    }
+    const expBad = expPresses.filter((p) => !p.ok);
+    push({
+      id: `shortcut:expanded@${view}`, view, theme, nav: 'shortcut:expanded',
+      hash: expPresses[expPresses.length - 1]?.hash ?? '-', title: `${expPresses.length - expBad.length}/${N}`,
+      want: 'Ctrl+1..9 跳到 PAGE_ORDER[d-1]、标题对、侧栏始终在位、当前项高亮且点得到',
+      active: expBad.map((p) => `Ctrl${p.d}→${p.hash}/${p.title} act=${p.active} hit=${p.hit}`).join('；') || 'all ok',
+      hit: '-', ok: expPresses.length === N && expBad.length === 0,
+      error: expBad.length ? `展开态快捷键失配：${expBad.map((p) => `Ctrl${p.d} 期望#/${p.want}`).join('；')}` : null
+    });
+    // 展开态不该被持久化成收起：reload 后侧栏仍在、没有顶栏展开按钮、localStorage.vrc-nav-collapsed ≠ '1'
+    // （与收起态 reload 那条互为对照，防「收起一次以后永远起不来」）。
+    await page.reload();
+    await page.waitForSelector('aside.vrc-sidebar [data-nav-id]', { timeout: 30_000 }).catch(() => {});
+    await page.waitForTimeout(400);
+    const expPersist = await page.evaluate(() => ({
+      aside: !!document.querySelector('aside.vrc-sidebar'),
+      expand: !!document.querySelector('[data-testid=\"nav-expand\"]'),
+      stored: localStorage.getItem('vrc-nav-collapsed'),
+      hash: location.hash
+    }));
+    const lastPage = ORDER[N - 1];
+    push({
+      id: `shortcut:expanded_persist@${view}`, view, theme, nav: 'shortcut:expanded_persist', hash: expPersist.hash,
+      title: `after reload: ${expPersist.aside ? 'expanded' : 'collapsed'}`, want: `expanded，留在 #/${lastPage}`,
+      active: `stored=${expPersist.stored} expand=${expPersist.expand}`, hit: '-',
+      ok: expPersist.aside && !expPersist.expand && expPersist.stored !== '1'
+        && expPersist.hash === `#/${lastPage}`,
+      error: null
+    });
+    // 展开态 `?` 快捷键表：侧栏在场时这张表还得对得上（跳页组 9 项、标签/按键顺序按 PAGE_ORDER /
+    // PAGE_LABEL 走、整块在视口内），Esc 关掉不许动侧栏与当前页高亮，关掉后 Ctrl+7 照旧跳页。
+    await page.keyboard.press('?');
+    await page.waitForTimeout(320);
+    const helpExp = await page.evaluate(() => {
+      const panel = document.querySelector('.shortcut-panel');
+      const grp = panel?.querySelector('[data-shortcut-group=\"跳页\"]');
+      const items = grp ? [...grp.children].slice(1).map((row) => ({
+        label: row.querySelector('span')?.textContent?.trim() ?? '',
+        key: row.querySelector('kbd')?.textContent?.trim() ?? ''
+      })) : [];
+      const act = document.querySelector('aside.vrc-sidebar [data-nav-id][data-active=\"true\"]');
+      const b = panel?.getBoundingClientRect();
+      return {
+        panel: !!panel, count: items.length, items,
+        aside: !!document.querySelector('aside.vrc-sidebar'),
+        nav: act?.dataset.navId ?? null,
+        inView: !!b && b.width > 100 && b.height > 100 && b.top >= -1 && b.left >= -1
+          && b.bottom <= window.innerHeight + 1 && b.right <= window.innerWidth + 1
+      };
+    });
+    const helpExpOk = helpExp.count === JUMP_WANT.length
+      && helpExp.items.every((it, i) => it.label === JUMP_WANT[i].label && it.key === JUMP_WANT[i].key);
+    push({
+      id: `help:expanded_jump@${view}`, view, theme, nav: 'help:expanded_jump', hash: '-',
+      title: `${helpExp.count} 项 nav=${helpExp.nav}`, want: `${JUMP_WANT.length} 项且顺序=PAGE_ORDER/PAGE_LABEL，侧栏在位、当前页高亮`,
+      active: helpExp.items.map((it) => it.label).join('/'), hit: `inView=${helpExp.inView}`,
+      ok: helpExp.panel && helpExpOk && helpExp.aside && helpExp.nav === lastPage && helpExp.inView,
+      error: helpExpOk ? null : `跳页组失配：${helpExp.items.map((it) => `${it.label}(${it.key})`).join('，')}`
+    });
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(280);
+    const escExp = await page.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const item = document.querySelector('aside.vrc-sidebar [data-nav-id][data-active=\"true\"]');
+      let hit = false;
+      if (item) {
+        item.scrollIntoView({ block: 'nearest' });
+        await wait(90);
+        const b = item.getBoundingClientRect();
+        const t = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2);
+        hit = !!t && (t === item || item.contains(t) || t.contains(item));
+      }
+      return {
+        panel: !!document.querySelector('.shortcut-panel'),
+        aside: !!document.querySelector('aside.vrc-sidebar'),
+        expand: !!document.querySelector('[data-testid=\"nav-expand\"]'),
+        nav: item?.dataset.navId ?? null, hit, hash: location.hash
+      };
+    });
+    await page.keyboard.press('Control+7');
+    await page.waitForTimeout(320);
+    const after7 = await page.evaluate(() => ({
+      hash: location.hash,
+      title: document.querySelector('#vrc-topbar h1')?.textContent?.trim() ?? '',
+      aside: !!document.querySelector('aside.vrc-sidebar'),
+      active: document.querySelector('aside.vrc-sidebar [data-nav-id][data-active=\"true\"]')?.dataset.navId ?? null
+    }));
+    const p7 = ORDER[6];
+    push({
+      id: `help:expanded_esc@${view}`, view, theme, nav: 'help:expanded_esc', hash: after7.hash,
+      title: `${escExp.panel ? 'still open' : 'closed'} → ${after7.title}`, want: `Esc 后侧栏/高亮原样（${lastPage}），Ctrl+7 → ${p7}（${WANT[p7] ?? ''}）`,
+      active: `esc.nav=${escExp.nav} hit=${escExp.hit} aside=${escExp.aside}/${after7.aside} active=${after7.active}`, hit: '-',
+      ok: !escExp.panel && escExp.aside && !escExp.expand && escExp.nav === lastPage && escExp.hit
+        && after7.hash === `#/${p7}` && after7.title === (WANT[p7] ?? '')
+        && after7.aside && after7.active === p7,
+      error: null
     });
   } finally {
     perView.push({ view, theme, pass: viewPass, total: viewRows });

@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T07:43:06.467Z",
+ "at": "2026-11-24T07:54:25.311Z",
  "base": "http://127.0.0.1:8891",
- "pass": 1497,
- "total": 1497,
+ "pass": 1713,
+ "total": 1713,
  "rows": [
   {
    "view": "1024x600",
@@ -34,9 +34,65 @@
   },
   {
    "view": "1024x600",
+   "name": "exp.topbar_h.friends",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.statusbar_h.friends",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fill.friends",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.aside.friends",
+   "ours": "present w214",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "overflow.feed",
    "ours": 1024,
    "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.topbar_h.feed",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.statusbar_h.feed",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fill.feed",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.aside.feed",
+   "ours": "present w214",
+   "want": "214±1",
    "ok": true
   },
   {
@@ -48,9 +104,65 @@
   },
   {
    "view": "1024x600",
+   "name": "exp.topbar_h.friendlist",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.statusbar_h.friendlist",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fill.friendlist",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.aside.friendlist",
+   "ours": "present w214",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "overflow.gamelog",
    "ours": 1024,
    "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.topbar_h.gamelog",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.statusbar_h.gamelog",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fill.gamelog",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.aside.gamelog",
+   "ours": "present w214",
+   "want": "214±1",
    "ok": true
   },
   {
@@ -62,9 +174,65 @@
   },
   {
    "view": "1024x600",
+   "name": "exp.topbar_h.worlds",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.statusbar_h.worlds",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fill.worlds",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.aside.worlds",
+   "ours": "present w214",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "overflow.settings",
    "ours": 1024,
    "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.topbar_h.settings",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.statusbar_h.settings",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.fill.settings",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "exp.aside.settings",
+   "ours": "present w214",
+   "want": "214±1",
    "ok": true
   },
   {
@@ -622,9 +790,65 @@
   },
   {
    "view": "1024x768",
+   "name": "exp.topbar_h.friends",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.statusbar_h.friends",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fill.friends",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.aside.friends",
+   "ours": "present w214",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "overflow.feed",
    "ours": 1024,
    "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.topbar_h.feed",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.statusbar_h.feed",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fill.feed",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.aside.feed",
+   "ours": "present w214",
+   "want": "214±1",
    "ok": true
   },
   {
@@ -636,9 +860,65 @@
   },
   {
    "view": "1024x768",
+   "name": "exp.topbar_h.friendlist",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.statusbar_h.friendlist",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fill.friendlist",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.aside.friendlist",
+   "ours": "present w214",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "overflow.gamelog",
    "ours": 1024,
    "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.topbar_h.gamelog",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.statusbar_h.gamelog",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fill.gamelog",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.aside.gamelog",
+   "ours": "present w214",
+   "want": "214±1",
    "ok": true
   },
   {
@@ -650,9 +930,65 @@
   },
   {
    "view": "1024x768",
+   "name": "exp.topbar_h.worlds",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.statusbar_h.worlds",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fill.worlds",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.aside.worlds",
+   "ours": "present w214",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "overflow.settings",
    "ours": 1024,
    "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.topbar_h.settings",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.statusbar_h.settings",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.fill.settings",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "exp.aside.settings",
+   "ours": "present w214",
+   "want": "214±1",
    "ok": true
   },
   {
@@ -1210,9 +1546,65 @@
   },
   {
    "view": "1100x800",
+   "name": "exp.topbar_h.friends",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.statusbar_h.friends",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fill.friends",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.aside.friends",
+   "ours": "present w214",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "overflow.feed",
    "ours": 1100,
    "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.topbar_h.feed",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.statusbar_h.feed",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fill.feed",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.aside.feed",
+   "ours": "present w214",
+   "want": "214±1",
    "ok": true
   },
   {
@@ -1224,9 +1616,65 @@
   },
   {
    "view": "1100x800",
+   "name": "exp.topbar_h.friendlist",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.statusbar_h.friendlist",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fill.friendlist",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.aside.friendlist",
+   "ours": "present w214",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "overflow.gamelog",
    "ours": 1100,
    "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.topbar_h.gamelog",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.statusbar_h.gamelog",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fill.gamelog",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.aside.gamelog",
+   "ours": "present w214",
+   "want": "214±1",
    "ok": true
   },
   {
@@ -1238,9 +1686,65 @@
   },
   {
    "view": "1100x800",
+   "name": "exp.topbar_h.worlds",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.statusbar_h.worlds",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fill.worlds",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.aside.worlds",
+   "ours": "present w214",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "overflow.settings",
    "ours": 1100,
    "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.topbar_h.settings",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.statusbar_h.settings",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.fill.settings",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "exp.aside.settings",
+   "ours": "present w214",
+   "want": "214±1",
    "ok": true
   },
   {
@@ -1798,9 +2302,65 @@
   },
   {
    "view": "1280x600",
+   "name": "exp.topbar_h.friends",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.statusbar_h.friends",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fill.friends",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.aside.friends",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "overflow.feed",
    "ours": 1280,
    "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.topbar_h.feed",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.statusbar_h.feed",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fill.feed",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.aside.feed",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -1812,9 +2372,65 @@
   },
   {
    "view": "1280x600",
+   "name": "exp.topbar_h.friendlist",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.statusbar_h.friendlist",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fill.friendlist",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.aside.friendlist",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "overflow.gamelog",
    "ours": 1280,
    "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.topbar_h.gamelog",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.statusbar_h.gamelog",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fill.gamelog",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.aside.gamelog",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -1826,9 +2442,65 @@
   },
   {
    "view": "1280x600",
+   "name": "exp.topbar_h.worlds",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.statusbar_h.worlds",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fill.worlds",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.aside.worlds",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "overflow.settings",
    "ours": 1280,
    "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.topbar_h.settings",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.statusbar_h.settings",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.fill.settings",
+   "ours": "y39 h526",
+   "want": "y39 h526±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "exp.aside.settings",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -2386,9 +3058,65 @@
   },
   {
    "view": "1280x800",
+   "name": "exp.topbar_h.friends",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.statusbar_h.friends",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fill.friends",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.aside.friends",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "overflow.feed",
    "ours": 1280,
    "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.topbar_h.feed",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.statusbar_h.feed",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fill.feed",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.aside.feed",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -2400,9 +3128,65 @@
   },
   {
    "view": "1280x800",
+   "name": "exp.topbar_h.friendlist",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.statusbar_h.friendlist",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fill.friendlist",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.aside.friendlist",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "overflow.gamelog",
    "ours": 1280,
    "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.topbar_h.gamelog",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.statusbar_h.gamelog",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fill.gamelog",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.aside.gamelog",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -2414,9 +3198,65 @@
   },
   {
    "view": "1280x800",
+   "name": "exp.topbar_h.worlds",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.statusbar_h.worlds",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fill.worlds",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.aside.worlds",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "overflow.settings",
    "ours": 1280,
    "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.topbar_h.settings",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.statusbar_h.settings",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.fill.settings",
+   "ours": "y39 h726",
+   "want": "y39 h726±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "exp.aside.settings",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -2974,9 +3814,65 @@
   },
   {
    "view": "1366x768",
+   "name": "exp.topbar_h.friends",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.statusbar_h.friends",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fill.friends",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.aside.friends",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "overflow.feed",
    "ours": 1366,
    "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.topbar_h.feed",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.statusbar_h.feed",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fill.feed",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.aside.feed",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -2988,9 +3884,65 @@
   },
   {
    "view": "1366x768",
+   "name": "exp.topbar_h.friendlist",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.statusbar_h.friendlist",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fill.friendlist",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.aside.friendlist",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "overflow.gamelog",
    "ours": 1366,
    "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.topbar_h.gamelog",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.statusbar_h.gamelog",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fill.gamelog",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.aside.gamelog",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -3002,9 +3954,65 @@
   },
   {
    "view": "1366x768",
+   "name": "exp.topbar_h.worlds",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.statusbar_h.worlds",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fill.worlds",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.aside.worlds",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "overflow.settings",
    "ours": 1366,
    "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.topbar_h.settings",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.statusbar_h.settings",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.fill.settings",
+   "ours": "y39 h694",
+   "want": "y39 h694±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "exp.aside.settings",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -3562,9 +4570,65 @@
   },
   {
    "view": "1440x900",
+   "name": "exp.topbar_h.friends",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.statusbar_h.friends",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fill.friends",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.aside.friends",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "overflow.feed",
    "ours": 1440,
    "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.topbar_h.feed",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.statusbar_h.feed",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fill.feed",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.aside.feed",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -3576,9 +4640,65 @@
   },
   {
    "view": "1440x900",
+   "name": "exp.topbar_h.friendlist",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.statusbar_h.friendlist",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fill.friendlist",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.aside.friendlist",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "overflow.gamelog",
    "ours": 1440,
    "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.topbar_h.gamelog",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.statusbar_h.gamelog",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fill.gamelog",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.aside.gamelog",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -3590,9 +4710,65 @@
   },
   {
    "view": "1440x900",
+   "name": "exp.topbar_h.worlds",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.statusbar_h.worlds",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fill.worlds",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.aside.worlds",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "overflow.settings",
    "ours": 1440,
    "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.topbar_h.settings",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.statusbar_h.settings",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.fill.settings",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.aside.settings",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -4185,9 +5361,65 @@
   },
   {
    "view": "1600x900",
+   "name": "exp.topbar_h.friends",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.statusbar_h.friends",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fill.friends",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.aside.friends",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "overflow.feed",
    "ours": 1600,
    "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.topbar_h.feed",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.statusbar_h.feed",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fill.feed",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.aside.feed",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -4199,9 +5431,65 @@
   },
   {
    "view": "1600x900",
+   "name": "exp.topbar_h.friendlist",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.statusbar_h.friendlist",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fill.friendlist",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.aside.friendlist",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "overflow.gamelog",
    "ours": 1600,
    "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.topbar_h.gamelog",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.statusbar_h.gamelog",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fill.gamelog",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.aside.gamelog",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -4213,9 +5501,65 @@
   },
   {
    "view": "1600x900",
+   "name": "exp.topbar_h.worlds",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.statusbar_h.worlds",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fill.worlds",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.aside.worlds",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "overflow.settings",
    "ours": 1600,
    "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.topbar_h.settings",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.statusbar_h.settings",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.fill.settings",
+   "ours": "y39 h826",
+   "want": "y39 h826±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.aside.settings",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -4808,9 +6152,65 @@
   },
   {
    "view": "1700x1040",
+   "name": "exp.topbar_h.friends",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.statusbar_h.friends",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fill.friends",
+   "ours": "y39 h966",
+   "want": "y39 h966±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.aside.friends",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "overflow.feed",
    "ours": 1700,
    "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.topbar_h.feed",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.statusbar_h.feed",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fill.feed",
+   "ours": "y39 h966",
+   "want": "y39 h966±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.aside.feed",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -4822,9 +6222,65 @@
   },
   {
    "view": "1700x1040",
+   "name": "exp.topbar_h.friendlist",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.statusbar_h.friendlist",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fill.friendlist",
+   "ours": "y39 h966",
+   "want": "y39 h966±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.aside.friendlist",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "overflow.gamelog",
    "ours": 1700,
    "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.topbar_h.gamelog",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.statusbar_h.gamelog",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fill.gamelog",
+   "ours": "y39 h966",
+   "want": "y39 h966±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.aside.gamelog",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {
@@ -4836,9 +6292,65 @@
   },
   {
    "view": "1700x1040",
+   "name": "exp.topbar_h.worlds",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.statusbar_h.worlds",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fill.worlds",
+   "ours": "y39 h966",
+   "want": "y39 h966±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.aside.worlds",
+   "ours": "present w277",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "overflow.settings",
    "ours": 1700,
    "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.topbar_h.settings",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.statusbar_h.settings",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.fill.settings",
+   "ours": "y39 h966",
+   "want": "y39 h966±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.aside.settings",
+   "ours": "present w277",
+   "want": "277±1",
    "ok": true
   },
   {

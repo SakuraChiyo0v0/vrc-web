@@ -16,6 +16,8 @@
  *   6) 内容面板 ≥720：右栏（353）只在 ≥1440 出现，且顶栏右栏开关与之一致显隐。
  *   7) 6 个密度最高的页面（好友位置 / 动态 / 好友列表 / 游戏日志 / 世界库 / 设置）
  *      在以上视口都无横向溢出（documentElement.scrollWidth ≤ innerWidth+1）；收起态也逐页跑一遍。
+ *      展开态逐页再量外壳：顶栏 39 / 状态栏 35 / workspace y=顶栏高、h=视口−顶栏−状态栏（±1），
+ *      侧栏在位且宽恒 214|277（换页不该改侧栏宽）。收起态同一套在 checkCollapsedPages 里。
  *   7b) 收起态密度：有表格的页面列数不变、首列不变窄、行数不变（内容变宽不靠牺牲密度换）——
  *       浅色收起与深色收起各跑一遍（主题不该改密度）；收起态逐页内容列仍 ≥720（收起是让宽，
  *       不是把内容挤窄），右栏宽恒 353 且与展开态基线相等、关掉再开回来不变。
@@ -416,6 +418,30 @@ for (const [width, height] of VIEWS) {
     const ok = o.w <= o.vw + 1;
     check(view, `overflow.${p}`, o.w, `≤${o.vw + 1}`, ok);
     if (!ok) overflow.push(p);
+    // 展开态逐页外壳：换页不该让顶栏/状态栏变高、内容区必须正好填满中间那段，侧栏宽度也不该
+    // 跟着页面变（此前展开态这套只在 settings 量过一次，收起态才逐页量）。
+    const sh = await tab.evaluate(() => {
+      const tb = document.querySelector('#vrc-topbar').getBoundingClientRect();
+      const sb = document.querySelector('#vrc-statusbar').getBoundingClientRect();
+      const ws = document.querySelector('.workspace').getBoundingClientRect();
+      const as = document.querySelector('aside.vrc-sidebar')?.getBoundingClientRect() ?? null;
+      return {
+        vh: window.innerHeight,
+        tbH: Math.round(tb.height * 10) / 10,
+        sbH: Math.round(sb.height * 10) / 10,
+        wsY: Math.round(ws.y * 10) / 10,
+        wsH: Math.round(ws.height * 10) / 10,
+        aside: !!as,
+        asideW: as ? Math.round(as.width) : 0
+      };
+    });
+    const colWant = width >= 1280 ? 277 : 214;
+    check(view, `exp.topbar_h.${p}`, sh.tbH, '39±1', Math.abs(sh.tbH - 39) <= 1);
+    check(view, `exp.statusbar_h.${p}`, sh.sbH, '35±1', Math.abs(sh.sbH - 35) <= 1);
+    check(view, `exp.fill.${p}`, `y${sh.wsY} h${sh.wsH}`, `y${sh.tbH} h${Math.round(sh.vh - sh.tbH - sh.sbH)}±1`,
+      Math.abs(sh.wsY - sh.tbH) <= 1 && Math.abs(sh.wsH - (sh.vh - sh.tbH - sh.sbH)) <= 1);
+    check(view, `exp.aside.${p}`, `${sh.aside ? 'present' : 'missing'} w${sh.asideW}`, `${colWant}±1`,
+      sh.aside && Math.abs(sh.asideW - colWant) <= 1);
   }
 
   await tab.evaluate(installChrome);
