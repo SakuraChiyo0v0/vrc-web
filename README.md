@@ -99,7 +99,7 @@ cd web && npm run build && cd ..
 scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 ```
 
-六段全过才打印 `REGRESS OK 6/6`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
+七段全过才打印 `REGRESS OK 7/7`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
 
 | 环节 | 脚本 | 现在跑出来的数 |
 |---|---|---|
@@ -108,6 +108,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 主框架/导航密度 | `node scripts/frame_parity.mjs` | 1932/1932（9 视口 × 浅/深色 × 展开/收起，收起态也跑整套外壳断言；展开态逐页也量外壳（顶栏39/状态栏35/内容区填满/侧栏宽恒 214|277），展开态收放折叠夹不动内容列/外壳、600 高矮窗 nav 滚到底不带动整页，浅/深色收起都逐页做溢出 + 顶栏39/状态栏35/内容区填满中间段 + 内容列 ≥720 + 表格密度对比；新 context 必须默认展开；浅/深色收起都验收起 × 右栏开关与收起态 friends，收起态右栏恒 353 且与展开态相等；右栏自身折成 36px 竖条时手柄消失、内容列接过 353−36 且不溢出（≥1440 三档）；同一视口浅/深色收起的面板宽必须相等） |
 | 导航可达 | `node scripts/nav_coverage.mjs` | 366/366（4 视口 × 浅/深色 × 45，含命中测试、折叠夹子项不可点/展开可点、展开按钮几何、reload 持久化、收起态 Ctrl+1..9 跳页、收起态 `?` 快捷键表跳页组 9 项且 Esc 关掉后仍收起、收起态 Ctrl K 命令面板打开/聚焦/不抢数字键/过滤归零/Esc 后仍收起/粘贴 wrld_ ID 回车开抽屉、展开态 Ctrl K 上下选/Enter 开抽屉/点遮罩关/鼠标点结果行/Esc 不改 hash、展开态 Ctrl+1..9 逐键跳页且当前项高亮、展开态 `?` 表且 Esc 后侧栏/高亮原样、展开态 reload 仍展开、收起侧栏 × 右栏折成 36 竖条互不干扰） |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
+| 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
 单独只跑移动断点：
@@ -118,13 +119,14 @@ node scripts/mobile_parity.mjs                 # 默认 http://127.0.0.1:8891，
 
 ### 跑线上容器
 
-四个脚本可以直接指向线上容器，不必先起 demo：
+五个脚本可以直接指向线上容器，不必先起 demo：
 
 ```bash
 node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 1932/1932
 node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
 node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 366/366（逐视口点侧栏项 + 命中测试）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
+node scripts/grid_parity.mjs     http://172.30.0.7:8790/vrc/   # 60/60（.loc-grid 列数阶梯）
 ```
 
 两条硬规则（`scripts/lib/page_structure.mjs`）：

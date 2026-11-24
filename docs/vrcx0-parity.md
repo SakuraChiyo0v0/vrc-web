@@ -500,3 +500,16 @@ structure_parity 唯一残留 DIFF 是动态页行高「我们 46 / 真机 44」
 | 261 | `styles.css`：`.feed-tbl tbody td[data-label='时间']` 的 `white-space: pre-line` → `pre`（时间串本身已写死「月-日\n时:分」，只认这个换行） | 1688 视口 feed 全行 **44px**；`node scripts/structure_parity.mjs` → **59/59（100%）**，DIFF 清零 |
 | 262 | 探针留档 `scripts/_probe_feedrow.mjs`（逐格 rect/line-height 定位折行）+ `scripts/_probe_feed_mobile.mjs`（390/1688 溢出与裁切） | 390 视口 `docOverflowX=0`、`scrollOwnOverflow=0`、时间列 `scrollWidth=clientWidth`（无裁切）；1688 同上 |
 | 263 | 回归：`web npm run build` ✓、`web npm test` 48/48、`visual_parity` **215/215（100%）**（原 214/215，feed 行高是最后一项） | 输出见 STATE.md |
+
+---
+
+# 第二十七轮：好友位置网格列数阶梯常驻断言（grid_parity 60/60）（2026-11-24）
+
+第二十六轮前把 `.loc-grid` 从 `auto-fill` 改回阶梯列数（1fb499c），但验证只跑过一次一次性探针（`cache/probes/locgrid.mjs`），退回 `auto-fill` 不会被任何常驻脚本拦住。本轮把它做成第七个回归环节。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 271 | 新增 `scripts/grid_parity.mjs`：10 个视口＝4 档中间值（1688/1440/1024/390）＋三处断点两侧（1599·1600、1279·1280、767·768）。每档 6 项：列数 6/4/3/2、网格自身不溢出（含末列右缘不越界）、同档卡片等宽（极差 ≤1）、卡片内 `.loc-name/.loc-world/.loc-meta/.loc-time` 不被硬裁、卡片本体不溢出且高 96（≤1023 走 `min-height:76`）、整页无横向溢出 | `node scripts/grid_parity.mjs` → **网格阶梯 60/60（100%）· GRID OK · exit 0**；明细写 `docs/ref/grid-parity.json` |
+| 272 | 反向验证断言真的能抓回归（不重建 dist，只在页面里注入一条 `!important` 覆盖规则再跑同一套量法）：`cache/probes/grid_neg.mjs` | 1688 现状列数 **6**、注入 `repeat(auto-fill,minmax(230px,1fr))` 后 **5** → 与 c5c6aa8 当年「只排 5 列」的现象一致，NEG_EXIT=0（说明该断言确实会 DIFF） |
+| 273 | `scripts/regress_all.sh` 加第七段 `grid`（`REGRESS OK 7/7`）；README 表格＋线上容器命令行＋段数口径同步 | 段名 `grid` 输出 `网格阶梯 60/60`；README 写 60/60 与 7/7 |
+| 274 | `styles.css` 里 `.loc-grid` 上方的旧注释「窗口变窄按 5/4/3 列递减」改成「6/4/3/2 阶梯递减」，并注明由 `grid_parity.mjs` 锁定（注释与实现同步，避免下次按注释改回去） | 注释与 `@media` 四段一致；`grid_parity` 仍 60/60 |

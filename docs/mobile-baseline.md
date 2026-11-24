@@ -1,10 +1,10 @@
 # 移动端验收基线（自动生成，勿手改）
 
-生成：2026-11-24 04:38:52 · 断言 1479/1479 PASS · 页面 14 × 视口 11
+生成：2026-11-24 10:53:17 · 断言 1479/1479 PASS · 页面 14 × 视口 11
 
 移动形态判据：宽 ≤1023 或高 ≤500（styles.css / tailwind md raw / Sidebar matchMedia 三处一致）。
 重新生成：`node scripts/mobile_parity.mjs`（脚本末尾自动写回本文件）。
-基准来源：http://127.0.0.1:8891（本地 demo）
+基准来源：http://localhost:8891（本地 demo）
 
 > 跑线上 base 必须走 pageBase()（补尾斜杠）：`http://h/vrc#/feed` 会被服务端当 `GET /vrc` 回 404，
 > 而 /api/roster 预检照样通过，整轮截图变成同一张 404 页；现在首屏由 assertVrcPage() 硬拦 exit 2。
@@ -1923,7 +1923,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 0ms（36 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 1ms（36 行） | ≤300ms | PASS |
 
 ## extreme@friendlist@360
 

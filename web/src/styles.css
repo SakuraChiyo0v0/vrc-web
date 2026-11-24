@@ -1394,7 +1394,8 @@ html[data-phone='1'] #root {
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   color: var(--content-secondary);
 }
-/* 真机 1688 宽窗口、内容 1398 → 6 列（一屏 12 张卡按 6+6 铺）；窗口变窄按 5/4/3 列递减 */
+/* 真机 1688 宽窗口、内容 1398 → 6 列（一屏 12 张卡按 6+6 铺）；窗口变窄按 6/4/3/2 阶梯递减
+ * （列数阶梯由 scripts/grid_parity.mjs 锁住，改这里要同步改该脚本的想定期望） */
 @media (max-width: 1023px), (max-height: 500px) {
   .loc-card { height: auto; min-height: 76px; }
   .loc-card .avatar { width: 40px; height: 40px; }
