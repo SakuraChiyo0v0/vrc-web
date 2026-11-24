@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T05:56:57.790Z",
- "base": "http://127.0.0.1:8891/vrc",
- "pass": 369,
- "total": 369,
+ "at": "2026-11-24T06:09:40.673Z",
+ "base": "http://127.0.0.1:8891",
+ "pass": 522,
+ "total": 522,
  "rows": [
   {
    "view": "1024x600",
@@ -93,6 +93,13 @@
    "name": "nav.sub_h",
    "ours": "31",
    "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
    "ok": true
   },
   {
@@ -286,6 +293,13 @@
   },
   {
    "view": "1024x768",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "nav.scrollable",
    "ours": "135px",
    "want": "≥0 且滚到底可见末项",
@@ -471,6 +485,13 @@
    "name": "nav.sub_h",
    "ours": "31",
    "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
    "ok": true
   },
   {
@@ -664,6 +685,13 @@
   },
   {
    "view": "1280x600",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "nav.scrollable",
    "ours": "303px",
    "want": "≥0 且滚到底可见末项",
@@ -849,6 +877,13 @@
    "name": "nav.sub_h",
    "ours": "31",
    "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
    "ok": true
   },
   {
@@ -1042,6 +1077,13 @@
   },
   {
    "view": "1366x768",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "nav.scrollable",
    "ours": "135px",
    "want": "≥0 且滚到底可见末项",
@@ -1227,6 +1269,13 @@
    "name": "nav.sub_h",
    "ours": "31",
    "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
    "ok": true
   },
   {
@@ -1420,6 +1469,13 @@
   },
   {
    "view": "1600x900",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "nav.scrollable",
    "ours": "3px",
    "want": "≥0 且滚到底可见末项",
@@ -1609,6 +1665,13 @@
   },
   {
    "view": "1700x1040",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "nav.scrollable",
    "ours": "0px",
    "want": "≥0 且滚到底可见末项",
@@ -1714,23 +1777,37 @@
   },
   {
    "view": "1024x600",
-   "name": "dark.topbar_h",
-   "ours": 39,
-   "want": "39±1",
+   "name": "dark.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "dark.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
+   "name": "dark.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "dark.sidebar_w",
+   "name": "dark.sidebar.w",
    "ours": 214,
    "want": 214,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.statusbar.h",
+   "ours": 35,
+   "want": 35,
    "ok": true
   },
   {
@@ -1752,6 +1829,104 @@
    "name": "dark.nav.text_col",
    "ours": "top+30 / sub+30",
    "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.scrollable",
+   "ours": "303px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.footer_visible",
+   "ours": "553 / 565",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.content.w",
+   "ours": 797,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -1812,23 +1987,37 @@
   },
   {
    "view": "1024x768",
-   "name": "dark.topbar_h",
-   "ours": 39,
-   "want": "39±1",
+   "name": "dark.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "dark.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
+   "name": "dark.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "dark.sidebar_w",
+   "name": "dark.sidebar.w",
    "ours": 214,
    "want": 214,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.statusbar.h",
+   "ours": 35,
+   "want": 35,
    "ok": true
   },
   {
@@ -1850,6 +2039,104 @@
    "name": "dark.nav.text_col",
    "ours": "top+30 / sub+30",
    "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.scrollable",
+   "ours": "135px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.footer_visible",
+   "ours": "721 / 733",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.content.w",
+   "ours": 797,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -1910,23 +2197,37 @@
   },
   {
    "view": "1100x800",
-   "name": "dark.topbar_h",
-   "ours": 39,
-   "want": "39±1",
+   "name": "dark.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
    "ok": true
   },
   {
    "view": "1100x800",
-   "name": "dark.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
+   "name": "dark.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
    "view": "1100x800",
-   "name": "dark.sidebar_w",
+   "name": "dark.sidebar.w",
    "ours": 214,
    "want": 214,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.statusbar.h",
+   "ours": 35,
+   "want": 35,
    "ok": true
   },
   {
@@ -1948,6 +2249,104 @@
    "name": "dark.nav.text_col",
    "ours": "top+30 / sub+30",
    "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.scrollable",
+   "ours": "103px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.footer_visible",
+   "ours": "753 / 765",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.content.w",
+   "ours": 873,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -2008,23 +2407,37 @@
   },
   {
    "view": "1280x600",
-   "name": "dark.topbar_h",
-   "ours": 39,
-   "want": "39±1",
+   "name": "dark.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "dark.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
+   "name": "dark.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "dark.sidebar_w",
+   "name": "dark.sidebar.w",
    "ours": 277,
    "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.statusbar.h",
+   "ours": 35,
+   "want": 35,
    "ok": true
   },
   {
@@ -2046,6 +2459,104 @@
    "name": "dark.nav.text_col",
    "ours": "top+30 / sub+30",
    "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.scrollable",
+   "ours": "303px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.footer_visible",
+   "ours": "553 / 565",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.content.w",
+   "ours": 990,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -2106,23 +2617,37 @@
   },
   {
    "view": "1280x800",
-   "name": "dark.topbar_h",
-   "ours": 39,
-   "want": "39±1",
+   "name": "dark.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "dark.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
+   "name": "dark.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "dark.sidebar_w",
+   "name": "dark.sidebar.w",
    "ours": 277,
    "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.statusbar.h",
+   "ours": 35,
+   "want": 35,
    "ok": true
   },
   {
@@ -2144,6 +2669,104 @@
    "name": "dark.nav.text_col",
    "ours": "top+30 / sub+30",
    "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.scrollable",
+   "ours": "103px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.footer_visible",
+   "ours": "753 / 765",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.content.w",
+   "ours": 990,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -2204,23 +2827,37 @@
   },
   {
    "view": "1366x768",
-   "name": "dark.topbar_h",
-   "ours": 39,
-   "want": "39±1",
+   "name": "dark.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
    "ok": true
   },
   {
    "view": "1366x768",
-   "name": "dark.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
+   "name": "dark.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
    "view": "1366x768",
-   "name": "dark.sidebar_w",
+   "name": "dark.sidebar.w",
    "ours": 277,
    "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.statusbar.h",
+   "ours": 35,
+   "want": 35,
    "ok": true
   },
   {
@@ -2242,6 +2879,104 @@
    "name": "dark.nav.text_col",
    "ours": "top+30 / sub+30",
    "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.scrollable",
+   "ours": "135px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.footer_visible",
+   "ours": "721 / 733",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.content.w",
+   "ours": 1076,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -2302,23 +3037,37 @@
   },
   {
    "view": "1440x900",
-   "name": "dark.topbar_h",
-   "ours": 39,
-   "want": "39±1",
+   "name": "dark.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
    "ok": true
   },
   {
    "view": "1440x900",
-   "name": "dark.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
+   "name": "dark.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
    "view": "1440x900",
-   "name": "dark.sidebar_w",
+   "name": "dark.sidebar.w",
    "ours": 277,
    "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.statusbar.h",
+   "ours": 35,
+   "want": 35,
    "ok": true
   },
   {
@@ -2340,6 +3089,104 @@
    "name": "dark.nav.text_col",
    "ours": "top+30 / sub+30",
    "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.scrollable",
+   "ours": "3px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.footer_visible",
+   "ours": "853 / 865",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.topbar.actions_count",
+   "ours": 6,
+   "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.content.w",
+   "ours": 1150,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -2400,23 +3247,37 @@
   },
   {
    "view": "1600x900",
-   "name": "dark.topbar_h",
-   "ours": 39,
-   "want": "39±1",
+   "name": "dark.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
    "ok": true
   },
   {
    "view": "1600x900",
-   "name": "dark.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
+   "name": "dark.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
    "view": "1600x900",
-   "name": "dark.sidebar_w",
+   "name": "dark.sidebar.w",
    "ours": 277,
    "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.statusbar.h",
+   "ours": 35,
+   "want": 35,
    "ok": true
   },
   {
@@ -2438,6 +3299,104 @@
    "name": "dark.nav.text_col",
    "ours": "top+30 / sub+30",
    "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.scrollable",
+   "ours": "3px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.footer_visible",
+   "ours": "853 / 865",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.topbar.actions_count",
+   "ours": 6,
+   "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.content.w",
+   "ours": 1310,
+   "want": "≥720",
    "ok": true
   },
   {
@@ -2498,23 +3457,37 @@
   },
   {
    "view": "1700x1040",
-   "name": "dark.topbar_h",
-   "ours": 39,
-   "want": "39±1",
+   "name": "dark.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
    "ok": true
   },
   {
    "view": "1700x1040",
-   "name": "dark.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
+   "name": "dark.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
    "ok": true
   },
   {
    "view": "1700x1040",
-   "name": "dark.sidebar_w",
+   "name": "dark.sidebar.w",
    "ours": 277,
    "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.statusbar.h",
+   "ours": 35,
+   "want": 35,
    "ok": true
   },
   {
@@ -2536,6 +3509,104 @@
    "name": "dark.nav.text_col",
    "ours": "top+30 / sub+30",
    "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.scrollable",
+   "ours": "0px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.footer_visible",
+   "ours": "993 / 1005",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.topbar.actions_count",
+   "ours": 6,
+   "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.content.w",
+   "ours": 1410,
+   "want": "≥720",
    "ok": true
   },
   {

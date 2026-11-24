@@ -9,6 +9,9 @@
  *   NAV_VIEWS=all                 → frame_parity 的 9 个视口（含 600 高两档）
  *   NAV_VIEWS=1688x1028,1440x900  → 自定义
  *
+ * 主题：每档视口默认跑浅色 + 深色两态（vrc-theme 存 localStorage）。主题只改色，
+ * 「点得到 + 标题对 + 折叠夹/收起按钮可用」在深色下也得成立；NAV_THEME=light|dark 只跑一态。
+ *
  * 断言「能到 + 标题对 + 点得到」；密度/像素交给 frame_parity.mjs。
  * 产出 docs/ref/nav-coverage.json；有 FAIL 则 exit 1。
  */
@@ -38,6 +41,8 @@ const parseViews = (s) => s.split(',').map((v) => v.trim()).filter(Boolean)
 const VIEWS = process.env.NAV_VIEWS
   ? (process.env.NAV_VIEWS === 'all' ? ALL_VIEWS : parseViews(process.env.NAV_VIEWS))
   : DEFAULT_VIEWS;
+// 主题两态：vrc-theme 存在 localStorage，建 context 时注入。
+const THEMES = process.env.NAV_THEME ? [process.env.NAV_THEME] : ['light', 'dark'];
 
 // 期望：侧栏页面 id → 标题（App.jsx TITLES 第一列）
 const app = fs.readFileSync(path.join(ROOT, 'web/src/App.jsx'), 'utf8');
@@ -50,9 +55,13 @@ const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbo
 const rows = [];
 const perView = [];
 
+for (const theme of THEMES) {
 for (const [width, height] of VIEWS) {
-  const view = `${width}x${height}`;
+  const view = theme === 'dark' ? `${width}x${height}/dark` : `${width}x${height}`;
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1 });
+  if (theme === 'dark') {
+    await ctx.addInitScript(() => { try { localStorage.setItem('vrc-theme', 'dark'); } catch {} });
+  }
   const page = await ctx.newPage();
   let viewRows = 0, viewPass = 0;
   const push = (row) => { rows.push(row); viewRows++; if (row.ok) viewPass++; };
@@ -101,7 +110,7 @@ for (const [width, height] of VIEWS) {
       const okTitle = !WANT[id] || r.title === WANT[id];
       const okHit = r.vis ? r.hit === true : true; // 折叠夹里的子项不可见时不判命中
       push({
-        id: `${id}@${view}`, view, nav: id, hash: r.hash, title: r.title, want: WANT[id] ?? null,
+        id: `${id}@${view}`, view, theme, nav: id, hash: r.hash, title: r.title, want: WANT[id] ?? null,
         active: r.active, hit: r.vis ? r.hit : 'hidden',
         ok: okHash && okTitle && !r.err && okHit,
         error: r.err || (okHit ? null : 'unreachable（命中测试失败）')
@@ -122,7 +131,7 @@ for (const [width, height] of VIEWS) {
       return { key, before, closed, reopened };
     });
     push({
-      id: `folder:${fold.key}@${view}`, view, nav: `folder:${fold.key}`, hash: '-',
+      id: `folder:${fold.key}@${view}`, view, theme, nav: `folder:${fold.key}`, hash: '-',
       title: `${fold.before}→${fold.closed}→${fold.reopened}`, want: 'N→0→N', active: '-', hit: '-',
       ok: fold.before > 0 && fold.closed === 0 && fold.reopened === fold.before, error: null
     });
@@ -143,16 +152,17 @@ for (const [width, height] of VIEWS) {
       return { before, afterClick, expandBtn, afterExpand, stored };
     });
     push({
-      id: `footer:collapse@${view}`, view, nav: 'footer:collapse', hash: '-',
+      id: `footer:collapse@${view}`, view, theme, nav: 'footer:collapse', hash: '-',
       title: `${collapse.before ? 'nav' : 'no'}→${collapse.afterClick ? 'nav' : 'no'}→${collapse.afterExpand ? 'nav' : 'no'}`,
       want: 'nav→no→nav', active: '-', hit: '-',
       ok: collapse.before && !collapse.afterClick && collapse.expandBtn && collapse.afterExpand && collapse.stored === '1',
       error: null
     });
   } finally {
-    perView.push({ view, pass: viewPass, total: viewRows });
+    perView.push({ view, theme, pass: viewPass, total: viewRows });
     await ctx.close();
   }
+}
 }
 
 await browser.close();
@@ -162,6 +172,7 @@ const report = {
   _note: 'nav_coverage.mjs：逐视口逐个点侧栏项，断言 hash=#/<id>、顶栏标题=TITLES[id][0]、无错误边界，可见项还要过命中测试（elementFromPoint 落在自身且整行在 nav 可视区）；最后验折叠夹收起/展开与收起导航栏',
   base: BASE,
   views: VIEWS.map(([w, h]) => `${w}x${h}`),
+  themes: THEMES,
   per_view: perView,
   score: Number(((pass / rows.length) * 100).toFixed(1)),
   rows
