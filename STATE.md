@@ -13,3 +13,6 @@
 
 - [2026-11-25 00:50] 动态页表格做成常驻断言（第 34 轮）：新增 `scripts/feed_parity.mjs`（14 项，基线 docs/ref/feed-measure.json），实测 **14/14 · FEED OK · exit 0**（`cache/feed_r1.log`）：列文字起点 77/181/380/549 vs 真机 78/184/382/551、右缘留白 353 vs 358、表头/行高 44、类型四色互异。反向 `FEED_NEG=1`（注入行高 56 + padding 8）→ 11/14、NEG OK 被抓到（`cache/probes/feed_neg.log`）。`regress_all.sh` 加第八段 feed → `REGRESS OK 8/8`；README/docs 口径同步。
 - [2026-11-25 00:50] 下一步：等 `cache/regress_all_r41.log` 跑完确认 8/8，把实际末行写进 STATE 并提交（feed_parity.mjs + regress_all.sh + README + docs + STATE）。
+
+- [2026-11-25 02:5x] 第 32 轮（好友位置分栏复刻）主体落地：修两处真机偏差（组头 JPJP 区域重复、私人房间卡显示「未知世界 · 公开」），新增 `scripts/locations_parity.mjs` 17 项分栏断言，实测 17/17 · LOCATIONS OK · exit 0（cache/locations_r2.log），LOC_NEG=1 注入 120 高/3 列 → 15/17 被抓（cache/probes/locations_neg.log）；web npm test 48 pass；regress_all.sh 加第九段 locations（README/docs 口径 9/9 同步）。端到端 `cache/regress_all_r42.log` 仍在跑（structure 59/59 OK 后进入 visual）。
+- [2026-11-25 02:5x] 下一步：等 cache/regress_all_r42.log 跑完确认末行 REGRESS OK 9/9，把实际数字写进 docs/STATE 并提交（locations_parity.mjs + locationGroups.js + FriendsPage.jsx + 单测 + regress_all.sh + README + docs + STATE）。

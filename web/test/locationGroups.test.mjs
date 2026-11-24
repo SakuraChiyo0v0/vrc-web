@@ -9,7 +9,7 @@ test('同实例 ≥2 人成一栏，标题带区域/世界/访问级别', () => 
   const g = groupFriendsByLocation(rows);
   assert.equal(g.length, 1);
   assert.equal(g[0].type, 'world');
-  assert.equal(g[0].label, 'JP Farm · 好友+');
+  assert.equal(g[0].label, 'Farm · 好友+');
   assert.deepEqual(g[0].rows.map((r) => r.user_id), ['u1', 'u2']);
 });
 
@@ -70,8 +70,9 @@ test('切换中/无位置的在线好友不消失：进「其他在线好友」�
   assert.deepEqual(g[0].rows.map((r) => r.user_id).sort(), ['n1', 't1', 't2']);
 });
 
-test('worldTitle 无区域/无访问级别时不留下多余空格', () => {
+test('worldTitle 只放世界名·访问级别，区域交给组头徽标（不重复 JPJP）', () => {
   assert.equal(worldTitle({ world_name: 'Solo' }), 'Solo');
+  assert.equal(worldTitle({ world_name: 'Farm', region: 'jp', access_label: '好友+' }), 'Farm · 好友+');
 });
 
 test('空输入不炸', () => {

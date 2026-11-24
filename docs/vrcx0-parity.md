@@ -562,3 +562,21 @@ r35 的 `REGRESS FAIL 2/7` 里 frame 与 nav 各有红，逐条定位后确认�
 踩坑记录：
 - `structure_parity` 的列宽基准 `[106,198,169]` 是「文字起点间距」，不是 `th` 盒宽（`th` 盒宽是 104/199/169）；两套口径混用会差 2px，feed_parity 统一按「cell 左边界 + padding-left」量。
 - 详情列的世界名在真机是纯文本、我们是 `<button>`（可点开世界抽屉），所以取 `button` 文案兜底；`未知世界` 视为未解析，不算「有世界名」。
+
+---
+
+# 第三十五轮：好友位置分栏常驻断言（locations_parity 17/17，regress 9/9）（2026-11-25）
+
+好友位置页的分栏规则（同一世界实例 ≥2 人成一栏、单人按收藏/其他/私人房间落栏、离线垫底）在第七轮就写进了 `web/src/lib/locationGroups.js`，但只有 `web/test/locationGroups.test.mjs` 覆盖纯函数——页面渲染层（组头人数徽标、卡片 `data-online`、私人房间折叠、列表视图分组）退回旧布局不会被任何回归拦住。本轮补第九段常驻断言，并顺手修掉两处真机偏差（目标轮：好友位置分栏复刻）。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 351 | 修组头「JPJP」重复：`worldTitle()` 把区域拼进 label，而组头又单独渲染 `.loc-code` 徽标 → label 只留「世界名 · 访问级别」，区域交给徽标（网格/列表两个视图同修） | `web npm test` 48 pass，新增 `worldTitle({world_name:'Farm',region:'jp',access_label:'好友+'}) === 'Farm · 好友+'` |
+| 352 | 修私人房间卡片显示「未知世界 · 公开」：`showWorld` 原先只排除 world 栏，private 栏也显示世界行 → 只在 favorite/others 栏显示世界行（真机私人房间卡只有名字+状态） | `locations_parity` 的「私人房间卡不显示世界行」0 张有 |
+| 353 | 新增 `scripts/locations_parity.mjs`：1688×1028 内窗，`addInitScript` 清 localStorage 保证从在线标签+网格视图起跑；17 项 = 视图/栏数、栏序（world→favorite→others→private→offline）、组头徽标=卡数、在线人数不丢不重（对 `/api/roster`）、世界栏 ≥2 人且同 location、世界栏人数降序、组头区域不重复、私人房间只收在线且无世界行、卡片高 96、头像 56 正圆、网格 6 列、离线标签只出离线栏且全 `data-online=0`、列表视图分组与网格一致 | `node scripts/locations_parity.mjs` → **17/17 · LOCATIONS OK · exit 0**（`cache/locations_r2.log`） |
+| 354 | 反向验证 `LOC_NEG=1`：注入卡片高 120 + 3 列，断言必须变红 | 15/17，**NEG OK** 被「卡片高 / 网格列数」抓到（`cache/probes/locations_neg.log`） |
+| 355 | `scripts/regress_all.sh` 加第九段 `locations`（`REGRESS OK 9/9`）；README 表格、线上容器命令行、段数口径同步 | 段名 `locations` 输出 `好友位置分栏 17/17`；端到端 `cache/regress_all_r42.log` |
+
+踩坑记录：
+- 列表视图组头是 `.loc-code` 徽标 + `span.truncate` 标题 + 「N 人」，用整块 `textContent` 再正则剥前缀会得到 `JPAlpha Club · 公开2 人`（徽标与标题之间无空格），直接取 `span.truncate` 文案才对齐网格视图的 label。
+- 页面 tab/view 记在 localStorage（`friends:tab` / `friends:view`），断言脚本必须 `addInitScript` 清空，否则上一轮手动点的离线标签会把「在线人数」断言带偏。

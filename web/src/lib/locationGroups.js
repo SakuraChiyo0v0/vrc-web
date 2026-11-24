@@ -8,11 +8,11 @@
 
 const ORDER = { world: 0, favorite: 1, others: 2, private: 3, offline: 4 };
 
+/** 组头标题只放「世界名 · 访问级别」：区域由组头的 .loc-code 徽标单独渲染，避免 JPJP 重复 */
 export function worldTitle(f) {
-  const region = f.region ? `${String(f.region).toUpperCase()} ` : '';
   const name = f.world_name ?? f.world_id ?? '未知世界';
   const access = f.access_label ? ` · ${f.access_label}` : '';
-  return `${region}${name}${access}`;
+  return `${name}${access}`;
 }
 
 function isPrivate(f) {

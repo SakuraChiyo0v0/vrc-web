@@ -1,0 +1,442 @@
+{
+ "base": "http://127.0.0.1:8891",
+ "viewport": {
+  "width": 1688,
+  "height": 1028
+ },
+ "at": "2026-11-24T18:15:29.327Z",
+ "ref": "docs/ref/vrcx0-spec.json#friends_locations",
+ "pass": 17,
+ "total": 17,
+ "rows": [
+  {
+   "name": "视图为网格分栏",
+   "got": "grid",
+   "want": "grid",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "栏数 > 0",
+   "got": "5",
+   "want": "≥1",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "栏序(世界→收藏→其他→私人→离线)",
+   "got": "world/world/favorite/others/private",
+   "want": "ORDER 非递减",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "组头人数徽标=卡数",
+   "got": "5 栏全对",
+   "want": "全部相等",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "在线人数不丢不重",
+   "got": "15/15",
+   "want": "= 接口在线 15",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "世界栏 ≥2 人",
+   "got": "2 栏 / 最少 2 人",
+   "want": "≥2",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "世界栏同实例",
+   "got": "2 栏全同实例",
+   "want": "全部同 location",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "世界栏按人数降序",
+   "got": "2≥2",
+   "want": "非递增",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "组头区域不重复(JPJP)",
+   "got": "5 栏全不重复",
+   "want": "0 栏重复",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "私人房间只收在线",
+   "got": "1 人 / 在线 1",
+   "want": "全部在线",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "私人房间卡不显示世界行",
+   "got": "0 张有",
+   "want": "0 张",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "卡片高",
+   "got": "96",
+   "want": "96",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "头像 56 正圆",
+   "got": "56x56 r=50%",
+   "want": "56 50%",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "网格列数(1688 内窗)",
+   "got": "6",
+   "want": "6",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "离线标签下只有离线栏",
+   "got": "offline",
+   "want": "offline",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "离线卡 data-online=0",
+   "got": "7/7",
+   "want": "全部 0",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "列表视图分组同网格",
+   "got": "Alpha Club · 公开/夜の喫茶店 · 公开/好友收藏/其他在线好友/位于私人房间",
+   "want": "Alpha Club · 公开/夜の喫茶店 · 公开/好友收藏/其他在线好友/位于私人房间",
+   "ok": true,
+   "extra": ""
+  }
+ ],
+ "measured": {
+  "online": {
+   "groups": [
+    {
+     "type": "world",
+     "key": "world:wrld_a:9~region(jp)",
+     "title": "Alpha Club · 公开",
+     "code": "JP",
+     "badge": "2",
+     "cards": [
+      {
+       "u": "usr_kudan",
+       "on": "1",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f01",
+       "on": "1",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      }
+     ]
+    },
+    {
+     "type": "world",
+     "key": "world:wrld_c:1~region(jp)",
+     "title": "夜の喫茶店 · 公开",
+     "code": "JP",
+     "badge": "2",
+     "cards": [
+      {
+       "u": "usr_xiaohong",
+       "on": "1",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f06",
+       "on": "1",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      }
+     ]
+    },
+    {
+     "type": "favorite",
+     "key": "favorite",
+     "title": "好友收藏",
+     "code": "JP",
+     "badge": "1",
+     "cards": [
+      {
+       "u": "usr_alice",
+       "on": "1",
+       "hasWorldLine": true,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      }
+     ]
+    },
+    {
+     "type": "others",
+     "key": "others",
+     "title": "其他在线好友",
+     "code": "JP",
+     "badge": "9",
+     "cards": [
+      {
+       "u": "usr_f13",
+       "on": "1",
+       "hasWorldLine": true,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_carol",
+       "on": "1",
+       "hasWorldLine": true,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f15",
+       "on": "1",
+       "hasWorldLine": true,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f04",
+       "on": "1",
+       "hasWorldLine": true,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f12",
+       "on": "1",
+       "hasWorldLine": true,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f05",
+       "on": "1",
+       "hasWorldLine": true,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f08",
+       "on": "1",
+       "hasWorldLine": true,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f02",
+       "on": "1",
+       "hasWorldLine": true,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f10",
+       "on": "1",
+       "hasWorldLine": true,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      }
+     ]
+    },
+    {
+     "type": "private",
+     "key": "private",
+     "title": "位于私人房间",
+     "code": "",
+     "badge": "1",
+     "cards": [
+      {
+       "u": "usr_zk",
+       "on": "1",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      }
+     ]
+    }
+   ],
+   "cols": 6,
+   "view": "grid"
+  },
+  "offline": {
+   "groups": [
+    {
+     "type": "offline",
+     "key": "offline",
+     "title": "离线",
+     "code": "",
+     "badge": "7",
+     "cards": [
+      {
+       "u": "usr_bob",
+       "on": "0",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f09",
+       "on": "0",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f07",
+       "on": "0",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f11",
+       "on": "0",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f14",
+       "on": "0",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f03",
+       "on": "0",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      },
+      {
+       "u": "usr_f16",
+       "on": "0",
+       "hasWorldLine": false,
+       "h": 96,
+       "avatar": {
+        "w": 56,
+        "h": 56,
+        "radius": "50%"
+       }
+      }
+     ]
+    }
+   ],
+   "cols": 6,
+   "view": "grid"
+  }
+ }
+}

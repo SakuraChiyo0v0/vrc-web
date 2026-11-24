@@ -239,7 +239,7 @@ export default function FriendsPage() {
                       <LocCard
                         key={f.user_id}
                         f={f}
-                        showWorld={g.type !== 'world'}
+                        showWorld={g.type === 'favorite' || g.type === 'others'}
                         showDur={g.type !== 'private'}
                         openFriend={openFriend}
                       />

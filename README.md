@@ -99,7 +99,7 @@ cd web && npm run build && cd ..
 scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 ```
 
-八段全过才打印 `REGRESS OK 8/8`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
+九段全过才打印 `REGRESS OK 9/9`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
 
 | 环节 | 脚本 | 现在跑出来的数 |
 |---|---|---|
@@ -110,6 +110,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
 | 动态页表格 | `node scripts/feed_parity.mjs` | 14/14（列名/列序、无头像列、表头行高 44、列文字起点、右缘留白、工具条单行、无页脚、类型四色互异、详细信息三段） |
+| 好友位置分栏 | `node scripts/locations_parity.mjs` | 17/17（栏序、组头人数=卡数、世界栏 ≥2 人同实例、私人房间只收在线且不显示世界行、离线垫底、在线不丢不重、组头区域不重复、卡片 96 高/头像 56 正圆/6 列、列表视图分组一致） |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
 端到端实测（第 31 轮，`cache/regress_all_r32.log`）：七段一次性全绿 `REGRESS OK 7/7`，frame 1932/1932、nav 366/366 在串行 regress 路径下同样不再崩。
@@ -141,6 +142,7 @@ node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 366/366（逐�
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 node scripts/grid_parity.mjs     http://172.30.0.7:8790/vrc/   # 60/60（.loc-grid 列数阶梯）
 node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 14/14（动态页表格，基线 docs/ref/feed-measure.json）
+node scripts/locations_parity.mjs http://172.30.0.7:8790/vrc/  # 17/17（好友位置分栏，基线 docs/ref/vrcx0-spec.json#friends_locations）
 ```
 
 两条硬规则（`scripts/lib/page_structure.mjs`）：
