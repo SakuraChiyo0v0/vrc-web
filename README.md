@@ -99,13 +99,14 @@ cd web && npm run build && cd ..
 scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 ```
 
-四段全过才打印 `REGRESS OK 4/4`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
+五段全过才打印 `REGRESS OK 5/5`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
 
 | 环节 | 脚本 | 现在跑出来的数 |
 |---|---|---|
 | 桌面结构 | `node scripts/structure_parity.mjs` | 59/59 |
 | 桌面视觉 | `node scripts/visual_parity.mjs` | 215/215（100%） |
-| 移动断点 | `node scripts/mobile_parity.mjs` | 886/886 |
+| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 140/140 |
+| 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
 单独只跑移动断点：
@@ -113,6 +114,23 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 ```bash
 node scripts/mobile_parity.mjs                 # 默认 http://127.0.0.1:8891，任一 FAIL exit 1
 ```
+
+### 跑线上容器
+
+四个 parity 脚本可以直接指向线上容器，不必先起 demo：
+
+```bash
+node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 140/140
+node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
+node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
+```
+
+两条硬规则（`scripts/lib/page_structure.mjs`）：
+
+- **接口去尾斜杠、页面补尾斜杠**：接口地址走 `normBase()`（否则拼出 `/vrc//api/roster` 回 403，被误判「不是本服务」）；hash 路由的页面地址走 `pageBase()`（`/vrc#/settings` 会被服务端当 `GET /vrc` 回 404 JSON，而预检照样 200，整轮截成同一张 404 页）。
+- **首屏断言 `assertVrcPage()`**：root 为空或 body 出现 `"statusCode":404` 直接 exit 2，不允许在假页面上量出分数；`gotoVrc()` 只对 `chrome-error://` 重试 3 次（容器瞬断），404/白屏仍硬拦。
+
+`visual_parity` 另有一条环境判据：真机基准是在种子数据上量的（动态 4 列、模态 8 个 tab、概览 24 格柱、收藏 150 条），真实库数据形态不同，分数无意义 —— 检测到 `/api/health` 的 `db.kind !== 'sqlite'` 时打 `SKIP` exit 3（回归里记 SKIP 不算失败）；确实要在真实库上看就加 `VRC_ALLOW_REAL=1`，结果只作参考。同理，结构断言碰上线上库本身为空的数据（收藏夹 0 条、没有屏蔽/静音记录）记 `SKIP` 而不是 `DIFF`，既混不进分母也不会把线上跑红。
 
 ### 移动端验收口径
 

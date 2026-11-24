@@ -41,6 +41,19 @@ const check = (name, ours, want, ok) => {
 // 给出假分数（曾对死端口跑出 95/166、对图片墙跑出全红），必须硬失败
 const roster = await assertVrcServer(BASE);
 
+// 这套断言的真机基准是在「种子数据」上量的（动态 4 列表、模态 8 个 tab、概览 24 格柱图、收藏夹满 150），
+// 线上真实库的数据形态不同（动态/收藏可能为空），跑出来 46% 会被误读成视觉回归（2026-11-24 10:54 踩过）。
+// 只对 seed 实例（demo.mjs → sqlite 临时库）有意义；真实库要跑，显式 VRC_ALLOW_REAL=1。
+const health = await fetch(`${BASE}/api/health`).then((r) => r.json()).catch(() => null);
+const dbKind = health?.db?.kind ?? 'unknown';
+if (dbKind !== 'sqlite' && process.env.VRC_ALLOW_REAL !== '1') {
+  console.error(`SKIP 视觉基准只对 seed 实例有效（当前 db=${dbKind}，${BASE}）`);
+  console.error('  真机基准里的行列数/模态 tab/概览柱都依赖种子数据，真实库数据形态不同，分数无意义。');
+  console.error('  跑法：node server/scripts/demo.mjs 8891 && node scripts/visual_parity.mjs http://127.0.0.1:8891');
+  console.error('  确认要在真实库上看：加 VRC_ALLOW_REAL=1（结果只作参考，别当回归门）。');
+  process.exit(3);
+}
+
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 
 let tab = null; // 当前复用的 page（1440 档），换宽度就重开

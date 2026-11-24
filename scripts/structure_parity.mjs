@@ -10,7 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { probeMain, structureRows, STRUCT_PAGES, PAGE_ROUTES, assertVrcServer, dataDependentWant } from './lib/page_structure.mjs';
+import { probeMain, structureRows, STRUCT_PAGES, PAGE_ROUTES, assertVrcServer, dataDependentWant, emptyDataReason } from './lib/page_structure.mjs';
 
 const req = createRequire(import.meta.url);
 let pw;
@@ -71,17 +71,26 @@ for (const page of STRUCT_PAGES) {
   // 空桶不出栏（规则见 lib/dataDependentWant，visual_parity 共用）
   const w = dataDependentWant(page, want, roster);
   const got = await go(PAGE_ROUTES[page] || page, w);
-  rows.push(...structureRows(page, got, w, SPEC.pages?.[page]?.row_pitch));
+  const out = structureRows(page, got, w, SPEC.pages?.[page]?.row_pitch);
+  // 数据为空时（线上库 0 条收藏 / 0 条屏蔽记录）失败项记 SKIP：不是结构变差，是没数据可比，
+  // 既不能算 PASS 混进分母，也不能算 DIFF 把线上跑红。
+  const why = emptyDataReason(page, got);
+  if (why) {
+    for (const r of out) if (!r.ok) Object.assign(r, { ok: true, skip: true, want: `${r.want}（跳过：${why}）` });
+  }
+  rows.push(...out);
 }
 
 await browser.close();
-for (const r of rows) console.log(`${r.ok ? 'PASS' : 'DIFF'}  [${r.page}] ${r.name} — 我们 ${r.ours} / 真机 ${r.want}`);
-const pass = rows.filter((r) => r.ok).length;
+for (const r of rows) console.log(`${r.skip ? 'SKIP' : r.ok ? 'PASS' : 'DIFF'}  [${r.page}] ${r.name} — 我们 ${r.ours} / 真机 ${r.want}`);
+const skipped = rows.filter((r) => r.skip).length;
+const judged = rows.length - skipped;
+const pass = rows.filter((r) => r.ok && !r.skip).length;
 fs.writeFileSync(path.join(ROOT, 'docs/ref/structure-parity.json'), JSON.stringify({
   _note: '由 scripts/structure_parity.mjs 生成：spec.pages[*].structure（真机截图量测）vs 我们的 DOM',
   at: new Date().toISOString(),
   base: BASE,
-  pass, total: rows.length, rows,
+  pass, skipped, total: rows.length, rows,
 }, null, 2));
-console.log(`\n结构对齐 ${pass}/${rows.length}（${Math.round((pass / rows.length) * 100)}%）· 基准 docs/ref/vrcx0-spec.json → pages[*].structure`);
-process.exit(pass === rows.length ? 0 : 1);
+console.log(`\n结构对齐 ${pass}/${judged}（${Math.round((pass / judged) * 100)}%）${skipped ? ` · ${skipped} 项数据为空跳过` : ''} · 基准 docs/ref/vrcx0-spec.json → pages[*].structure`);
+process.exit(pass === judged ? 0 : 1);

@@ -24,12 +24,18 @@ if ! curl -sf --max-time 3 "$BASE/api/friends" >/dev/null 2>&1; then
 fi
 
 FAILED=()
-run() {  # run <名字> <命令…>
+SKIPPED=()
+run() {  # run <名字> <命令…>   exit 3 = 本环境不适用（如视觉基准在真实库上），记 SKIP 不算失败
   local name="$1"; shift
   local log="$OUT/$name.log"
   printf '── %-16s' "$name"
-  if "$@" >"$log" 2>&1; then
+  "$@" >"$log" 2>&1
+  local rc=$?
+  if [ $rc -eq 0 ]; then
     echo "OK   $(tail -1 "$log" | cut -c1-110)"
+  elif [ $rc -eq 3 ]; then
+    echo "SKIP $(tail -1 "$log" | cut -c1-110)"
+    SKIPPED+=("$name")
   else
     echo "FAIL $(tail -3 "$log" | tr '\n' ' ' | cut -c1-200)"
     FAILED+=("$name ($log)")
@@ -49,3 +55,4 @@ if [ ${#FAILED[@]} -gt 0 ]; then
   exit 1
 fi
 echo "REGRESS OK 5/5（structure / visual / frame / mobile / unittest）  base=$BASE"
+[ ${#SKIPPED[@]} -gt 0 ] && echo "  SKIP: ${SKIPPED[*]}（本环境不适用，见各自 log）"

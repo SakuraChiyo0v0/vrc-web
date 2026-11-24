@@ -9,6 +9,16 @@
  * 数据相关分栏：真机基准截图里收藏桶有好友在线，账号没有收藏好友时不该要求「好友收藏」这栏。
  * structure_parity / visual_parity 都走这里，保证口径一致。
  */
+export function emptyDataReason(page, got) {
+  const t = got?.text || '';
+  // 线上库本身没有这类数据（账号没收藏任何世界、没有屏蔽/静音记录）时，应用会渲染空态；
+  // 真机截图里的「列数/列名/行高/工具条/网格列数」都建立在有行之上，不能拿来判 DIFF。
+  // 信号取自页面自身文案，不额外加接口（线上没有 /api/moderation 这类路由）。
+  if (page === 'favorites' && /全部收藏\s*0\/\d+/.test(t)) return '收藏夹为空';
+  if (page === 'moderation' && /还没有屏蔽或静音记录/.test(t)) return '没有屏蔽/静音记录';
+  return null;
+}
+
 export function dataDependentWant(page, want, roster) {
   if (page === 'locations' && want?.groups?.length && !(roster?.facets?.favorite > 0)) {
     return { ...want, groups: want.groups.filter((g) => g !== '好友收藏') };

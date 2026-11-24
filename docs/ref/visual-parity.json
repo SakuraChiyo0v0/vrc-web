@@ -1,6 +1,6 @@
 {
   "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言",
-  "at": "2026-11-24T01:21:53.061Z",
+  "at": "2026-11-24T03:29:57.190Z",
   "base": "http://127.0.0.1:8891",
   "pages": [
     "friends",
@@ -1249,7 +1249,7 @@
       "page": "insights@1440",
       "key": "insights",
       "name": "insights 字号档位",
-      "ours": "13",
+      "ours": "11/12/13/14",
       "want": "11/12/13/14",
       "ok": true
     },
