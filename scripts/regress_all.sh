@@ -57,4 +57,5 @@ if [ ${#FAILED[@]} -gt 0 ]; then
   exit 1
 fi
 echo "REGRESS OK 7/7（structure / visual / frame / nav / mobile / grid / unittest）  base=$BASE"
-[ ${#SKIPPED[@]} -gt 0 ] && echo "  SKIP: ${SKIPPED[*]}（本环境不适用，见各自 log）"
+if [ ${#SKIPPED[@]} -gt 0 ]; then echo "  SKIP: ${SKIPPED[*]}（本环境不适用，见各自 log）"; fi
+exit 0
