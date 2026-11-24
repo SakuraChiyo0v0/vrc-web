@@ -1145,6 +1145,69 @@ for (const c of [{ w: 390, h: 844, kb: 0 }, { w: 360, h: 800, kb: 0 }, { w: 844,
   await tab.close();
 }
 
+// 好友详情弹窗：1275 项 parity 此前一次没覆盖弹窗的移动形态。8 个 tab 曾在 390 宽横排到屏外
+// （lastRight=729）、横屏卡片曾压状态栏 12px。判据：卡片在视口内且不压状态栏、8 个 tab 全可见且
+// 每个中心都能点到自己、tab 命中区 ≥36、可见字号 ≥11、卡片自身可滚到底。
+for (const c of [{ w: 390, h: 844 }, { w: 360, h: 800 }, { w: 430, h: 932 }, { w: 320, h: 568 }, { w: 844, h: 390 }]) {
+  const tag = `fdmodal@${c.w}x${c.h}`;
+  const tab = await browser.newPage({ viewport: { width: c.w, height: c.h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  await tab.goto(`${BASE}#/friends`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await tab.waitForTimeout(1200);
+  await tab.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true }).catch(() => {});
+  await tab.waitForSelector('.fd-card', { timeout: 8000 }).catch(() => {});
+  await tab.waitForTimeout(400);
+  const r = await tab.evaluate(() => {
+    const card = document.querySelector('.fd-card');
+    if (!card) return { found: false };
+    const cardR = card.getBoundingClientRect();
+    const sb = document.querySelector('#vrc-statusbar');
+    const sbTop = sb && getComputedStyle(sb).display !== 'none' ? Math.round(sb.getBoundingClientRect().top) : null;
+    const tabs = document.querySelector('.fd-tabs');
+    const btns = tabs ? [...tabs.querySelectorAll('button')] : [];
+    const misses = [];
+    let minH = 99;
+    // 首个 tab 必须在「打开即见」的位置（竖排卡片的资料栏不能把 tab 顶出卡片）
+    const f0 = btns[0]?.getBoundingClientRect();
+    const firstVisible = !!f0 && f0.top >= cardR.top - 1 && f0.bottom <= cardR.bottom + 1;
+    // 弹窗是滚动容器：逐个 tab 滚进可视区再点，测的是「真能点到」而不是「首屏全在」
+    btns.forEach((b, i) => {
+      b.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      const br = b.getBoundingClientRect();
+      minH = Math.min(minH, Math.round(br.height));
+      if (br.right > innerWidth + 1 || br.left < -1 || br.bottom > cardR.bottom + 1) { misses.push(`#${i}不可达`); return; }
+      const hit = document.elementFromPoint(Math.round(br.left + br.width / 2), Math.round(br.top + br.height / 2));
+      if (!hit || !(hit === b || b.contains(hit))) misses.push(`#${i}命中${(hit?.textContent || '?').trim().slice(0, 3)}`);
+    });
+    let minFont = 99;
+    card.querySelectorAll('*').forEach((el) => {
+      const t = (el.textContent || '').trim();
+      if (!t || el.children.length) return;
+      const cs = getComputedStyle(el);
+      if (cs.visibility === 'hidden' || cs.display === 'none') return;
+      minFont = Math.min(minFont, parseFloat(cs.fontSize) || 99);
+    });
+    card.scrollTop = 1e6;
+    return {
+      found: true, vh: innerHeight,
+      top: Math.round(cardR.top), bottom: Math.round(cardR.bottom),
+      over: sbTop != null ? Math.max(0, Math.round(cardR.bottom - sbTop)) : 0,
+      n: btns.length, minH, misses: misses.join('|'), minFont, firstVisible,
+      scrollable: card.scrollHeight > card.clientHeight, scrolledTo: Math.round(card.scrollTop),
+    };
+  });
+  check(tag, '弹窗可打开', r.found ? 'fd-card' : '未出现', 'fd-card', r.found);
+  if (r.found) {
+    check(tag, '卡片在视口内', `${r.top}–${r.bottom}/${r.vh}`, '0≤top 且 bottom≤vh', r.top >= -1 && r.bottom <= r.vh);
+    check(tag, '卡片不压状态栏', `over=${r.over}px`, '0px', r.over <= 0);
+    check(tag, '8 个 tab 全可见且可点', r.misses ? r.misses : `${r.n} 个全命中`, '0 个出屏/被遮', r.misses === '');
+    check(tag, '打开即见 tab 栏（资料栏没顶出）', r.firstVisible ? '首 tab 在卡片内' : '首 tab 在卡片外', '在卡片内', r.firstVisible);
+    check(tag, 'tab 命中区 ≥36', `${r.minH}px`, '≥36px', r.minH >= 36);
+    check(tag, '弹窗内字号 ≥11', `${r.minFont}px`, '≥11px', r.minFont >= 11);
+    check(tag, '卡片自身可滚到顶', r.scrollable ? `scrollTop=${r.scrolledTo}` : '内容无需滚动', '可滚到底或无需滚', !r.scrollable || r.scrolledTo > 0);
+  }
+  await tab.close();
+}
+
 await browser.close();
 
 // 人工对照用快照：按断言组（tag）归组落 docs/mobile-baseline.md，省得翻 900 行日志找「哪个页面哪条口径」。

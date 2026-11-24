@@ -1520,6 +1520,27 @@ html[data-phone='1'] #root {
      .sess-seg button，见 mobile_parity）。 */
   .sess-self { height: 36px; min-height: 36px; }
   .sess-seg { height: 36px; }
+
+  /* 好友详情弹窗（8 个 tab）：桌面横排一行 38px；390 宽卡片里横排 lastRight=729 ——
+     后 5 个 tab 落在屏外，容器只 overflow-x:auto，竖屏下根本想不到要横滑，等于点不到
+     （探针 scripts/_probe_friend_modal2.mjs）。改成换行排布，全部可见可点，命中区 36 与 chip 同档。 */
+  .fd-tabs { height: auto; min-height: 38px; flex-wrap: wrap; overflow-x: visible; row-gap: 2px; }
+  .fd-tabs button { height: 36px; flex: none; }
+  /* 卡片 88vh 居中会从状态栏底下穿过去（844×390：card bottom=367 > 状态栏顶 355，压 12px）。
+     scrim 上下内缩「状态栏高度 + 安全区」，卡片吃满剩下的高度。 */
+  .fd-scrim { padding-top: calc(var(--safe-top) + 8px); padding-bottom: calc(35px + var(--safe-bottom) + 8px); }
+  .fd-card { width: 94vw; max-width: 94vw; height: 100%; max-height: 100%; }
+}
+
+/* 好友详情弹窗在横屏（卡片高仅 339）：styles.css 的 ≤900 宽规则把卡片切成竖排，左资料栏自己就比
+ * 卡片高，8 个 tab 全被推到卡片下方（探针 scripts/_probe_fd_tabs_hit.mjs：tab y=433 > card bottom=347，
+ * 打开弹窗只看得到头像资料，必须先滚整张卡才能切 tab）。矮视口改回「左栏 + 右 tab/卡片」两列、各自滚。 */
+@media (max-height: 500px) {
+  .fd-card { flex-direction: row; gap: 12px; overflow: hidden; }
+  .fd-left { flex: 0 0 240px; overflow-y: auto; }
+  .fd-cover { height: 100px; }
+  .fd-right { overflow-y: auto; }
+  .fd-tabs { align-content: flex-start; }
 }
 
 /* 横屏 + 键盘（844×390 键盘 220 → 可视 170；932×430 → 190）：顶栏 44 + 状态栏 35 + 工具条 58
