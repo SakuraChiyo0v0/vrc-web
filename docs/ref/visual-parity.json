@@ -1,6 +1,6 @@
 {
   "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言",
-  "at": "2026-11-23T23:33:21.813Z",
+  "at": "2026-11-24T01:21:53.061Z",
   "base": "http://127.0.0.1:8891",
   "pages": [
     "friends",
@@ -425,7 +425,7 @@
       "page": "overview",
       "key": "overview",
       "name": "概览每日柱数",
-      "ours": 7,
+      "ours": 8,
       "want": "7–31",
       "ok": true
     },
@@ -1249,7 +1249,7 @@
       "page": "insights@1440",
       "key": "insights",
       "name": "insights 字号档位",
-      "ours": "11/12/13/14",
+      "ours": "13",
       "want": "11/12/13/14",
       "ok": true
     },

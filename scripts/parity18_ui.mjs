@@ -19,46 +19,46 @@ const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbo
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 
 try {
-  /* ── 1. 抽屉数据 tab ── */
+  /* ── 1. 好友详情模态（第十四轮起由抽屉改为 VRCX-0 式大模态） ── */
   await page.goto(`${BASE}#/friends`, { waitUntil: 'networkidle', timeout: 60000 });
-  await page.waitForSelector('.friend-row:not(.list-head)[data-user]', { timeout: 25000 });
-  // 固定开 Alice（演示库里唯一有会话/世界记录的人），避免排序把空好友排在首位
-  await page.locator('.friend-row[data-user="usr_alice"]').click({ timeout: 8000, force: true });
-  await page.waitForSelector('.drawer-avatar', { timeout: 15000 });
-  await page.locator('[role="tab"][data-tab="data"]').click();
-  await page.waitForSelector('[data-panel="data"]:not([hidden])', { timeout: 10000 });
-  await page.waitForSelector('[data-chart="duration"] .dc-bar', { timeout: 15000 }).catch(() => {});
+  await page.waitForSelector('.friend-row:not(.list-head)', { timeout: 25000 });
+  // 固定开 Alice（演示库里唯一有世界/会话记录的人），首行可能是空好友
+  const alice = page.locator('.friend-row[data-user="usr_alice"]');
+  if (await alice.count()) await alice.first().click({ timeout: 8000, force: true });
+  else await page.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true });
+  await page.waitForSelector('.fd-card', { timeout: 20000 });
 
-  const drawer = await page.evaluate(() => {
-    const q = (s) => document.querySelectorAll(s);
-    const panel = document.querySelector('[data-panel="data"]');
-    const bars = [...q('[data-chart="duration"] .dc-bar')];
+  const modal = await page.evaluate(() => {
+    const tabs = [...document.querySelectorAll('.fd-tabs button')].map((b) => b.textContent.trim());
     return {
-      panel: !!panel,
-      bars: bars.length,
-      withMinutes: bars.filter((b) => Number(b.dataset.minutes) > 0).length,
-      worlds: q('[data-chart="worlds"] .dc-row').length,
-      heatRows: panel ? panel.querySelectorAll('[data-chart="heat"] [data-heat-row]').length : 0,
-      labels: [...q('[data-panel="data"] .label-xs')].map((n) => n.textContent.trim())
+      open: !!document.querySelector('.fd-card'),
+      tabs: tabs.length,
+      hasCover: !!document.querySelector('.fd-cover'),
+      hasAvatar: !!document.querySelector('.fd-avatar'),
+      cards: document.querySelectorAll('.fd-panel').length
     };
   });
-  check('抽屉数据 tab 存在', drawer.panel);
-  check('在线时长日柱 30 根', drawer.bars === 30, `${drawer.bars} 根 / ${drawer.withMinutes} 根有数据`);
-  check('在线时长有非零数据', drawer.withMinutes > 0);
-  check('常去世界横条 ≥1', drawer.worlds >= 1, `${drawer.worlds} 行`);
-  check('活跃时段热力图 7 行', drawer.heatRows === 7, `${drawer.heatRows} 行`);
-  check('三块图表标题齐全', ['在线时长', '活跃时段', '常去世界'].every((t) => drawer.labels.some((l) => l.startsWith(t))), drawer.labels.join('|'));
+  check('好友详情模态打开', modal.open);
+  check('8 个 tab 齐全', modal.tabs === 8, `${modal.tabs} 个`);
+  check('左栏封面 + 叠压头像', modal.hasCover && modal.hasAvatar);
+  check('信息页四张卡片', modal.cards >= 4, `${modal.cards} 张`);
 
-  // Esc 必须能关（规格同 VRCX-0），关不掉就用关闭按钮兜底并记 FAIL
+  // 活动记录 / 创建的世界：必须真有行（数据来自 /api/friend/:id）
+  await page.locator('.fd-tabs button', { hasText: '活动记录' }).first().click();
+  await page.waitForSelector('.fd-list', { timeout: 8000 }).catch(() => {});
+  const actRows = await page.locator('.fd-list .fd-row').count();
+  check('活动记录有行', actRows >= 1, `${actRows} 行`);
+
+  await page.locator('.fd-tabs button', { hasText: '创建的世界' }).first().click();
+  await page.waitForTimeout(600);
+  const worldRows = await page.locator('.fd-list .fd-row').count();
+  check('常去世界有行', worldRows >= 1, `${worldRows} 行`);
+
+  // Esc 必须能关（规格同 VRCX-0）
   await page.keyboard.press('Escape');
-  const escClosed = await page.waitForSelector('aside.drawer-head, .drawer-head', { state: 'detached', timeout: 4000 })
+  const escClosed = await page.waitForSelector('.fd-card', { state: 'detached', timeout: 4000 })
     .then(() => true).catch(() => false);
-  check('Esc 关闭抽屉', escClosed);
-  if (!escClosed) {
-    const closeBtn = page.locator('aside .chip', { hasText: '关闭' });
-    if (await closeBtn.count()) await closeBtn.first().click({ timeout: 5000 }).catch(() => {});
-    await page.waitForSelector('.drawer-head', { state: 'detached', timeout: 10000 }).catch(() => {});
-  }
+  check('Esc 关闭详情', escClosed);
 
   /* ── 2. 概览旅程：按月折叠 + 每日柱可点 ── */
   await page.goto(`${BASE}#/overview`, { waitUntil: 'networkidle', timeout: 60000 });
