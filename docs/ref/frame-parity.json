@@ -1,5 +1,5 @@
 {
- "at": "2026-11-24T10:38:33.708Z",
+ "at": "2026-11-24T12:30:44.622Z",
  "base": "http://127.0.0.1:8891",
  "pass": 1932,
  "total": 1932,
@@ -5376,49 +5376,49 @@
   {
    "view": "1440x900",
    "name": "exp.dirty.abc",
-   "ours": "w353/353 内容797 ws1150 ovf0 手柄present",
+   "ours": "w353/353 内容797 ws1150 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1440x900",
    "name": "exp.dirty.99999",
-   "ours": "w353/353 内容797 ws1150 ovf0 手柄present",
+   "ours": "w353/353 内容797 ws1150 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1440x900",
    "name": "exp.dirty.-5",
-   "ours": "w353/353 内容797 ws1150 ovf0 手柄present",
+   "ours": "w353/353 内容797 ws1150 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1440x900",
    "name": "exp.dirty.0",
-   "ours": "w353/353 内容797 ws1150 ovf0 手柄present",
+   "ours": "w353/353 内容797 ws1150 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1440x900",
    "name": "exp.dirty.264",
-   "ours": "w264/264 内容886 ws1150 ovf0 手柄present",
+   "ours": "w264/264 内容886 ws1150 ovf0 手柄present reloadfresh",
    "want": "右栏 264、内容列 = ws−264、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1440x900",
    "name": "exp.dirty.280",
-   "ours": "w280/280 内容870 ws1150 ovf0 手柄present",
+   "ours": "w280/280 内容870 ws1150 ovf0 手柄present reloadfresh",
    "want": "右栏 280、内容列 = ws−280、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1440x900",
    "name": "exp.dirty.770",
-   "ours": "w770/770 内容380 ws1150 ovf0 手柄present",
+   "ours": "w770/770 内容380 ws1150 ovf0 手柄present reloadfresh",
    "want": "右栏 770、内容列 = ws−770、无溢出、手柄在",
    "ok": true
   },
@@ -6328,49 +6328,49 @@
   {
    "view": "1600x900",
    "name": "exp.dirty.abc",
-   "ours": "w353/353 内容957 ws1310 ovf0 手柄present",
+   "ours": "w353/353 内容957 ws1310 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1600x900",
    "name": "exp.dirty.99999",
-   "ours": "w353/353 内容957 ws1310 ovf0 手柄present",
+   "ours": "w353/353 内容957 ws1310 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1600x900",
    "name": "exp.dirty.-5",
-   "ours": "w353/353 内容957 ws1310 ovf0 手柄present",
+   "ours": "w353/353 内容957 ws1310 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1600x900",
    "name": "exp.dirty.0",
-   "ours": "w353/353 内容957 ws1310 ovf0 手柄present",
+   "ours": "w353/353 内容957 ws1310 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1600x900",
    "name": "exp.dirty.264",
-   "ours": "w264/264 内容1046 ws1310 ovf0 手柄present",
+   "ours": "w264/264 内容1046 ws1310 ovf0 手柄present reloadfresh",
    "want": "右栏 264、内容列 = ws−264、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1600x900",
    "name": "exp.dirty.280",
-   "ours": "w280/280 内容1030 ws1310 ovf0 手柄present",
+   "ours": "w280/280 内容1030 ws1310 ovf0 手柄present reloadfresh",
    "want": "右栏 280、内容列 = ws−280、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1600x900",
    "name": "exp.dirty.770",
-   "ours": "w770/770 内容540 ws1310 ovf0 手柄present",
+   "ours": "w770/770 内容540 ws1310 ovf0 手柄present reloadfresh",
    "want": "右栏 770、内容列 = ws−770、无溢出、手柄在",
    "ok": true
   },
@@ -7280,49 +7280,49 @@
   {
    "view": "1700x1040",
    "name": "exp.dirty.abc",
-   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present",
+   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1700x1040",
    "name": "exp.dirty.99999",
-   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present",
+   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1700x1040",
    "name": "exp.dirty.-5",
-   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present",
+   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1700x1040",
    "name": "exp.dirty.0",
-   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present",
+   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present reloadfresh",
    "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1700x1040",
    "name": "exp.dirty.264",
-   "ours": "w264/264 内容1146 ws1410 ovf0 手柄present",
+   "ours": "w264/264 内容1146 ws1410 ovf0 手柄present reloadfresh",
    "want": "右栏 264、内容列 = ws−264、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1700x1040",
    "name": "exp.dirty.280",
-   "ours": "w280/280 内容1130 ws1410 ovf0 手柄present",
+   "ours": "w280/280 内容1130 ws1410 ovf0 手柄present reloadfresh",
    "want": "右栏 280、内容列 = ws−280、无溢出、手柄在",
    "ok": true
   },
   {
    "view": "1700x1040",
    "name": "exp.dirty.770",
-   "ours": "w770/770 内容640 ws1410 ovf0 手柄present",
+   "ours": "w770/770 内容640 ws1410 ovf0 手柄present reloadfresh",
    "want": "右栏 770、内容列 = ws−770、无溢出、手柄在",
    "ok": true
   },
