@@ -242,6 +242,57 @@ for (const [w, h, vh] of [[390, 844, 560], [844, 390, 300]]) {
   await tab.close();
 }
 
+// 命令面板（移动形态唯一搜索入口——手机没有 ⌘K）：量输入框字号、结果行命中区与可点性，
+// 以及键盘弹起把 --app-vh 压矮后结果列表是否还有可用行（探针 scripts/_probe_palette_mobile.mjs）。
+for (const [w, h, vh] of [[390, 844, 0], [320, 568, 0], [844, 390, 0], [390, 844, 380]]) {
+  const tab = await open('friends', w, h);
+  if (vh) await tab.evaluate((v) => document.documentElement.style.setProperty('--app-vh', `${v}px`), vh);
+  await tab.click('[data-topbar="search-mobile"]');
+  await tab.waitForTimeout(300);
+  await tab.fill('[data-testid="palette"] input', 'a');
+  await tab.waitForFunction(() => document.querySelectorAll('[data-testid="palette"] .cmdk-list button').length > 0,
+    null, { timeout: 8000 }).catch(() => {});
+  await tab.waitForTimeout(300);
+  const m = await tab.evaluate(() => {
+    const p = document.querySelector('[data-testid="palette"]');
+    if (!p) return { none: true };
+    const inp = p.querySelector('input');
+    const list = p.querySelector('.cmdk-list');
+    const rows2 = [...list.querySelectorAll('button')].filter((b) => !b.hasAttribute('data-palette-all'));
+    const ir = inp.getBoundingClientRect();
+    const lr = list.getBoundingClientRect();
+    const vvh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    const fully = rows2.filter((b) => {
+      const r = b.getBoundingClientRect();
+      return r.top >= lr.top - 1 && r.bottom <= lr.bottom + 1 && r.bottom <= vvh + 1;
+    });
+    const first = rows2[0];
+    const fr = first.getBoundingClientRect();
+    const fhit = document.elementFromPoint(fr.left + fr.width / 2, fr.top + fr.height / 2);
+    list.scrollTop = list.scrollHeight;
+    const last = rows2[rows2.length - 1];
+    const lr2 = last.getBoundingClientRect();
+    const lhit = document.elementFromPoint(lr2.left + lr2.width / 2, Math.min(lr2.top + lr2.height / 2, vvh - 2));
+    return {
+      inpFont: parseFloat(getComputedStyle(inp).fontSize), inpH: Math.round(ir.height),
+      rowH: Math.round(fr.height), rows: rows2.length, fully: fully.length,
+      firstHit: !!fhit && fhit.closest('button') === first,
+      lastHit: !!lhit && lhit.closest('button') === last,
+      panelBottom: Math.round(p.getBoundingClientRect().bottom), vvh: Math.round(vvh),
+      inView: ir.bottom <= vvh + 1 && ir.top >= -1,
+    };
+  });
+  const tag = `palette-ux@${w}x${h}${vh ? `+kb${h - vh}` : ''}`;
+  check(tag, '输入框 16px/≥36 且不被键盘顶出', m.none ? 'no palette' : `${m.inpFont}px h${m.inpH} inView=${m.inView}`,
+    '16px h≥36 inView', !m.none && m.inpFont >= 16 && m.inpH >= 36 && m.inView);
+  check(tag, '结果行 36 命中区', m.none ? 'n/a' : `rowH=${m.rowH} n=${m.rows}`, '≥36', !m.none && m.rowH >= 36);
+  check(tag, '首行中心可点', m.none ? 'n/a' : String(m.firstHit), 'true', !m.none && m.firstHit === true);
+  check(tag, '完整可见行 ≥3', m.none ? 'n/a' : `${m.fully}/${m.rows}`, '≥3', !m.none && m.fully >= 3);
+  check(tag, '滚到底末行可点', m.none ? 'n/a' : String(m.lastHit), 'true', !m.none && m.lastHit === true);
+  check(tag, '面板不越过可视底', m.none ? 'n/a' : `bottom=${m.panelBottom} vvh=${m.vvh}`, 'bottom≤vvh', !m.none && m.panelBottom <= m.vvh + 1);
+  await tab.close();
+}
+
 // 表格卡片内列名/值对齐（friendlist@390）：列名宽度必须统一，否则每行值的起点都是斜的
 {
   const tab = await open('friendlist', 390, 844);

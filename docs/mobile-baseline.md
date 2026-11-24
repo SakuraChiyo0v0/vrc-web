@@ -1,6 +1,6 @@
 # 移动端验收基线（自动生成，勿手改）
 
-生成：2026-11-24 00:35:58 · 断言 1275/1275 PASS · 页面 14 × 视口 11
+生成：2026-11-24 01:29:29 · 断言 1479/1479 PASS · 页面 14 × 视口 11
 
 移动形态判据：宽 ≤1023 或高 ≤500（styles.css / tailwind md raw / Sidebar matchMedia 三处一致）。
 重新生成：`node scripts/mobile_parity.mjs`（脚本末尾自动写回本文件）。
@@ -836,11 +836,11 @@
 | 断言 | 实测 | 期望 | 结果 |
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
-| 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | n/a | ≥32px | PASS |
-| 最小字号≥11 | 13px | ≥11px | PASS |
-| 内容区非零宽 | nullpx | >0 | PASS |
-| 侧栏默认收起 | left=null | <0 | PASS |
+| 表格卡片化 | thead=none tr=flex | thead=none tr=flex | PASS |
+| 触控目标≥32 | 36px | ≥32px | PASS |
+| 最小字号≥11 | 11px | ≥11px | PASS |
+| 内容区非零宽 | 320px | >0 | PASS |
+| 侧栏默认收起 | left=-214 | <0 | PASS |
 
 ## moderation@360
 
@@ -1708,6 +1708,50 @@
 | 面板在可视高 300 内 | top=36 bottom=190 | bottom≤300 | PASS |
 | 结果列表高度按可视高算 | listH=78 maxH=156 | maxH≤156 | PASS |
 
+## palette-ux@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 输入框 16px/≥36 且不被键盘顶出 | 16px h44 inView=true | 16px h≥36 inView | PASS |
+| 结果行 36 命中区 | rowH=36 n=16 | ≥36 | PASS |
+| 首行中心可点 | true | true | PASS |
+| 完整可见行 ≥3 | 10/16 | ≥3 | PASS |
+| 滚到底末行可点 | true | true | PASS |
+| 面板不越过可视底 | bottom=635 vvh=844 | bottom≤vvh | PASS |
+
+## palette-ux@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 输入框 16px/≥36 且不被键盘顶出 | 16px h44 inView=true | 16px h≥36 inView | PASS |
+| 结果行 36 命中区 | rowH=36 n=16 | ≥36 | PASS |
+| 首行中心可点 | true | true | PASS |
+| 完整可见行 ≥3 | 7/16 | ≥3 | PASS |
+| 滚到底末行可点 | true | true | PASS |
+| 面板不越过可视底 | bottom=459 vvh=568 | bottom≤vvh | PASS |
+
+## palette-ux@844x390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 输入框 16px/≥36 且不被键盘顶出 | 16px h44 inView=true | 16px h≥36 inView | PASS |
+| 结果行 36 命中区 | rowH=36 n=16 | ≥36 | PASS |
+| 首行中心可点 | true | true | PASS |
+| 完整可见行 ≥3 | 4/16 | ≥3 | PASS |
+| 滚到底末行可点 | true | true | PASS |
+| 面板不越过可视底 | bottom=345 vvh=390 | bottom≤vvh | PASS |
+
+## palette-ux@390x844+kb464
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 输入框 16px/≥36 且不被键盘顶出 | 16px h44 inView=true | 16px h≥36 inView | PASS |
+| 结果行 36 命中区 | rowH=36 n=16 | ≥36 | PASS |
+| 首行中心可点 | true | true | PASS |
+| 完整可见行 ≥3 | 4/16 | ≥3 | PASS |
+| 滚到底末行可点 | true | true | PASS |
+| 面板不越过可视底 | bottom=338 vvh=844 | bottom≤vvh | PASS |
+
 ## cards@390
 
 | 断言 | 实测 | 期望 | 结果 |
@@ -1867,7 +1911,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 0ms（20 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 1ms（20 行） | ≤300ms | PASS |
 
 ## scroll@feed@390
 
@@ -2223,6 +2267,286 @@
 | 主内容≥60 | main=154 vv=190 | ≥60 | PASS |
 | 内容可用（完整一块 或 首块露出≥60） | 2 块 完整=0 首块 123px top=107 露出=83 | 完整≥1 或 露出≥60 | PASS |
 
+## kb-portrait@friends@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 5 块 露出=100 | ≥40 | PASS |
+
+## kb-portrait@worlds@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 5 块 露出=151 | ≥40 | PASS |
+
+## kb-portrait@overview@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 2 块 露出=133 | ≥40 | PASS |
+
+## kb-portrait@search@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 5 块 露出=200 | ≥40 | PASS |
+
+## kb-portrait@feed@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 36 块 露出=135 | ≥40 | PASS |
+
+## kb-portrait@sessions@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 17 块 露出=40 | ≥40 | PASS |
+
+## kb-portrait@players@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 1 块 露出=185 | ≥40 | PASS |
+
+## kb-portrait@moderation@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 1 块 露出=140 | ≥40 | PASS |
+
+## kb-portrait@favorites@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 4 块 露出=52 | ≥40 | PASS |
+
+## kb-portrait@insights@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 1 块 露出=248 | ≥40 | PASS |
+
+## kb-portrait@friendlist@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 20 块 露出=199 | ≥40 | PASS |
+
+## kb-portrait@friendlog@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 32 块 露出=44 | ≥40 | PASS |
+
+## kb-portrait@gamelog@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 7 块 露出=190 | ≥40 | PASS |
+
+## kb-portrait@settings@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=352px shell=352 vv=352 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=352 | ≤352 | PASS |
+| 主内容≥200 | main=273 | ≥200 | PASS |
+| 首块内容露出≥40 | 2 块 露出=144 | ≥40 | PASS |
+
+## kb-portrait@friends@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 5 块 露出=100 | ≥40 | PASS |
+
+## kb-portrait@worlds@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 5 块 露出=177 | ≥40 | PASS |
+
+## kb-portrait@overview@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 2 块 露出=289 | ≥40 | PASS |
+
+## kb-portrait@search@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 5 块 露出=342 | ≥40 | PASS |
+
+## kb-portrait@feed@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 36 块 露出=135 | ≥40 | PASS |
+
+## kb-portrait@sessions@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 17 块 露出=40 | ≥40 | PASS |
+
+## kb-portrait@players@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 1 块 露出=167 | ≥40 | PASS |
+
+## kb-portrait@moderation@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 1 块 露出=140 | ≥40 | PASS |
+
+## kb-portrait@favorites@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 4 块 露出=52 | ≥40 | PASS |
+
+## kb-portrait@insights@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 1 块 露出=404 | ≥40 | PASS |
+
+## kb-portrait@friendlist@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 20 块 露出=275 | ≥40 | PASS |
+
+## kb-portrait@friendlog@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 32 块 露出=44 | ≥40 | PASS |
+
+## kb-portrait@gamelog@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 7 块 露出=346 | ≥40 | PASS |
+
+## kb-portrait@settings@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 键盘弹起（data-kb=1） | data-kb=1 | 1 | PASS |
+| 外壳跟随可视高 | appVh=508px shell=508 vv=508 | shell=vv(±1) | PASS |
+| 状态栏不被键盘盖住 | sbBottom=508 | ≤508 | PASS |
+| 主内容≥200 | main=429 | ≥200 | PASS |
+| 首块内容露出≥40 | 2 块 露出=123 | ≥40 | PASS |
+
 ## statusbar@320
 
 | 断言 | 实测 | 期望 | 结果 |
@@ -2444,3 +2768,68 @@
 | 子导航条目命中区≥44 | 44px | ≥44px | PASS |
 | 滚到底末项（反馈）回到容器内 | auto scrollTop=330 lastBottom=166 navBottom=170 | lastBottom≤navBottom | PASS |
 | 末项中心可点 | 命中 反馈 | 反馈 | PASS |
+
+## fdmodal@390x844
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 弹窗可打开 | fd-card | fd-card | PASS |
+| 卡片在视口内 | 8–801/844 | 0≤top 且 bottom≤vh | PASS |
+| 卡片不压状态栏 | over=0px | 0px | PASS |
+| 8 个 tab 全可见且可点 | 8 个全命中 | 0 个出屏/被遮 | PASS |
+| 打开即见 tab 栏（资料栏没顶出） | 首 tab 在卡片内 | 在卡片内 | PASS |
+| tab 命中区 ≥36 | 36px | ≥36px | PASS |
+| 弹窗内字号 ≥11 | 11px | ≥11px | PASS |
+| 卡片自身可滚到顶 | scrollTop=538 | 可滚到底或无需滚 | PASS |
+
+## fdmodal@360x800
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 弹窗可打开 | fd-card | fd-card | PASS |
+| 卡片在视口内 | 8–757/800 | 0≤top 且 bottom≤vh | PASS |
+| 卡片不压状态栏 | over=0px | 0px | PASS |
+| 8 个 tab 全可见且可点 | 8 个全命中 | 0 个出屏/被遮 | PASS |
+| 打开即见 tab 栏（资料栏没顶出） | 首 tab 在卡片内 | 在卡片内 | PASS |
+| tab 命中区 ≥36 | 36px | ≥36px | PASS |
+| 弹窗内字号 ≥11 | 11px | ≥11px | PASS |
+| 卡片自身可滚到顶 | scrollTop=582 | 可滚到底或无需滚 | PASS |
+
+## fdmodal@430x932
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 弹窗可打开 | fd-card | fd-card | PASS |
+| 卡片在视口内 | 8–889/932 | 0≤top 且 bottom≤vh | PASS |
+| 卡片不压状态栏 | over=0px | 0px | PASS |
+| 8 个 tab 全可见且可点 | 8 个全命中 | 0 个出屏/被遮 | PASS |
+| 打开即见 tab 栏（资料栏没顶出） | 首 tab 在卡片内 | 在卡片内 | PASS |
+| tab 命中区 ≥36 | 36px | ≥36px | PASS |
+| 弹窗内字号 ≥11 | 11px | ≥11px | PASS |
+| 卡片自身可滚到顶 | scrollTop=450 | 可滚到底或无需滚 | PASS |
+
+## fdmodal@320x568
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 弹窗可打开 | fd-card | fd-card | PASS |
+| 卡片在视口内 | 8–525/568 | 0≤top 且 bottom≤vh | PASS |
+| 卡片不压状态栏 | over=0px | 0px | PASS |
+| 8 个 tab 全可见且可点 | 8 个全命中 | 0 个出屏/被遮 | PASS |
+| 打开即见 tab 栏（资料栏没顶出） | 首 tab 在卡片内 | 在卡片内 | PASS |
+| tab 命中区 ≥36 | 36px | ≥36px | PASS |
+| 弹窗内字号 ≥11 | 11px | ≥11px | PASS |
+| 卡片自身可滚到顶 | scrollTop=852 | 可滚到底或无需滚 | PASS |
+
+## fdmodal@844x390
+
+| 断言 | 实测 | 期望 | 结果 |
+| --- | --- | --- | --- |
+| 弹窗可打开 | fd-card | fd-card | PASS |
+| 卡片在视口内 | 8–347/390 | 0≤top 且 bottom≤vh | PASS |
+| 卡片不压状态栏 | over=0px | 0px | PASS |
+| 8 个 tab 全可见且可点 | 8 个全命中 | 0 个出屏/被遮 | PASS |
+| 打开即见 tab 栏（资料栏没顶出） | 首 tab 在卡片内 | 在卡片内 | PASS |
+| tab 命中区 ≥36 | 36px | ≥36px | PASS |
+| 弹窗内字号 ≥11 | 11px | ≥11px | PASS |
+| 卡片自身可滚到顶 | 内容无需滚动 | 可滚到底或无需滚 | PASS |

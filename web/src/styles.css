@@ -1530,6 +1530,12 @@ html[data-phone='1'] #root {
      scrim 上下内缩「状态栏高度 + 安全区」，卡片吃满剩下的高度。 */
   .fd-scrim { padding-top: calc(var(--safe-top) + 8px); padding-bottom: calc(35px + var(--safe-bottom) + 8px); }
   .fd-card { width: 94vw; max-width: 94vw; height: 100%; max-height: 100%; }
+
+  /* 命令面板（移动端唯一搜索入口：顶栏「快速搜索」）：结果行桌面 32（py-1.5 + 12px 文字），
+     手机上它是最主要的点选目标，抬到 36 与 chip 同档（探针 scripts/_probe_palette_mobile.mjs
+     实测 320/390/844×390/键盘态都是 32）。列表滚到尽头别把下层页面一起拖走。 */
+  .cmdk-list button { min-height: 36px; }
+  .cmdk-list { overscroll-behavior-y: contain; }
 }
 
 /* 好友详情弹窗在横屏（卡片高仅 339）：styles.css 的 ≤900 宽规则把卡片切成竖排，左资料栏自己就比
