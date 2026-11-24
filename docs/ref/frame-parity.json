@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T06:16:22.226Z",
+ "at": "2026-11-24T06:28:22.877Z",
  "base": "http://127.0.0.1:8891",
- "pass": 819,
- "total": 819,
+ "pass": 891,
+ "total": 891,
  "rows": [
   {
    "view": "1024x600",
@@ -198,6 +198,62 @@
    "name": "nav.footer_visible",
    "ours": "553 / 565",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "coll.overflow.friends",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "coll.overflow.feed",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "coll.density.feed",
+   "ours": "4col 首列104/104 表992",
+   "want": "4col 首列≥104",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "coll.overflow.friendlist",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "coll.density.friendlist",
+   "ours": "9col 首列44/41 表977",
+   "want": "9col 首列≥41",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "coll.overflow.gamelog",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "coll.overflow.worlds",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "coll.overflow.settings",
+   "ours": 1024,
+   "want": "≤1025",
    "ok": true
   },
   {
@@ -527,6 +583,62 @@
    "name": "nav.footer_visible",
    "ours": "721 / 733",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "coll.overflow.friends",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "coll.overflow.feed",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "coll.density.feed",
+   "ours": "4col 首列104/104 表992",
+   "want": "4col 首列≥104",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "coll.overflow.friendlist",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "coll.density.friendlist",
+   "ours": "9col 首列44/41 表977",
+   "want": "9col 首列≥41",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "coll.overflow.gamelog",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "coll.overflow.worlds",
+   "ours": 1024,
+   "want": "≤1025",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "coll.overflow.settings",
+   "ours": 1024,
+   "want": "≤1025",
    "ok": true
   },
   {
@@ -860,6 +972,62 @@
   },
   {
    "view": "1100x800",
+   "name": "coll.overflow.friends",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "coll.overflow.feed",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "coll.density.feed",
+   "ours": "4col 首列104/104 表1068",
+   "want": "4col 首列≥104",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "coll.overflow.friendlist",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "coll.density.friendlist",
+   "ours": "9col 首列44/44 表1053",
+   "want": "9col 首列≥44",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "coll.overflow.gamelog",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "coll.overflow.worlds",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "coll.overflow.settings",
+   "ours": 1100,
+   "want": "≤1101",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "lcoll.topbar.right_pad",
    "ours": 8,
    "want": "8±1",
@@ -1185,6 +1353,62 @@
    "name": "nav.footer_visible",
    "ours": "553 / 565",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "coll.overflow.friends",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "coll.overflow.feed",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "coll.density.feed",
+   "ours": "4col 首列104/104 表1248",
+   "want": "4col 首列≥104",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "coll.overflow.friendlist",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "coll.density.friendlist",
+   "ours": "9col 首列44/44 表1233",
+   "want": "9col 首列≥44",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "coll.overflow.gamelog",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "coll.overflow.worlds",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "coll.overflow.settings",
+   "ours": 1280,
+   "want": "≤1281",
    "ok": true
   },
   {
@@ -1518,6 +1742,62 @@
   },
   {
    "view": "1280x800",
+   "name": "coll.overflow.friends",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "coll.overflow.feed",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "coll.density.feed",
+   "ours": "4col 首列104/104 表1248",
+   "want": "4col 首列≥104",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "coll.overflow.friendlist",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "coll.density.friendlist",
+   "ours": "9col 首列44/44 表1233",
+   "want": "9col 首列≥44",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "coll.overflow.gamelog",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "coll.overflow.worlds",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "coll.overflow.settings",
+   "ours": 1280,
+   "want": "≤1281",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "lcoll.topbar.right_pad",
    "ours": 8,
    "want": "8±1",
@@ -1843,6 +2123,62 @@
    "name": "nav.footer_visible",
    "ours": "721 / 733",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "coll.overflow.friends",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "coll.overflow.feed",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "coll.density.feed",
+   "ours": "4col 首列104/104 表1334",
+   "want": "4col 首列≥104",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "coll.overflow.friendlist",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "coll.density.friendlist",
+   "ours": "9col 首列44/44 表1319",
+   "want": "9col 首列≥44",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "coll.overflow.gamelog",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "coll.overflow.worlds",
+   "ours": 1366,
+   "want": "≤1367",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "coll.overflow.settings",
+   "ours": 1366,
+   "want": "≤1367",
    "ok": true
   },
   {
@@ -2176,6 +2512,62 @@
   },
   {
    "view": "1440x900",
+   "name": "coll.overflow.friends",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "coll.overflow.feed",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "coll.density.feed",
+   "ours": "4col 首列104/104 表1055",
+   "want": "4col 首列≥104",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "coll.overflow.friendlist",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "coll.density.friendlist",
+   "ours": "9col 首列44/41 表1040",
+   "want": "9col 首列≥41",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "coll.overflow.gamelog",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "coll.overflow.worlds",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "coll.overflow.settings",
+   "ours": 1440,
+   "want": "≤1441",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "lcoll.topbar.right_pad",
    "ours": 8,
    "want": "8±1",
@@ -2505,6 +2897,62 @@
   },
   {
    "view": "1600x900",
+   "name": "coll.overflow.friends",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "coll.overflow.feed",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "coll.density.feed",
+   "ours": "4col 首列104/104 表1215",
+   "want": "4col 首列≥104",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "coll.overflow.friendlist",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "coll.density.friendlist",
+   "ours": "9col 首列44/44 表1200",
+   "want": "9col 首列≥44",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "coll.overflow.gamelog",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "coll.overflow.worlds",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "coll.overflow.settings",
+   "ours": 1600,
+   "want": "≤1601",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "lcoll.topbar.right_pad",
    "ours": 8,
    "want": "8±1",
@@ -2830,6 +3278,62 @@
    "name": "nav.footer_visible",
    "ours": "993 / 1005",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "coll.overflow.friends",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "coll.overflow.feed",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "coll.density.feed",
+   "ours": "4col 首列104/104 表1315",
+   "want": "4col 首列≥104",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "coll.overflow.friendlist",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "coll.density.friendlist",
+   "ours": "9col 首列44/44 表1300",
+   "want": "9col 首列≥44",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "coll.overflow.gamelog",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "coll.overflow.worlds",
+   "ours": 1700,
+   "want": "≤1701",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "coll.overflow.settings",
+   "ours": 1700,
+   "want": "≤1701",
    "ok": true
   },
   {

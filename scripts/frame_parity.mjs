@@ -15,7 +15,8 @@
  *   5) 状态栏恒 4 项：首项 x=10、项间距 23（真机 footer-measure.json）。
  *   6) 内容面板 ≥720：右栏（353）只在 ≥1440 出现，且顶栏右栏开关与之一致显隐。
  *   7) 6 个密度最高的页面（好友位置 / 动态 / 好友列表 / 游戏日志 / 世界库 / 设置）
- *      在以上视口都无横向溢出（documentElement.scrollWidth ≤ innerWidth+1）。
+ *      在以上视口都无横向溢出（documentElement.scrollWidth ≤ innerWidth+1）；收起态也逐页跑一遍。
+ *   7b) 收起态密度：有表格的页面列数不变、首列不变窄、行数不变（内容变宽不靠牺牲密度换）。
  *   8) 顶栏右簇（快速搜索/Ctrl K → 图标组 → 3 窗口控制）的簇内间距恒定：
  *      kbd 宽 34、kbd→图标组 22、图标组→窗口控制 15、窗口控制 3×24 pitch 40、末项距右缘 8。
  *      注：真机 Ctrl K 绝对 x=1307 是在 1689 宽的截图上量的，契约视口是 1700，
@@ -182,6 +183,19 @@ const measureCollapsed = () => {
   };
 };
 
+// 表格密度：表头列数 + 首列宽（展开/收起同页面同口径比对，收起后内容变宽但列不能少/首列不能变窄）
+const measureTable = () => {
+  const th = [...document.querySelectorAll('table thead th')];
+  if (!th.length) return null;
+  const b = th[0].getBoundingClientRect();
+  return {
+    cols: th.length,
+    firstW: Math.round(b.width),
+    tableW: Math.round(document.querySelector('table').getBoundingClientRect().width),
+    rows: document.querySelectorAll('table tbody tr').length
+  };
+};
+
 // ── 外壳断言（与侧栏无关，展开/收起共用）：p 为行名前缀 ─────────────────────
 const assertChrome = (view, got, width, p = '') => {
   // 顶栏右侧留白：搜索簇右边还有 3 个装饰性窗口按钮（真机形态），只锁「我们自己内容右端距窗口边 8px」
@@ -273,9 +287,38 @@ for (const [width, height] of VIEWS) {
   const got = await tab.evaluate(measureFrame);
   assertFrame(view, got, width, '');
 
+  // 展开态密度基线：表格页记录列数/首列宽/表宽（收起后要逐页对比）
+  const density = {};
+  for (const p of PAGES) {
+    await gotoVrc(tab, `${PAGE}#/${p}`);
+    await tab.waitForTimeout(600);
+    density[p] = await tab.evaluate(measureTable);
+  }
+
   // 浅色 + 收起：外壳同一套断言 + 整列让宽（此前收起态只在深色轮量 4 个高度）
+  await gotoVrc(tab, `${PAGE}#/settings`);
+  await tab.waitForTimeout(300);
   await collapse(tab);
   await tab.waitForTimeout(350);
+
+  // 收起态逐页：6 个页面都必须无横向溢出；表格页列数不变、首列不变窄（内容变宽不该牺牲密度）
+  for (const p of PAGES) {
+    await gotoVrc(tab, `${PAGE}#/${p}`);
+    await tab.waitForTimeout(600);
+    const o = await tab.evaluate(() => ({ vw: window.innerWidth, w: document.documentElement.scrollWidth }));
+    check(view, `coll.overflow.${p}`, o.w, `≤${o.vw + 1}`, o.w <= o.vw + 1);
+    const before = density[p];
+    if (before) {
+      const after = await tab.evaluate(measureTable);
+      check(view, `coll.density.${p}`,
+        after ? `${after.cols}col 首列${after.firstW}/${before.firstW} 表${after.tableW}` : 'no table',
+        `${before.cols}col 首列≥${before.firstW}`,
+        !!after && after.cols === before.cols && after.firstW >= before.firstW - 1 && after.rows === before.rows);
+    }
+  }
+  // 停回 settings：展开态那次量测也是 settings，两轮同页面同口径
+  await gotoVrc(tab, `${PAGE}#/settings`);
+  await tab.waitForTimeout(400);
   const lc = await tab.evaluate(measureCollapsed);
   assertCollapsed(view, lc, width, 'lcoll.', got.workspace.x - lc.workspace.x);
   await tab.close();
