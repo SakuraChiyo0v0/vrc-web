@@ -22,6 +22,10 @@
  * 收起态另验 `?` 快捷键表（收起后只能靠这张表记数字键）：跳页组必须正好 9 项、标签与按键
  * 顺序跟 PAGE_ORDER/PAGE_LABEL 一致（从源文件解析，不从 DOM 反推）、面板整块在视口内、
  * Esc 关掉后仍是收起态、再按 Ctrl+5 照旧跳页。
+ * 收起态还验 Ctrl K 命令面板（收起后找东西只剩这条路）：打开时输入框聚焦/侧栏不回来/整块在
+ * 视口内；面板开着时 Ctrl+3 不许跳页（App.jsx 的 `if (palette) return`）；无匹配串结果归 0 且
+ * 给空态文案；Esc 关掉仍收起、再 Ctrl K 能再开；粘 wrld_ ID → 置顶「直接打开」→ Enter 真开
+ * 世界抽屉（带该 ID），关掉抽屉仍是收起态。
  * 断言「能到 + 标题对 + 点得到」；密度/像素交给 frame_parity.mjs。
  * 产出 docs/ref/nav-coverage.json；有 FAIL 则 exit 1。
  */
@@ -394,6 +398,151 @@ for (const [width, height] of VIEWS) {
       active: `expand=${afterEsc.expand} asideGone=${afterKey.asideGone}`, hit: '-',
       ok: !afterEsc.panel && afterEsc.asideGone && afterEsc.expand
         && afterKey.hash === `#/${lvl5}` && afterKey.title === (WANT[lvl5] ?? '') && afterKey.asideGone,
+      error: null
+    });
+    // 收起态命令面板（Ctrl K）：收起侧栏后顶栏搜索框是唯一的找东西入口，所以面板必须
+    // ① 打开时侧栏不冒出来、输入框已聚焦、整块在视口内；② 面板开着时 Ctrl+1..9 不许偷偷跳页
+    // （App.jsx 里有 `if (palette) return`，这条回归最容易在改快捷键时挂）；③ Esc 关掉仍是收起态；
+    // ④ 再 Ctrl K 能再开；⑤ 粘贴 wrld_ ID → 置顶「直接打开」→ Enter 真开世界抽屉（验 Enter 路径，
+    //    不只是「面板能开个壳」）。
+    const WRLD = 'wrld_00000000-0000-4000-8000-000000000001';
+    await page.keyboard.press('Control+k');
+    await page.waitForTimeout(350);
+    const palOpen = await page.evaluate(() => {
+      const panel = document.querySelector('[data-testid="palette"]');
+      const input = panel?.querySelector('input');
+      const b = panel?.getBoundingClientRect();
+      return {
+        open: !!panel,
+        focused: !!input && document.activeElement === input,
+        asideGone: !document.querySelector('aside.vrc-sidebar'),
+        expand: !!document.querySelector('[data-testid="nav-expand"]'),
+        inView: !!b && b.width > 200 && b.height > 60 && b.top >= -1 && b.left >= -1
+          && b.bottom <= window.innerHeight + 1 && b.right <= window.innerWidth + 1,
+        hash: location.hash
+      };
+    });
+    const guardBefore = palOpen.hash;
+    await page.keyboard.press('Control+3');
+    await page.waitForTimeout(260);
+    const guarded = await page.evaluate(() => ({
+      hash: location.hash,
+      panel: !!document.querySelector('[data-testid="palette"]')
+    }));
+    push({
+      id: `palette:open@${view}`, view, theme, nav: 'palette:open', hash: palOpen.hash,
+      title: `open=${palOpen.open} focus=${palOpen.focused}`, want: '面板打开、输入框聚焦、侧栏仍收起、整块在视口内',
+      active: `asideGone=${palOpen.asideGone} expand=${palOpen.expand} inView=${palOpen.inView}`, hit: '-',
+      ok: palOpen.open && palOpen.focused && palOpen.asideGone && palOpen.expand && palOpen.inView,
+      error: null
+    });
+    push({
+      id: `palette:guard@${view}`, view, theme, nav: 'palette:guard', hash: guarded.hash,
+      title: `${guardBefore} → ${guarded.hash}`, want: `面板开着时 Ctrl+3 不改 hash（${guardBefore}）`,
+      active: `panel=${guarded.panel}`, hit: '-',
+      ok: guarded.panel && guarded.hash === guardBefore,
+      error: guarded.hash === guardBefore ? null : `面板开着按 Ctrl+3 竟然跳页：${guarded.hash}`
+    });
+    // 输入过滤：没有任何匹配时结果必须归 0 并给出空态文案（不能停在上一次的结果里）
+    await page.keyboard.type('zzzqqqxxyvrc');
+    await page.waitForTimeout(900);
+    const filtered = await page.evaluate(() => {
+      const panel = document.querySelector('[data-testid="palette"]');
+      const list = panel?.querySelector('.cmdk-list');
+      const foot = panel?.textContent ?? '';
+      return {
+        items: list ? [...list.querySelectorAll('button')].length : -1,
+        empty: /没找到匹配|搜索中/.test(list?.textContent ?? ''),
+        zero: /0\s*条结果/.test(foot),
+        q: panel?.querySelector('input')?.value ?? ''
+      };
+    });
+    push({
+      id: `palette:filter@${view}`, view, theme, nav: 'palette:filter', hash: guarded.hash,
+      title: `q=${filtered.q} → ${filtered.items} 条`, want: '0 条且空态文案 + 页脚 0 条结果',
+      active: `empty=${filtered.empty} zero=${filtered.zero}`, hit: '-',
+      ok: filtered.items === 0 && filtered.empty && filtered.zero,
+      error: null
+    });
+    // Esc 关掉：面板消失、仍是收起态、页面没被带走；再 Ctrl K 能再开
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(280);
+    const esc1 = await page.evaluate(() => ({
+      panel: !!document.querySelector('[data-testid="palette"]'),
+      asideGone: !document.querySelector('aside.vrc-sidebar'),
+      expand: !!document.querySelector('[data-testid="nav-expand"]'),
+      hash: location.hash
+    }));
+    await page.keyboard.press('Control+k');
+    await page.waitForTimeout(320);
+    const reopened = await page.evaluate(() => ({
+      panel: !!document.querySelector('[data-testid="palette"]'),
+      q: document.querySelector('[data-testid="palette"] input')?.value ?? null,
+      asideGone: !document.querySelector('aside.vrc-sidebar')
+    }));
+    push({
+      id: `palette:esc_reopen@${view}`, view, theme, nav: 'palette:esc_reopen', hash: esc1.hash,
+      title: `${esc1.panel ? 'still open' : 'closed'} → ${reopened.panel ? 'reopen' : 'no reopen'}`,
+      want: 'Esc 关闭且仍收起、hash 不变，再 Ctrl K 能再开（输入清空）',
+      active: `asideGone=${esc1.asideGone}/${reopened.asideGone} expand=${esc1.expand} q=${reopened.q}`, hit: '-',
+      ok: !esc1.panel && esc1.asideGone && esc1.expand && esc1.hash === guardBefore
+        && reopened.panel && reopened.asideGone && (reopened.q === '' || reopened.q === null),
+      error: null
+    });
+    // 粘 wrld_ ID：置顶「直接打开」→ Enter 必须真开世界抽屉（Palette→Drawer 这条链路）
+    await page.keyboard.press('Control+a');
+    await page.keyboard.type(WRLD);
+    await page.waitForTimeout(320);
+    const directRow = await page.evaluate(() => {
+      const panel = document.querySelector('[data-testid="palette"]');
+      const list = panel?.querySelector('.cmdk-list');
+      const btns = list ? [...list.querySelectorAll('button')] : [];
+      return {
+        items: btns.length,
+        first: btns[0]?.textContent?.trim() ?? '',
+        group: (list?.textContent ?? '').includes('直接打开'),
+        q: panel?.querySelector('input')?.value ?? ''
+      };
+    });
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(700);
+    const drawer = await page.evaluate((id) => {
+      const el = document.querySelector('[data-testid="world-drawer"]');
+      return {
+        palette: !!document.querySelector('[data-testid="palette"]'),
+        drawer: !!el,
+        hasId: !!el && (el.textContent ?? '').includes(id),
+        asideGone: !document.querySelector('aside.vrc-sidebar'),
+        expand: !!document.querySelector('[data-testid="nav-expand"]'),
+        hash: location.hash
+      };
+    }, WRLD);
+    push({
+      id: `palette:direct@${view}`, view, theme, nav: 'palette:direct', hash: drawer.hash,
+      title: `${directRow.items} 条「${directRow.first.slice(0, 14)}」→ drawer=${drawer.drawer}`,
+      want: '1 条直接打开 → Enter 关面板开世界抽屉（带该 ID）',
+      active: `group=${directRow.group} hasId=${drawer.hasId} asideGone=${drawer.asideGone} expand=${drawer.expand}`, hit: '-',
+      ok: directRow.items === 1 && directRow.group && directRow.q === WRLD
+        && !drawer.palette && drawer.drawer && drawer.hasId && drawer.asideGone && drawer.expand
+        && drawer.hash === guardBefore,
+      error: null
+    });
+    // 关掉抽屉，回到收起态（下面还要用 Ctrl+N 那条路径）
+    await page.evaluate(() => {
+      const el = document.querySelector('[data-testid="world-drawer"]');
+      const btn = [...(el?.querySelectorAll('button') ?? [])].find((b) => b.textContent.trim() === '关闭');
+      btn?.click();
+    });
+    await page.waitForTimeout(300);
+    const drawerClosed = await page.evaluate(() => ({
+      drawer: !!document.querySelector('[data-testid="world-drawer"]'),
+      asideGone: !document.querySelector('aside.vrc-sidebar')
+    }));
+    push({
+      id: `palette:drawer_close@${view}`, view, theme, nav: 'palette:drawer_close', hash: guardBefore,
+      title: drawerClosed.drawer ? 'still open' : 'closed', want: '抽屉关掉且仍是收起态',
+      active: `asideGone=${drawerClosed.asideGone}`, hit: '-',
+      ok: !drawerClosed.drawer && drawerClosed.asideGone,
       error: null
     });
     // 快捷键落到 Ctrl+N 那页（shortcut:expand 用它验「快捷键跳过的页展开后仍高亮、仍点得到」）

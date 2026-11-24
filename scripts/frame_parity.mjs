@@ -17,7 +17,8 @@
  *   7) 6 个密度最高的页面（好友位置 / 动态 / 好友列表 / 游戏日志 / 世界库 / 设置）
  *      在以上视口都无横向溢出（documentElement.scrollWidth ≤ innerWidth+1）；收起态也逐页跑一遍。
  *   7b) 收起态密度：有表格的页面列数不变、首列不变窄、行数不变（内容变宽不靠牺牲密度换）——
- *       浅色收起与深色收起各跑一遍（主题不该改密度）。
+ *       浅色收起与深色收起各跑一遍（主题不该改密度）；收起态逐页内容列仍 ≥720（收起是让宽，
+ *       不是把内容挤窄），右栏宽恒 353 且与展开态基线相等、关掉再开回来不变。
  *   7c) 新 context（无 localStorage）必须默认展开：侧栏在、无顶栏展开按钮、vrc-nav-collapsed ≠ 1。
  *   7d) 收起态 friends 页：右栏不渲染（App.jsx roster && page!=='friends'），内容仍 ≥720、无溢出。
  *   8) 顶栏右簇（快速搜索/Ctrl K → 图标组 → 3 窗口控制）的簇内间距恒定：
@@ -281,14 +282,20 @@ const collectDensity = async (tab) => {
   return density;
 };
 
-// 收起态逐页：6 个页面都必须无横向溢出；表格页列数不变、首列不变窄、行数不变
-// （内容变宽不该靠牺牲密度换）。浅色收起 / 深色收起共用这一套。
+// 收起态逐页：6 个页面都必须无横向溢出、内容面板仍 ≥720（收起是为了让宽，不是把内容挤窄）；
+// 表格页列数不变、首列不变窄、行数不变（内容变宽不该靠牺牲密度换）。浅色收起 / 深色收起共用这一套。
 const checkCollapsedPages = async (tab, view, prefix, baseline) => {
   for (const p of PAGES) {
     await gotoVrc(tab, `${PAGE}#/${p}`);
     await tab.waitForTimeout(600);
-    const o = await tab.evaluate(() => ({ vw: window.innerWidth, w: document.documentElement.scrollWidth }));
+    const o = await tab.evaluate(() => ({
+      vw: window.innerWidth,
+      w: document.documentElement.scrollWidth,
+      ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width)
+    }));
     check(view, `${prefix}coll.overflow.${p}`, o.w, `≤${o.vw + 1}`, o.w <= o.vw + 1);
+    // 收起态每一页的内容列都得留得住 ≥720（此前只有 settings/friends 量过宽度）
+    check(view, `${prefix}coll.content.${p}`, o.ws, '≥720', o.ws >= 720);
     const before = baseline[p];
     if (before) {
       const after = await tab.evaluate(measureTable);
@@ -304,7 +311,7 @@ const checkCollapsedPages = async (tab, view, prefix, baseline) => {
 // .workspace 本身不变宽（仍是整块面板），让出来的是**内容列**——内容列必须正好多出一个右栏宽、
 // 且不撑出横向溢出；再开回来内容列/右栏宽度复原（收起/右栏两个开关不该互相打架）。
 // 浅色收起 / 深色收起共用这一套（主题不该改变让宽结果）。
-const checkRosterCombo = async (tab, view, p) => {
+const checkRosterCombo = async (tab, view, p, expRosterW = null) => {
   const combo = await tab.evaluate(async () => {
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     const me = () => ({
@@ -327,6 +334,10 @@ const checkRosterCombo = async (tab, view, p) => {
   });
   check(view, `${p}roster.btn`, combo.btn ? 'present' : 'missing', 'present', combo.btn === true);
   if (!combo.btn) return;
+  // 收起侧栏不该顺手改右栏宽度：收起态右栏恒 353，且与展开态基线相等（关掉再开回来也不变）
+  check(view, `${p}roster.w`, `${combo.a.rosterW}/${expRosterW} → ${combo.on.rosterW}`,
+    '353 且与展开态相等（开回来不变）',
+    combo.a.rosterW === 353 && combo.a.rosterW === expRosterW && combo.on.rosterW === combo.a.rosterW);
   check(view, `${p}roster.off`,
     `${combo.off.roster ? 'shown' : 'hidden'} content ${combo.a.content}→${combo.off.content} / roster${combo.a.rosterW} ws${combo.off.ws} ovf${combo.off.ovf}`,
     'hidden 且内容列 += 右栏宽、workspace 不变、无溢出',
@@ -393,6 +404,8 @@ for (const [width, height] of VIEWS) {
   await tab.evaluate(installChrome);
   const got = await tab.evaluate(measureFrame);
   assertFrame(view, got, width, '');
+  // 展开态右栏宽基线（收起态要跟它比：收起只该让宽，不该改右栏）
+  const expRosterW = Math.round(got.roster?.w ?? 0);
 
   // 展开态密度基线：表格页记录列数/首列宽/表宽（收起后要逐页对比）
   const density = await collectDensity(tab);
@@ -410,7 +423,7 @@ for (const [width, height] of VIEWS) {
   const lc = await tab.evaluate(measureCollapsed);
   assertCollapsed(view, lc, width, 'lcoll.', got.workspace.x - lc.workspace.x);
 
-  if (width >= 1440) await checkRosterCombo(tab, view, 'lcoll.');
+  if (width >= 1440) await checkRosterCombo(tab, view, 'lcoll.', expRosterW);
   await checkCollapsedFriends(tab, view, 'lcoll.');
   lightColl.set(view, { ws: Math.round(lc.workspace.w), rosterW: Math.round(lc.roster?.w ?? 0) });
   await tab.close();
@@ -449,6 +462,7 @@ for (const [width, height] of VIEWS) {
   await gotoVrc(tab, `${PAGE}#/settings`);
   await tab.waitForTimeout(400);
 
+  const expDarkRosterW = Math.round(got.roster?.w ?? 0);
   const dc = await tab.evaluate(measureCollapsed);
   check(view, 'dcoll.theme', dc.theme, 'dark', dc.theme === 'dark');
   assertCollapsed(view, dc, width, 'dcoll.', got.workspace.x - dc.workspace.x);
@@ -461,7 +475,7 @@ for (const [width, height] of VIEWS) {
     !!light && Math.round(dc.workspace.w) === light.ws && Math.round(dc.roster?.w ?? 0) === light.rosterW);
 
   // 深色收起也跑「收起 × 右栏开关」与 friends 页（此前只有浅色轮有，主题+折叠组合态没量过）
-  if (width >= 1440) await checkRosterCombo(tab, view, 'dcoll.');
+  if (width >= 1440) await checkRosterCombo(tab, view, 'dcoll.', expDarkRosterW);
   await checkCollapsedFriends(tab, view, 'dcoll.');
   await ctx.close();
 }

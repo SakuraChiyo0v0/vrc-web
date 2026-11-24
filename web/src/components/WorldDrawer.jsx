@@ -62,6 +62,7 @@ export default function WorldDrawer({ id, onClose }) {
   return (
     <div className="fixed inset-0 z-40 flex justify-end" style={{ background: 'rgba(0,0,0,.28)' }} onClick={onClose}>
       <aside
+        data-testid="world-drawer"
         className="flex h-full w-[400px] max-w-[92vw] flex-col gap-3 overflow-auto border-l p-4"
         style={{ background: 'var(--surface-panel)', borderColor: 'var(--stroke-subtle)' }}
         onClick={(e) => e.stopPropagation()}
