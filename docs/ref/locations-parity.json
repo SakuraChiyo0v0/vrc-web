@@ -4,10 +4,10 @@
   "width": 1688,
   "height": 1028
  },
- "at": "2026-11-24T18:15:29.327Z",
+ "at": "2026-11-24T19:35:18.157Z",
  "ref": "docs/ref/vrcx0-spec.json#friends_locations",
- "pass": 17,
- "total": 17,
+ "pass": 20,
+ "total": 20,
  "rows": [
   {
    "name": "视图为网格分栏",
@@ -125,6 +125,27 @@
    "name": "列表视图分组同网格",
    "got": "Alpha Club · 公开/夜の喫茶店 · 公开/好友收藏/其他在线好友/位于私人房间",
    "want": "Alpha Club · 公开/夜の喫茶店 · 公开/好友收藏/其他在线好友/位于私人房间",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "私人房间可折叠",
+   "got": "卡 0 箭头 false 记忆 1 徽标 1",
+   "want": "卡 0 箭头 false 记忆 1 徽标 1",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "折叠记忆跨刷新",
+   "got": "卡 0 箭头 false",
+   "want": "卡 0 箭头 false",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "展开恢复卡片",
+   "got": "卡 1 箭头 true 记忆 0",
+   "want": "卡 1 箭头 true 记忆 0",
    "ok": true,
    "extra": ""
   }

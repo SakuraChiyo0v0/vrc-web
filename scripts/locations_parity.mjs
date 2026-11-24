@@ -39,8 +39,16 @@ const check = (name, got, want, ok, extra = '') => {
 
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 const page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 1 });
-// 每次干净起：localStorage 里的 friends:tab / friends:view 会把断言带偏
-await page.addInitScript(() => { try { localStorage.clear(); } catch {} });
+// 每次干净起：localStorage 里的 friends:tab / friends:view 会把断言带偏。
+// 用 sessionStorage 打标只清一次——折叠记忆要跨 reload 验，reload 时不能再清。
+await page.addInitScript(() => {
+  try {
+    if (!sessionStorage.getItem('__loc_cleared')) {
+      localStorage.clear();
+      sessionStorage.setItem('__loc_cleared', '1');
+    }
+  } catch {}
+});
 
 let exitCode = 0;
 const readGroups = () => page.evaluate(() => {
@@ -183,6 +191,56 @@ try {
   check('列表视图分组同网格', listTitles.join('/') || '无', gridTitles.join('/'),
     listTitles.length === gridTitles.length && listTitles.every((t, i) => t === gridTitles[i]));
   await page.evaluate(() => document.querySelector('[data-view="grid"]')?.click());
+  await page.waitForTimeout(600);
+
+  // 私人房间组头折叠（真机行为）：点组头 → 卡全收、箭头翻向、记忆落 localStorage；刷新后仍折叠；再点恢复
+  const waitCards = async () => {
+    let p = -1;
+    for (let i = 0; i < 40; i += 1) {
+      const n = await page.evaluate(() => document.querySelectorAll('.loc-card').length);
+      if (n > 0 && p === n) return n;
+      p = n;
+      await page.waitForTimeout(250);
+    }
+    return p;
+  };
+  if (priv) {
+    const baseN = priv.cards.length;
+    const clickHead = () => page.evaluate(() => {
+      const h = document.querySelector('.loc-group[data-group="private"] .loc-head');
+      h?.click();
+      return !!h;
+    });
+    const readPriv = () => page.evaluate(() => {
+      const s = document.querySelector('.loc-group[data-group="private"]');
+      return {
+        cards: s ? s.querySelectorAll('.loc-card').length : -1,
+        open: s?.querySelector('.loc-caret')?.getAttribute('data-open') ?? null,
+        badge: (s?.querySelector('.loc-count')?.textContent || '').trim(),
+        mem: (() => { try { return localStorage.getItem('friends:private-closed'); } catch { return null; } })()
+      };
+    });
+    const hit = await clickHead();
+    await page.waitForTimeout(250);
+    const c1 = await readPriv();
+    check('私人房间可折叠', hit ? `卡 ${c1.cards} 箭头 ${c1.open} 记忆 ${c1.mem} 徽标 ${c1.badge}` : '组头缺失',
+      `卡 0 箭头 false 记忆 1 徽标 ${baseN}`, hit && c1.cards === 0 && c1.open === 'false' && c1.mem === '1' && c1.badge === String(baseN));
+
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await waitCards();
+    await page.waitForTimeout(400);
+    const c2 = await readPriv();
+    check('折叠记忆跨刷新', `卡 ${c2.cards} 箭头 ${c2.open}`, '卡 0 箭头 false',
+      c2.cards === 0 && c2.open === 'false');
+
+    await clickHead();
+    await page.waitForTimeout(300);
+    const c3 = await readPriv();
+    check('展开恢复卡片', `卡 ${c3.cards} 箭头 ${c3.open} 记忆 ${c3.mem}`, `卡 ${baseN} 箭头 true 记忆 0`,
+      c3.cards === baseN && c3.open === 'true' && c3.mem === '0');
+  } else {
+    check('私人房间折叠', '本次数据无', '有则验', true, '无在线私人房间，跳过');
+  }
 
   if (!NEG) fs.writeFileSync(OUT, JSON.stringify({
     base: BASE, viewport: VIEWPORT, at: new Date().toISOString(),

@@ -580,3 +580,38 @@ r35 的 `REGRESS FAIL 2/7` 里 frame 与 nav 各有红，逐条定位后确认�
 踩坑记录：
 - 列表视图组头是 `.loc-code` 徽标 + `span.truncate` 标题 + 「N 人」，用整块 `textContent` 再正则剥前缀会得到 `JPAlpha Club · 公开2 人`（徽标与标题之间无空格），直接取 `span.truncate` 文案才对齐网格视图的 label。
 - 页面 tab/view 记在 localStorage（`friends:tab` / `friends:view`），断言脚本必须 `addInitScript` 清空，否则上一轮手动点的离线标签会把「在线人数」断言带偏。
+
+---
+
+# 第三十六轮：私人房间折叠常驻断言（locations_parity 20/20）（2026-11-25）
+
+上一轮 17 项只覆盖静态分栏；页面里「私人房间」组头可点击折叠（`friends:private-closed` 落 localStorage）此前没有任何断言，折叠坏掉或记忆丢失不会被回归拦住。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 361 | `locations_parity` 加 3 项：点私人房间组头 → 卡 0 / 箭头 `data-open=false` / 记忆 `friends:private-closed=1` / 组头人数徽标仍显示原人数；`reload` 后仍折叠；再点 → 卡数恢复原值、箭头 true、记忆 0 | `node scripts/locations_parity.mjs` → **20/20 · LOCATIONS OK · exit 0** |
+| 362 | 修脚本自身的假红隐患：`addInitScript` 原先每次导航都 `localStorage.clear()`，reload 会顺手清掉折叠记忆 → 改成 `sessionStorage` 打标只清一次 | 「折叠记忆跨刷新」在修复前必红，修复后 PASS |
+| 363 | `LOC_NEG=1` 反向自检：注入 120 高 + 3 列 | 18/20，**NEG OK** 仍被「卡片高 / 网格列数」抓到，新增 3 项不假红 |
+| 364 | README 表格与线上命令行口径 17/17 → 20/20 | 两处同步 |
+
+踩坑记录：
+- `addInitScript` 在**每次导航**（含 `reload`）都会执行，用它清 localStorage 会连带清掉「该跨刷新保留」的用户记忆；要「只清一次」得靠 `sessionStorage` 打标（session 内保留、新 context 归零）。
+- 折叠后组头徽标仍显示人数（真机行为），所以「徽标=卡数」这条断言只在展开态成立，折叠用例不能复用。
+
+---
+
+# 第三十七轮：端到端九段一次性全绿（REGRESS OK 9/9）（2026-11-25）
+
+上一轮九段已各自实测绿，但串行 `regress_all.sh` 里 frame 段会中途崩（`frame_parity.mjs:771 Target page, context or browser has been closed`），locations 段因此跑不到。本轮把 frame 的浏览器生命周期改掉并拿到一次完整端到端。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 365 | `frame_parity.mjs` 改 `withBrowser`：每视口起停独立浏览器，中途被关闭则换新进程重试一次（重试前回滚该档断言行，避免重复计数）；新增 `FRAME_VIEWS` / `FRAME_OUT` 环境变量单档复现 | `FRAME_VIEWS=1024x600 FRAME_OUT=cache/probes/frame_1view.json node scripts/frame_parity.mjs` → **211/211 · FRAME OK · exit 0** |
+| 366 | `mobile_parity` 弹窗段改最多 3 次点击重试（每次先 Esc 关窗），修 360x800 下卡片被 React 重渲染后点空的偶发 FAIL | `node scripts/mobile_parity.mjs` → **1479/1479 PASS · MOBILE OK · rc=0** |
+| 367 | 端到端串行实测 | `bash scripts/regress_all.sh` → **REGRESS OK 9/9**（structure 59/59、visual 215/215、frame 1932/1932、nav 366/366、mobile 1479/1479、grid 60/60、feed 14/14、locations 20/20、unittest 0 fail；`cache/regress_all_r43.log`） |
+| 368 | `locations_parity` 收口复测 | 20/20 · LOCATIONS OK · exit 0；`LOC_NEG=1` → 18/20，**NEG OK**（卡片高 / 网格列数被抓） |
+| 369 | README 端到端段陈旧的「第 31 轮 7/7」口径改为第 32 轮 9/9 并列出九段数字 | 两处一致 |
+
+踩坑记录：
+- 一个浏览器跑完 9 视口 × 浅/深 × 展开/收起会被 Chromium 自己回收（日志里就是 `Target page... has been closed`），不是超时也不是 OOM 报错；按视口起停 + 捕获关闭后重试一次比调大超时可靠。
+- 点卡片弹窗在窄视口要「点完等状态变化再判」，React 重渲染会换掉节点，单次 `click()` 偶发落在旧节点上。

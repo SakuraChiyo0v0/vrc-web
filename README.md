@@ -110,10 +110,10 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
 | 动态页表格 | `node scripts/feed_parity.mjs` | 14/14（列名/列序、无头像列、表头行高 44、列文字起点、右缘留白、工具条单行、无页脚、类型四色互异、详细信息三段） |
-| 好友位置分栏 | `node scripts/locations_parity.mjs` | 17/17（栏序、组头人数=卡数、世界栏 ≥2 人同实例、私人房间只收在线且不显示世界行、离线垫底、在线不丢不重、组头区域不重复、卡片 96 高/头像 56 正圆/6 列、列表视图分组一致） |
+| 好友位置分栏 | `node scripts/locations_parity.mjs` | 20/20（栏序、组头人数=卡数、世界栏 ≥2 人同实例、私人房间只收在线且不显示世界行、离线垫底、在线不丢不重、组头区域不重复、卡片 96 高/头像 56 正圆/6 列、列表视图分组一致、私人房间折叠/记忆跨刷新/展开恢复） |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
-端到端实测（第 31 轮，`cache/regress_all_r32.log`）：七段一次性全绿 `REGRESS OK 7/7`，frame 1932/1932、nav 366/366 在串行 regress 路径下同样不再崩。
+端到端实测（第 32 轮，`cache/regress_all_r43.log`）：九段一次性全绿 `REGRESS OK 9/9`（structure 59/59、visual 215/215、frame 1932/1932、nav 366/366、mobile 1479/1479、grid 60/60、feed 14/14、locations 20/20、unittest 0 fail）。frame 此前在串行路径下会中途 `browser has been closed` 崩掉，现在每视口独立起停浏览器并在被关闭时换进程重试一次（`FRAME_VIEWS` / `FRAME_OUT` 可单档复现）。
 
 刷新回归说明：脚本里**别用裸 `page.reload()`**。等 `'load'` 会被 demo 的长连接拖过 30s 直接整轮 TimeoutError（拿不到 FAIL 明细）；等 `'domcontentloaded'` 又早于 React 挂载，调用方 `evaluate` 会撞 `Execution context was destroyed`。统一走 `scripts/lib/page_structure.mjs` 的 `reloadVrc/reloadVrcHard`：只等 domcontentloaded，先给 `<html>` 打 `dataset.reloadStamp`，刷新后看不到这枚戳且 `#vrc-topbar h1` 在才算「文档真换新」，否则整页 goto 硬重试——否则旧 DOM 会让「reload 后状态还在」的断言假 PASS（第 30 轮 `exp.dirty.264/280` 读到上一条用例的 353 就是这个原因）。
 
@@ -142,7 +142,7 @@ node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 366/366（逐�
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 node scripts/grid_parity.mjs     http://172.30.0.7:8790/vrc/   # 60/60（.loc-grid 列数阶梯）
 node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 14/14（动态页表格，基线 docs/ref/feed-measure.json）
-node scripts/locations_parity.mjs http://172.30.0.7:8790/vrc/  # 17/17（好友位置分栏，基线 docs/ref/vrcx0-spec.json#friends_locations）
+node scripts/locations_parity.mjs http://172.30.0.7:8790/vrc/  # 20/20（好友位置分栏，基线 docs/ref/vrcx0-spec.json#friends_locations）
 ```
 
 两条硬规则（`scripts/lib/page_structure.mjs`）：
