@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T02:05:44.050Z",
- "base": "http://vrc-web-r18:8790/vrc/",
- "pass": 119,
- "total": 119,
+ "at": "2026-11-24T02:29:30.317Z",
+ "base": "http://172.30.0.7:8790/vrc/",
+ "pass": 140,
+ "total": 140,
  "rows": [
   {
    "view": "1024x768",
@@ -100,6 +100,27 @@
    "name": "nav.footer_visible",
    "ours": "721 / 733",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
    "ok": true
   },
   {
@@ -223,6 +244,27 @@
   },
   {
    "view": "1100x800",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "roster.visible",
    "ours": "no",
    "want": "no",
@@ -338,6 +380,27 @@
    "name": "nav.footer_visible",
    "ours": "753 / 765",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
    "ok": true
   },
   {
@@ -461,6 +524,27 @@
   },
   {
    "view": "1366x768",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "roster.visible",
    "ours": "no",
    "want": "no",
@@ -576,6 +660,27 @@
    "name": "nav.footer_visible",
    "ours": "853 / 865",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
    "ok": true
   },
   {
@@ -699,6 +804,27 @@
   },
   {
    "view": "1600x900",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -814,6 +940,27 @@
    "name": "nav.footer_visible",
    "ours": "993 / 1005",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
    "ok": true
   },
   {

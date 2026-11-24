@@ -1,6 +1,6 @@
 # 移动端验收基线（自动生成，勿手改）
 
-生成：2026-11-24 01:29:29 · 断言 1479/1479 PASS · 页面 14 × 视口 11
+生成：2026-11-24 02:14:15 · 断言 1479/1479 PASS · 页面 14 × 视口 11
 
 移动形态判据：宽 ≤1023 或高 ≤500（styles.css / tailwind md raw / Sidebar matchMedia 三处一致）。
 重新生成：`node scripts/mobile_parity.mjs`（脚本末尾自动写回本文件）。
@@ -1882,7 +1882,7 @@
 | 断言 | 实测 | 期望 | 结果 |
 | --- | --- | --- | --- |
 | 开抽屉后转桌面：data-open 清掉 | 打开时 true → 转后 false | false | PASS |
-| 桌面侧栏常驻可见 | left=0 w=277 | left=0 | PASS |
+| 桌面侧栏常驻可见 | left=0 w=214 | left=0 | PASS |
 | 焦点陷阱已卸载（Tab 能出侧栏） | 21 项，末项 Tab 后 → ▦（侧栏内=false） | false | PASS |
 | 桌面 Esc 不改抽屉状态 | data-open=false left=0 | false/0 | PASS |
 | 转回 390 抽屉默认收起 | data-open=false left=-214 | false 且 <0 | PASS |
@@ -1911,7 +1911,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 1ms（20 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 0ms（20 行） | ≤300ms | PASS |
 
 ## scroll@feed@390
 

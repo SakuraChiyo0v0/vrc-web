@@ -11,8 +11,9 @@
  *      （回归：1366×768 曾压到 23）。
  *   3) 导航能滚到底：scrollTop=max 后最后一项完整落在 <nav> 可视区内。
  *   4) 页脚两项（设置 / 收起导航栏）在侧栏可视区内、不被状态栏盖住。
- *   5) 内容面板 ≥720：右栏（353）只在 ≥1440 出现，且顶栏右栏开关与之一致显隐。
- *   6) 6 个密度最高的页面（好友位置 / 动态 / 好友列表 / 游戏日志 / 世界库 / 设置）
+ *   5) 状态栏恒 4 项：首项 x=10、项间距 23（真机 footer-measure.json）。
+ *   6) 内容面板 ≥720：右栏（353）只在 ≥1440 出现，且顶栏右栏开关与之一致显隐。
+ *   7) 6 个密度最高的页面（好友位置 / 动态 / 好友列表 / 游戏日志 / 世界库 / 设置）
  *      在以上视口都无横向溢出（documentElement.scrollWidth ≤ innerWidth+1）。
  *
  * 任一 FAIL 退出码 1；全 PASS 打印 FRAME OK，并把结果写 docs/ref/frame-parity.json。
@@ -70,7 +71,15 @@ for (const [width, height] of VIEWS) {
     const subs = kinds.filter((el) => el.dataset.navKind === 'sub');
     const foot = aside.querySelector('[data-nav-footer]');
     const footRows = [...(foot?.querySelectorAll('[data-nav-kind]') ?? [])];
-    const sb = box(document.querySelector('#vrc-statusbar'));
+    const sbEl = document.querySelector('#vrc-statusbar');
+    const sb = box(sbEl);
+    // 状态栏 4 项：真机 footer-measure.json → 首项 x=10、项间距（下一项左端 − 上一项右端）=23
+    const sbItems = sbEl ? [...sbEl.children].map((e) => {
+      const b = e.getBoundingClientRect();
+      const cs = getComputedStyle(e);
+      return (cs.display === 'none' || cs.visibility === 'hidden') ? null
+        : { x: Math.round(b.x), w: Math.round(b.width) };
+    }).filter(Boolean) : [];
     const last = kinds[kinds.length - 1];
     nav.scrollTop = nav.scrollHeight;
     const navRect = nav.getBoundingClientRect();
@@ -90,7 +99,8 @@ for (const [width, height] of VIEWS) {
       navBottom: Math.round(navRect.bottom),
       footCount: footRows.length,
       footBottom: foot && footRows.length ? Math.round(Math.max(...footRows.map((el) => el.getBoundingClientRect().bottom))) : null,
-      sidebarBottom: Math.round(aside.getBoundingClientRect().bottom)
+      sidebarBottom: Math.round(aside.getBoundingClientRect().bottom),
+      sbItems
     };
   });
 
@@ -106,6 +116,10 @@ for (const [width, height] of VIEWS) {
   check(view, 'nav.footer_count', got.footCount, 2, got.footCount === 2);
   check(view, 'nav.footer_visible', `${got.footBottom} / ${Math.min(got.sidebarBottom, got.statusbar.y)}`,
     '页脚在侧栏内且高于状态栏', got.footBottom !== null && got.footBottom <= Math.min(got.sidebarBottom, got.statusbar.y) + 1);
+  const sbGaps = got.sbItems.slice(1).map((it, i) => it.x - (got.sbItems[i].x + got.sbItems[i].w));
+  check(view, 'statusbar.item_count', got.sbItems.length, 4, got.sbItems.length === 4);
+  check(view, 'statusbar.first_x', got.sbItems[0]?.x, '10±1', Math.abs((got.sbItems[0]?.x ?? -99) - 10) <= 1);
+  check(view, 'statusbar.gap', sbGaps.join(','), '23±1', sbGaps.length === 3 && sbGaps.every((g) => Math.abs(g - 23) <= 1));
   const wantRoster = width >= 1440;
   check(view, 'roster.visible', got.roster ? 'yes' : 'no', wantRoster ? 'yes' : 'no', !!got.roster === wantRoster);
   check(view, 'roster.toggle_visible', got.toggle ? 'yes' : 'no', wantRoster ? 'yes' : 'no', !!got.toggle === wantRoster);
