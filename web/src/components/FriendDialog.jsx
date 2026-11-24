@@ -82,7 +82,7 @@ export default function FriendDialog({ id, onClose }) {
 
           <div className="fd-namepill">
             <span className="fd-dot" data-s={p?.status} />
-            <strong>{p?.display_name ?? id}</strong>
+            <strong>{p?.display_name ?? (err ? id : '读取中…')}</strong>
           </div>
 
           <ul className="fd-attrs">

@@ -530,3 +530,19 @@ structure_parity 唯一残留 DIFF 是动态页行高「我们 46 / 真机 44」
 - `page.reload({waitUntil:'load'})` 在 demo 长连接下可能永不落地，两次 60s 超时后进程挂住（`cache/frame_r31_run3.log` 只有 3 行报错、618s 未收尾）。
 - 只等 `domcontentloaded` 会在 React 挂载前返回，调用方 `evaluate` 撞 `Execution context was destroyed`（`cache/frame_r31_fix.log`）。
 - 超时后「静默失败」最危险：页面还是旧文档而 `#vrc-topbar h1` 照旧在，断言读到上一条用例的右栏宽 → 假 PASS。打戳是唯一可靠判据。
+
+---
+
+# 第三十三轮：两条长期假红收口（抽屉名异步 / 收起态量到半截表格）（2026-11-24）
+
+r35 的 `REGRESS FAIL 2/7` 里 frame 与 nav 各有红，逐条定位后确认都不是布局回归，而是「等固定毫秒量到了半成品」。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 331 | `nav_coverage.mjs` 的 `palette:expanded_click@1100x800/dark`：`FriendDialog` 原来 `p?.display_name ?? id`，profile 未返回时显示裸 `usr_f05`，脚本只等 800ms 就断言抽屉标题 → 竞态假红。组件改成未加载显示「读取中…」（仅 err 回落 id）；脚本新增 `waitDrawerName()` 轮询 `.fd-namepill strong` 变真名（≤6s）替换 3 处固定 800ms | `NAV_VIEWS=1100x800 NAV_THEME=dark node scripts/nav_coverage.mjs` → 45/45 exit 0；全口径 `node scripts/nav_coverage.mjs` → **366/366（100%）exit 0**（`cache/nav_r38.log`） |
+| 332 | `frame_parity.mjs` 的 5 条 `coll.density.*`：探针 `cache/probes/density_drift.mjs` 在 1700×1040 feed 上展开↔收起三轮，行数/指纹完全一致 → 布局没问题，是接口回来前量到 no table / 半截行数。新增 `waitDensity()`：基线等「表出现且行/列两次读数一致」，收起态等与基线同规模再量（无表页 3s 放弃），DIFF detail 补「行X/Y」 | `node scripts/frame_parity.mjs` → **1932/1932 · FRAME OK**（`cache/frame_r37.log`），5 条假红消失 |
+| 333 | README 新增「异步内容等真值说明（第 33 轮）」两条回归说明；端到端 `bash scripts/regress_all.sh` 复跑 | structure 59/59、visual 215/215、frame 1932/1932、nav 366/366 逐段 OK（`cache/regress_all_r38.log`）；`web npm test` 48 pass / 0 fail |
+
+踩坑记录：
+- 固定 `waitForTimeout(800)` 在接口慢时必然偶发红，断言前应轮询「目标值真的变成期望值」，而不是等一个猜的毫秒数。
+- 收起态量表格要先等行/列读数稳定两次，否则半截 DOM 会让「行数变少」看起来像密度回归。

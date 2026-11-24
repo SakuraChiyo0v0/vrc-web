@@ -220,7 +220,7 @@ export const pageBase = (u) => `${normBase(u)}/`;
  *  直接断言会把它当「页面没渲染」整轮 exit 2；这里只在真·网络错误时重试，404/白屏仍交给 assertVrcPage。 */
 export async function gotoVrc(page, url, attempts = 3) {
   for (let i = 1; i <= attempts; i++) {
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
     if (!page.url().startsWith('chrome-error:')) return true;
     await page.waitForTimeout(800 * i);
   }
@@ -236,7 +236,8 @@ export async function gotoVrc(page, url, attempts = 3) {
  *  照样在，调用方会拿旧 DOM 当刷新后的结果（第 30 轮 exp.dirty.264/280 读到上一条用例的 353 就是这原因）。
  *  所以这里先给 <html> 打戳，刷新后必须看不到这枚戳（=真·新文档）才算成功，否则继续 goto 硬重试。
  *  返回 false 表示文档始终没换新，调用方应据此记 FAIL 而不是信旧值。 */
-export async function reloadVrc(page, attempts = 2) {
+export async function reloadVrc(page, attempts = 2, label = '') {
+  const tag = label ? `[${label}] ` : '';
   const fresh = async (stamp) => {
     try {
       await page.waitForFunction(
@@ -252,29 +253,29 @@ export async function reloadVrc(page, attempts = 2) {
     try {
       // 只等 domcontentloaded：'load' 会等所有图片/长连接，demo/线上偶发永不落地，整轮就卡死在这
       // （第 30 轮 run3 实测两次 60s 超时后进程挂住）。文档是否真的换新由下面的打戳检查负责。
-      await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.reload({ waitUntil: 'domcontentloaded', timeout: 15000 });
     } catch (e) {
       // 偶发 net::ERR_ABORTED / load 不来：改走整页 goto 同一 URL 兜底，别让一次抖动废掉整轮。
       try { await page.goto(page.url(), { waitUntil: 'domcontentloaded', timeout: 45000 }); } catch { /* 交给下面验戳 */ }
       await page.waitForTimeout(700 * i);
-      if (!(await fresh(stamp))) console.error(`reloadVrc 第 ${i} 次没换新文档：${String(e.message).split('\n')[0]}`);
+      if (!(await fresh(stamp))) console.error(`${tag}reloadVrc 第 ${i} 次没换新文档：${String(e.message).split('\n')[0]}`);
     }
     if (await fresh(stamp)) {
       await page.waitForLoadState('domcontentloaded').catch(() => {});
       return !page.url().startsWith('chrome-error:');
     }
   }
-  console.error(`reloadVrc ${attempts} 次都没换成新文档（页面可能卡在旧 DOM）`);
+  console.error(`${tag}reloadVrc ${attempts} 次都没换成新文档（页面可能卡在旧 DOM）`);
   return false;
 }
 
 /** 一定要换新文档的刷新：reloadVrc 说没换成就整页 goto 同一地址再来一遍，仍不行返回 false。
  *  要断言「reload 后状态还在」的地方用它——否则读到旧 DOM 会让断言假 PASS。 */
-export async function reloadVrcHard(page) {
-  if (await reloadVrc(page)) return true;
+export async function reloadVrcHard(page, label = '') {
+  if (await reloadVrc(page, 2, label)) return true;
   const url = page.url();
   for (let i = 1; i <= 2; i++) {
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
     const ok = await page.waitForFunction(() => !!document.querySelector('#vrc-topbar h1'), { timeout: 30000 })
       .then(() => true).catch(() => false);
     if (ok) return true;

@@ -117,6 +117,10 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 
 等接口就绪说明：概览页整块内容挂在 `tab==='overview' && data` 后面，`/api/overview` 慢时 DOM 里连 `.ov-rail` 都没有——探针会把「接口没回来」量成「榜单节数 0/3」（第 31 轮 regress 就这样误报 4 项 DIFF，重启 demo 后复跑即 59/59）。`structure_parity.mjs` 的 `go()` 现在对概览页等 `.ov-rail .ov-sec` 凑满 `want.lists.length`（单次 25s），仍缺则打印 `/api/overview` 的 `status/companions/sessions` 再重载一次——看到那行诊断说明是接口红，不是结构红。
 
+异步内容等真值说明（第 33 轮）：两处曾长期假红，都是「等固定毫秒」量到了半成品。
+- 好友抽屉标题：`FriendDialog` 原来 `display_name ?? id`，profile 没回来前直接显示裸 `usr_xxx`，`nav_coverage` 只等 800ms 就断言名字 → 偶发 FAIL。现在组件未加载时显示「读取中…」（只有 err 才回落 id），脚本侧 `waitDrawerName()` 轮询 `.fd-namepill strong` 变成期望真名（≤6s）替代固定等待。
+- 收起态表格密度：`frame_parity` 的 `coll.density.*` 在收起态量到 no table / 半截行数（接口回来前表格还没渲染完）。现在 `waitDensity()`：基线采集等「表出现且行/列两次读数一致」，收起态等与基线同规模再量（无表页 3s 放弃），DIFF detail 顺带打印「行X/Y」便于区分数据漂移与真回归。
+
 单独只跑移动断点：
 
 ```bash

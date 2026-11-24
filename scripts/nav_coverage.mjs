@@ -56,6 +56,15 @@ const OUT = path.join(ROOT, 'docs/ref/nav-coverage.json');
 const EXE = process.env.CHROME_PATH
   || '/opt/data/cache/pw-browsers/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell';
 
+// 好友抽屉的名字是异步取的（FriendDialog 先渲染「读取中…」，profile 到了才换 display_name），
+// 固定 800ms 赌不到就会假 FAIL（1100x800/dark 曾读成 usr_f05）。等到真名或超时，再断言名字。
+const waitDrawerName = async (page, timeout = 6000) => {
+  await page.waitForFunction(() => {
+    const s = document.querySelector('.fd-card .fd-namepill strong')?.textContent?.trim() ?? '';
+    return s !== '' && s !== '读取中…';
+  }, null, { timeout }).catch(() => {});
+};
+
 // 与 frame_parity 同口径（含 600 高矮窗两档：导航必须靠滚动且每项仍点得到）
 const ALL_VIEWS = [[1024, 600], [1024, 768], [1100, 800], [1280, 600], [1280, 800], [1366, 768], [1440, 900], [1600, 900], [1700, 1040]];
 const DEFAULT_VIEWS = [[1688, 1028], [1366, 768], [1100, 800], [1024, 768]];
@@ -274,7 +283,7 @@ for (const [width, height] of VIEWS) {
       error: null
     });
     // 收起态写在 localStorage，reload 必须还是收起（刷新后不弹回展开）
-    await reloadVrcHard(page);
+    await reloadVrcHard(page, 'collapsed_persist');
     await page.waitForFunction(() => !!document.querySelector('#vrc-topbar h1')?.textContent?.trim(), { timeout: 30_000 }).catch(() => {});
     await page.waitForTimeout(500);
     const persist = await page.evaluate(() => ({
@@ -583,7 +592,7 @@ for (const [width, height] of VIEWS) {
     const cPick = cRows.find((r) => r.group === '好友' && r.h > 0) ?? null;
     if (cPick) {
       await page.mouse.click(cPick.x, cPick.y);
-      await page.waitForTimeout(800);
+      await waitDrawerName(page);
     }
     const cPickAfter = await page.evaluate(() => {
       const card = document.querySelector('.fd-card');
@@ -832,7 +841,7 @@ for (const [width, height] of VIEWS) {
     await page.keyboard.press('ArrowDown');
     await page.waitForTimeout(180);
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(800);
+    await waitDrawerName(page);
     const fd = await page.evaluate(() => {
       const card = document.querySelector('.fd-card');
       return {
@@ -912,7 +921,7 @@ for (const [width, height] of VIEWS) {
     const pick = pickRows.find((r) => r.group === '好友' && r.h > 0) ?? null;
     if (pick) {
       await page.mouse.click(pick.x, pick.y);
-      await page.waitForTimeout(800);
+      await waitDrawerName(page);
     }
     const pickAfter = await page.evaluate(() => {
       const card = document.querySelector('.fd-card');
@@ -1002,7 +1011,7 @@ for (const [width, height] of VIEWS) {
     });
     // 展开态不该被持久化成收起：reload 后侧栏仍在、没有顶栏展开按钮、localStorage.vrc-nav-collapsed ≠ '1'
     // （与收起态 reload 那条互为对照，防「收起一次以后永远起不来」）。
-    await reloadVrcHard(page);
+    await reloadVrcHard(page, 'expanded_persist');
     await page.waitForSelector('aside.vrc-sidebar [data-nav-id]', { timeout: 30_000 }).catch(() => {});
     await page.waitForTimeout(400);
     const expPersist = await page.evaluate(() => ({

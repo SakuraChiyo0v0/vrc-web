@@ -1,5 +1,5 @@
 {
- "at": "2026-11-24T12:51:58.099Z",
+ "at": "2026-11-24T15:48:16.436Z",
  "base": "http://127.0.0.1:8891",
  "pass": 1932,
  "total": 1932,
@@ -546,7 +546,7 @@
   {
    "view": "1024x600",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 表992",
+   "ours": "4col 首列104/104 行36/36 表992",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -588,7 +588,7 @@
   {
    "view": "1024x600",
    "name": "coll.density.friendlist",
-   "ours": "9col 首列44/41 表977",
+   "ours": "9col 首列44/41 行20/20 表977",
    "want": "9col 首列≥41",
    "ok": true
   },
@@ -1358,7 +1358,7 @@
   {
    "view": "1024x768",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 表992",
+   "ours": "4col 首列104/104 行36/36 表992",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -1400,7 +1400,7 @@
   {
    "view": "1024x768",
    "name": "coll.density.friendlist",
-   "ours": "9col 首列44/41 表977",
+   "ours": "9col 首列44/41 行20/20 表977",
    "want": "9col 首列≥41",
    "ok": true
   },
@@ -2170,7 +2170,7 @@
   {
    "view": "1100x800",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 表1068",
+   "ours": "4col 首列104/104 行36/36 表1068",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -2212,7 +2212,7 @@
   {
    "view": "1100x800",
    "name": "coll.density.friendlist",
-   "ours": "9col 首列44/44 表1053",
+   "ours": "9col 首列44/44 行20/20 表1053",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -3010,7 +3010,7 @@
   {
    "view": "1280x600",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 表1248",
+   "ours": "4col 首列104/104 行36/36 表1248",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -3052,7 +3052,7 @@
   {
    "view": "1280x600",
    "name": "coll.density.friendlist",
-   "ours": "9col 首列44/44 表1233",
+   "ours": "9col 首列44/44 行20/20 表1233",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -3822,7 +3822,7 @@
   {
    "view": "1280x800",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 表1248",
+   "ours": "4col 首列104/104 行36/36 表1248",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -3864,7 +3864,7 @@
   {
    "view": "1280x800",
    "name": "coll.density.friendlist",
-   "ours": "9col 首列44/44 表1233",
+   "ours": "9col 首列44/44 行20/20 表1233",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -4634,7 +4634,7 @@
   {
    "view": "1366x768",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 表1334",
+   "ours": "4col 首列104/104 行36/36 表1334",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -4676,7 +4676,7 @@
   {
    "view": "1366x768",
    "name": "coll.density.friendlist",
-   "ours": "9col 首列44/44 表1319",
+   "ours": "9col 首列44/44 行20/20 表1319",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -5495,7 +5495,7 @@
   {
    "view": "1440x900",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 表1055",
+   "ours": "4col 首列104/104 行36/36 表1055",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -5537,7 +5537,7 @@
   {
    "view": "1440x900",
    "name": "coll.density.friendlist",
-   "ours": "9col 首列44/41 表1040",
+   "ours": "9col 首列44/41 行20/20 表1040",
    "want": "9col 首列≥41",
    "ok": true
   },
@@ -6447,7 +6447,7 @@
   {
    "view": "1600x900",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 表1215",
+   "ours": "4col 首列104/104 行36/36 表1215",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -6489,7 +6489,7 @@
   {
    "view": "1600x900",
    "name": "coll.density.friendlist",
-   "ours": "9col 首列44/44 表1200",
+   "ours": "9col 首列44/44 行20/20 表1200",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -7399,7 +7399,7 @@
   {
    "view": "1700x1040",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 表1315",
+   "ours": "4col 首列104/104 行36/36 表1315",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -7441,7 +7441,7 @@
   {
    "view": "1700x1040",
    "name": "coll.density.friendlist",
-   "ours": "9col 首列44/44 表1300",
+   "ours": "9col 首列44/44 行20/20 表1300",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -8078,7 +8078,7 @@
   {
    "view": "1024x600",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 表992",
+   "ours": "4col 首列104/104 行36/36 表992",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -8120,7 +8120,7 @@
   {
    "view": "1024x600",
    "name": "dark.coll.density.friendlist",
-   "ours": "9col 首列44/41 表977",
+   "ours": "9col 首列44/41 行20/20 表977",
    "want": "9col 首列≥41",
    "ok": true
   },
@@ -8687,7 +8687,7 @@
   {
    "view": "1024x768",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 表992",
+   "ours": "4col 首列104/104 行36/36 表992",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -8729,7 +8729,7 @@
   {
    "view": "1024x768",
    "name": "dark.coll.density.friendlist",
-   "ours": "9col 首列44/41 表977",
+   "ours": "9col 首列44/41 行20/20 表977",
    "want": "9col 首列≥41",
    "ok": true
   },
@@ -9296,7 +9296,7 @@
   {
    "view": "1100x800",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 表1068",
+   "ours": "4col 首列104/104 行36/36 表1068",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -9338,7 +9338,7 @@
   {
    "view": "1100x800",
    "name": "dark.coll.density.friendlist",
-   "ours": "9col 首列44/44 表1053",
+   "ours": "9col 首列44/44 行20/20 表1053",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -9933,7 +9933,7 @@
   {
    "view": "1280x600",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 表1248",
+   "ours": "4col 首列104/104 行36/36 表1248",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -9975,7 +9975,7 @@
   {
    "view": "1280x600",
    "name": "dark.coll.density.friendlist",
-   "ours": "9col 首列44/44 表1233",
+   "ours": "9col 首列44/44 行20/20 表1233",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -10542,7 +10542,7 @@
   {
    "view": "1280x800",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 表1248",
+   "ours": "4col 首列104/104 行36/36 表1248",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -10584,7 +10584,7 @@
   {
    "view": "1280x800",
    "name": "dark.coll.density.friendlist",
-   "ours": "9col 首列44/44 表1233",
+   "ours": "9col 首列44/44 行20/20 表1233",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -11151,7 +11151,7 @@
   {
    "view": "1366x768",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 表1334",
+   "ours": "4col 首列104/104 行36/36 表1334",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -11193,7 +11193,7 @@
   {
    "view": "1366x768",
    "name": "dark.coll.density.friendlist",
-   "ours": "9col 首列44/44 表1319",
+   "ours": "9col 首列44/44 行20/20 表1319",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -11760,7 +11760,7 @@
   {
    "view": "1440x900",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 表1055",
+   "ours": "4col 首列104/104 行36/36 表1055",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -11802,7 +11802,7 @@
   {
    "view": "1440x900",
    "name": "dark.coll.density.friendlist",
-   "ours": "9col 首列44/41 表1040",
+   "ours": "9col 首列44/41 行20/20 表1040",
    "want": "9col 首列≥41",
    "ok": true
   },
@@ -12460,7 +12460,7 @@
   {
    "view": "1600x900",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 表1215",
+   "ours": "4col 首列104/104 行36/36 表1215",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -12502,7 +12502,7 @@
   {
    "view": "1600x900",
    "name": "dark.coll.density.friendlist",
-   "ours": "9col 首列44/44 表1200",
+   "ours": "9col 首列44/44 行20/20 表1200",
    "want": "9col 首列≥44",
    "ok": true
   },
@@ -13160,7 +13160,7 @@
   {
    "view": "1700x1040",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 表1315",
+   "ours": "4col 首列104/104 行36/36 表1315",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -13202,7 +13202,7 @@
   {
    "view": "1700x1040",
    "name": "dark.coll.density.friendlist",
-   "ours": "9col 首列44/44 表1300",
+   "ours": "9col 首列44/44 行20/20 表1300",
    "want": "9col 首列≥44",
    "ok": true
   },

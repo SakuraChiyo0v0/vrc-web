@@ -287,12 +287,36 @@ const collapse = async (tab) => tab.evaluate(() => {
 });
 
 // 展开态表格密度基线：逐页记列数/首列宽/表宽（收起后逐页比对，浅/深色共用一个取样器）
+// 表格内容是接口回来才渲染的，量早了会量到半截列表（基线行数偏小）或干脆量到 no table
+// （feed 收起态曾 5 条假红）。量前先等「表出现 + 行数/列数两次读数一致」；没有表格的页
+// （settings 等）最多等 tableTimeout 就放弃，别白等。
+const waitDensity = async (tab, want = null, tableTimeout = 3000, timeout = 15000) => {
+  const t0 = Date.now();
+  let seenTable = false;
+  let last = null;
+  while (Date.now() - t0 < timeout) {
+    const m = await tab.evaluate(measureTable);
+    if (m) {
+      seenTable = true;
+      const ok = want
+        ? m.rows === want.rows && m.cols === want.cols
+        : last && last.rows === m.rows && last.cols === m.cols;
+      if (ok) return m;
+    } else if (!want && !seenTable && Date.now() - t0 > tableTimeout) {
+      return null;
+    }
+    last = m;
+    await tab.waitForTimeout(250);
+  }
+  return tab.evaluate(measureTable);
+};
+
 const collectDensity = async (tab) => {
   const density = {};
   for (const p of PAGES) {
     await gotoVrc(tab, `${PAGE}#/${p}`);
     await tab.waitForTimeout(600);
-    density[p] = await tab.evaluate(measureTable);
+    density[p] = await waitDensity(tab);
   }
   return density;
 };
@@ -330,9 +354,10 @@ const checkCollapsedPages = async (tab, view, prefix, baseline) => {
     check(view, `${prefix}coll.content.${p}`, o.ws, '≥720', o.ws >= 720);
     const before = baseline[p];
     if (before) {
-      const after = await tab.evaluate(measureTable);
+      // 收起态同样等接口渲染到与基线同一规模（行/列对得上）再量
+      const after = await waitDensity(tab, before);
       check(view, `${prefix}coll.density.${p}`,
-        after ? `${after.cols}col 首列${after.firstW}/${before.firstW} 表${after.tableW}` : 'no table',
+        after ? `${after.cols}col 首列${after.firstW}/${before.firstW} 行${after.rows}/${before.rows} 表${after.tableW}` : 'no table',
         `${before.cols}col 首列≥${before.firstW}`,
         !!after && after.cols === before.cols && after.firstW >= before.firstW - 1 && after.rows === before.rows);
     }
@@ -449,7 +474,7 @@ const checkRosterDirtyW = async (tab, view, p) => {
     await tab.evaluate((v) => localStorage.setItem('vrc-roster-w', v), stored);
     // reloadVrcHard 会验「文档真的换新了」，静默失败（超时 + goto 兜底也没成）时再硬刷一次：
     // 否则 DOM 还是上一条用例的，读出来的宽度会假 PASS/假 FAIL（第 30 轮 exp.dirty.264/280 就这么红过）。
-    const ok = await reloadVrcHard(tab);
+    const ok = await reloadVrcHard(tab, `dirty.${stored}`);
     await tab.waitForSelector('[data-testid="roster-resize"]', { timeout: 30_000 }).catch(() => {});
     await tab.waitForTimeout(500);
     const m = await tab.evaluate(() => {
@@ -469,7 +494,7 @@ const checkRosterDirtyW = async (tab, view, p) => {
   }
   // 复位成默认 353，不给后面的收起轮留脏值
   await tab.evaluate(() => localStorage.setItem('vrc-roster-w', '353'));
-  await reloadVrcHard(tab);
+  await reloadVrcHard(tab, 'dirty.reset');
   await tab.waitForTimeout(600);
   await tab.evaluate(installChrome);
 };
@@ -655,7 +680,7 @@ const checkRosterDrag = async (tab, view, p) => {
     '右栏 <353−50，内容列 += 右栏差值(±2)，无溢出，宽度已落盘',
     off.rail < a.rail - 50 && Math.abs((off.content - a.content) - (a.rail - off.rail)) <= 2
       && off.ovf <= 0 && off.stored === String(off.rail));
-  await reloadVrcHard(tab);
+  await reloadVrcHard(tab, 'rs.persist');
   await tab.waitForSelector('[data-testid="roster-resize"]', { timeout: 30_000 });
   await tab.waitForTimeout(800);
   const rl = await probe();
