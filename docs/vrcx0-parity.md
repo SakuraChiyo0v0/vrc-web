@@ -513,3 +513,20 @@ structure_parity 唯一残留 DIFF 是动态页行高「我们 46 / 真机 44」
 | 272 | 反向验证断言真的能抓回归（不重建 dist，只在页面里注入一条 `!important` 覆盖规则再跑同一套量法）：`cache/probes/grid_neg.mjs` | 1688 现状列数 **6**、注入 `repeat(auto-fill,minmax(230px,1fr))` 后 **5** → 与 c5c6aa8 当年「只排 5 列」的现象一致，NEG_EXIT=0（说明该断言确实会 DIFF） |
 | 273 | `scripts/regress_all.sh` 加第七段 `grid`（`REGRESS OK 7/7`）；README 表格＋线上容器命令行＋段数口径同步 | 段名 `grid` 输出 `网格阶梯 60/60`；README 写 60/60 与 7/7 |
 | 274 | `styles.css` 里 `.loc-grid` 上方的旧注释「窗口变窄按 5/4/3 列递减」改成「6/4/3/2 阶梯递减」，并注明由 `grid_parity.mjs` 锁定（注释与实现同步，避免下次按注释改回去） | 注释与 `@media` 四段一致；`grid_parity` 仍 60/60 |
+
+---
+
+# 第三十一轮：reload 脆弱点收口 + 端到端 REGRESS OK 7/7（2026-11-24）
+
+第三十轮起 frame/nav 在 `regress_all.sh` 里反复崩（frame 是 `TimeoutError`、nav 是 `browserContext.close: Target closed`），先归因为并发抢 chromium，串行后仍崩在 `page.reload` 等 `'load'` 上。本轮把刷新统一成「只等 domcontentloaded + 打戳验文档换新」，再端到端复跑证明七段全绿。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 311 | `scripts/lib/page_structure.mjs` 新增 `reloadVrc` / `reloadVrcHard`：只等 `domcontentloaded`（30s），失败整页 `goto` 兜底；给 `<html>` 打 `dataset.reloadStamp`，刷新后必须看不到这枚戳且 `#vrc-topbar h1` 在才算成功，否则再 goto 硬重试；`frame_parity` 4 处、`nav_coverage` 2 处裸 `page.reload()` 全改走它 | 压力探针 `cache/probes/reload_stress.mjs`：1440×900 连刷 20 次（353/264 交替）bad=0、maxMs=117（旧版单次 0.5s 且偶发卡死） |
+| 312 | 单独复跑两个脚本：`node scripts/frame_parity.mjs` → **1932/1932 · FRAME OK · exit 0**（`cache/frame_r31_run4.log`）；`node scripts/nav_coverage.mjs` → **366/366 · exit 0**（`cache/nav_r31_run2.log`） | 全程零 FAIL 行，`docs/ref/frame-parity.json` pass=1932 total=1932 |
+| 313 | 端到端 `bash scripts/regress_all.sh http://127.0.0.1:8891`（后台串行跑，不与其它浏览器任务并发） | 末行 **`REGRESS OK 7/7`**：structure 59/59、visual 215/215、frame 1932/1932、nav 366/366、mobile 1479/1479、grid 60/60、unittest 48 pass/0 fail（`cache/regress_all_r32.log` + `cache/regress/*.log`） |
+
+踩坑记录：
+- `page.reload({waitUntil:'load'})` 在 demo 长连接下可能永不落地，两次 60s 超时后进程挂住（`cache/frame_r31_run3.log` 只有 3 行报错、618s 未收尾）。
+- 只等 `domcontentloaded` 会在 React 挂载前返回，调用方 `evaluate` 撞 `Execution context was destroyed`（`cache/frame_r31_fix.log`）。
+- 超时后「静默失败」最危险：页面还是旧文档而 `#vrc-topbar h1` 照旧在，断言读到上一条用例的右栏宽 → 假 PASS。打戳是唯一可靠判据。

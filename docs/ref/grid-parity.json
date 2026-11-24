@@ -1,6 +1,6 @@
 {
- "updated": "2026-11-24T10:46:03.955Z",
- "base": "http://localhost:8891",
+ "updated": "2026-11-24T13:05:11.707Z",
+ "base": "http://127.0.0.1:8891",
  "pass": 60,
  "total": 60,
  "per_view": {

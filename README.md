@@ -111,6 +111,10 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
+端到端实测（第 31 轮，`cache/regress_all_r32.log`）：七段一次性全绿 `REGRESS OK 7/7`，frame 1932/1932、nav 366/366 在串行 regress 路径下同样不再崩。
+
+刷新回归说明：脚本里**别用裸 `page.reload()`**。等 `'load'` 会被 demo 的长连接拖过 30s 直接整轮 TimeoutError（拿不到 FAIL 明细）；等 `'domcontentloaded'` 又早于 React 挂载，调用方 `evaluate` 会撞 `Execution context was destroyed`。统一走 `scripts/lib/page_structure.mjs` 的 `reloadVrc/reloadVrcHard`：只等 domcontentloaded，先给 `<html>` 打 `dataset.reloadStamp`，刷新后看不到这枚戳且 `#vrc-topbar h1` 在才算「文档真换新」，否则整页 goto 硬重试——否则旧 DOM 会让「reload 后状态还在」的断言假 PASS（第 30 轮 `exp.dirty.264/280` 读到上一条用例的 353 就是这个原因）。
+
 单独只跑移动断点：
 
 ```bash
