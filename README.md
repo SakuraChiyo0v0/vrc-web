@@ -106,7 +106,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 桌面结构 | `node scripts/structure_parity.mjs` | 59/59 |
 | 桌面视觉 | `node scripts/visual_parity.mjs` | 215/215（100%） |
 | 主框架/导航密度 | `node scripts/frame_parity.mjs` | 189/189 |
-| 导航可达 | `node scripts/nav_coverage.mjs` | 20/20 |
+| 导航可达 | `node scripts/nav_coverage.mjs` | 80/80（4 视口 × 20，含命中测试） |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
@@ -123,7 +123,7 @@ node scripts/mobile_parity.mjs                 # 默认 http://127.0.0.1:8891，
 ```bash
 node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 189/189
 node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
-node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 20/20（逐个点侧栏项验可达）
+node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 80/80（逐视口点侧栏项 + 命中测试）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 ```
 
@@ -131,6 +131,10 @@ node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 
 - **接口去尾斜杠、页面补尾斜杠**：接口地址走 `normBase()`（否则拼出 `/vrc//api/roster` 回 403，被误判「不是本服务」）；hash 路由的页面地址走 `pageBase()`（`/vrc#/settings` 会被服务端当 `GET /vrc` 回 404 JSON，而预检照样 200，整轮截成同一张 404 页）。
 - **首屏断言 `assertVrcPage()`**：root 为空或 body 出现 `"statusCode":404` 直接 exit 2，不允许在假页面上量出分数；`gotoVrc()` 只对 `chrome-error://` 重试 3 次（容器瞬断），404/白屏仍硬拦。`assertVrcPage()` 自身对 `Execution context was destroyed`（页面还在做一次跳转）重试 3 次，别把瞬跳当白屏。
+
+### 导航可达性口径
+
+`nav_coverage.mjs` 默认跑 4 个桌面视口（1688×1028 / 1366×768 / 1100×800 / 1024×768），每个视口把侧栏 18 个页面项全点一遍（`hash`、顶栏标题对得上方算过、不许蹦错误边界），外加折叠夹收起/展开与「收起导航栏」。矮窗下侧栏要靠滚动，所以每项先 `scrollIntoView` 再做**命中测试**：行框中心点 `elementFromPoint` 必须落回该项自己，且整行落在 `<nav>`（页脚项则用 `[data-nav-footer]`）可视区内 —— 挡住「JS click 能过、人点不到」。`NAV_VIEWS=all` 跑 7 个视口（与 `frame_parity` 同口径，140/140），`NAV_VIEWS=1688x1028,1440x900` 自定义。
 
 ### 已知形态差（不进 FAIL）
 
