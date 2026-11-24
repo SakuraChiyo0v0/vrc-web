@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T06:09:40.673Z",
+ "at": "2026-11-24T06:16:22.226Z",
  "base": "http://127.0.0.1:8891",
- "pass": 522,
- "total": 522,
+ "pass": 819,
+ "total": 819,
  "rows": [
   {
    "view": "1024x600",
@@ -62,13 +62,6 @@
   },
   {
    "view": "1024x600",
-   "name": "sidebar.w",
-   "ours": 214,
-   "want": 214,
-   "ok": true
-  },
-  {
-   "view": "1024x600",
    "name": "topbar.h",
    "ours": 39,
    "want": 39,
@@ -79,6 +72,90 @@
    "name": "statusbar.h",
    "ours": 35,
    "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "content.w",
+   "ours": 797,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "sidebar.w",
+   "ours": 214,
+   "want": 214,
    "ok": true
   },
   {
@@ -125,79 +202,135 @@
   },
   {
    "view": "1024x600",
-   "name": "statusbar.item_count",
+   "name": "lcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.statusbar.item_count",
    "ours": 4,
    "want": 4,
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "statusbar.first_x",
+   "name": "lcoll.statusbar.first_x",
    "ours": 10,
    "want": "10±1",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "statusbar.gap",
+   "name": "lcoll.statusbar.gap",
    "ours": "23,23,23",
    "want": "23±1",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "roster.visible",
+   "name": "lcoll.roster.visible",
    "ours": "no",
    "want": "no",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "roster.toggle_visible",
+   "name": "lcoll.roster.toggle_visible",
    "ours": "no",
    "want": "no",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "topbar.kbd_w",
+   "name": "lcoll.topbar.kbd_w",
    "ours": 33.8,
    "want": "34±1",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "topbar.gap_search_actions",
+   "name": "lcoll.topbar.gap_search_actions",
    "ours": 22,
    "want": "22±1",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "topbar.gap_actions_win",
+   "name": "lcoll.topbar.gap_actions_win",
    "ours": 15,
    "want": "15±1",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "topbar.actions_count",
+   "name": "lcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "topbar.win",
+   "name": "lcoll.topbar.win",
    "ours": "3×24 pitch40 @8",
    "want": "3×24 pitch40，末项距右缘 8±1",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "content.w",
-   "ours": 797,
+   "name": "lcoll.content.w",
+   "ours": 1011,
    "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.content_freed",
+   "ours": "214px",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.overflow",
+   "ours": 0,
+   "want": "≤0",
    "ok": true
   },
   {
@@ -258,13 +391,6 @@
   },
   {
    "view": "1024x768",
-   "name": "sidebar.w",
-   "ours": 214,
-   "want": 214,
-   "ok": true
-  },
-  {
-   "view": "1024x768",
    "name": "topbar.h",
    "ours": 39,
    "want": 39,
@@ -275,6 +401,90 @@
    "name": "statusbar.h",
    "ours": 35,
    "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "content.w",
+   "ours": 797,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "sidebar.w",
+   "ours": 214,
+   "want": 214,
    "ok": true
   },
   {
@@ -321,79 +531,135 @@
   },
   {
    "view": "1024x768",
-   "name": "statusbar.item_count",
+   "name": "lcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.statusbar.item_count",
    "ours": 4,
    "want": 4,
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "statusbar.first_x",
+   "name": "lcoll.statusbar.first_x",
    "ours": 10,
    "want": "10±1",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "statusbar.gap",
+   "name": "lcoll.statusbar.gap",
    "ours": "23,23,23",
    "want": "23±1",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "roster.visible",
+   "name": "lcoll.roster.visible",
    "ours": "no",
    "want": "no",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "roster.toggle_visible",
+   "name": "lcoll.roster.toggle_visible",
    "ours": "no",
    "want": "no",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "topbar.kbd_w",
+   "name": "lcoll.topbar.kbd_w",
    "ours": 33.8,
    "want": "34±1",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "topbar.gap_search_actions",
+   "name": "lcoll.topbar.gap_search_actions",
    "ours": 22,
    "want": "22±1",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "topbar.gap_actions_win",
+   "name": "lcoll.topbar.gap_actions_win",
    "ours": 15,
    "want": "15±1",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "topbar.actions_count",
+   "name": "lcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "topbar.win",
+   "name": "lcoll.topbar.win",
    "ours": "3×24 pitch40 @8",
    "want": "3×24 pitch40，末项距右缘 8±1",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "content.w",
-   "ours": 797,
+   "name": "lcoll.content.w",
+   "ours": 1011,
    "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.content_freed",
+   "ours": "214px",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.overflow",
+   "ours": 0,
+   "want": "≤0",
    "ok": true
   },
   {
@@ -454,13 +720,6 @@
   },
   {
    "view": "1100x800",
-   "name": "sidebar.w",
-   "ours": 214,
-   "want": 214,
-   "ok": true
-  },
-  {
-   "view": "1100x800",
    "name": "topbar.h",
    "ours": 39,
    "want": 39,
@@ -471,48 +730,6 @@
    "name": "statusbar.h",
    "ours": 35,
    "want": 35,
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "nav.top_h",
-   "ours": "36",
-   "want": "36",
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "nav.sub_h",
-   "ours": "31",
-   "want": "31",
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "nav.text_col",
-   "ours": "top+30 / sub+30",
-   "want": "30±1 / 30±1",
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "nav.scrollable",
-   "ours": "103px",
-   "want": "≥0 且滚到底可见末项",
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "nav.footer_count",
-   "ours": 2,
-   "want": 2,
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "nav.footer_visible",
-   "ours": "753 / 765",
-   "want": "页脚在侧栏内且高于状态栏",
    "ok": true
   },
   {
@@ -593,6 +810,188 @@
    "ok": true
   },
   {
+   "view": "1100x800",
+   "name": "sidebar.w",
+   "ours": 214,
+   "want": 214,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.scrollable",
+   "ours": "103px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.footer_visible",
+   "ours": "753 / 765",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.content.w",
+   "ours": 1087,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.content_freed",
+   "ours": "214px",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
    "view": "1280x600",
    "name": "overflow.friends",
    "ours": 1280,
@@ -650,13 +1049,6 @@
   },
   {
    "view": "1280x600",
-   "name": "sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1280x600",
    "name": "topbar.h",
    "ours": 39,
    "want": 39,
@@ -667,6 +1059,90 @@
    "name": "statusbar.h",
    "ours": 35,
    "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "content.w",
+   "ours": 990,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
    "ok": true
   },
   {
@@ -713,79 +1189,135 @@
   },
   {
    "view": "1280x600",
-   "name": "statusbar.item_count",
+   "name": "lcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.statusbar.item_count",
    "ours": 4,
    "want": 4,
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "statusbar.first_x",
+   "name": "lcoll.statusbar.first_x",
    "ours": 10,
    "want": "10±1",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "statusbar.gap",
+   "name": "lcoll.statusbar.gap",
    "ours": "23,23,23",
    "want": "23±1",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "roster.visible",
+   "name": "lcoll.roster.visible",
    "ours": "no",
    "want": "no",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "roster.toggle_visible",
+   "name": "lcoll.roster.toggle_visible",
    "ours": "no",
    "want": "no",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "topbar.kbd_w",
+   "name": "lcoll.topbar.kbd_w",
    "ours": 33.8,
    "want": "34±1",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "topbar.gap_search_actions",
+   "name": "lcoll.topbar.gap_search_actions",
    "ours": 22,
    "want": "22±1",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "topbar.gap_actions_win",
+   "name": "lcoll.topbar.gap_actions_win",
    "ours": 15,
    "want": "15±1",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "topbar.actions_count",
+   "name": "lcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "topbar.win",
+   "name": "lcoll.topbar.win",
    "ours": "3×24 pitch40 @8",
    "want": "3×24 pitch40，末项距右缘 8±1",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "content.w",
-   "ours": 990,
+   "name": "lcoll.content.w",
+   "ours": 1267,
    "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.overflow",
+   "ours": 0,
+   "want": "≤0",
    "ok": true
   },
   {
@@ -846,13 +1378,6 @@
   },
   {
    "view": "1280x800",
-   "name": "sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1280x800",
    "name": "topbar.h",
    "ours": 39,
    "want": 39,
@@ -863,6 +1388,90 @@
    "name": "statusbar.h",
    "ours": 35,
    "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "content.w",
+   "ours": 990,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
    "ok": true
   },
   {
@@ -909,79 +1518,135 @@
   },
   {
    "view": "1280x800",
-   "name": "statusbar.item_count",
+   "name": "lcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.statusbar.item_count",
    "ours": 4,
    "want": 4,
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "statusbar.first_x",
+   "name": "lcoll.statusbar.first_x",
    "ours": 10,
    "want": "10±1",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "statusbar.gap",
+   "name": "lcoll.statusbar.gap",
    "ours": "23,23,23",
    "want": "23±1",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "roster.visible",
+   "name": "lcoll.roster.visible",
    "ours": "no",
    "want": "no",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "roster.toggle_visible",
+   "name": "lcoll.roster.toggle_visible",
    "ours": "no",
    "want": "no",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "topbar.kbd_w",
+   "name": "lcoll.topbar.kbd_w",
    "ours": 33.8,
    "want": "34±1",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "topbar.gap_search_actions",
+   "name": "lcoll.topbar.gap_search_actions",
    "ours": 22,
    "want": "22±1",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "topbar.gap_actions_win",
+   "name": "lcoll.topbar.gap_actions_win",
    "ours": 15,
    "want": "15±1",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "topbar.actions_count",
+   "name": "lcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "topbar.win",
+   "name": "lcoll.topbar.win",
    "ours": "3×24 pitch40 @8",
    "want": "3×24 pitch40，末项距右缘 8±1",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "content.w",
-   "ours": 990,
+   "name": "lcoll.content.w",
+   "ours": 1267,
    "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.overflow",
+   "ours": 0,
+   "want": "≤0",
    "ok": true
   },
   {
@@ -1042,13 +1707,6 @@
   },
   {
    "view": "1366x768",
-   "name": "sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1366x768",
    "name": "topbar.h",
    "ours": 39,
    "want": 39,
@@ -1059,48 +1717,6 @@
    "name": "statusbar.h",
    "ours": 35,
    "want": 35,
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "nav.top_h",
-   "ours": "36",
-   "want": "36",
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "nav.sub_h",
-   "ours": "31",
-   "want": "31",
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "nav.text_col",
-   "ours": "top+30 / sub+30",
-   "want": "30±1 / 30±1",
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "nav.scrollable",
-   "ours": "135px",
-   "want": "≥0 且滚到底可见末项",
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "nav.footer_count",
-   "ours": 2,
-   "want": 2,
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "nav.footer_visible",
-   "ours": "721 / 733",
-   "want": "页脚在侧栏内且高于状态栏",
    "ok": true
   },
   {
@@ -1181,6 +1797,188 @@
    "ok": true
   },
   {
+   "view": "1366x768",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.scrollable",
+   "ours": "135px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.footer_visible",
+   "ours": "721 / 733",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.content.w",
+   "ours": 1353,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
    "view": "1440x900",
    "name": "overflow.friends",
    "ours": 1440,
@@ -1238,13 +2036,6 @@
   },
   {
    "view": "1440x900",
-   "name": "sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1440x900",
    "name": "topbar.h",
    "ours": 39,
    "want": 39,
@@ -1255,48 +2046,6 @@
    "name": "statusbar.h",
    "ours": 35,
    "want": 35,
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "nav.top_h",
-   "ours": "36",
-   "want": "36",
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "nav.sub_h",
-   "ours": "31",
-   "want": "31",
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "nav.text_col",
-   "ours": "top+30 / sub+30",
-   "want": "30±1 / 30±1",
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "nav.scrollable",
-   "ours": "3px",
-   "want": "≥0 且滚到底可见末项",
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "nav.footer_count",
-   "ours": 2,
-   "want": 2,
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "nav.footer_visible",
-   "ours": "853 / 865",
-   "want": "页脚在侧栏内且高于状态栏",
    "ok": true
   },
   {
@@ -1377,6 +2126,188 @@
    "ok": true
   },
   {
+   "view": "1440x900",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.scrollable",
+   "ours": "3px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.footer_visible",
+   "ours": "853 / 865",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.topbar.actions_count",
+   "ours": 6,
+   "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.content.w",
+   "ours": 1427,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
    "view": "1600x900",
    "name": "overflow.friends",
    "ours": 1600,
@@ -1434,13 +2365,6 @@
   },
   {
    "view": "1600x900",
-   "name": "sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1600x900",
    "name": "topbar.h",
    "ours": 39,
    "want": 39,
@@ -1451,48 +2375,6 @@
    "name": "statusbar.h",
    "ours": 35,
    "want": 35,
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "nav.top_h",
-   "ours": "36",
-   "want": "36",
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "nav.sub_h",
-   "ours": "31",
-   "want": "31",
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "nav.text_col",
-   "ours": "top+30 / sub+30",
-   "want": "30±1 / 30±1",
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "nav.scrollable",
-   "ours": "3px",
-   "want": "≥0 且滚到底可见末项",
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "nav.footer_count",
-   "ours": 2,
-   "want": 2,
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "nav.footer_visible",
-   "ours": "853 / 865",
-   "want": "页脚在侧栏内且高于状态栏",
    "ok": true
   },
   {
@@ -1573,6 +2455,188 @@
    "ok": true
   },
   {
+   "view": "1600x900",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.scrollable",
+   "ours": "3px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.footer_visible",
+   "ours": "853 / 865",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.topbar.actions_count",
+   "ours": 6,
+   "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.content.w",
+   "ours": 1587,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
    "view": "1700x1040",
    "name": "overflow.friends",
    "ours": 1700,
@@ -1630,13 +2694,6 @@
   },
   {
    "view": "1700x1040",
-   "name": "sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
    "name": "topbar.h",
    "ours": 39,
    "want": 39,
@@ -1647,48 +2704,6 @@
    "name": "statusbar.h",
    "ours": 35,
    "want": 35,
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "nav.top_h",
-   "ours": "36",
-   "want": "36",
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "nav.sub_h",
-   "ours": "31",
-   "want": "31",
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "nav.text_col",
-   "ours": "top+30 / sub+30",
-   "want": "30±1 / 30±1",
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "nav.scrollable",
-   "ours": "0px",
-   "want": "≥0 且滚到底可见末项",
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "nav.footer_count",
-   "ours": 2,
-   "want": 2,
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "nav.footer_visible",
-   "ours": "993 / 1005",
-   "want": "页脚在侧栏内且高于状态栏",
    "ok": true
   },
   {
@@ -1769,6 +2784,188 @@
    "ok": true
   },
   {
+   "view": "1700x1040",
+   "name": "sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.scrollable",
+   "ours": "0px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.footer_visible",
+   "ours": "993 / 1005",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.topbar.actions_count",
+   "ours": 6,
+   "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.content.w",
+   "ours": 1687,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
    "view": "1024x600",
    "name": "dark.theme",
    "ours": "dark",
@@ -1791,13 +2988,6 @@
   },
   {
    "view": "1024x600",
-   "name": "dark.sidebar.w",
-   "ours": 214,
-   "want": 214,
-   "ok": true
-  },
-  {
-   "view": "1024x600",
    "name": "dark.topbar.h",
    "ours": 39,
    "want": 39,
@@ -1808,6 +2998,90 @@
    "name": "dark.statusbar.h",
    "ours": 35,
    "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.content.w",
+   "ours": 797,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.sidebar.w",
+   "ours": 214,
+   "want": 214,
    "ok": true
   },
   {
@@ -1854,83 +3128,6 @@
   },
   {
    "view": "1024x600",
-   "name": "dark.statusbar.item_count",
-   "ours": 4,
-   "want": 4,
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "dark.statusbar.first_x",
-   "ours": 10,
-   "want": "10±1",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "dark.statusbar.gap",
-   "ours": "23,23,23",
-   "want": "23±1",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "dark.roster.visible",
-   "ours": "no",
-   "want": "no",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "dark.roster.toggle_visible",
-   "ours": "no",
-   "want": "no",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "dark.topbar.kbd_w",
-   "ours": 33.8,
-   "want": "34±1",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "dark.topbar.gap_search_actions",
-   "ours": 22,
-   "want": "22±1",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "dark.topbar.gap_actions_win",
-   "ours": 15,
-   "want": "15±1",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "dark.topbar.actions_count",
-   "ours": 5,
-   "want": "5",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "dark.topbar.win",
-   "ours": "3×24 pitch40 @8",
-   "want": "3×24 pitch40，末项距右缘 8±1",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "dark.content.w",
-   "ours": 797,
-   "want": "≥720",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -1938,42 +3135,140 @@
   },
   {
    "view": "1024x600",
-   "name": "collapsed.aside_gone",
+   "name": "dcoll.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.content.w",
+   "ours": 1011,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.aside_gone",
    "ours": "gone",
    "want": "gone",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "collapsed.expand_btn",
+   "name": "dcoll.expand_btn",
    "ours": "visible",
    "want": "visible",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "collapsed.topbar_h",
-   "ours": 39,
-   "want": "39±1",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "collapsed.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
-   "ok": true
-  },
-  {
-   "view": "1024x600",
-   "name": "collapsed.content_freed",
+   "name": "dcoll.content_freed",
    "ours": "214px",
    "want": "214±1",
    "ok": true
   },
   {
    "view": "1024x600",
-   "name": "collapsed.overflow",
+   "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
    "ok": true
@@ -2001,13 +3296,6 @@
   },
   {
    "view": "1024x768",
-   "name": "dark.sidebar.w",
-   "ours": 214,
-   "want": 214,
-   "ok": true
-  },
-  {
-   "view": "1024x768",
    "name": "dark.topbar.h",
    "ours": 39,
    "want": 39,
@@ -2018,6 +3306,90 @@
    "name": "dark.statusbar.h",
    "ours": 35,
    "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.content.w",
+   "ours": 797,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.sidebar.w",
+   "ours": 214,
+   "want": 214,
    "ok": true
   },
   {
@@ -2064,83 +3436,6 @@
   },
   {
    "view": "1024x768",
-   "name": "dark.statusbar.item_count",
-   "ours": 4,
-   "want": 4,
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "dark.statusbar.first_x",
-   "ours": 10,
-   "want": "10±1",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "dark.statusbar.gap",
-   "ours": "23,23,23",
-   "want": "23±1",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "dark.roster.visible",
-   "ours": "no",
-   "want": "no",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "dark.roster.toggle_visible",
-   "ours": "no",
-   "want": "no",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "dark.topbar.kbd_w",
-   "ours": 33.8,
-   "want": "34±1",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "dark.topbar.gap_search_actions",
-   "ours": 22,
-   "want": "22±1",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "dark.topbar.gap_actions_win",
-   "ours": 15,
-   "want": "15±1",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "dark.topbar.actions_count",
-   "ours": 5,
-   "want": "5",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "dark.topbar.win",
-   "ours": "3×24 pitch40 @8",
-   "want": "3×24 pitch40，末项距右缘 8±1",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "dark.content.w",
-   "ours": 797,
-   "want": "≥720",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -2148,42 +3443,140 @@
   },
   {
    "view": "1024x768",
-   "name": "collapsed.aside_gone",
+   "name": "dcoll.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.content.w",
+   "ours": 1011,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.aside_gone",
    "ours": "gone",
    "want": "gone",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "collapsed.expand_btn",
+   "name": "dcoll.expand_btn",
    "ours": "visible",
    "want": "visible",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "collapsed.topbar_h",
-   "ours": 39,
-   "want": "39±1",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "collapsed.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
-   "ok": true
-  },
-  {
-   "view": "1024x768",
-   "name": "collapsed.content_freed",
+   "name": "dcoll.content_freed",
    "ours": "214px",
    "want": "214±1",
    "ok": true
   },
   {
    "view": "1024x768",
-   "name": "collapsed.overflow",
+   "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
    "ok": true
@@ -2211,13 +3604,6 @@
   },
   {
    "view": "1100x800",
-   "name": "dark.sidebar.w",
-   "ours": 214,
-   "want": 214,
-   "ok": true
-  },
-  {
-   "view": "1100x800",
    "name": "dark.topbar.h",
    "ours": 39,
    "want": 39,
@@ -2228,48 +3614,6 @@
    "name": "dark.statusbar.h",
    "ours": 35,
    "want": 35,
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "dark.nav.top_h",
-   "ours": "36",
-   "want": "36",
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "dark.nav.sub_h",
-   "ours": "31",
-   "want": "31",
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "dark.nav.text_col",
-   "ours": "top+30 / sub+30",
-   "want": "30±1 / 30±1",
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "dark.nav.scrollable",
-   "ours": "103px",
-   "want": "≥0 且滚到底可见末项",
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "dark.nav.footer_count",
-   "ours": 2,
-   "want": 2,
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "dark.nav.footer_visible",
-   "ours": "753 / 765",
-   "want": "页脚在侧栏内且高于状态栏",
    "ok": true
   },
   {
@@ -2351,6 +3695,55 @@
   },
   {
    "view": "1100x800",
+   "name": "dark.sidebar.w",
+   "ours": 214,
+   "want": 214,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.scrollable",
+   "ours": "103px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.footer_visible",
+   "ours": "753 / 765",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -2358,42 +3751,140 @@
   },
   {
    "view": "1100x800",
-   "name": "collapsed.aside_gone",
+   "name": "dcoll.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.content.w",
+   "ours": 1087,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.aside_gone",
    "ours": "gone",
    "want": "gone",
    "ok": true
   },
   {
    "view": "1100x800",
-   "name": "collapsed.expand_btn",
+   "name": "dcoll.expand_btn",
    "ours": "visible",
    "want": "visible",
    "ok": true
   },
   {
    "view": "1100x800",
-   "name": "collapsed.topbar_h",
-   "ours": 39,
-   "want": "39±1",
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "collapsed.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
-   "ok": true
-  },
-  {
-   "view": "1100x800",
-   "name": "collapsed.content_freed",
+   "name": "dcoll.content_freed",
    "ours": "214px",
    "want": "214±1",
    "ok": true
   },
   {
    "view": "1100x800",
-   "name": "collapsed.overflow",
+   "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
    "ok": true
@@ -2421,13 +3912,6 @@
   },
   {
    "view": "1280x600",
-   "name": "dark.sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1280x600",
    "name": "dark.topbar.h",
    "ours": 39,
    "want": 39,
@@ -2438,6 +3922,90 @@
    "name": "dark.statusbar.h",
    "ours": 35,
    "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.content.w",
+   "ours": 990,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.sidebar.w",
+   "ours": 277,
+   "want": 277,
    "ok": true
   },
   {
@@ -2484,83 +4052,6 @@
   },
   {
    "view": "1280x600",
-   "name": "dark.statusbar.item_count",
-   "ours": 4,
-   "want": 4,
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "dark.statusbar.first_x",
-   "ours": 10,
-   "want": "10±1",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "dark.statusbar.gap",
-   "ours": "23,23,23",
-   "want": "23±1",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "dark.roster.visible",
-   "ours": "no",
-   "want": "no",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "dark.roster.toggle_visible",
-   "ours": "no",
-   "want": "no",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "dark.topbar.kbd_w",
-   "ours": 33.8,
-   "want": "34±1",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "dark.topbar.gap_search_actions",
-   "ours": 22,
-   "want": "22±1",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "dark.topbar.gap_actions_win",
-   "ours": 15,
-   "want": "15±1",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "dark.topbar.actions_count",
-   "ours": 5,
-   "want": "5",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "dark.topbar.win",
-   "ours": "3×24 pitch40 @8",
-   "want": "3×24 pitch40，末项距右缘 8±1",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "dark.content.w",
-   "ours": 990,
-   "want": "≥720",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -2568,42 +4059,140 @@
   },
   {
    "view": "1280x600",
-   "name": "collapsed.aside_gone",
+   "name": "dcoll.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.content.w",
+   "ours": 1267,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.aside_gone",
    "ours": "gone",
    "want": "gone",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "collapsed.expand_btn",
+   "name": "dcoll.expand_btn",
    "ours": "visible",
    "want": "visible",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "collapsed.topbar_h",
-   "ours": 39,
-   "want": "39±1",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "collapsed.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
-   "ok": true
-  },
-  {
-   "view": "1280x600",
-   "name": "collapsed.content_freed",
+   "name": "dcoll.content_freed",
    "ours": "277px",
    "want": "277±1",
    "ok": true
   },
   {
    "view": "1280x600",
-   "name": "collapsed.overflow",
+   "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
    "ok": true
@@ -2631,13 +4220,6 @@
   },
   {
    "view": "1280x800",
-   "name": "dark.sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1280x800",
    "name": "dark.topbar.h",
    "ours": 39,
    "want": 39,
@@ -2648,6 +4230,90 @@
    "name": "dark.statusbar.h",
    "ours": 35,
    "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.content.w",
+   "ours": 990,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.sidebar.w",
+   "ours": 277,
+   "want": 277,
    "ok": true
   },
   {
@@ -2694,83 +4360,6 @@
   },
   {
    "view": "1280x800",
-   "name": "dark.statusbar.item_count",
-   "ours": 4,
-   "want": 4,
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "dark.statusbar.first_x",
-   "ours": 10,
-   "want": "10±1",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "dark.statusbar.gap",
-   "ours": "23,23,23",
-   "want": "23±1",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "dark.roster.visible",
-   "ours": "no",
-   "want": "no",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "dark.roster.toggle_visible",
-   "ours": "no",
-   "want": "no",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "dark.topbar.kbd_w",
-   "ours": 33.8,
-   "want": "34±1",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "dark.topbar.gap_search_actions",
-   "ours": 22,
-   "want": "22±1",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "dark.topbar.gap_actions_win",
-   "ours": 15,
-   "want": "15±1",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "dark.topbar.actions_count",
-   "ours": 5,
-   "want": "5",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "dark.topbar.win",
-   "ours": "3×24 pitch40 @8",
-   "want": "3×24 pitch40，末项距右缘 8±1",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "dark.content.w",
-   "ours": 990,
-   "want": "≥720",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -2778,42 +4367,140 @@
   },
   {
    "view": "1280x800",
-   "name": "collapsed.aside_gone",
+   "name": "dcoll.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.content.w",
+   "ours": 1267,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.aside_gone",
    "ours": "gone",
    "want": "gone",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "collapsed.expand_btn",
+   "name": "dcoll.expand_btn",
    "ours": "visible",
    "want": "visible",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "collapsed.topbar_h",
-   "ours": 39,
-   "want": "39±1",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "collapsed.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
-   "ok": true
-  },
-  {
-   "view": "1280x800",
-   "name": "collapsed.content_freed",
+   "name": "dcoll.content_freed",
    "ours": "277px",
    "want": "277±1",
    "ok": true
   },
   {
    "view": "1280x800",
-   "name": "collapsed.overflow",
+   "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
    "ok": true
@@ -2841,13 +4528,6 @@
   },
   {
    "view": "1366x768",
-   "name": "dark.sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1366x768",
    "name": "dark.topbar.h",
    "ours": 39,
    "want": 39,
@@ -2858,48 +4538,6 @@
    "name": "dark.statusbar.h",
    "ours": 35,
    "want": 35,
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "dark.nav.top_h",
-   "ours": "36",
-   "want": "36",
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "dark.nav.sub_h",
-   "ours": "31",
-   "want": "31",
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "dark.nav.text_col",
-   "ours": "top+30 / sub+30",
-   "want": "30±1 / 30±1",
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "dark.nav.scrollable",
-   "ours": "135px",
-   "want": "≥0 且滚到底可见末项",
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "dark.nav.footer_count",
-   "ours": 2,
-   "want": 2,
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "dark.nav.footer_visible",
-   "ours": "721 / 733",
-   "want": "页脚在侧栏内且高于状态栏",
    "ok": true
   },
   {
@@ -2981,6 +4619,55 @@
   },
   {
    "view": "1366x768",
+   "name": "dark.sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.scrollable",
+   "ours": "135px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.footer_visible",
+   "ours": "721 / 733",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -2988,42 +4675,140 @@
   },
   {
    "view": "1366x768",
-   "name": "collapsed.aside_gone",
+   "name": "dcoll.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.roster.visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.roster.toggle_visible",
+   "ours": "no",
+   "want": "no",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.topbar.actions_count",
+   "ours": 5,
+   "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.content.w",
+   "ours": 1353,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.aside_gone",
    "ours": "gone",
    "want": "gone",
    "ok": true
   },
   {
    "view": "1366x768",
-   "name": "collapsed.expand_btn",
+   "name": "dcoll.expand_btn",
    "ours": "visible",
    "want": "visible",
    "ok": true
   },
   {
    "view": "1366x768",
-   "name": "collapsed.topbar_h",
-   "ours": 39,
-   "want": "39±1",
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "collapsed.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
-   "ok": true
-  },
-  {
-   "view": "1366x768",
-   "name": "collapsed.content_freed",
+   "name": "dcoll.content_freed",
    "ours": "277px",
    "want": "277±1",
    "ok": true
   },
   {
    "view": "1366x768",
-   "name": "collapsed.overflow",
+   "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
    "ok": true
@@ -3051,13 +4836,6 @@
   },
   {
    "view": "1440x900",
-   "name": "dark.sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1440x900",
    "name": "dark.topbar.h",
    "ours": 39,
    "want": 39,
@@ -3068,48 +4846,6 @@
    "name": "dark.statusbar.h",
    "ours": 35,
    "want": 35,
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "dark.nav.top_h",
-   "ours": "36",
-   "want": "36",
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "dark.nav.sub_h",
-   "ours": "31",
-   "want": "31",
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "dark.nav.text_col",
-   "ours": "top+30 / sub+30",
-   "want": "30±1 / 30±1",
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "dark.nav.scrollable",
-   "ours": "3px",
-   "want": "≥0 且滚到底可见末项",
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "dark.nav.footer_count",
-   "ours": 2,
-   "want": 2,
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "dark.nav.footer_visible",
-   "ours": "853 / 865",
-   "want": "页脚在侧栏内且高于状态栏",
    "ok": true
   },
   {
@@ -3191,6 +4927,55 @@
   },
   {
    "view": "1440x900",
+   "name": "dark.sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.scrollable",
+   "ours": "3px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.footer_visible",
+   "ours": "853 / 865",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -3198,42 +4983,140 @@
   },
   {
    "view": "1440x900",
-   "name": "collapsed.aside_gone",
+   "name": "dcoll.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.topbar.actions_count",
+   "ours": 6,
+   "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.content.w",
+   "ours": 1427,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.aside_gone",
    "ours": "gone",
    "want": "gone",
    "ok": true
   },
   {
    "view": "1440x900",
-   "name": "collapsed.expand_btn",
+   "name": "dcoll.expand_btn",
    "ours": "visible",
    "want": "visible",
    "ok": true
   },
   {
    "view": "1440x900",
-   "name": "collapsed.topbar_h",
-   "ours": 39,
-   "want": "39±1",
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "collapsed.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
-   "ok": true
-  },
-  {
-   "view": "1440x900",
-   "name": "collapsed.content_freed",
+   "name": "dcoll.content_freed",
    "ours": "277px",
    "want": "277±1",
    "ok": true
   },
   {
    "view": "1440x900",
-   "name": "collapsed.overflow",
+   "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
    "ok": true
@@ -3261,13 +5144,6 @@
   },
   {
    "view": "1600x900",
-   "name": "dark.sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1600x900",
    "name": "dark.topbar.h",
    "ours": 39,
    "want": 39,
@@ -3278,48 +5154,6 @@
    "name": "dark.statusbar.h",
    "ours": 35,
    "want": 35,
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "dark.nav.top_h",
-   "ours": "36",
-   "want": "36",
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "dark.nav.sub_h",
-   "ours": "31",
-   "want": "31",
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "dark.nav.text_col",
-   "ours": "top+30 / sub+30",
-   "want": "30±1 / 30±1",
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "dark.nav.scrollable",
-   "ours": "3px",
-   "want": "≥0 且滚到底可见末项",
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "dark.nav.footer_count",
-   "ours": 2,
-   "want": 2,
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "dark.nav.footer_visible",
-   "ours": "853 / 865",
-   "want": "页脚在侧栏内且高于状态栏",
    "ok": true
   },
   {
@@ -3401,6 +5235,55 @@
   },
   {
    "view": "1600x900",
+   "name": "dark.sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.scrollable",
+   "ours": "3px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.footer_visible",
+   "ours": "853 / 865",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -3408,42 +5291,140 @@
   },
   {
    "view": "1600x900",
-   "name": "collapsed.aside_gone",
+   "name": "dcoll.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.topbar.actions_count",
+   "ours": 6,
+   "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.content.w",
+   "ours": 1587,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.aside_gone",
    "ours": "gone",
    "want": "gone",
    "ok": true
   },
   {
    "view": "1600x900",
-   "name": "collapsed.expand_btn",
+   "name": "dcoll.expand_btn",
    "ours": "visible",
    "want": "visible",
    "ok": true
   },
   {
    "view": "1600x900",
-   "name": "collapsed.topbar_h",
-   "ours": 39,
-   "want": "39±1",
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "collapsed.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
-   "ok": true
-  },
-  {
-   "view": "1600x900",
-   "name": "collapsed.content_freed",
+   "name": "dcoll.content_freed",
    "ours": "277px",
    "want": "277±1",
    "ok": true
   },
   {
    "view": "1600x900",
-   "name": "collapsed.overflow",
+   "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
    "ok": true
@@ -3471,13 +5452,6 @@
   },
   {
    "view": "1700x1040",
-   "name": "dark.sidebar.w",
-   "ours": 277,
-   "want": 277,
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
    "name": "dark.topbar.h",
    "ours": 39,
    "want": 39,
@@ -3488,48 +5462,6 @@
    "name": "dark.statusbar.h",
    "ours": 35,
    "want": 35,
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "dark.nav.top_h",
-   "ours": "36",
-   "want": "36",
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "dark.nav.sub_h",
-   "ours": "31",
-   "want": "31",
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "dark.nav.text_col",
-   "ours": "top+30 / sub+30",
-   "want": "30±1 / 30±1",
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "dark.nav.scrollable",
-   "ours": "0px",
-   "want": "≥0 且滚到底可见末项",
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "dark.nav.footer_count",
-   "ours": 2,
-   "want": 2,
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "dark.nav.footer_visible",
-   "ours": "993 / 1005",
-   "want": "页脚在侧栏内且高于状态栏",
    "ok": true
   },
   {
@@ -3611,6 +5543,55 @@
   },
   {
    "view": "1700x1040",
+   "name": "dark.sidebar.w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.scrollable",
+   "ours": "0px",
+   "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.footer_count",
+   "ours": 2,
+   "want": 2,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.footer_visible",
+   "ours": "993 / 1005",
+   "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -3618,42 +5599,140 @@
   },
   {
    "view": "1700x1040",
-   "name": "collapsed.aside_gone",
+   "name": "dcoll.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.topbar.right_pad",
+   "ours": 8,
+   "want": "8±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.topbar.search_w",
+   "ours": 225,
+   "want": "200–240",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.topbar.h",
+   "ours": 39,
+   "want": 39,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.statusbar.h",
+   "ours": 35,
+   "want": 35,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.statusbar.item_count",
+   "ours": 4,
+   "want": 4,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.statusbar.first_x",
+   "ours": 10,
+   "want": "10±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.statusbar.gap",
+   "ours": "23,23,23",
+   "want": "23±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.roster.visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.roster.toggle_visible",
+   "ours": "yes",
+   "want": "yes",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.topbar.kbd_w",
+   "ours": 33.8,
+   "want": "34±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.topbar.gap_search_actions",
+   "ours": 22,
+   "want": "22±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.topbar.gap_actions_win",
+   "ours": 15,
+   "want": "15±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.topbar.actions_count",
+   "ours": 6,
+   "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.topbar.win",
+   "ours": "3×24 pitch40 @8",
+   "want": "3×24 pitch40，末项距右缘 8±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.content.w",
+   "ours": 1687,
+   "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.aside_gone",
    "ours": "gone",
    "want": "gone",
    "ok": true
   },
   {
    "view": "1700x1040",
-   "name": "collapsed.expand_btn",
+   "name": "dcoll.expand_btn",
    "ours": "visible",
    "want": "visible",
    "ok": true
   },
   {
    "view": "1700x1040",
-   "name": "collapsed.topbar_h",
-   "ours": 39,
-   "want": "39±1",
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "collapsed.statusbar_h",
-   "ours": 35,
-   "want": "35±1",
-   "ok": true
-  },
-  {
-   "view": "1700x1040",
-   "name": "collapsed.content_freed",
+   "name": "dcoll.content_freed",
    "ours": "277px",
    "want": "277±1",
    "ok": true
   },
   {
    "view": "1700x1040",
-   "name": "collapsed.overflow",
+   "name": "dcoll.overflow",
    "ours": 0,
    "want": "≤0",
    "ok": true

@@ -21,12 +21,12 @@
  *      注：真机 Ctrl K 绝对 x=1307 是在 1689 宽的截图上量的，契约视口是 1700，
  *      差 11px 属窗口宽度差（不是布局差），所以这里只锁间距不锁绝对 x。
  *
- * 9) 深色主题（vrc-theme=dark）：跑与浅色**同一套** assertFrame —— 侧栏宽、导航行高/文本列、
- *    页脚、状态栏 4 项与项距、右栏显隐、顶栏右簇间距、内容宽、无横向溢出。主题只该改色，
- *    任何几何漂移都算回归（此前深色轮只量了高度，状态栏项距/顶栏簇/页脚漏在深色之外）。
- * 10) 收起侧栏（vrc-nav-collapsed）后：侧栏整列消失、顶栏出现展开按钮、顶栏/状态栏不变高、
- *    内容区让出整列（214|277）、无横向溢出。
- *    9/10 是框架的另外两种状态：此前只量「浅色 + 展开」，切主题或收起后布局塌了也量不到。
+ * 断言按「与侧栏无关的外壳」和「侧栏本身」两段写（assertChrome / assertNav）：
+ *   9) 深色主题（vrc-theme=dark）：跑与浅色**同一套** assertFrame。
+ *  10) 收起侧栏（vrc-nav-collapsed）：侧栏整列消失、顶栏出现展开按钮、内容区让出整列（214|277）、
+ *      无横向溢出；且**收起态也跑整套 assertChrome** —— 顶栏右簇/状态栏 4 项项距/右栏显隐/内容宽
+ *      与展开态同口径（此前收起轮只量了 4 个高度，收起后顶栏簇错位也量不到）。
+ *      收起态跑两遍：浅色收起 + 深色收起（组合态），主题与折叠互不影响几何。
  *
  * 任一 FAIL 退出码 1；全 PASS 打印 FRAME OK，并把结果写 docs/ref/frame-parity.json。
  */
@@ -58,11 +58,83 @@ const check = (view, name, ours, want, ok) => {
   if (!ok) console.log(`  ✗ ${view} ${name}: 我们 ${ours} / 期望 ${want}`);
 };
 
-// ── 共享量测：浅色轮与深色轮跑同一份 ────────────────────────────────────────
-// 主题只改色不该改几何，所以两轮共用取样代码；深色轮此前另写精简版只量高度，
-// 状态栏项距 / 顶栏右簇 / 页脚 / 右栏显隐就漏在深色之外。
+// ── 共享取样：装一次 window.__chrome，展开态 / 收起态共用（收起后 aside 不存在，
+//    这些量测必须与侧栏解耦，否则收起轮只能另写一份精简版，顶栏簇/状态栏就漏掉了）。
+const installChrome = () => {
+  const box = (el) => {
+    if (!el) return null;
+    const b = el.getBoundingClientRect();
+    const cs = getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden') return null;
+    return { x: b.x, y: b.y, w: b.width, h: b.height, bottom: b.bottom };
+  };
+  const vis = (el) => {
+    const b = el.getBoundingClientRect();
+    const cs = getComputedStyle(el);
+    return cs.display !== 'none' && cs.visibility !== 'hidden' && b.width > 1;
+  };
+  window.__chrome = () => {
+    const sbEl = document.querySelector('#vrc-statusbar');
+    const sb = box(sbEl);
+    // 状态栏 4 项：真机 footer-measure.json → 首项 x=10、项间距（下一项左端 − 上一项右端）=23
+    const sbItems = sbEl ? [...sbEl.children].map((e) => {
+      const b = e.getBoundingClientRect();
+      const cs = getComputedStyle(e);
+      return (cs.display === 'none' || cs.visibility === 'hidden') ? null
+        : { x: Math.round(b.x), w: Math.round(b.width) };
+    }).filter(Boolean) : [];
+    const tbEl = document.querySelector('#vrc-topbar');
+    const tbKids = [...tbEl.children].map((e) => {
+      const b = e.getBoundingClientRect();
+      const cs = getComputedStyle(e);
+      return (cs.display === 'none' || cs.visibility === 'hidden' || b.width < 1) ? null : b.right;
+    }).filter((v) => v !== null);
+    const searchBtn = [...tbEl.querySelectorAll('button')].find((e) => /快速搜索/.test(e.textContent || ''));
+    // 顶栏右簇（快速搜索/Ctrl K → 图标组 → 3 窗口控制）：只量簇内可见元素之间的间距，
+    // 不量绝对 x。原因：真机 topbar-measure.json 是字形坐标、且截图宽 1689（我们契约视口 1700），
+    // 绝对 x 会随窗口宽整体平移、随 roster-toggle 显隐整体让位；间距才是布局契约。
+    const tbRight = tbEl.getBoundingClientRect().right;
+    const relRight = (el) => Math.round((tbRight - el.getBoundingClientRect().right) * 10) / 10;
+    const relLeft = (el) => Math.round((tbRight - el.getBoundingClientRect().left) * 10) / 10;
+    const kbd = document.querySelector('[data-topbar="search"] kbd');
+    const actEls = [...(document.querySelector('[data-topbar="actions"]')?.children ?? [])].filter(vis);
+    const winEls = [...(document.querySelector('[data-topbar="window-controls"]')?.children ?? [])].filter(vis);
+    const winRects = winEls.map((e) => e.getBoundingClientRect());
+    return {
+      theme: document.documentElement.dataset.theme ?? '',
+      topbar: box(tbEl),
+      statusbar: sb,
+      workspace: box(document.querySelector('.workspace')),
+      roster: box(document.querySelector('.roster-rail')),
+      toggle: box(document.querySelector('.roster-toggle')),
+      tbRight: {
+        kbdRel: kbd ? relRight(kbd) : null,
+        kbdW: kbd ? Math.round(kbd.getBoundingClientRect().width * 10) / 10 : null,
+        actCount: actEls.length,
+        gapSearchActions: actEls.length && kbd ? Math.round(relRight(kbd) - relLeft(actEls[0])) : null,
+        gapActionsWin: winEls.length && actEls.length ? Math.round(relRight(actEls[actEls.length - 1]) - relLeft(winEls[0])) : null,
+        winCount: winEls.length,
+        winW: winRects.length ? Math.round(winRects[0].width) : null,
+        winPitch: winRects.length > 1 ? Math.round(winRects[1].left - winRects[0].left) : null,
+        winLastRel: winEls.length ? relRight(winEls[winEls.length - 1]) : null
+      },
+      sbItems,
+      tbRightPad: tbKids.length ? Math.round(window.innerWidth - Math.max(...tbKids)) : null,
+      searchW: searchBtn ? Math.round(searchBtn.getBoundingClientRect().width) : null
+    };
+  };
+};
+
+// 展开态：外壳 + 侧栏（导航行高/文本列/滚动/页脚）
 const measureFrame = () => {
-  const box = (el) => { if (!el) return null; const b = el.getBoundingClientRect(); const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden') return null; return { x: b.x, y: b.y, w: b.width, h: b.height, bottom: b.bottom }; };
+  const c = window.__chrome();
+  const box = (el) => {
+    if (!el) return null;
+    const b = el.getBoundingClientRect();
+    const cs = getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden') return null;
+    return { x: b.x, y: b.y, w: b.width, h: b.height, bottom: b.bottom };
+  };
   const aside = document.querySelector('aside.vrc-sidebar');
   const nav = aside.querySelector('nav');
   const kinds = [...nav.querySelectorAll('[data-nav-kind]')];
@@ -70,22 +142,6 @@ const measureFrame = () => {
   const subs = kinds.filter((el) => el.dataset.navKind === 'sub');
   const foot = aside.querySelector('[data-nav-footer]');
   const footRows = [...(foot?.querySelectorAll('[data-nav-kind]') ?? [])];
-  const sbEl = document.querySelector('#vrc-statusbar');
-  const sb = box(sbEl);
-  // 状态栏 4 项：真机 footer-measure.json → 首项 x=10、项间距（下一项左端 − 上一项右端）=23
-  const sbItems = sbEl ? [...sbEl.children].map((e) => {
-    const b = e.getBoundingClientRect();
-    const cs = getComputedStyle(e);
-    return (cs.display === 'none' || cs.visibility === 'hidden') ? null
-      : { x: Math.round(b.x), w: Math.round(b.width) };
-  }).filter(Boolean) : [];
-  const tbEl = document.querySelector('#vrc-topbar');
-  const tbKids = [...tbEl.children].map((e) => {
-    const b = e.getBoundingClientRect();
-    const cs = getComputedStyle(e);
-    return (cs.display === 'none' || cs.visibility === 'hidden' || b.width < 1) ? null : b.right;
-  }).filter((v) => v !== null);
-  const searchBtn = [...tbEl.querySelectorAll('button')].find((e) => /快速搜索/.test(e.textContent || ''));
   const last = kinds[kinds.length - 1];
   nav.scrollTop = nav.scrollHeight;
   const navRect = nav.getBoundingClientRect();
@@ -95,40 +151,9 @@ const measureFrame = () => {
     const b = el?.querySelectorAll('span')?.[1]?.getBoundingClientRect();
     return b ? Math.round(b.left - el.getBoundingClientRect().left) : null;
   };
-  // 顶栏右簇（快速搜索/Ctrl K → 图标组 → 3 窗口控制）：只量簇内可见元素之间的间距，
-  // 不量绝对 x。原因：真机 topbar-measure.json 是字形坐标、且截图宽 1689（我们契约视口 1700），
-  // 绝对 x 会随窗口宽整体平移、随 roster-toggle 显隐整体让位；间距才是布局契约。
-  const tbRight = tbEl.getBoundingClientRect().right;
-  const relRight = (el) => Math.round((tbRight - el.getBoundingClientRect().right) * 10) / 10;
-  const relLeft = (el) => Math.round((tbRight - el.getBoundingClientRect().left) * 10) / 10;
-  const vis = (el) => {
-    const b = el.getBoundingClientRect();
-    const cs = getComputedStyle(el);
-    return cs.display !== 'none' && cs.visibility !== 'hidden' && b.width > 1;
-  };
-  const kbd = document.querySelector('[data-topbar="search"] kbd');
-  const actEls = [...(document.querySelector('[data-topbar="actions"]')?.children ?? [])].filter(vis);
-  const winEls = [...(document.querySelector('[data-topbar="window-controls"]')?.children ?? [])].filter(vis);
-  const winRects = winEls.map((e) => e.getBoundingClientRect());
   return {
-    theme: document.documentElement.dataset.theme ?? '',
+    ...c,
     sidebar: box(aside),
-    topbar: box(tbEl),
-    statusbar: sb,
-    workspace: box(document.querySelector('.workspace')),
-    roster: box(document.querySelector('.roster-rail')),
-    toggle: box(document.querySelector('.roster-toggle')),
-    tbRight: {
-      kbdRel: kbd ? relRight(kbd) : null,
-      kbdW: kbd ? Math.round(kbd.getBoundingClientRect().width * 10) / 10 : null,
-      actCount: actEls.length,
-      gapSearchActions: actEls.length && kbd ? Math.round(relRight(kbd) - relLeft(actEls[0])) : null,
-      gapActionsWin: winEls.length && actEls.length ? Math.round(relRight(actEls[actEls.length - 1]) - relLeft(winEls[0])) : null,
-      winCount: winEls.length,
-      winW: winRects.length ? Math.round(winRects[0].width) : null,
-      winPitch: winRects.length > 1 ? Math.round(winRects[1].left - winRects[0].left) : null,
-      winLastRel: winEls.length ? relRight(winEls[winEls.length - 1]) : null
-    },
     topH: tops.length ? [...new Set(tops.map((el) => Math.round(el.getBoundingClientRect().height)))] : [],
     subH: subs.length ? [...new Set(subs.map((el) => Math.round(el.getBoundingClientRect().height)))] : [],
     textTop: textCol(tops[0]),
@@ -139,33 +164,32 @@ const measureFrame = () => {
     navBottom: Math.round(navRect.bottom),
     footCount: footRows.length,
     footBottom: foot && footRows.length ? Math.round(Math.max(...footRows.map((el) => el.getBoundingClientRect().bottom))) : null,
-    sidebarBottom: Math.round(aside.getBoundingClientRect().bottom),
-    sbItems,
-    tbRightPad: tbKids.length ? Math.round(window.innerWidth - Math.max(...tbKids)) : null,
-    searchW: searchBtn ? Math.round(searchBtn.getBoundingClientRect().width) : null
+    sidebarBottom: Math.round(aside.getBoundingClientRect().bottom)
   };
 };
 
-// ── 共享断言：p 为行名前缀（浅色 ''，深色 'dark.'）─────────────────────────
-const assertFrame = (view, got, width, p = '') => {
+// 收起态：外壳 + 折叠结果（aside 已不存在，只能量顶栏里的展开按钮与让出的整列）
+const measureCollapsed = () => {
+  const c = window.__chrome();
+  const asideGone = !document.querySelector('aside.vrc-sidebar');
+  const ex = document.querySelector('[data-testid="nav-expand"]');
+  const exR = ex?.getBoundingClientRect();
+  return {
+    ...c,
+    asideGone,
+    expand: !!exR && exR.width > 1,
+    overflow: document.documentElement.scrollWidth - window.innerWidth
+  };
+};
+
+// ── 外壳断言（与侧栏无关，展开/收起共用）：p 为行名前缀 ─────────────────────
+const assertChrome = (view, got, width, p = '') => {
   // 顶栏右侧留白：搜索簇右边还有 3 个装饰性窗口按钮（真机形态），只锁「我们自己内容右端距窗口边 8px」
   // 与簇内间距（见下 topbar.win），绝对 x 随视口宽平移不进 FAIL。
   check(view, `${p}topbar.right_pad`, got.tbRightPad, '8±1', got.tbRightPad !== null && Math.abs(got.tbRightPad - 8) <= 1);
   check(view, `${p}topbar.search_w`, got.searchW, '200–240', got.searchW !== null && got.searchW >= 200 && got.searchW <= 240);
-  const wide = width >= 1280;
-  check(view, `${p}sidebar.w`, Math.round(got.sidebar.w), wide ? 277 : 214, Math.abs(got.sidebar.w - (wide ? 277 : 214)) <= 1);
   check(view, `${p}topbar.h`, Math.round(got.topbar.h), 39, Math.abs(got.topbar.h - 39) <= 1);
   check(view, `${p}statusbar.h`, Math.round(got.statusbar.h), 35, Math.abs(got.statusbar.h - 35) <= 1);
-  check(view, `${p}nav.top_h`, got.topH.join(','), '36', got.topH.length === 1 && got.topH[0] === 36);
-  check(view, `${p}nav.sub_h`, got.subH.join(','), '31', got.subH.length === 1 && got.subH[0] === 31);
-  check(view, `${p}nav.text_col`, `top+${got.textTop} / sub+${got.textSub}`, '30±1 / 30±1',
-    got.textTop !== null && Math.abs(got.textTop - 30) <= 1 && got.textSub !== null && Math.abs(got.textSub - 30) <= 1);
-  // 装不下时必须靠滚动（scrollHeight > clientHeight），且滚到底最后一项完整可见
-  check(view, `${p}nav.scrollable`, `${got.navOverflow}px`, '≥0 且滚到底可见末项',
-    got.navOverflow >= 0 && got.lastBottom <= got.navBottom + 1);
-  check(view, `${p}nav.footer_count`, got.footCount, 2, got.footCount === 2);
-  check(view, `${p}nav.footer_visible`, `${got.footBottom} / ${Math.min(got.sidebarBottom, got.statusbar.y)}`,
-    '页脚在侧栏内且高于状态栏', got.footBottom !== null && got.footBottom <= Math.min(got.sidebarBottom, got.statusbar.y) + 1);
   const sbGaps = got.sbItems.slice(1).map((it, i) => it.x - (got.sbItems[i].x + got.sbItems[i].w));
   check(view, `${p}statusbar.item_count`, got.sbItems.length, 4, got.sbItems.length === 4);
   check(view, `${p}statusbar.first_x`, got.sbItems[0]?.x, '10±1', Math.abs((got.sbItems[0]?.x ?? -99) - 10) <= 1);
@@ -186,9 +210,46 @@ const assertFrame = (view, got, width, p = '') => {
   check(view, `${p}content.w`, Math.round(got.workspace.w), '≥720', got.workspace.w >= 720);
 };
 
+// ── 侧栏断言（只在展开态成立）────────────────────────────────────────────────
+const assertNav = (view, got, width, p = '') => {
+  const wide = width >= 1280;
+  check(view, `${p}sidebar.w`, Math.round(got.sidebar.w), wide ? 277 : 214, Math.abs(got.sidebar.w - (wide ? 277 : 214)) <= 1);
+  check(view, `${p}nav.top_h`, got.topH.join(','), '36', got.topH.length === 1 && got.topH[0] === 36);
+  check(view, `${p}nav.sub_h`, got.subH.join(','), '31', got.subH.length === 1 && got.subH[0] === 31);
+  check(view, `${p}nav.text_col`, `top+${got.textTop} / sub+${got.textSub}`, '30±1 / 30±1',
+    got.textTop !== null && Math.abs(got.textTop - 30) <= 1 && got.textSub !== null && Math.abs(got.textSub - 30) <= 1);
+  // 装不下时必须靠滚动（scrollHeight > clientHeight），且滚到底最后一项完整可见
+  check(view, `${p}nav.scrollable`, `${got.navOverflow}px`, '≥0 且滚到底可见末项',
+    got.navOverflow >= 0 && got.lastBottom <= got.navBottom + 1);
+  check(view, `${p}nav.footer_count`, got.footCount, 2, got.footCount === 2);
+  check(view, `${p}nav.footer_visible`, `${got.footBottom} / ${Math.min(got.sidebarBottom, got.statusbar.y)}`,
+    '页脚在侧栏内且高于状态栏', got.footBottom !== null && got.footBottom <= Math.min(got.sidebarBottom, got.statusbar.y) + 1);
+};
+
+// 展开态整套（浅色 / 深色共用）
+const assertFrame = (view, got, width, p = '') => {
+  assertChrome(view, got, width, p);
+  assertNav(view, got, width, p);
+};
+
+// 收起态整套：外壳同口径 + 折叠结果
+const assertCollapsed = (view, got, width, p = '', freed = null) => {
+  assertChrome(view, got, width, p);
+  const col = width >= 1280 ? 277 : 214;
+  check(view, `${p}aside_gone`, got.asideGone ? 'gone' : 'still there', 'gone', got.asideGone);
+  check(view, `${p}expand_btn`, got.expand ? 'visible' : 'missing', 'visible', got.expand);
+  check(view, `${p}content_freed`, `${freed}px`, `${col}±1`, freed !== null && Math.abs(freed - col) <= 1);
+  check(view, `${p}overflow`, got.overflow, '≤0', got.overflow <= 0);
+};
+
+const collapse = async (tab) => tab.evaluate(() => {
+  document.querySelector('[data-testid="nav-collapse"]')?.click();
+  return true;
+});
+
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 
-// ── 第一轮：浅色 + 侧栏展开 ─────────────────────────────────────────────────
+// ── 第一轮：浅色 + 侧栏展开 → 收起（同一页面顺序做，收起态不必重载）──────────
 for (const [width, height] of VIEWS) {
   const view = `${width}x${height}`;
   const tab = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1, hasTouch: false });
@@ -208,17 +269,23 @@ for (const [width, height] of VIEWS) {
     if (!ok) overflow.push(p);
   }
 
+  await tab.evaluate(installChrome);
   const got = await tab.evaluate(measureFrame);
   assertFrame(view, got, width, '');
+
+  // 浅色 + 收起：外壳同一套断言 + 整列让宽（此前收起态只在深色轮量 4 个高度）
+  await collapse(tab);
+  await tab.waitForTimeout(350);
+  const lc = await tab.evaluate(measureCollapsed);
+  assertCollapsed(view, lc, width, 'lcoll.', got.workspace.x - lc.workspace.x);
   await tab.close();
 }
 
-// ── 第二轮：深色主题 + 收起侧栏 ──────────────────────────────────────────────
-// 深色轮跑 assertFrame 全套（不再只量高度）：主题只改色，侧栏宽/行高/文本列/状态栏项距/
-// 顶栏右簇/页脚/右栏显隐都该与浅色一致；收起轮验证整列让宽与顶栏展开按钮。
+// ── 第二轮：深色主题（展开）→ 深色 + 收起（组合态）──────────────────────────
+// 深色轮跑 assertFrame 全套：主题只改色，侧栏宽/行高/文本列/状态栏项距/顶栏右簇/页脚/
+// 右栏显隐都该与浅色一致；收起轮验证「主题 + 折叠」互不影响几何。
 for (const [width, height] of VIEWS) {
   const view = `${width}x${height}`;
-  const wide = width >= 1280;
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1 });
   // 主题存 localStorage（vrc-theme），导航收起态存 vrc-nav-collapsed
   await ctx.addInitScript(() => { try { localStorage.setItem('vrc-theme', 'dark'); } catch {} });
@@ -230,36 +297,18 @@ for (const [width, height] of VIEWS) {
   await tab.waitForTimeout(400);
   await assertVrcPage(tab, `dark@${view}`);
 
+  await tab.evaluate(installChrome);
   const got = await tab.evaluate(measureFrame);
   check(view, 'dark.theme', got.theme, 'dark', got.theme === 'dark');
   assertFrame(view, got, width, 'dark.');
   const darkOverflow = await tab.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   check(view, 'dark.overflow', darkOverflow, '≤0', darkOverflow <= 0);
 
-  // 收起侧栏：整列（214/277）让给内容，顶栏/状态栏不变高，顶栏出现的展开按钮可见
-  const col = await tab.evaluate(async () => {
-    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-    document.querySelector('[data-testid="nav-collapse"]')?.click();
-    await wait(350);
-    const ws = document.querySelector('.workspace')?.getBoundingClientRect();
-    return {
-      asideGone: !document.querySelector('aside.vrc-sidebar'),
-      expand: !!document.querySelector('[data-testid="nav-expand"]')
-        && document.querySelector('[data-testid="nav-expand"]').getBoundingClientRect().width > 1,
-      topbarH: Math.round(document.querySelector('#vrc-topbar')?.getBoundingClientRect().height ?? 0),
-      statusbarH: Math.round(document.querySelector('#vrc-statusbar')?.getBoundingClientRect().height ?? 0),
-      workspaceX: Math.round(ws?.x ?? -1),
-      overflow: document.documentElement.scrollWidth - window.innerWidth
-    };
-  });
-  const freed = got.workspace.x - col.workspaceX;
-  check(view, 'collapsed.aside_gone', col.asideGone ? 'gone' : 'still there', 'gone', col.asideGone);
-  check(view, 'collapsed.expand_btn', col.expand ? 'visible' : 'missing', 'visible', col.expand);
-  check(view, 'collapsed.topbar_h', col.topbarH, '39±1', Math.abs(col.topbarH - 39) <= 1);
-  check(view, 'collapsed.statusbar_h', col.statusbarH, '35±1', Math.abs(col.statusbarH - 35) <= 1);
-  check(view, 'collapsed.content_freed', `${freed}px`, `${wide ? 277 : 214}±1`,
-    Math.abs(freed - (wide ? 277 : 214)) <= 1);
-  check(view, 'collapsed.overflow', col.overflow, '≤0', col.overflow <= 0);
+  await collapse(tab);
+  await tab.waitForTimeout(350);
+  const dc = await tab.evaluate(measureCollapsed);
+  check(view, 'dcoll.theme', dc.theme, 'dark', dc.theme === 'dark');
+  assertCollapsed(view, dc, width, 'dcoll.', got.workspace.x - dc.workspace.x);
   await ctx.close();
 }
 

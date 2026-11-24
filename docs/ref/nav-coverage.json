@@ -20,110 +20,110 @@
   {
    "view": "1024x600",
    "theme": "light",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1024x768",
    "theme": "light",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1100x800",
    "theme": "light",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1280x600",
    "theme": "light",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1280x800",
    "theme": "light",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1366x768",
    "theme": "light",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1440x900",
    "theme": "light",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1600x900",
    "theme": "light",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1700x1040",
    "theme": "light",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1024x600/dark",
    "theme": "dark",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1024x768/dark",
    "theme": "dark",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1100x800/dark",
    "theme": "dark",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1280x600/dark",
    "theme": "dark",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1280x800/dark",
    "theme": "dark",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1366x768/dark",
    "theme": "dark",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1440x900/dark",
    "theme": "dark",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1600x900/dark",
    "theme": "dark",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   },
   {
    "view": "1700x1040/dark",
    "theme": "dark",
-   "pass": 20,
-   "total": 20
+   "pass": 21,
+   "total": 21
   }
  ],
  "score": 100,
@@ -389,6 +389,19 @@
    "error": null
   },
   {
+   "id": "footer:restore@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1024x768",
    "view": "1024x768",
    "theme": "light",
@@ -645,6 +658,19 @@
    "want": "nav→no→nav",
    "active": "-",
    "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "footer:restore@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
    "ok": true,
    "error": null
   },
@@ -909,6 +935,19 @@
    "error": null
   },
   {
+   "id": "footer:restore@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1280x600",
    "view": "1280x600",
    "theme": "light",
@@ -1165,6 +1204,19 @@
    "want": "nav→no→nav",
    "active": "-",
    "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "footer:restore@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
    "ok": true,
    "error": null
   },
@@ -1429,6 +1481,19 @@
    "error": null
   },
   {
+   "id": "footer:restore@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1366x768",
    "view": "1366x768",
    "theme": "light",
@@ -1685,6 +1750,19 @@
    "want": "nav→no→nav",
    "active": "-",
    "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "footer:restore@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
    "ok": true,
    "error": null
   },
@@ -1949,6 +2027,19 @@
    "error": null
   },
   {
+   "id": "footer:restore@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1600x900",
    "view": "1600x900",
    "theme": "light",
@@ -2205,6 +2296,19 @@
    "want": "nav→no→nav",
    "active": "-",
    "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "footer:restore@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
    "ok": true,
    "error": null
   },
@@ -2469,6 +2573,19 @@
    "error": null
   },
   {
+   "id": "footer:restore@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1024x600/dark",
    "view": "1024x600/dark",
    "theme": "dark",
@@ -2725,6 +2842,19 @@
    "want": "nav→no→nav",
    "active": "-",
    "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "footer:restore@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
    "ok": true,
    "error": null
   },
@@ -2989,6 +3119,19 @@
    "error": null
   },
   {
+   "id": "footer:restore@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1100x800/dark",
    "view": "1100x800/dark",
    "theme": "dark",
@@ -3245,6 +3388,19 @@
    "want": "nav→no→nav",
    "active": "-",
    "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "footer:restore@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
    "ok": true,
    "error": null
   },
@@ -3509,6 +3665,19 @@
    "error": null
   },
   {
+   "id": "footer:restore@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1280x800/dark",
    "view": "1280x800/dark",
    "theme": "dark",
@@ -3765,6 +3934,19 @@
    "want": "nav→no→nav",
    "active": "-",
    "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "footer:restore@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
    "ok": true,
    "error": null
   },
@@ -4029,6 +4211,19 @@
    "error": null
   },
   {
+   "id": "footer:restore@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1440x900/dark",
    "view": "1440x900/dark",
    "theme": "dark",
@@ -4285,6 +4480,19 @@
    "want": "nav→no→nav",
    "active": "-",
    "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "footer:restore@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
    "ok": true,
    "error": null
   },
@@ -4549,6 +4757,19 @@
    "error": null
   },
   {
+   "id": "footer:restore@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "overview@1700x1040/dark",
    "view": "1700x1040/dark",
    "theme": "dark",
@@ -4805,6 +5026,19 @@
    "want": "nav→no→nav",
    "active": "-",
    "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "footer:restore@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "restore:settings",
+   "hash": "#/settings",
+   "title": "设置",
+   "want": "设置",
+   "active": true,
+   "hit": true,
    "ok": true,
    "error": null
   }

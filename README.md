@@ -105,8 +105,8 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 |---|---|---|
 | 桌面结构 | `node scripts/structure_parity.mjs` | 59/59 |
 | 桌面视觉 | `node scripts/visual_parity.mjs` | 215/215（100%） |
-| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 522/522（9 视口 × 浅/深色 × 展开/收起） |
-| 导航可达 | `node scripts/nav_coverage.mjs` | 160/160（4 视口 × 浅/深色 × 20，含命中测试） |
+| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 819/819（9 视口 × 浅/深色 × 展开/收起，收起态也跑整套外壳断言） |
+| 导航可达 | `node scripts/nav_coverage.mjs` | 168/168（4 视口 × 浅/深色 × 21，含命中测试与收起后还原） |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
@@ -121,9 +121,9 @@ node scripts/mobile_parity.mjs                 # 默认 http://127.0.0.1:8891，
 四个脚本可以直接指向线上容器，不必先起 demo：
 
 ```bash
-node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 522/522
+node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 819/819
 node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
-node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 160/160（逐视口点侧栏项 + 命中测试）
+node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 168/168（逐视口点侧栏项 + 命中测试）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 ```
 
@@ -134,16 +134,17 @@ node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 
 ### 导航可达性口径
 
-`nav_coverage.mjs` 默认跑 4 个桌面视口（1688×1028 / 1366×768 / 1100×800 / 1024×768），每个视口把侧栏 18 个页面项全点一遍（`hash`、顶栏标题对得上方算过、不许蹦错误边界），外加折叠夹收起/展开与「收起导航栏」。矮窗下侧栏要靠滚动，所以每项先 `scrollIntoView` 再做**命中测试**：行框中心点 `elementFromPoint` 必须落回该项自己，且整行落在 `<nav>`（页脚项则用 `[data-nav-footer]`）可视区内 —— 挡住「JS click 能过、人点不到」。每档视口默认再跑一遍**深色主题**（`localStorage.vrc-theme=dark`）：点得到、标题对、折叠夹收放、收起导航栏回升，主题下同样成立；`NAV_THEME=light` 只跑浅色。`NAV_VIEWS=all` 跑 9 个视口（与 `frame_parity` 同口径，含 1024×600 / 1280×600 两档矮窗，360/360），`NAV_VIEWS=1688x1028,1440x900` 自定义。
+`nav_coverage.mjs` 默认跑 4 个桌面视口（1688×1028 / 1366×768 / 1100×800 / 1024×768），每个视口把侧栏 18 个页面项全点一遍（`hash`、顶栏标题对得上方算过、不许蹦错误边界），外加折叠夹收起/展开、「收起导航栏」以及收起后**再展开还原**（当前页那一项仍高亮、仍过命中测试、再点不换页）。矮窗下侧栏要靠滚动，所以每项先 `scrollIntoView` 再做**命中测试**：行框中心点 `elementFromPoint` 必须落回该项自己，且整行落在 `<nav>`（页脚项则用 `[data-nav-footer]`）可视区内 —— 挡住「JS click 能过、人点不到」。每档视口默认再跑一遍**深色主题**（`localStorage.vrc-theme=dark`）：点得到、标题对、折叠夹收放、收起导航栏回升，主题下同样成立；`NAV_THEME=light` 只跑浅色。`NAV_VIEWS=all` 跑 9 个视口（与 `frame_parity` 同口径，含 1024×600 / 1280×600 两档矮窗，378/378），`NAV_VIEWS=1688x1028,1440x900` 自定义。
 
 ### 框架状态的两种额外形态
 
 `frame_parity` 除默认「浅色 + 侧栏展开」外，同一批 9 个视口再跑两轮：
 
 - **深色主题**（`localStorage.vrc-theme=dark`）：跑与浅色**同一套** `assertFrame` —— 侧栏 214|277、顶栏 39、状态栏 35、导航行 36/31、文本列 30、页脚两项可见且不被状态栏盖、状态栏 4 项（x=10 / 间距 23）、右栏只在 ≥1440 出现、顶栏右簇间距（kbd 34 / 22 / 15 / 3×24 pitch40 / 末项 8）、内容 ≥720、无横向溢出 —— 切主题只许改色，几何漂移一律算回归。
-- **收起侧栏**（点 `nav-collapse`）：侧栏整列消失、顶栏展开按钮可见、顶栏/状态栏不变高、内容区恰好让出 214|277px、无横向溢出。
+- **收起侧栏**（点 `nav-collapse`）：侧栏整列消失、顶栏展开按钮可见、内容区恰好让出 214|277px、无横向溢出；**同一套 `assertChrome` 也跑一遍**（顶栏 39 / 状态栏 35 与 4 项项距 23 / 顶栏右簇 kbd 34 · 22 · 15 · 3×24 pitch40 · 末项 8 / 右栏显隐 / 内容 ≥720）——收起后顶栏簇错位、状态栏少一项这类问题，此前只在展开态才量得到。
+- **收起态跑两遍**：浅色收起（第一轮页面上直接收起，不必重载）与深色收起（组合态），主题与折叠互不影响几何。
 
-深色轮 24 项、收起轮 6 项，各 × 9 视口；加上主轮（6 页溢出 + 22 项几何），共 522 项。右栏在 `friends` 页刻意不渲染（`App.jsx: roster && page !== 'friends'`），所以外壳量测固定停在 `settings`。600 高的两档矮窗（1024×600 / 1280×600）单列进来，因为导航 21 行 × 40 = 840 远超可用高，是「行高被 flex 压扁」最容易复发的区间。
+主轮 28 项（6 页溢出 + 22 项几何）× 9 视口，浅色收起 19、深色 24、深色收起 20，共 819 项。右栏在 `friends` 页刻意不渲染（`App.jsx: roster && page !== 'friends'`），所以外壳量测固定停在 `settings`。600 高的两档矮窗（1024×600 / 1280×600）单列进来，因为导航 21 行 × 40 = 840 远超可用高，是「行高被 flex 压扁」最容易复发的区间。
 
 ### 已知形态差（不进 FAIL）
 

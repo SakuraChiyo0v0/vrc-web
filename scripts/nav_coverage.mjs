@@ -135,11 +135,15 @@ for (const [width, height] of VIEWS) {
       title: `${fold.before}→${fold.closed}→${fold.reopened}`, want: 'N→0→N', active: '-', hit: '-',
       ok: fold.before > 0 && fold.closed === 0 && fold.reopened === fold.before, error: null
     });
-    // 188 SidebarFooter「收起导航栏」：点了侧栏消失、顶栏出展开按钮、再点回来（状态存 localStorage）
+    // SidebarFooter「收起导航栏」：点了侧栏消失、顶栏出展开按钮、再点回来（状态存 localStorage）；
+    // 回来后当前页那一项必须仍高亮、仍点得到，再点一次页面不变（收起再展开不该丢位置）。
     const collapse = await page.evaluate(async () => {
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       const btn = document.querySelector('[data-testid="nav-collapse"]');
-      if (!btn) return { before: true, afterClick: true, expandBtn: false, afterExpand: false, stored: null };
+      const curId = (location.hash.match(/^#\/([\w-]+)/) ?? [])[1] ?? '';
+      const curTitle = document.querySelector('#vrc-topbar h1')?.textContent?.trim() ?? '';
+      const back = { found: false, active: false, hit: false, hash: location.hash, title: '' };
+      if (!btn) return { before: true, afterClick: true, expandBtn: false, afterExpand: false, stored: null, curId, curTitle, back };
       const before = !!document.querySelector('aside.vrc-sidebar');
       btn.click();
       await wait(250);
@@ -147,15 +151,36 @@ for (const [width, height] of VIEWS) {
       const expandBtn = !!document.querySelector('[data-testid="nav-expand"]');
       const stored = localStorage.getItem('vrc-nav-collapsed');
       document.querySelector('[data-testid="nav-expand"]')?.click();
-      await wait(250);
+      await wait(300);
       const afterExpand = !!document.querySelector('aside.vrc-sidebar');
-      return { before, afterClick, expandBtn, afterExpand, stored };
+      const item = [...document.querySelectorAll('aside.vrc-sidebar [data-nav-id]')].find((el) => el.dataset.navId === curId);
+      if (item) {
+        back.found = true;
+        item.scrollIntoView({ block: 'nearest' });
+        await wait(120);
+        const b = item.getBoundingClientRect();
+        const t = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2);
+        back.active = item.dataset.active === 'true';
+        back.hit = !!t && (t === item || item.contains(t) || t.contains(item));
+        item.click();
+        await wait(400);
+        back.hash = location.hash;
+        back.title = document.querySelector('#vrc-topbar h1')?.textContent?.trim() ?? '';
+      }
+      return { before, afterClick, expandBtn, afterExpand, stored, curId, curTitle, back };
     });
     push({
       id: `footer:collapse@${view}`, view, theme, nav: 'footer:collapse', hash: '-',
       title: `${collapse.before ? 'nav' : 'no'}→${collapse.afterClick ? 'nav' : 'no'}→${collapse.afterExpand ? 'nav' : 'no'}`,
       want: 'nav→no→nav', active: '-', hit: '-',
       ok: collapse.before && !collapse.afterClick && collapse.expandBtn && collapse.afterExpand && collapse.stored === '1',
+      error: null
+    });
+    const bk = collapse.back;
+    push({
+      id: `footer:restore@${view}`, view, theme, nav: `restore:${collapse.curId}`, hash: bk.hash,
+      title: bk.title, want: collapse.curTitle, active: bk.active, hit: bk.hit,
+      ok: !!collapse.curId && bk.found && bk.active && bk.hit && bk.hash === `#/${collapse.curId}` && bk.title === collapse.curTitle,
       error: null
     });
   } finally {
