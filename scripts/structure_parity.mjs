@@ -50,8 +50,32 @@ async function go(page, want = {}) {
     await p.waitForTimeout(2000);
     got = await probeMain(p);
   }
-  // 表页首屏「有骨架没行」（冷启动接口慢）也不是结构差异：重载一次再量
+  // 表页首屏「有骨架没行」（冷启动接口慢）也不是结构差异：先等 tbody 出第一行再量，
+  // 仍 0 才重载一次。第 33 轮 structure 段在 regress 冷启动时量到 [friendlist] 一屏行数 0，
+  // 单跑同一页面却是 20 行——接口 0.4s 就有数据，纯粹是固定 1200ms 等不到首屏接口。
+  if (want.rows_visible) {
+    const hasRow = () => p.evaluate(() => {
+      const m = document.querySelector('.workspace') || document.querySelector('main') || document.body;
+      return m.querySelectorAll('tbody tr').length > 0;
+    }).catch(() => false);
+    if (!(await hasRow())) {
+      await p.waitForFunction(() => {
+        const m = document.querySelector('.workspace') || document.querySelector('main') || document.body;
+        return m.querySelectorAll('tbody tr').length > 0;
+      }, null, { timeout: 20000 }).catch(() => {});
+      await p.waitForTimeout(400);
+      got = await probeMain(p);
+    }
+  }
   if (want.rows_visible && got.rows === 0) {
+    const api = await p.evaluate(async (base) => {
+      try {
+        const r = await fetch(`${base}/api/friend-list?limit=2000&sort=last_seen&page_size=20&page=1`);
+        const j = await r.json().catch(() => null);
+        return { status: r.status, friends: j?.friends?.length ?? null, total: j?.total ?? null };
+      } catch (e) { return { status: 'fetch-error', err: String(e).slice(0, 80) }; }
+    }, BASE).catch(() => null);
+    console.log(`  [${page}] 表页 0 行，重载一次；/api/friend-list → ${JSON.stringify(api)}`);
     await p.reload({ waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
     await p.waitForTimeout(2500);
     got = await probeMain(p);
