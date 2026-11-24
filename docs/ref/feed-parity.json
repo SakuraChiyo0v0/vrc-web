@@ -1,0 +1,408 @@
+{
+ "base": "http://127.0.0.1:8891",
+ "viewport": {
+  "width": 1688,
+  "height": 1028
+ },
+ "at": "2026-11-24T17:52:35.491Z",
+ "ref": "docs/ref/feed-measure.json",
+ "pass": 14,
+ "total": 14,
+ "rows": [
+  {
+   "name": "列名/列序",
+   "got": "时间/玩家/类型/详细信息",
+   "want": "时间/玩家/类型/详细信息",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "无头像列",
+   "got": "0",
+   "want": "0",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "表头高",
+   "got": "44",
+   "want": "44",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "行高",
+   "got": "44",
+   "want": "44",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "列文字起点(相对面板)",
+   "got": "77/181/380/549",
+   "want": "78/184/382/551",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "表格右缘留白",
+   "got": "353",
+   "want": "358",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "工具条单行",
+   "got": "0",
+   "want": "≤2",
+   "ok": true,
+   "extra": "高 54"
+  },
+  {
+   "name": "工具条含类型下拉+搜索",
+   "got": "类型+搜索",
+   "want": "类型+搜索",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "无页脚",
+   "got": "无",
+   "want": "无",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "类型图标四类齐全",
+   "got": "online/offline/location/profile",
+   "want": "online/offline/location/profile",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "类型图标色互不相同",
+   "got": "4 色 / 4 种",
+   "want": "4 色 / 4 种",
+   "ok": true,
+   "extra": "rgb(63, 185, 80) rgb(139, 148, 158) rgb(47, 182, 168) rgb(163, 113, 247)"
+  },
+  {
+   "name": "区域码格式",
+   "got": "18 行全合法",
+   "want": "两位大写",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "访问级别文案",
+   "got": "18 行全合法",
+   "want": "公开/仅好友/好友+/群组公开",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "详细信息有世界名",
+   "got": "18/18",
+   "want": "全部",
+   "ok": true,
+   "extra": ""
+  }
+ ],
+ "measured": {
+  "panel": {
+   "x": 277,
+   "y": 39,
+   "w": 1398,
+   "h": 954,
+   "right": 1675
+  },
+  "table": {
+   "x": 296,
+   "y": 93,
+   "w": 1026,
+   "h": 1628,
+   "right": 1322
+  },
+  "cols": [
+   "时间",
+   "玩家",
+   "类型",
+   "详细信息"
+  ],
+  "headerH": 44,
+  "rowH": 44,
+  "rowHs": [
+   44
+  ],
+  "colTextX": [
+   77,
+   181,
+   380,
+   549
+  ],
+  "tableRightGap": 353,
+  "avatarCells": 0,
+  "footer": false,
+  "kinds": {
+   "online": {
+    "color": "rgb(63, 185, 80)",
+    "text": "▲上线",
+    "glyph": "▲"
+   },
+   "location": {
+    "color": "rgb(47, 182, 168)",
+    "text": "⌖位置变动",
+    "glyph": "⌖"
+   },
+   "status": {
+    "color": "oklch(0.4528 0 0)",
+    "text": "◌状态变动",
+    "glyph": "◌"
+   },
+   "offline": {
+    "color": "rgb(139, 148, 158)",
+    "text": "▼下线",
+    "glyph": "▼"
+   },
+   "profile": {
+    "color": "rgb(163, 113, 247)",
+    "text": "◉模型变动",
+    "glyph": "◉"
+   },
+   "active": {
+    "color": "rgb(201, 162, 39)",
+    "text": "◆活跃",
+    "glyph": "◆"
+   }
+  },
+  "details": [
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": "JP",
+    "name": "Alpha Club",
+    "access": "公开",
+    "text": "JPAlpha Club· 公开"
+   },
+   {
+    "region": "JP",
+    "name": "Alpha Club",
+    "access": "仅好友",
+    "text": "JPAlpha Club· 仅好友"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": "JP",
+    "name": "夜の喫茶店",
+    "access": "公开",
+    "text": "JP夜の喫茶店· 公开"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": "US",
+    "name": "Beta Lounge",
+    "access": "公开",
+    "text": "USBeta Lounge· 公开"
+   },
+   {
+    "region": "US",
+    "name": "Beta Lounge",
+    "access": "好友+",
+    "text": "USBeta Lounge· 好友+"
+   },
+   {
+    "region": "JP",
+    "name": "Alpha Club",
+    "access": "公开",
+    "text": "JPAlpha Club· 公开"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": "JP",
+    "name": "夜の喫茶店",
+    "access": "群组公开",
+    "text": "JP夜の喫茶店· 群组公开"
+   },
+   {
+    "region": "JP",
+    "name": "Alpha Club",
+    "access": "仅好友",
+    "text": "JPAlpha Club· 仅好友"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": "JP",
+    "name": "Alpha Club",
+    "access": "公开",
+    "text": "JPAlpha Club· 公开"
+   },
+   {
+    "region": "JP",
+    "name": "Alpha Club",
+    "access": "仅好友",
+    "text": "JPAlpha Club· 仅好友"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": "JP",
+    "name": "Beta Lounge",
+    "access": "群组公开",
+    "text": "JPBeta Lounge· 群组公开"
+   },
+   {
+    "region": "JP",
+    "name": "Alpha Club",
+    "access": "公开",
+    "text": "JPAlpha Club· 公开"
+   },
+   {
+    "region": "JP",
+    "name": "Beta Lounge",
+    "access": "群组公开",
+    "text": "JPBeta Lounge· 群组公开"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": "JP",
+    "name": "Alpha Club",
+    "access": "仅好友",
+    "text": "JPAlpha Club· 仅好友"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": "JP",
+    "name": "Alpha Club",
+    "access": "好友+",
+    "text": "JPAlpha Club· 好友+"
+   },
+   {
+    "region": "US",
+    "name": "Beta Lounge",
+    "access": "公开",
+    "text": "USBeta Lounge· 公开"
+   },
+   {
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "—"
+   },
+   {
+    "region": "JP",
+    "name": "夜の喫茶店",
+    "access": "公开",
+    "text": "JP夜の喫茶店· 公开"
+   },
+   {
+    "region": "JP",
+    "name": "夜の喫茶店",
+    "access": "公开",
+    "text": "JP夜の喫茶店· 公开"
+   }
+  ],
+  "toolbar": {
+   "x": 277,
+   "y": 39,
+   "w": 1045,
+   "h": 54,
+   "right": 1322
+  },
+  "toolbarRowSpread": 0,
+  "toolbarHasSelect": true,
+  "toolbarHasSearch": true,
+  "rows": 36
+ }
+}

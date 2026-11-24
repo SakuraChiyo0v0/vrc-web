@@ -99,7 +99,7 @@ cd web && npm run build && cd ..
 scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 ```
 
-七段全过才打印 `REGRESS OK 7/7`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
+八段全过才打印 `REGRESS OK 8/8`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
 
 | 环节 | 脚本 | 现在跑出来的数 |
 |---|---|---|
@@ -109,6 +109,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 导航可达 | `node scripts/nav_coverage.mjs` | 366/366（4 视口 × 浅/深色 × 45，含命中测试、折叠夹子项不可点/展开可点、展开按钮几何、reload 持久化、收起态 Ctrl+1..9 跳页、收起态 `?` 快捷键表跳页组 9 项且 Esc 关掉后仍收起、收起态 Ctrl K 命令面板打开/聚焦/不抢数字键/过滤归零/Esc 后仍收起/粘贴 wrld_ ID 回车开抽屉、展开态 Ctrl K 上下选/Enter 开抽屉/点遮罩关/鼠标点结果行/Esc 不改 hash、展开态 Ctrl+1..9 逐键跳页且当前项高亮、展开态 `?` 表且 Esc 后侧栏/高亮原样、展开态 reload 仍展开、收起侧栏 × 右栏折成 36 竖条互不干扰） |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
+| 动态页表格 | `node scripts/feed_parity.mjs` | 14/14（列名/列序、无头像列、表头行高 44、列文字起点、右缘留白、工具条单行、无页脚、类型四色互异、详细信息三段） |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
 端到端实测（第 31 轮，`cache/regress_all_r32.log`）：七段一次性全绿 `REGRESS OK 7/7`，frame 1932/1932、nav 366/366 在串行 regress 路径下同样不再崩。
@@ -139,6 +140,7 @@ node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
 node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 366/366（逐视口点侧栏项 + 命中测试）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 node scripts/grid_parity.mjs     http://172.30.0.7:8790/vrc/   # 60/60（.loc-grid 列数阶梯）
+node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 14/14（动态页表格，基线 docs/ref/feed-measure.json）
 ```
 
 两条硬规则（`scripts/lib/page_structure.mjs`）：

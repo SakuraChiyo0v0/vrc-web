@@ -10,3 +10,6 @@
 - [2026-11-24 20:30] 定位并修掉 1929/1932 的根因（不是右栏宽校验）：reloadVrc 等 waitUntil 'load'，demo 长连接让 load 永不落地 → 两次 60s 超时后页面仍是旧文档、#vrc-topbar h1 照旧在，调用方读到上一条用例的 353（exp.dirty.264/280 假 FAIL），run3 更是直接挂住 618s 无输出。改法：reload 只等 domcontentloaded(30s) + <html> dataset.reloadStamp 打戳验「文档真换新」，失败整页 goto 兜底（新增 reloadVrcHard）；frame 4 处 / nav 2 处全改 reloadVrcHard，checkRosterDirtyW 把 reload 新鲜度计入断言（detail 标 fresh/STALE）。证据：探针 cache/probes/dirty_reload.mjs 7 例全对、cache/probes/reload_stress.mjs 连刷 20 次 bad=0 maxMs=117（旧版 0.5s 且偶发卡死）；web npm test 48 pass。全量 frame_parity 尚未复跑（预算到顶）。
 
 - [2026-11-24 20:30] 下一步：① 后台单跑 frame_parity 期望 1932/1932 EXIT=0 且日志无 STALE；② 单跑 nav_coverage 期望 366/366；③ regress_all 取 REGRESS OK 7/7；④ README 数字同步 + 补「reload 别等 load」说明后提交（page_structure.mjs + frame_parity.mjs + nav_coverage.mjs + README）
+
+- [2026-11-25 00:50] 动态页表格做成常驻断言（第 34 轮）：新增 `scripts/feed_parity.mjs`（14 项，基线 docs/ref/feed-measure.json），实测 **14/14 · FEED OK · exit 0**（`cache/feed_r1.log`）：列文字起点 77/181/380/549 vs 真机 78/184/382/551、右缘留白 353 vs 358、表头/行高 44、类型四色互异。反向 `FEED_NEG=1`（注入行高 56 + padding 8）→ 11/14、NEG OK 被抓到（`cache/probes/feed_neg.log`）。`regress_all.sh` 加第八段 feed → `REGRESS OK 8/8`；README/docs 口径同步。
+- [2026-11-25 00:50] 下一步：等 `cache/regress_all_r41.log` 跑完确认 8/8，把实际末行写进 STATE 并提交（feed_parity.mjs + regress_all.sh + README + docs + STATE）。
