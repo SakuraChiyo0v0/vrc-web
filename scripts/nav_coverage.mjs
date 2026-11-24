@@ -6,7 +6,7 @@
  * 视口：默认 4 个桌面档 1688×1028 / 1366×768 / 1100×800 / 1024×768（矮窗下侧栏靠滚动，
  * 所以每项先 scrollIntoView 做**命中测试**：中心点 elementFromPoint 落在该项自己身上，
  * 且整行落在 <nav> 可视区内 —— 防「JS click 能过、人点不到」）。
- *   NAV_VIEWS=all                 → frame_parity 的 7 个视口
+ *   NAV_VIEWS=all                 → frame_parity 的 9 个视口（含 600 高两档）
  *   NAV_VIEWS=1688x1028,1440x900  → 自定义
  *
  * 断言「能到 + 标题对 + 点得到」；密度/像素交给 frame_parity.mjs。
@@ -30,7 +30,8 @@ const OUT = path.join(ROOT, 'docs/ref/nav-coverage.json');
 const EXE = process.env.CHROME_PATH
   || '/opt/data/cache/pw-browsers/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell';
 
-const ALL_VIEWS = [[1024, 768], [1100, 800], [1280, 800], [1366, 768], [1440, 900], [1600, 900], [1700, 1040]];
+// 与 frame_parity 同口径（含 600 高矮窗两档：导航必须靠滚动且每项仍点得到）
+const ALL_VIEWS = [[1024, 600], [1024, 768], [1100, 800], [1280, 600], [1280, 800], [1366, 768], [1440, 900], [1600, 900], [1700, 1040]];
 const DEFAULT_VIEWS = [[1688, 1028], [1366, 768], [1100, 800], [1024, 768]];
 const parseViews = (s) => s.split(',').map((v) => v.trim()).filter(Boolean)
   .map((v) => v.split('x').map(Number)).filter((v) => v.length === 2 && v.every(Number.isFinite));

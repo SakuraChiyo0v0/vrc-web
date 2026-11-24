@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T03:58:23.308Z",
- "base": "http://127.0.0.1:8891",
- "pass": 189,
- "total": 189,
+ "at": "2026-11-24T05:54:09.500Z",
+ "base": "http://127.0.0.1:8891/vrc",
+ "pass": 287,
+ "total": 287,
  "rows": [
   {
    "view": "1024x768",
@@ -1325,6 +1325,692 @@
    "name": "content.w",
    "ours": 1410,
    "want": "≥720",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.sidebar_w",
+   "ours": 214,
+   "want": 214,
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "collapsed.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "collapsed.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "collapsed.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "collapsed.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "collapsed.content_freed",
+   "ours": "214px",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "collapsed.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.sidebar_w",
+   "ours": 214,
+   "want": 214,
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "collapsed.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "collapsed.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "collapsed.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "collapsed.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "collapsed.content_freed",
+   "ours": "214px",
+   "want": "214±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "collapsed.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.sidebar_w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "collapsed.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "collapsed.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "collapsed.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "collapsed.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "collapsed.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "collapsed.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.sidebar_w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "collapsed.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "collapsed.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "collapsed.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "collapsed.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "collapsed.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "collapsed.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.sidebar_w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "collapsed.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "collapsed.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "collapsed.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "collapsed.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "collapsed.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "collapsed.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.sidebar_w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "collapsed.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "collapsed.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "collapsed.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "collapsed.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "collapsed.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "collapsed.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.theme",
+   "ours": "dark",
+   "want": "dark",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.sidebar_w",
+   "ours": 277,
+   "want": 277,
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.top_h",
+   "ours": "36",
+   "want": "36",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.sub_h",
+   "ours": "31",
+   "want": "31",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.text_col",
+   "ours": "top+30 / sub+30",
+   "want": "30±1 / 30±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.overflow",
+   "ours": 0,
+   "want": "≤0",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "collapsed.aside_gone",
+   "ours": "gone",
+   "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "collapsed.expand_btn",
+   "ours": "visible",
+   "want": "visible",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "collapsed.topbar_h",
+   "ours": 39,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "collapsed.statusbar_h",
+   "ours": 35,
+   "want": "35±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "collapsed.content_freed",
+   "ours": "277px",
+   "want": "277±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "collapsed.overflow",
+   "ours": 0,
+   "want": "≤0",
    "ok": true
   }
  ]

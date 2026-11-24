@@ -1357,7 +1357,7 @@ html[data-phone='1'] #root {
 }
 .loc-caret { flex: none; color: var(--content-tertiary); transition: transform .15s; }
 .loc-caret[data-open='true'] { transform: rotate(90deg); }
-.loc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.loc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
 /* 卡片本体：注意它同时带 .friend-row（旧测试/截图脚本的选择器），这里把行样式整体覆盖成卡片。
  * 真机裁图（docs/ref/vrcx0-locations.png 283,80 起放大）确认：白底卡片 + 1px 浅灰边框 + 圆角，
  * 头像为正圆（不是圆角方形）。 */
@@ -1381,15 +1381,12 @@ html[data-phone='1'] #root {
 .loc-star { flex: none; font-size: 11px; color: var(--status-joinme); }
 .loc-dur { color: var(--content-tertiary); }
 .loc-world { min-width: 0; display: flex; align-items: center; gap: 4px; color: var(--content-tertiary); line-height: 1.35; }
+.loc-world > .chip, .loc-world > .tag, .loc-world > [data-region] { flex: none; }
 .loc-status {
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   color: var(--content-secondary);
 }
 /* 真机 1688 宽窗口、内容 1398 → 6 列（一屏 12 张卡按 6+6 铺）；窗口变窄按 5/4/3 列递减 */
-@media (min-width: 1024px) { .loc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 1000px) { .loc-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (min-width: 1200px) { .loc-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
-@media (min-width: 1450px) { .loc-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 @media (max-width: 1023px), (max-height: 500px) {
   .loc-card { height: auto; min-height: 76px; }
   .loc-card .avatar { width: 40px; height: 40px; }

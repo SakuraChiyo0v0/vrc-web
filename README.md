@@ -105,7 +105,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 |---|---|---|
 | 桌面结构 | `node scripts/structure_parity.mjs` | 59/59 |
 | 桌面视觉 | `node scripts/visual_parity.mjs` | 215/215（100%） |
-| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 189/189 |
+| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 287/287（浅/深色 + 侧栏展开/收起） |
 | 导航可达 | `node scripts/nav_coverage.mjs` | 80/80（4 视口 × 20，含命中测试） |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 前端单测 | `cd web && npm test` | 48 pass |
@@ -121,7 +121,7 @@ node scripts/mobile_parity.mjs                 # 默认 http://127.0.0.1:8891，
 四个脚本可以直接指向线上容器，不必先起 demo：
 
 ```bash
-node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 189/189
+node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 287/287
 node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
 node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 80/80（逐视口点侧栏项 + 命中测试）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
@@ -135,6 +135,15 @@ node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 ### 导航可达性口径
 
 `nav_coverage.mjs` 默认跑 4 个桌面视口（1688×1028 / 1366×768 / 1100×800 / 1024×768），每个视口把侧栏 18 个页面项全点一遍（`hash`、顶栏标题对得上方算过、不许蹦错误边界），外加折叠夹收起/展开与「收起导航栏」。矮窗下侧栏要靠滚动，所以每项先 `scrollIntoView` 再做**命中测试**：行框中心点 `elementFromPoint` 必须落回该项自己，且整行落在 `<nav>`（页脚项则用 `[data-nav-footer]`）可视区内 —— 挡住「JS click 能过、人点不到」。`NAV_VIEWS=all` 跑 7 个视口（与 `frame_parity` 同口径，140/140），`NAV_VIEWS=1688x1028,1440x900` 自定义。
+
+### 框架状态的两种额外形态
+
+`frame_parity` 除默认「浅色 + 侧栏展开」外，同一批 7 个视口再跑两轮：
+
+- **深色主题**（`localStorage.vrc-theme=dark`）：顶栏 39 / 状态栏 35 / 侧栏 214|277 / 顶层行 36 / 二级行 31 / 文本列 30 与浅色完全一致，且无横向溢出 —— 切主题不许改动布局几何。
+- **收起侧栏**（点 `nav-collapse`）：侧栏整列消失、顶栏展开按钮可见、顶栏/状态栏不变高、内容区恰好让出 214|277px、无横向溢出。
+
+两轮各 7 项 × 7 视口，总 287 项。
 
 ### 已知形态差（不进 FAIL）
 

@@ -3,7 +3,8 @@
  *
  *   node scripts/frame_parity.mjs [baseUrl]
  *
- * 覆盖 7 个桌面视口 1024×768 / 1100×800 / 1280×800 / 1366×768 / 1440×900 / 1600×900 / 1700×1040。
+ * 覆盖 9 个桌面视口 1024×600 / 1024×768 / 1100×800 / 1280×600 / 1280×800 / 1366×768 /
+ * 1440×900 / 1600×900 / 1700×1040（600 高两档专测「装不下时靠滚动、行高不被压扁」）。
  *
  * 断言（全部是本仓库对外壳的既定契约，数来自真机量测 docs/ref/vrcx0-spec.json chrome 与实测）：
  *   1) 侧栏宽度分两档：1024–1279 → 214；≥1280 → 277（真机）。顶栏 39 / 状态栏 35。
@@ -19,6 +20,12 @@
  *      kbd 宽 34、kbd→图标组 22、图标组→窗口控制 15、窗口控制 3×24 pitch 40、末项距右缘 8。
  *      注：真机 Ctrl K 绝对 x=1307 是在 1689 宽的截图上量的，契约视口是 1700，
  *      差 11px 属窗口宽度差（不是布局差），所以这里只锁间距不锁绝对 x。
+ *
+ * 9) 深色主题（vrc-theme=dark）下几何与浅色一致：顶栏 39 / 状态栏 35 / 侧栏 214|277 /
+ *    顶层 36 / 二级 31 / 文本列 30（顶层与二级相同）、无横向溢出。
+ * 10) 收起侧栏（vrc-nav-collapsed）后：侧栏整列消失、顶栏出现展开按钮、顶栏/状态栏不变高、
+ *    内容区让出整列（214|277）、无横向溢出。
+ *    9/10 是框架的另外两种状态：此前只量「浅色 + 展开」，切主题或收起后布局塌了也量不到。
  *
  * 任一 FAIL 退出码 1；全 PASS 打印 FRAME OK，并把结果写 docs/ref/frame-parity.json。
  */
@@ -39,7 +46,9 @@ const OUT = path.join(ROOT, 'docs/ref/frame-parity.json');
 const EXE = process.env.CHROME_PATH
   || '/opt/data/cache/pw-browsers/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell';
 
-const VIEWS = [[1024, 768], [1100, 800], [1280, 800], [1366, 768], [1440, 900], [1600, 900], [1700, 1040]];
+// 矮窗两档（600 高）单列：导航 21 行 × 40 = 840 远超可用高，必须靠 <nav> 滚动而不是压扁行高。
+// 这是 1366×768 行高 36→23 那类回归最容易复发的区间。
+const VIEWS = [[1024, 600], [1024, 768], [1100, 800], [1280, 600], [1280, 800], [1366, 768], [1440, 900], [1600, 900], [1700, 1040]];
 const PAGES = ['friends', 'feed', 'friendlist', 'gamelog', 'worlds', 'settings'];
 
 const rows = [];
@@ -181,6 +190,84 @@ for (const [width, height] of VIEWS) {
     tb.winCount === 3 && tb.winW === 24 && tb.winPitch === 40 && Math.abs(tb.winLastRel - 8) <= 1);
   check(view, 'content.w', Math.round(got.workspace.w), '≥720', got.workspace.w >= 720);
   await tab.close();
+}
+
+// ── 第二轮：深色主题 + 收起侧栏 ──────────────────────────────────────────────
+// 框架的另两种状态。上一轮只量默认浅色 + 侧栏展开，于是「切深色后侧栏变宽/行高缩水」和
+// 「收起侧栏后内容没让出宽度、顶栏/状态栏变高」这两类回归都量不到。几何与浅色展开态同口径。
+for (const [width, height] of VIEWS) {
+  const view = `${width}x${height}`;
+  const wide = width >= 1280;
+  const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1 });
+  // 主题存 localStorage（vrc-theme），导航收起态存 vrc-nav-collapsed
+  await ctx.addInitScript(() => { try { localStorage.setItem('vrc-theme', 'dark'); } catch {} });
+  const tab = await ctx.newPage();
+  await gotoVrc(tab, `${PAGE}#/friends`);
+  await tab.waitForSelector('aside.vrc-sidebar [data-nav-id]', { timeout: 30_000 });
+  await tab.waitForTimeout(400);
+  await assertVrcPage(tab, `dark@${view}`);
+
+  const dark = await tab.evaluate(() => {
+    const aside = document.querySelector('aside.vrc-sidebar');
+    const nav = aside?.querySelector('nav');
+    const top = aside?.querySelector('[data-nav-kind="top"]');
+    const sub = aside?.querySelector('[data-nav-kind="sub"]');
+    const rowH = (el) => (el ? Math.round(el.getBoundingClientRect().height) : null);
+    const hs = (sel) => [...new Set([...(aside?.querySelectorAll(sel) ?? [])]
+      .map((el) => Math.round(el.getBoundingClientRect().height)))];
+    // 文本列：行内第二个 span 的左端相对行左端（顶层/二级同为 30 = 图标列 14 + gap 8 + 行内 padding 8）
+    const textCol = (el) => {
+      const b = el?.querySelectorAll('span')?.[1]?.getBoundingClientRect();
+      return b ? Math.round(b.left - el.getBoundingClientRect().left) : null;
+    };
+    return {
+      theme: document.documentElement.dataset.theme ?? '',
+      topbarH: Math.round(document.querySelector('#vrc-topbar')?.getBoundingClientRect().height ?? 0),
+      statusbarH: Math.round(document.querySelector('#vrc-statusbar')?.getBoundingClientRect().height ?? 0),
+      sidebarW: Math.round(aside?.getBoundingClientRect().width ?? 0),
+      topH: hs('[data-nav-kind="top"]'),
+      subH: hs('[data-nav-kind="sub"]'),
+      textTop: textCol(top),
+      textSub: textCol(sub),
+      overflow: document.documentElement.scrollWidth - window.innerWidth,
+      workspaceX: Math.round(document.querySelector('.workspace')?.getBoundingClientRect().x ?? -1)
+    };
+  });
+  check(view, 'dark.theme', dark.theme, 'dark', dark.theme === 'dark');
+  check(view, 'dark.topbar_h', dark.topbarH, '39±1', Math.abs(dark.topbarH - 39) <= 1);
+  check(view, 'dark.statusbar_h', dark.statusbarH, '35±1', Math.abs(dark.statusbarH - 35) <= 1);
+  check(view, 'dark.sidebar_w', dark.sidebarW, wide ? 277 : 214, Math.abs(dark.sidebarW - (wide ? 277 : 214)) <= 1);
+  check(view, 'dark.nav.top_h', dark.topH.join(','), '36', dark.topH.length === 1 && dark.topH[0] === 36);
+  check(view, 'dark.nav.sub_h', dark.subH.join(','), '31', dark.subH.length === 1 && dark.subH[0] === 31);
+  check(view, 'dark.nav.text_col', `top+${dark.textTop} / sub+${dark.textSub}`, '30±1 / 30±1',
+    dark.textTop !== null && Math.abs(dark.textTop - 30) <= 1 && dark.textSub !== null && Math.abs(dark.textSub - 30) <= 1);
+  check(view, 'dark.overflow', dark.overflow, '≤0', dark.overflow <= 0);
+
+  // 收起侧栏：整列（214/277）让给内容，顶栏/状态栏不变高，顶栏出现的展开按钮可见
+  const col = await tab.evaluate(async () => {
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    document.querySelector('[data-testid="nav-collapse"]')?.click();
+    await wait(350);
+    const ws = document.querySelector('.workspace')?.getBoundingClientRect();
+    return {
+      asideGone: !document.querySelector('aside.vrc-sidebar'),
+      expand: !!document.querySelector('[data-testid="nav-expand"]')
+        && document.querySelector('[data-testid="nav-expand"]').getBoundingClientRect().width > 1,
+      topbarH: Math.round(document.querySelector('#vrc-topbar')?.getBoundingClientRect().height ?? 0),
+      statusbarH: Math.round(document.querySelector('#vrc-statusbar')?.getBoundingClientRect().height ?? 0),
+      workspaceX: Math.round(ws?.x ?? -1),
+      overflow: document.documentElement.scrollWidth - window.innerWidth
+    };
+  });
+  const freed = dark.workspaceX - col.workspaceX;
+  check(view, 'collapsed.aside_gone', col.asideGone ? 'gone' : 'still there', 'gone', col.asideGone);
+  check(view, 'collapsed.expand_btn', col.expand ? 'visible' : 'missing', 'visible', col.expand);
+  check(view, 'collapsed.topbar_h', col.topbarH, '39±1', Math.abs(col.topbarH - 39) <= 1);
+  check(view, 'collapsed.statusbar_h', col.statusbarH, '35±1', Math.abs(col.statusbarH - 35) <= 1);
+  check(view, 'collapsed.content_freed', `${freed}px`, `${wide ? 277 : 214}±1`,
+    Math.abs(freed - (wide ? 277 : 214)) <= 1);
+  check(view, 'collapsed.overflow', col.overflow, '≤0', col.overflow <= 0);
+  await ctx.close();
 }
 
 await browser.close();
