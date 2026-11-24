@@ -56,20 +56,20 @@
   {
    "view": "1440x900",
    "theme": "light",
-   "pass": 45,
-   "total": 45
+   "pass": 48,
+   "total": 48
   },
   {
    "view": "1600x900",
    "theme": "light",
-   "pass": 45,
-   "total": 45
+   "pass": 48,
+   "total": 48
   },
   {
    "view": "1700x1040",
    "theme": "light",
-   "pass": 45,
-   "total": 45
+   "pass": 48,
+   "total": 48
   },
   {
    "view": "1024x600/dark",
@@ -110,20 +110,20 @@
   {
    "view": "1440x900/dark",
    "theme": "dark",
-   "pass": 45,
-   "total": 45
+   "pass": 48,
+   "total": 48
   },
   {
    "view": "1600x900/dark",
    "theme": "dark",
-   "pass": 45,
-   "total": 45
+   "pass": 48,
+   "total": 48
   },
   {
    "view": "1700x1040/dark",
    "theme": "dark",
-   "pass": 45,
-   "total": 45
+   "pass": 48,
+   "total": 48
   }
  ],
  "score": 100,
@@ -4081,6 +4081,45 @@
    "error": null
   },
   {
+   "id": "rail:collapsed_strip@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "rail:collapsed_strip",
+   "hash": "-",
+   "title": "w353→36 collapsed=true asideGone=true",
+   "want": "右栏折成 36 竖条、手柄消失、内容列接过 353−36、侧栏仍收起、无溢出、折叠态落盘",
+   "active": "menuHit=true content 1074→1391 ws1427 ovf0 stored=1",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_toggle@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "rail:strip_toggle",
+   "hash": "-",
+   "title": "off:present=false on:w36/36 collapsed=true",
+   "want": "顶栏关掉→整条栏消失且内容列填满；开回来仍是 36 竖条、内容列回原值、无溢出",
+   "active": "btnHit=true off.content 1427/1427 on.content 1391/1391 ovf 0/0",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_unfold@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "rail:strip_unfold",
+   "hash": "-",
+   "title": "‹ → w353 collapsed=false handle=present",
+   "want": "点 ‹ 展开回 353、手柄回来、侧栏仍收起、无溢出",
+   "active": "content 1074 ovf0",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1440x900",
    "view": "1440x900",
    "theme": "light",
@@ -4666,6 +4705,45 @@
    "error": null
   },
   {
+   "id": "rail:collapsed_strip@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "rail:collapsed_strip",
+   "hash": "-",
+   "title": "w353→36 collapsed=true asideGone=true",
+   "want": "右栏折成 36 竖条、手柄消失、内容列接过 353−36、侧栏仍收起、无溢出、折叠态落盘",
+   "active": "menuHit=true content 1234→1551 ws1587 ovf0 stored=1",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_toggle@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "rail:strip_toggle",
+   "hash": "-",
+   "title": "off:present=false on:w36/36 collapsed=true",
+   "want": "顶栏关掉→整条栏消失且内容列填满；开回来仍是 36 竖条、内容列回原值、无溢出",
+   "active": "btnHit=true off.content 1587/1587 on.content 1551/1551 ovf 0/0",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_unfold@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "rail:strip_unfold",
+   "hash": "-",
+   "title": "‹ → w353 collapsed=false handle=present",
+   "want": "点 ‹ 展开回 353、手柄回来、侧栏仍收起、无溢出",
+   "active": "content 1234 ovf0",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1600x900",
    "view": "1600x900",
    "theme": "light",
@@ -5246,6 +5324,45 @@
    "title": "expand → #/friendlog active",
    "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
    "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:collapsed_strip@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "rail:collapsed_strip",
+   "hash": "-",
+   "title": "w353→36 collapsed=true asideGone=true",
+   "want": "右栏折成 36 竖条、手柄消失、内容列接过 353−36、侧栏仍收起、无溢出、折叠态落盘",
+   "active": "menuHit=true content 1334→1651 ws1687 ovf0 stored=1",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_toggle@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "rail:strip_toggle",
+   "hash": "-",
+   "title": "off:present=false on:w36/36 collapsed=true",
+   "want": "顶栏关掉→整条栏消失且内容列填满；开回来仍是 36 竖条、内容列回原值、无溢出",
+   "active": "btnHit=true off.content 1687/1687 on.content 1651/1651 ovf 0/0",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_unfold@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "rail:strip_unfold",
+   "hash": "-",
+   "title": "‹ → w353 collapsed=false handle=present",
+   "want": "点 ‹ 展开回 353、手柄回来、侧栏仍收起、无溢出",
+   "active": "content 1334 ovf0",
    "hit": "-",
    "ok": true,
    "error": null
@@ -9346,6 +9463,45 @@
    "error": null
   },
   {
+   "id": "rail:collapsed_strip@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "rail:collapsed_strip",
+   "hash": "-",
+   "title": "w353→36 collapsed=true asideGone=true",
+   "want": "右栏折成 36 竖条、手柄消失、内容列接过 353−36、侧栏仍收起、无溢出、折叠态落盘",
+   "active": "menuHit=true content 1074→1391 ws1427 ovf0 stored=1",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_toggle@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "rail:strip_toggle",
+   "hash": "-",
+   "title": "off:present=false on:w36/36 collapsed=true",
+   "want": "顶栏关掉→整条栏消失且内容列填满；开回来仍是 36 竖条、内容列回原值、无溢出",
+   "active": "btnHit=true off.content 1427/1427 on.content 1391/1391 ovf 0/0",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_unfold@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "rail:strip_unfold",
+   "hash": "-",
+   "title": "‹ → w353 collapsed=false handle=present",
+   "want": "点 ‹ 展开回 353、手柄回来、侧栏仍收起、无溢出",
+   "active": "content 1074 ovf0",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1440x900/dark",
    "view": "1440x900/dark",
    "theme": "dark",
@@ -9931,6 +10087,45 @@
    "error": null
   },
   {
+   "id": "rail:collapsed_strip@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "rail:collapsed_strip",
+   "hash": "-",
+   "title": "w353→36 collapsed=true asideGone=true",
+   "want": "右栏折成 36 竖条、手柄消失、内容列接过 353−36、侧栏仍收起、无溢出、折叠态落盘",
+   "active": "menuHit=true content 1234→1551 ws1587 ovf0 stored=1",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_toggle@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "rail:strip_toggle",
+   "hash": "-",
+   "title": "off:present=false on:w36/36 collapsed=true",
+   "want": "顶栏关掉→整条栏消失且内容列填满；开回来仍是 36 竖条、内容列回原值、无溢出",
+   "active": "btnHit=true off.content 1587/1587 on.content 1551/1551 ovf 0/0",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_unfold@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "rail:strip_unfold",
+   "hash": "-",
+   "title": "‹ → w353 collapsed=false handle=present",
+   "want": "点 ‹ 展开回 353、手柄回来、侧栏仍收起、无溢出",
+   "active": "content 1234 ovf0",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1600x900/dark",
    "view": "1600x900/dark",
    "theme": "dark",
@@ -10511,6 +10706,45 @@
    "title": "expand → #/friendlog active",
    "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
    "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:collapsed_strip@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "rail:collapsed_strip",
+   "hash": "-",
+   "title": "w353→36 collapsed=true asideGone=true",
+   "want": "右栏折成 36 竖条、手柄消失、内容列接过 353−36、侧栏仍收起、无溢出、折叠态落盘",
+   "active": "menuHit=true content 1334→1651 ws1687 ovf0 stored=1",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_toggle@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "rail:strip_toggle",
+   "hash": "-",
+   "title": "off:present=false on:w36/36 collapsed=true",
+   "want": "顶栏关掉→整条栏消失且内容列填满；开回来仍是 36 竖条、内容列回原值、无溢出",
+   "active": "btnHit=true off.content 1687/1687 on.content 1651/1651 ovf 0/0",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "rail:strip_unfold@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "rail:strip_unfold",
+   "hash": "-",
+   "title": "‹ → w353 collapsed=false handle=present",
+   "want": "点 ‹ 展开回 353、手柄回来、侧栏仍收起、无溢出",
+   "active": "content 1334 ovf0",
    "hit": "-",
    "ok": true,
    "error": null

@@ -48,8 +48,9 @@
  *      （回归：轨道曾放在 left:-11，被栏上的 overflow-x:clip 整条裁掉，拖宽完全失效）；拖窄
  *      后右栏变窄、内容列正好加同样差值、无溢出、松手落 localStorage、reload 保持、拖回 353
  *      复原、双击复位到 353。
- *  16) 右栏自身折成 36px 竖条（⋯ 按钮，≥1600 × 浅/深）：竖条无拖宽手柄、在竖条左缘
- *      按下左拖也不改宽/不写盘，点 ‹ 展开回来宽度=折叠前且手柄回来。
+ *  16) 右栏自身折成 36px 竖条（⋯ 按钮，≥1440 三档 × 浅/深）：竖条宽恒 36、拖宽手柄消失、
+ *      内容列正好接过让出的 353−36、面板总宽不变、无溢出；在竖条左缘按下左拖也不改宽/不写盘，
+ *      点 ‹ 展开回来宽度=折叠前且手柄回来。
  *
  * 任一 FAIL 退出码 1；全 PASS 打印 FRAME OK，并把结果写 docs/ref/frame-parity.json。
  */
@@ -396,6 +397,7 @@ const checkRosterDragCollapsed = async (tab, view, p, baseW) => {
       y: Math.round(b?.y ?? 0), h: Math.round(b?.h ?? b?.height ?? 0),
       handle: !!document.querySelector('[data-testid="roster-resize"]'),
       stored: localStorage.getItem('vrc-roster-w'),
+      content: Math.round(document.querySelector('.workspace > div')?.getBoundingClientRect().width ?? 0),
       ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width),
       ovf: document.documentElement.scrollWidth - window.innerWidth
     };
@@ -404,9 +406,13 @@ const checkRosterDragCollapsed = async (tab, view, p, baseW) => {
   await tab.evaluate(() => document.querySelector('.roster-self-menu')?.click());
   await tab.waitForTimeout(350);
   const c = await probe();
-  check(view, `${p}rs_coll.gone`, `w${a.w}→${c.w} collapsed=${c.collapsed} handle=${c.handle ? 'present' : 'none'}`,
-    '折成 36px 竖条、拖宽手柄消失',
-    a.handle && c.present && c.collapsed === 'true' && Math.abs(c.w - 36) <= 1 && !c.handle);
+  // 折成竖条是「让宽」不是「压窄」：内容列必须正好接过右栏让出的那一截（353−36），
+  // 面板总宽不变、也不撑出横向溢出——只看竖条宽 36 量不到「内容列被吃掉」这类回归。
+  check(view, `${p}rs_coll.gone`,
+    `w${a.w}→${c.w} collapsed=${c.collapsed} handle=${c.handle ? 'present' : 'none'} content ${a.content}→${c.content} ws${c.ws}/${a.ws} ovf${c.ovf}`,
+    `折成 36px 竖条、拖宽手柄消失、内容列 += ${a.w - 36}`,
+    a.handle && c.present && c.collapsed === 'true' && Math.abs(c.w - 36) <= 1 && !c.handle
+      && Math.abs((c.content - a.content) - (a.w - 36)) <= 2 && c.ws === a.ws && c.ovf <= 0);
   // 在「手柄本该在的位置」（竖条左缘）按下向左拖 120px：宽度/落盘都不许动
   const gy = c.y + Math.round(c.h / 2);
   await tab.mouse.move(c.x + 4, gy);
@@ -429,6 +435,41 @@ const checkRosterDragCollapsed = async (tab, view, p, baseW) => {
   check(view, `${p}rs_coll.restore`, `w${d.w}→${e.w}/${a.w} handle=${e.handle ? 'present' : 'none'}`,
     '展开回来宽度=展开前、手柄回来',
     e.present && e.collapsed === 'false' && e.w === a.w && e.handle && e.ovf <= 0);
+};
+
+// 右栏宽度是用户可写的 localStorage（vrc-roster-w），RosterPanel 在挂载时读一次就定死：
+// 脏值 / 越界值必须回落到 353 默认（Number('abc')=NaN、'99999' 会把内容列挤成负宽），
+// 合法值（264 底 / 280 常用 / 770 顶）必须原样生效。只在 ≥1440（有右栏的档位）浅色跑，
+// 逻辑在 React state 里、与主题无关。
+const checkRosterDirtyW = async (tab, view, p) => {
+  await gotoVrc(tab, `${PAGE}#/settings`);
+  await tab.waitForTimeout(400);
+  const CASES = [['abc', 353], ['99999', 353], ['-5', 353], ['0', 353], ['264', 264], ['280', 280], ['770', 770]];
+  for (const [stored, want] of CASES) {
+    await tab.evaluate((v) => localStorage.setItem('vrc-roster-w', v), stored);
+    await tab.reload();
+    await tab.waitForSelector('[data-testid="roster-resize"]', { timeout: 30_000 }).catch(() => {});
+    await tab.waitForTimeout(500);
+    const m = await tab.evaluate(() => {
+      const r = document.querySelector('[data-testid="roster-rail"]');
+      return {
+        w: Math.round(r?.getBoundingClientRect().width ?? 0),
+        handle: !!document.querySelector('[data-testid="roster-resize"]'),
+        content: Math.round(document.querySelector('.workspace > div')?.getBoundingClientRect().width ?? 0),
+        ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width),
+        ovf: document.documentElement.scrollWidth - window.innerWidth
+      };
+    });
+    check(view, `${p}dirty.${stored}`,
+      `w${m.w}/${want} 内容${m.content} ws${m.ws} ovf${m.ovf} 手柄${m.handle ? 'present' : 'none'}`,
+      `右栏 ${want}、内容列 = ws−${want}、无溢出、手柄在`,
+      m.w === want && m.handle && m.ws === m.content + want && m.ovf <= 0);
+  }
+  // 复位成默认 353，不给后面的收起轮留脏值
+  await tab.evaluate(() => localStorage.setItem('vrc-roster-w', '353'));
+  await tab.reload();
+  await tab.waitForTimeout(600);
+  await tab.evaluate(installChrome);
 };
 
 // 收起态 friends 页：右栏本身就不该渲染（App.jsx roster && page!=='friends'），
@@ -706,6 +747,8 @@ for (const [width, height] of VIEWS) {
   await checkFoldImpact(tab, view, 'exp.');
   if (height <= 600) await checkNavScroll(tab, view, 'exp.');
   if (width >= 1600) await checkRosterDrag(tab, view, 'exp.');
+  // 右栏宽度记忆的脏值/越界值回落（用户手改 localStorage 也不许把布局撑坏）
+  if (width >= 1440) await checkRosterDirtyW(tab, view, 'exp.');
 
   // 浅色 + 收起：外壳同一套断言 + 整列让宽（此前收起态只在深色轮量 4 个高度）
   await gotoVrc(tab, `${PAGE}#/settings`);
@@ -721,7 +764,7 @@ for (const [width, height] of VIEWS) {
   assertCollapsed(view, lc, width, 'lcoll.', got.workspace.x - lc.workspace.x);
 
   if (width >= 1440) await checkRosterCombo(tab, view, 'lcoll.', expRosterW);
-  if (width >= 1600) await checkRosterDragCollapsed(tab, view, 'lcoll.', expRosterW);
+  if (width >= 1440) await checkRosterDragCollapsed(tab, view, 'lcoll.', expRosterW);
   await checkCollapsedFriends(tab, view, 'lcoll.');
   lightColl.set(view, { ws: Math.round(lc.workspace.w), rosterW: Math.round(lc.roster?.w ?? 0) });
   await tab.close();
@@ -778,7 +821,7 @@ for (const [width, height] of VIEWS) {
 
   // 深色收起也跑「收起 × 右栏开关」与 friends 页（此前只有浅色轮有，主题+折叠组合态没量过）
   if (width >= 1440) await checkRosterCombo(tab, view, 'dcoll.', expDarkRosterW);
-  if (width >= 1600) await checkRosterDragCollapsed(tab, view, 'dcoll.', expDarkRosterW);
+  if (width >= 1440) await checkRosterDragCollapsed(tab, view, 'dcoll.', expDarkRosterW);
   await checkCollapsedFriends(tab, view, 'dcoll.');
   await ctx.close();
 }

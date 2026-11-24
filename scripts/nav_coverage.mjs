@@ -642,6 +642,95 @@ for (const [width, height] of VIEWS) {
       ok: cRestore.expandHit && cRestore.found && cRestore.active && cRestore.hit && cRestore.asideAfter === true,
       error: cRestore.found && !cRestore.active ? '展开后当前页项没高亮' : null
     });
+    // 收起侧栏 × 右栏自身折成 36px 竖条（右栏只在 ≥1440 渲染）：两个开关分属两套状态
+    // （vrc-nav-collapsed / vrc-roster-collapsed），互不干扰才不打架 —— 竖条态下点顶栏
+    // roster-toggle 关掉右栏只是「卸载整条栏」，再开回来必须仍是同宽的竖条（折叠态落盘），
+    // 内容列也要回落到收起侧栏时的宽度；任何一步都不许撑出横向溢出。
+    if (width >= 1440) {
+      const railMix = await page.evaluate(async () => {
+        const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+        const me = () => {
+          const r = document.querySelector('[data-testid="roster-rail"]');
+          const b = r?.getBoundingClientRect();
+          return {
+            present: !!r, collapsed: r?.dataset.collapsed ?? null,
+            w: Math.round(b?.width ?? 0), x: Math.round(b?.x ?? 0), y: Math.round(b?.y ?? 0),
+            h: Math.round(b?.height ?? 0),
+            handle: !!document.querySelector('[data-testid="roster-resize"]'),
+            content: Math.round(document.querySelector('.workspace > div')?.getBoundingClientRect().width ?? 0),
+            ws: Math.round(document.querySelector('.workspace').getBoundingClientRect().width),
+            asideGone: !document.querySelector('aside.vrc-sidebar'),
+            stored: localStorage.getItem('vrc-roster-collapsed'),
+            ovf: document.documentElement.scrollWidth - window.innerWidth
+          };
+        };
+        const before = me();
+        const menu = document.querySelector('.roster-self-menu');
+        if (!menu) return { before, ok: false };
+        const mb = menu.getBoundingClientRect();
+        const menuHit = document.elementFromPoint(mb.x + mb.width / 2, mb.y + mb.height / 2);
+        document.querySelector('.roster-self-menu')?.click(); // ⋯ 折成竖条
+        await wait(400);
+        const strip = me();
+        const btn = document.querySelector('#vrc-topbar .roster-toggle');
+        if (!btn) return { before, strip, menuHitSelf: false, ok: false };
+        const bb = btn.getBoundingClientRect();
+        const btnHit = document.elementFromPoint(bb.x + bb.width / 2, bb.y + bb.height / 2);
+        btn.click(); // 顶栏关掉右栏（侧栏仍收起）
+        await wait(400);
+        const off = me();
+        btn.click(); // 再开回来：应还是竖条
+        await wait(450);
+        const on = me();
+        // 还原：点竖条上的 ‹ 展开回 353，后面的用例仍在「展开右栏」的原状态上跑
+        document.querySelector('.roster-rail [aria-label="展开好友面板"]')?.click();
+        await wait(400);
+        const back = me();
+        return {
+          before, strip, off, on, back,
+          menuHitSelf: !!menuHit && (menuHit === menu || menu.contains(menuHit)),
+          btnHitSelf: !!btnHit && (btnHit === btn || btn.contains(btnHit)),
+          ok: true
+        };
+      });
+      const rh = railMix;
+      push({
+        id: `rail:collapsed_strip@${view}`, view, theme, nav: 'rail:collapsed_strip', hash: '-',
+        title: `w${rh.before?.w}→${rh.strip?.w} collapsed=${rh.strip?.collapsed} asideGone=${rh.strip?.asideGone}`,
+        want: '右栏折成 36 竖条、手柄消失、内容列接过 353−36、侧栏仍收起、无溢出、折叠态落盘',
+        active: `menuHit=${rh.menuHitSelf} content ${rh.before?.content}→${rh.strip?.content} ws${rh.strip?.ws} ovf${rh.strip?.ovf} stored=${rh.strip?.stored}`,
+        hit: '-',
+        ok: !!rh.ok && rh.menuHitSelf && rh.before?.w === 353 && rh.strip?.present
+          && rh.strip.collapsed === 'true' && Math.abs(rh.strip.w - 36) <= 1 && !rh.strip.handle
+          && rh.before?.asideGone && rh.strip.asideGone && rh.strip.stored === '1'
+          && Math.abs((rh.strip.content - rh.before.content) - (rh.before.w - 36)) <= 2
+          && rh.strip.ws === rh.before.ws && rh.strip.ovf <= 0,
+        error: rh.ok ? null : '侧栏收起后找不到右栏或其 ⋯ 折叠按钮'
+      });
+      push({
+        id: `rail:strip_toggle@${view}`, view, theme, nav: 'rail:strip_toggle', hash: '-',
+        title: `off:present=${rh.off?.present} on:w${rh.on?.w}/${rh.strip?.w} collapsed=${rh.on?.collapsed}`,
+        want: '顶栏关掉→整条栏消失且内容列填满；开回来仍是 36 竖条、内容列回原值、无溢出',
+        active: `btnHit=${rh.btnHitSelf} off.content ${rh.off?.content}/${rh.off?.ws} on.content ${rh.on?.content}/${rh.strip?.content} ovf ${rh.off?.ovf}/${rh.on?.ovf}`,
+        hit: '-',
+        ok: !!rh.ok && rh.btnHitSelf && rh.off?.present === false
+          && rh.off.content === rh.off.ws && rh.off.ovf <= 0
+          && rh.on?.present && rh.on.collapsed === 'true' && Math.abs(rh.on.w - 36) <= 1
+          && !rh.on.handle && rh.on.content === rh.strip?.content && rh.on.ovf <= 0
+          && rh.on.asideGone,
+        error: rh.ok && rh.on?.present && rh.on.collapsed !== 'true' ? '重开右栏把竖条还原成整栏了' : null
+      });
+      push({
+        id: `rail:strip_unfold@${view}`, view, theme, nav: 'rail:strip_unfold', hash: '-',
+        title: `‹ → w${rh.back?.w} collapsed=${rh.back?.collapsed} handle=${rh.back?.handle ? 'present' : 'none'}`,
+        want: '点 ‹ 展开回 353、手柄回来、侧栏仍收起、无溢出',
+        active: `content ${rh.back?.content} ovf${rh.back?.ovf}`,
+        hit: '-',
+        ok: !!rh.ok && rh.back?.present && rh.back.collapsed === 'false' && rh.back.w === 353
+          && rh.back.handle && rh.back.asideGone && rh.back.ovf <= 0,
+        error: null
+      });
+    }
     // 快捷键落到 Ctrl+N 那页（shortcut:expand 用它验「快捷键跳过的页展开后仍高亮、仍点得到」）
     await page.keyboard.press(`Control+${N}`);
     await page.waitForTimeout(300);

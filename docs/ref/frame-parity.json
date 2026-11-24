@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T09:10:21.537Z",
+ "at": "2026-11-24T09:39:34.770Z",
  "base": "http://127.0.0.1:8891",
- "pass": 1905,
- "total": 1905,
+ "pass": 1932,
+ "total": 1932,
  "rows": [
   {
    "view": "1024x600",
@@ -5375,6 +5375,55 @@
   },
   {
    "view": "1440x900",
+   "name": "exp.dirty.abc",
+   "ours": "w353/353 内容797 ws1150 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.dirty.99999",
+   "ours": "w353/353 内容797 ws1150 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.dirty.-5",
+   "ours": "w353/353 内容797 ws1150 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.dirty.0",
+   "ours": "w353/353 内容797 ws1150 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.dirty.264",
+   "ours": "w264/264 内容886 ws1150 ovf0 手柄present",
+   "want": "右栏 264、内容列 = ws−264、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.dirty.280",
+   "ours": "w280/280 内容870 ws1150 ovf0 手柄present",
+   "want": "右栏 280、内容列 = ws−280、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "exp.dirty.770",
+   "ours": "w770/770 内容380 ws1150 ovf0 手柄present",
+   "want": "右栏 770、内容列 = ws−770、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "coll.overflow.friends",
    "ours": 1440,
    "want": "≤1441",
@@ -5763,6 +5812,27 @@
    "name": "lcoll.roster.aside_gone",
    "ours": "gone",
    "want": "gone",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.rs_coll.gone",
+   "ours": "w353→36 collapsed=true handle=none content 1074→1391 ws1427/1427 ovf0",
+   "want": "折成 36px 竖条、拖宽手柄消失、内容列 += 317",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.rs_coll.inert",
+   "ours": "w36→36 ws1427→1427 stored 353→353",
+   "want": "拖不动：竖条宽/内容列不变、落盘仍是 353",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.rs_coll.restore",
+   "ours": "w36→353/353 handle=present",
+   "want": "展开回来宽度=展开前、手柄回来",
    "ok": true
   },
   {
@@ -6257,6 +6327,55 @@
   },
   {
    "view": "1600x900",
+   "name": "exp.dirty.abc",
+   "ours": "w353/353 内容957 ws1310 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.dirty.99999",
+   "ours": "w353/353 内容957 ws1310 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.dirty.-5",
+   "ours": "w353/353 内容957 ws1310 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.dirty.0",
+   "ours": "w353/353 内容957 ws1310 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.dirty.264",
+   "ours": "w264/264 内容1046 ws1310 ovf0 手柄present",
+   "want": "右栏 264、内容列 = ws−264、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.dirty.280",
+   "ours": "w280/280 内容1030 ws1310 ovf0 手柄present",
+   "want": "右栏 280、内容列 = ws−280、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "exp.dirty.770",
+   "ours": "w770/770 内容540 ws1310 ovf0 手柄present",
+   "want": "右栏 770、内容列 = ws−770、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "coll.overflow.friends",
    "ours": 1600,
    "want": "≤1601",
@@ -6650,8 +6769,8 @@
   {
    "view": "1600x900",
    "name": "lcoll.rs_coll.gone",
-   "ours": "w353→36 collapsed=true handle=none",
-   "want": "折成 36px 竖条、拖宽手柄消失",
+   "ours": "w353→36 collapsed=true handle=none content 1234→1551 ws1587/1587 ovf0",
+   "want": "折成 36px 竖条、拖宽手柄消失、内容列 += 317",
    "ok": true
   },
   {
@@ -7160,6 +7279,55 @@
   },
   {
    "view": "1700x1040",
+   "name": "exp.dirty.abc",
+   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.dirty.99999",
+   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.dirty.-5",
+   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.dirty.0",
+   "ours": "w353/353 内容1057 ws1410 ovf0 手柄present",
+   "want": "右栏 353、内容列 = ws−353、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.dirty.264",
+   "ours": "w264/264 内容1146 ws1410 ovf0 手柄present",
+   "want": "右栏 264、内容列 = ws−264、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.dirty.280",
+   "ours": "w280/280 内容1130 ws1410 ovf0 手柄present",
+   "want": "右栏 280、内容列 = ws−280、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "exp.dirty.770",
+   "ours": "w770/770 内容640 ws1410 ovf0 手柄present",
+   "want": "右栏 770、内容列 = ws−770、无溢出、手柄在",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "coll.overflow.friends",
    "ours": 1700,
    "want": "≤1701",
@@ -7553,8 +7721,8 @@
   {
    "view": "1700x1040",
    "name": "lcoll.rs_coll.gone",
-   "ours": "w353→36 collapsed=true handle=none",
-   "want": "折成 36px 竖条、拖宽手柄消失",
+   "ours": "w353→36 collapsed=true handle=none content 1334→1651 ws1687/1687 ovf0",
+   "want": "折成 36px 竖条、拖宽手柄消失、内容列 += 317",
    "ok": true
   },
   {
@@ -11927,6 +12095,27 @@
   },
   {
    "view": "1440x900",
+   "name": "dcoll.rs_coll.gone",
+   "ours": "w353→36 collapsed=true handle=none content 1074→1391 ws1427/1427 ovf0",
+   "want": "折成 36px 竖条、拖宽手柄消失、内容列 += 317",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.rs_coll.inert",
+   "ours": "w36→36 ws1427→1427 stored null→null",
+   "want": "拖不动：竖条宽/内容列不变、落盘仍是 353",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.rs_coll.restore",
+   "ours": "w36→353/353 handle=present",
+   "want": "展开回来宽度=展开前、手柄回来",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "dcoll.friends.roster",
    "ours": "not rendered",
    "want": "not rendered",
@@ -12607,8 +12796,8 @@
   {
    "view": "1600x900",
    "name": "dcoll.rs_coll.gone",
-   "ours": "w353→36 collapsed=true handle=none",
-   "want": "折成 36px 竖条、拖宽手柄消失",
+   "ours": "w353→36 collapsed=true handle=none content 1234→1551 ws1587/1587 ovf0",
+   "want": "折成 36px 竖条、拖宽手柄消失、内容列 += 317",
    "ok": true
   },
   {
@@ -13307,8 +13496,8 @@
   {
    "view": "1700x1040",
    "name": "dcoll.rs_coll.gone",
-   "ours": "w353→36 collapsed=true handle=none",
-   "want": "折成 36px 竖条、拖宽手柄消失",
+   "ours": "w353→36 collapsed=true handle=none content 1334→1651 ws1687/1687 ovf0",
+   "want": "折成 36px 竖条、拖宽手柄消失、内容列 += 317",
    "ok": true
   },
   {
