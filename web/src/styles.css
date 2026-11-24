@@ -660,8 +660,10 @@ body {
 }
 .roster-resize {
   position: absolute;
-  /* 轨道宽 10（量测 resizer_w）；线画在轨道正中、距栏左 5px：栏有 1px 左边框，故 left = -(5+1+5) */
-  left: -11px;
+  /* 轨道宽 10（量测 resizer_w）。必须落在栏内：栏上有 overflow-x: clip（见 .roster-rail），
+     left 为负值的轨道会被整条裁掉 → 鼠标根本点不到（实测 elementFromPoint 命中的是内容列，
+     拖宽完全失效）。分割线仍是栏的 1px 左边框。 */
+  left: 0;
   top: 0;
   bottom: 0;
   width: 10px;

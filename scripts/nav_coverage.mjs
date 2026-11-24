@@ -30,7 +30,8 @@
  * 当前页项仍高亮；输入后 ↓/↑ 真移动选中项（按 index 比对且不越界）；↓+Enter 关面板并开好友
  * 抽屉且名字对得上；关抽屉再 Ctrl K、点遮罩空白处也能关，侧栏与当前页高亮原样。
  * 展开态 Ctrl K 另验「鼠标点结果行」（面板关、好友抽屉名字=那一行 label、hash 不变）与
- * 「Esc 关面板不改 hash」。
+ * 「Esc 关面板不改 hash」；收起态同样验「鼠标点结果行」（面板关、抽屉名字对、仍收起、hash 不变），
+ * 并在关掉抽屉后展开回来验「当前页项仍在、仍高亮、仍点得到」再收起。
  * 展开态再补两条：Ctrl+1..9 逐键验「跳页 + 标题 + 侧栏在位 + 当前项高亮且点得到」，reload 后
  * 仍是展开（localStorage.vrc-nav-collapsed≠1，与收起态那条互为对照）；`?` 快捷键表在侧栏在场时
  * 跳页组同样 9 项/顺序对、Esc 关掉不动侧栏与高亮、关掉后 Ctrl+7 照旧跳页。
@@ -552,6 +553,94 @@ for (const [width, height] of VIEWS) {
       active: `asideGone=${drawerClosed.asideGone}`, hit: '-',
       ok: !drawerClosed.drawer && drawerClosed.asideGone,
       error: null
+    });
+    // 收起态也验「鼠标点结果行」：展开态验过，收起态是另一条路径（没有侧栏，结果行位置不同，
+    // 且它是收起后找东西的唯一入口）。Ctrl K → 输入 'a' → 点「好友」组第一行中心 → 面板关、
+    // 好友抽屉开且名字=那一行 label、仍收起、hash 不变。
+    await page.keyboard.press('Control+k');
+    await page.waitForTimeout(350);
+    await page.keyboard.type('a');
+    await page.waitForTimeout(1000);
+    const cHash = await page.evaluate(() => location.hash);
+    const cRows = await page.evaluate(() => {
+      const list = document.querySelector('.cmdk-list');
+      if (!list) return [];
+      let g = '';
+      const out = [];
+      for (const n of list.querySelectorAll('div.label-xs, button')) {
+        if (n.tagName !== 'BUTTON') { g = n.textContent.trim(); continue; }
+        const b = n.getBoundingClientRect();
+        out.push({
+          group: g,
+          label: n.querySelector('span')?.textContent?.trim() ?? '',
+          x: b.x + b.width / 2,
+          y: b.y + b.height / 2,
+          h: Math.round(b.height)
+        });
+      }
+      return out;
+    });
+    const cPick = cRows.find((r) => r.group === '好友' && r.h > 0) ?? null;
+    if (cPick) {
+      await page.mouse.click(cPick.x, cPick.y);
+      await page.waitForTimeout(800);
+    }
+    const cPickAfter = await page.evaluate(() => {
+      const card = document.querySelector('.fd-card');
+      return {
+        palette: !!document.querySelector('[data-testid="palette"]'),
+        card: !!card,
+        name: card?.querySelector('.fd-namepill strong')?.textContent?.trim() ?? '',
+        asideGone: !document.querySelector('aside.vrc-sidebar'),
+        hash: location.hash
+      };
+    });
+    push({
+      id: `palette:collapsed_click@${view}`, view, theme, nav: 'palette:collapsed_click', hash: cPickAfter.hash,
+      title: `点「${cPick?.label ?? '-'}」→ 抽屉「${cPickAfter.name}」`,
+      want: '点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变',
+      active: `palette=${cPickAfter.palette} asideGone=${cPickAfter.asideGone}`, hit: '-',
+      ok: !!cPick && !cPickAfter.palette && cPickAfter.card && cPickAfter.asideGone
+        && (cPickAfter.name === cPick.label || (!!cPick.label && cPickAfter.name.includes(cPick.label)))
+        && cPickAfter.hash === cHash,
+      error: !cPick ? '收起态搜索 "a" 没有出现「好友」组结果行' : (!cPickAfter.card ? '点结果行后没开抽屉' : null)
+    });
+    // 关掉抽屉 → 展开回来：当前页那一项必须仍高亮、仍点得到（收起→找好友→展开，位置不能丢），
+    // 再收起，让下面 Control+N 的路径仍从收起态走。
+    if (cPickAfter.card) await page.click('.fd-close');
+    await page.waitForTimeout(300);
+    const cRestore = await page.evaluate(async (id) => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const out = { found: false, active: false, hit: false, asideAfter: null, expandHit: false };
+      const ex = document.querySelector('[data-testid="nav-expand"]');
+      if (!ex) return out;
+      const eb = ex.getBoundingClientRect();
+      const et = document.elementFromPoint(eb.x + eb.width / 2, eb.y + eb.height / 2);
+      out.expandHit = !!et && (et === ex || ex.contains(et) || et.contains(ex));
+      ex.click();
+      await wait(350);
+      const item = [...document.querySelectorAll('aside.vrc-sidebar [data-nav-id]')].find((el) => el.dataset.navId === id);
+      if (item) {
+        out.found = true;
+        item.scrollIntoView({ block: 'nearest' });
+        await wait(120);
+        const b = item.getBoundingClientRect();
+        const t = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2);
+        out.active = item.dataset.active === 'true';
+        out.hit = !!t && (t === item || item.contains(t) || t.contains(item));
+      }
+      document.querySelector('[data-testid="nav-collapse"]')?.click();
+      await wait(300);
+      out.asideAfter = !document.querySelector('aside.vrc-sidebar');
+      return out;
+    }, cHash.match(/^#\/([\w-]+)/)?.[1] ?? '');
+    push({
+      id: `palette:collapsed_click_restore@${view}`, view, theme, nav: 'palette:collapsed_click_restore', hash: cHash,
+      title: `expand → ${cHash} ${cRestore.active ? 'active' : 'not active'}`,
+      want: '点行后展开：当前页项仍在、仍高亮、仍点得到；再收起',
+      active: `found=${cRestore.found} active=${cRestore.active} hit=${cRestore.hit}`, hit: '-',
+      ok: cRestore.expandHit && cRestore.found && cRestore.active && cRestore.hit && cRestore.asideAfter === true,
+      error: cRestore.found && !cRestore.active ? '展开后当前页项没高亮' : null
     });
     // 快捷键落到 Ctrl+N 那页（shortcut:expand 用它验「快捷键跳过的页展开后仍高亮、仍点得到」）
     await page.keyboard.press(`Control+${N}`);

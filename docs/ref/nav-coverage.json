@@ -20,110 +20,110 @@
   {
    "view": "1024x600",
    "theme": "light",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1024x768",
    "theme": "light",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1100x800",
    "theme": "light",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1280x600",
    "theme": "light",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1280x800",
    "theme": "light",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1366x768",
    "theme": "light",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1440x900",
    "theme": "light",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1600x900",
    "theme": "light",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1700x1040",
    "theme": "light",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1024x600/dark",
    "theme": "dark",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1024x768/dark",
    "theme": "dark",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1100x800/dark",
    "theme": "dark",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1280x600/dark",
    "theme": "dark",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1280x800/dark",
    "theme": "dark",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1366x768/dark",
    "theme": "dark",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1440x900/dark",
    "theme": "dark",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1600x900/dark",
    "theme": "dark",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   },
   {
    "view": "1700x1040/dark",
    "theme": "dark",
-   "pass": 43,
-   "total": 43
+   "pass": 45,
+   "total": 45
   }
  ],
  "score": 100,
@@ -540,6 +540,32 @@
    "title": "closed",
    "want": "抽屉关掉且仍是收起态",
    "active": "asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1024x600",
+   "view": "1024x600",
+   "theme": "light",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
    "hit": "-",
    "ok": true,
    "error": null
@@ -1104,6 +1130,32 @@
    "error": null
   },
   {
+   "id": "palette:collapsed_click@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1024x768",
+   "view": "1024x768",
+   "theme": "light",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1024x768",
    "view": "1024x768",
    "theme": "light",
@@ -1658,6 +1710,32 @@
    "title": "closed",
    "want": "抽屉关掉且仍是收起态",
    "active": "asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1100x800",
+   "view": "1100x800",
+   "theme": "light",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
    "hit": "-",
    "ok": true,
    "error": null
@@ -2222,6 +2300,32 @@
    "error": null
   },
   {
+   "id": "palette:collapsed_click@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1280x600",
+   "view": "1280x600",
+   "theme": "light",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1280x600",
    "view": "1280x600",
    "theme": "light",
@@ -2776,6 +2880,32 @@
    "title": "closed",
    "want": "抽屉关掉且仍是收起态",
    "active": "asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1280x800",
+   "view": "1280x800",
+   "theme": "light",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
    "hit": "-",
    "ok": true,
    "error": null
@@ -3340,6 +3470,32 @@
    "error": null
   },
   {
+   "id": "palette:collapsed_click@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1366x768",
+   "view": "1366x768",
+   "theme": "light",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1366x768",
    "view": "1366x768",
    "theme": "light",
@@ -3894,6 +4050,32 @@
    "title": "closed",
    "want": "抽屉关掉且仍是收起态",
    "active": "asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1440x900",
+   "view": "1440x900",
+   "theme": "light",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
    "hit": "-",
    "ok": true,
    "error": null
@@ -4458,6 +4640,32 @@
    "error": null
   },
   {
+   "id": "palette:collapsed_click@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1600x900",
+   "view": "1600x900",
+   "theme": "light",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1600x900",
    "view": "1600x900",
    "theme": "light",
@@ -5012,6 +5220,32 @@
    "title": "closed",
    "want": "抽屉关掉且仍是收起态",
    "active": "asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1700x1040",
+   "view": "1700x1040",
+   "theme": "light",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
    "hit": "-",
    "ok": true,
    "error": null
@@ -5576,6 +5810,32 @@
    "error": null
   },
   {
+   "id": "palette:collapsed_click@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1024x600/dark",
+   "view": "1024x600/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1024x600/dark",
    "view": "1024x600/dark",
    "theme": "dark",
@@ -6130,6 +6390,32 @@
    "title": "closed",
    "want": "抽屉关掉且仍是收起态",
    "active": "asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1024x768/dark",
+   "view": "1024x768/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
    "hit": "-",
    "ok": true,
    "error": null
@@ -6694,6 +6980,32 @@
    "error": null
   },
   {
+   "id": "palette:collapsed_click@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1100x800/dark",
+   "view": "1100x800/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1100x800/dark",
    "view": "1100x800/dark",
    "theme": "dark",
@@ -7248,6 +7560,32 @@
    "title": "closed",
    "want": "抽屉关掉且仍是收起态",
    "active": "asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1280x600/dark",
+   "view": "1280x600/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
    "hit": "-",
    "ok": true,
    "error": null
@@ -7812,6 +8150,32 @@
    "error": null
   },
   {
+   "id": "palette:collapsed_click@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1280x800/dark",
+   "view": "1280x800/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1280x800/dark",
    "view": "1280x800/dark",
    "theme": "dark",
@@ -8366,6 +8730,32 @@
    "title": "closed",
    "want": "抽屉关掉且仍是收起态",
    "active": "asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1366x768/dark",
+   "view": "1366x768/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
    "hit": "-",
    "ok": true,
    "error": null
@@ -8930,6 +9320,32 @@
    "error": null
   },
   {
+   "id": "palette:collapsed_click@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1440x900/dark",
+   "view": "1440x900/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1440x900/dark",
    "view": "1440x900/dark",
    "theme": "dark",
@@ -9489,6 +9905,32 @@
    "error": null
   },
   {
+   "id": "palette:collapsed_click@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1600x900/dark",
+   "view": "1600x900/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
    "id": "shortcut:expand@1600x900/dark",
    "view": "1600x900/dark",
    "theme": "dark",
@@ -10043,6 +10485,32 @@
    "title": "closed",
    "want": "抽屉关掉且仍是收起态",
    "active": "asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click",
+   "hash": "#/friendlog",
+   "title": "点「Nova」→ 抽屉「Nova」",
+   "want": "点结果行关面板并打开抽屉（名字对得上），仍收起，hash 不变",
+   "active": "palette=false asideGone=true",
+   "hit": "-",
+   "ok": true,
+   "error": null
+  },
+  {
+   "id": "palette:collapsed_click_restore@1700x1040/dark",
+   "view": "1700x1040/dark",
+   "theme": "dark",
+   "nav": "palette:collapsed_click_restore",
+   "hash": "#/friendlog",
+   "title": "expand → #/friendlog active",
+   "want": "点行后展开：当前页项仍在、仍高亮、仍点得到；再收起",
+   "active": "found=true active=true hit=true",
    "hit": "-",
    "ok": true,
    "error": null
