@@ -633,3 +633,45 @@ structure_parity 只数「右栏榜单节数 0/3」，三块榜单的字号/头�
 - 改完 CSS 必须 `cd web && npm run build` 再量，8891 服务的是 `web/dist`，改源码后探针读到的是旧几何（本轮第一次复量数值一字不变就是这个原因）。
 - 空态块自带文案高度，所以「节间距 138」只对**有行的块**成立；断言里跳过空态块，另用「空态有文案」单独验。
 - 空榜（shrinking）只有 1 行时行距无从量，pitch 断言输出 `—` 视为通过；跨行距由 passersby 的 4 行覆盖。
+
+---
+
+# 第三十九轮：回归稳定性收口（十段全绿）（2026-11-25）
+
+十段断言本身都在第 38 轮前对齐完毕，本轮全部工作是把「跑不出来 / 跑出来是假红」的环境问题逐个钉死，让一次全量回归能稳定给出 `REGRESS OK 10/10`。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 374 | `structure_parity` 的 `[locations] 分栏标题` 只比三个固定桶（好友收藏 / 其他在线好友 / 位于私人房间），忽略随数据变化的世界栏（spec `_groups_note` 明确世界栏不计入） | `node scripts/structure_parity.mjs` → **59/59 PASS**（提交 `2cb34f2`） |
+| 375 | `regress_all.sh` 加 `flock` 单实例锁（`cache/regress/.lock`），后到者打印 `REGRESS BUSY` 并 exit 0——并发抢 Chromium 是 frame/grid 崩、mobile 假红的根因 | 占锁后跑 → `REGRESS BUSY` rc=0，锁释放后 `flock -n` 通过（`cache/scratch/test_regress_lock.sh`，提交 `5e76380`） |
+| 376 | 新增 `scripts/lib/seg_retry.sh`：只对**环境性死亡**（`Killed` / `browser has been closed`）重试 1 次，断言失败不重试；起段前 `wait_mem` 等 MemAvailable ≥ 600MB（宿主 7.4G 被其它容器挤爆会挑我们的 node 杀，日志只有一行 `Killed`） | `scripts/lib/seg_retry_selftest.sh` 4/4 → `SEG_RETRY SELFTEST OK`（提交 `ff77ebc`） |
+| 377 | `mobile_parity` 的 sessions 搜索段：先 `waitForFunction` 等 `.sess-seg button` 挂载（20s）→ 点搜索段 → `waitForSelector('.sess-search input', 4s)` 失败再点一次；键盘断言取 rect 全加 `?.`/null 短路，框没出来只记 FAIL 不再抛崩整段 | `node scripts/mobile_parity.mjs` → **1479/1479 PASS · MOBILE OK**（`cache/scratch/mobile_solo_r50.log`，提交 `f31c217`） |
+| 378 | `seg_retry` 匹配扩展到本轮两类环境性死亡：`browserType.launch: Timeout` 与上游 408 渲染（`{"error":"Request Timeout"}` / `statusCode":408`） | `seg_retry_selftest.sh` 6/6 → `SEG_RETRY SELFTEST OK`（提交 `33b4eac`） |
+| 379 | 端到端串行实测（单实例、唯一日志名 `cache/regress_all_r50_0719.log`，07:19 起 07:51 止，全程 1 个 `regress_all.sh`、MemAvailable ≥ 2.4G） | **`REGRESS OK 10/10`**：structure 59/59、visual 215/215、frame 1932/1932、nav 366/366、mobile 1479/1479、grid 60/60、feed 14/14、locations 20/20、overview 45/45、unittest 0 fail |
+
+踩坑记录：
+- 全量回归**只能单实例**：r45/r46 两轮 frame/grid/mobile/nav 全红，实际是同一份日志被两个进程写 + 另有遗留 `mobile_parity` 抢 Chromium，`free -m` 只剩 275MB。
+- 宿主 OOM 会以**一行 `Killed`** 的形式出现（cgroup `memory.max=max`、`oom_kill=0`，容器里看不到 OOM 记录），所以段级重试按日志特征匹配，不按退出码。
+- 后台跑长段必须用 `nohup` + 唯一日志名（`cache/regress_all_r50_$(date +%H%M).log`）：`> 固定日志名` 会把正在跑那轮的汇总行截断。
+- `mobile_parity` 单跑约 10 分钟、`frame_parity` 约 10 分钟，前台跑会被会话超时杀进程树，表现为 `Target page ... has been closed`（看起来像浏览器崩，其实是外层杀进程）。
+
+---
+
+# 第三十九轮：回归基础设施收口（flock 单实例 / seg_retry / 移动冷启动）与 10/10 端到端确认（2026-11-25）
+
+第 38 轮把 overview 段加进 `regress_all.sh` 后，全量回归在 7G 容器里反复出现「段与段互相抢 Chromium」的假红：两个 regress 并发跑时 frame/grid 直接崩、mobile 量到无样式的 36/40px；另外几段红是「等固定毫秒等不到异步内容」。本轮不新增页面断言，专修这套基础设施，最后用唯一日志名跑一次独占全量确认。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 374 | `locations_parity` 分栏标题只比三个固定桶（好友收藏 / 其他在线好友 / 位于私人房间），忽略随数据变化的世界栏（`spec._groups_note` 明确世界栏不计入） | `node scripts/structure_parity.mjs` → **59/59 PASS**（`[locations] 分栏标题` PASS），提交 `2cb34f2` |
+| 375 | `regress_all.sh` 加 `flock -n` 单实例锁（`cache/regress/.lock`），后到者打印 `REGRESS BUSY` 后退出，避免并发抢 Chromium | 实战：05:55 起的实例被挡下 exit 0，持锁实例独占跑完（`cache/regress_all_r49.log`），全程只 1 个 regress_all.sh、MemAvailable 2.5G；提交 `5e76380` |
+| 376 | 段执行加 `seg_retry`（OOM 被杀 / `browser has been closed` 重试 1 次，断言失败不重试）+ 起段前 `wait_mem` 等可用内存 | `scripts/lib/seg_retry_selftest.sh` → 4 例全过；提交 `ff77ebc` |
+| 377 | `mobile_parity` sessions 搜索段改「先等段按钮挂载 → 点 → 等搜索框出现再量」，键盘断言加 null 守卫（冷启动点空 → `getBoundingClientRect` 打 null 崩整段） | `node scripts/mobile_parity.mjs` → **1479/1479 PASS (100.0%) · MOBILE OK · rc=0**（`cache/scratch/mobile_solo_r50.log`）；提交 `f31c217` |
+| 378 | `seg_retry` 匹配扩两类环境性死亡：`browserType.launch: Timeout`、渲染出上游 `{"error":"Request Timeout"}`/`statusCode:408` | `seg_retry_selftest.sh` 加 case5/case6 → **6/6 SEG_RETRY SELFTEST OK**；提交 `33b4eac` |
+| 379 | 端到端独占全量（唯一日志名，避免 BUSY 实例截断汇总日志） | `bash scripts/regress_all.sh http://127.0.0.1:8891 > cache/regress_all_r50_0719.log` → **REGRESS OK 10/10** |
+
+踩坑记录：
+- **别让多个 regress 并发**：7G 容器里两个 Chromium 批次会互抢内存，表现是 `browserType.launch: Timeout 180000ms` 或整段量到无样式尺寸，看起来像断言差异其实是环境红。`flock` 是硬约束，不要靠自觉。
+- **汇总日志用唯一名**：BUSY 实例的调用方若用 `> cache/regress_all_rN.log` 重定向，会把正在跑那轮的汇总日志截断成 0 字节，只剩每段 log。起跑命令统一 `> cache/regress_all_r50_$(date +%H%M).log`。
+- **单跑时长要按后台任务算**：`mobile_parity` 单跑约 10 分钟，前台跑会被工具超时杀进程树，日志里留下的 `Target page ... has been closed` 是杀进程造成的假象，不是 OOM。
+- **重试只认环境性死亡**：`seg_retry` 的匹配模式必须窄，`Killed` / 浏览器关闭 / launch 超时 / 上游 408 可重试，断言 FAIL 绝不能重试（否则真差异被吞掉）。

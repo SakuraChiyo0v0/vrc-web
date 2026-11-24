@@ -114,7 +114,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 概览三榜单 | `node scripts/overview_parity.mjs` | 45/45（三块榜单顺序与标题、栏宽 300、标题 24/600、副标题 18（标题下 46）、首名 hero 116 圆头像 + 32/600 名字 + 20px 时长（名下 25）/ 下距 55、紧凑行 50 头像 + 22 名字 + 行距 71.5、灰条高 7/槽宽 67/左端固定/右内缩 25/长度∝榜首、hero 唯一且首行、空态文案、末行→下块标题 138、无横向溢出） |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
-端到端实测（第 32 轮，`cache/regress_all_r43.log`）：九段一次性全绿 `REGRESS OK 9/9`（structure 59/59、visual 215/215、frame 1932/1932、nav 366/366、mobile 1479/1479、grid 60/60、feed 14/14、locations 20/20、unittest 0 fail）。frame 此前在串行路径下会中途 `browser has been closed` 崩掉，现在每视口独立起停浏览器并在被关闭时换进程重试一次（`FRAME_VIEWS` / `FRAME_OUT` 可单档复现）。
+端到端实测（第 33 轮，`cache/regress_all_r50_0719.log`）：十段一次性全绿 `REGRESS OK 10/10`（structure 59/59、visual 215/215、frame 1932/1932、nav 366/366、mobile 1479/1479、grid 60/60、feed 14/14、locations 20/20、overview 45/45、unittest 0 fail）。frame 此前在串行路径下会中途 `browser has been closed` 崩掉，现在每视口独立起停浏览器并在被关闭时换进程重试一次（`FRAME_VIEWS` / `FRAME_OUT` 可单档复现）。全量回归**只能单实例跑**：`regress_all.sh` 用 `flock` 占 `cache/regress/.lock`，后到者打印 `REGRESS BUSY` 直接退出；每段起跑前等 MemAvailable ≥ 600MB，只对 `Killed` / `browser has been closed` / `browserType.launch: Timeout` / 上游 408 这类环境性死亡重试一次（断言失败不重试）。
 
 刷新回归说明：脚本里**别用裸 `page.reload()`**。等 `'load'` 会被 demo 的长连接拖过 30s 直接整轮 TimeoutError（拿不到 FAIL 明细）；等 `'domcontentloaded'` 又早于 React 挂载，调用方 `evaluate` 会撞 `Execution context was destroyed`。统一走 `scripts/lib/page_structure.mjs` 的 `reloadVrc/reloadVrcHard`：只等 domcontentloaded，先给 `<html>` 打 `dataset.reloadStamp`，刷新后看不到这枚戳且 `#vrc-topbar h1` 在才算「文档真换新」，否则整页 goto 硬重试——否则旧 DOM 会让「reload 后状态还在」的断言假 PASS（第 30 轮 `exp.dirty.264/280` 读到上一条用例的 353 就是这个原因）。
 
