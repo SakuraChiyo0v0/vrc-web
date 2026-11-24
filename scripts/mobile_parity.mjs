@@ -938,7 +938,10 @@ for (const [w, h, kbH] of [[844, 390, 220], [932, 430, 240]]) {
   for (const page of PAGES) {
     const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
     await gotoVrc(tab, `${PAGE}#/${page}`);
-    await tab.waitForTimeout(1400);
+    // 等内容块真的出现再压键盘：固定 1400ms 对 friendlog 这类分析型接口偶发偏短，
+    // 会把「还没渲染完」记成「未找到内容块」。真 FAIL 不会被掩盖——等超时照旧算 FAIL。
+    await tab.waitForSelector(CONTENT_SEL[page], { timeout: 12_000 }).catch(() => {});
+    await tab.waitForTimeout(600);
     await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
     await tab.evaluate((hh) => {
       const vv = window.visualViewport;
@@ -981,7 +984,8 @@ for (const [w, h, kbH] of [[320, 568, 216], [390, 844, 336]]) {
   for (const page of PAGES) {
     const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 3 });
     await gotoVrc(tab, `${PAGE}#/${page}`);
-    await tab.waitForTimeout(1400);
+    await tab.waitForSelector(CONTENT_SEL[page], { timeout: 12_000 }).catch(() => {});
+    await tab.waitForTimeout(600);
     await tab.waitForSelector('#vrc-statusbar', { timeout: 15000 }).catch(() => {});
     await tab.evaluate((hh) => {
       const vv = window.visualViewport;
