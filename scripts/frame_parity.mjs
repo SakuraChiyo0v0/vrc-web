@@ -16,7 +16,9 @@
  *   6) 内容面板 ≥720：右栏（353）只在 ≥1440 出现，且顶栏右栏开关与之一致显隐。
  *   7) 6 个密度最高的页面（好友位置 / 动态 / 好友列表 / 游戏日志 / 世界库 / 设置）
  *      在以上视口都无横向溢出（documentElement.scrollWidth ≤ innerWidth+1）；收起态也逐页跑一遍。
- *   7b) 收起态密度：有表格的页面列数不变、首列不变窄、行数不变（内容变宽不靠牺牲密度换）。
+ *   7b) 收起态密度：有表格的页面列数不变、首列不变窄、行数不变（内容变宽不靠牺牲密度换）——
+ *       浅色收起与深色收起各跑一遍（主题不该改密度）。
+ *   7c) 新 context（无 localStorage）必须默认展开：侧栏在、无顶栏展开按钮、vrc-nav-collapsed ≠ 1。
  *   8) 顶栏右簇（快速搜索/Ctrl K → 图标组 → 3 窗口控制）的簇内间距恒定：
  *      kbd 宽 34、kbd→图标组 22、图标组→窗口控制 15、窗口控制 3×24 pitch 40、末项距右缘 8。
  *      注：真机 Ctrl K 绝对 x=1307 是在 1689 宽的截图上量的，契约视口是 1700，
@@ -261,6 +263,36 @@ const collapse = async (tab) => tab.evaluate(() => {
   return true;
 });
 
+// 展开态表格密度基线：逐页记列数/首列宽/表宽（收起后逐页比对，浅/深色共用一个取样器）
+const collectDensity = async (tab) => {
+  const density = {};
+  for (const p of PAGES) {
+    await gotoVrc(tab, `${PAGE}#/${p}`);
+    await tab.waitForTimeout(600);
+    density[p] = await tab.evaluate(measureTable);
+  }
+  return density;
+};
+
+// 收起态逐页：6 个页面都必须无横向溢出；表格页列数不变、首列不变窄、行数不变
+// （内容变宽不该靠牺牲密度换）。浅色收起 / 深色收起共用这一套。
+const checkCollapsedPages = async (tab, view, prefix, baseline) => {
+  for (const p of PAGES) {
+    await gotoVrc(tab, `${PAGE}#/${p}`);
+    await tab.waitForTimeout(600);
+    const o = await tab.evaluate(() => ({ vw: window.innerWidth, w: document.documentElement.scrollWidth }));
+    check(view, `${prefix}coll.overflow.${p}`, o.w, `≤${o.vw + 1}`, o.w <= o.vw + 1);
+    const before = baseline[p];
+    if (before) {
+      const after = await tab.evaluate(measureTable);
+      check(view, `${prefix}coll.density.${p}`,
+        after ? `${after.cols}col 首列${after.firstW}/${before.firstW} 表${after.tableW}` : 'no table',
+        `${before.cols}col 首列≥${before.firstW}`,
+        !!after && after.cols === before.cols && after.firstW >= before.firstW - 1 && after.rows === before.rows);
+    }
+  }
+};
+
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 
 // ── 第一轮：浅色 + 侧栏展开 → 收起（同一页面顺序做，收起态不必重载）──────────
@@ -268,6 +300,20 @@ for (const [width, height] of VIEWS) {
   const view = `${width}x${height}`;
   const tab = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1, hasTouch: false });
   const overflow = [];
+
+  // 新用户默认态：这个 page 是新 context（无 localStorage），必须展开 —— 侧栏在、无展开按钮、
+  // 也没有 vrc-nav-collapsed 键。防「默认收起」这类回归（收起只该由用户点出来）。
+  await gotoVrc(tab, `${PAGE}#/settings`);
+  await tab.waitForSelector('aside.vrc-sidebar [data-nav-id]', { timeout: 30_000 });
+  const fresh = await tab.evaluate(() => ({
+    aside: !!document.querySelector('aside.vrc-sidebar'),
+    expand: !!document.querySelector('[data-testid="nav-expand"]'),
+    stored: localStorage.getItem('vrc-nav-collapsed')
+  }));
+  check(view, 'fresh.aside', fresh.aside ? 'present' : 'missing', 'present', fresh.aside);
+  check(view, 'fresh.no_expand_btn', fresh.expand ? 'visible' : 'absent', 'absent', !fresh.expand);
+  // App.jsx 挂载时会写一次 '0'（useEffect 落盘），所以「默认态」的判据是键值≠'1' 而不是键不存在
+  check(view, 'fresh.stored', fresh.stored, '≠1', fresh.stored !== '1');
 
   for (const p of PAGES) {
     await gotoVrc(tab, `${PAGE}#/${p}`);
@@ -288,12 +334,7 @@ for (const [width, height] of VIEWS) {
   assertFrame(view, got, width, '');
 
   // 展开态密度基线：表格页记录列数/首列宽/表宽（收起后要逐页对比）
-  const density = {};
-  for (const p of PAGES) {
-    await gotoVrc(tab, `${PAGE}#/${p}`);
-    await tab.waitForTimeout(600);
-    density[p] = await tab.evaluate(measureTable);
-  }
+  const density = await collectDensity(tab);
 
   // 浅色 + 收起：外壳同一套断言 + 整列让宽（此前收起态只在深色轮量 4 个高度）
   await gotoVrc(tab, `${PAGE}#/settings`);
@@ -301,21 +342,7 @@ for (const [width, height] of VIEWS) {
   await collapse(tab);
   await tab.waitForTimeout(350);
 
-  // 收起态逐页：6 个页面都必须无横向溢出；表格页列数不变、首列不变窄（内容变宽不该牺牲密度）
-  for (const p of PAGES) {
-    await gotoVrc(tab, `${PAGE}#/${p}`);
-    await tab.waitForTimeout(600);
-    const o = await tab.evaluate(() => ({ vw: window.innerWidth, w: document.documentElement.scrollWidth }));
-    check(view, `coll.overflow.${p}`, o.w, `≤${o.vw + 1}`, o.w <= o.vw + 1);
-    const before = density[p];
-    if (before) {
-      const after = await tab.evaluate(measureTable);
-      check(view, `coll.density.${p}`,
-        after ? `${after.cols}col 首列${after.firstW}/${before.firstW} 表${after.tableW}` : 'no table',
-        `${before.cols}col 首列≥${before.firstW}`,
-        !!after && after.cols === before.cols && after.firstW >= before.firstW - 1 && after.rows === before.rows);
-    }
-  }
+  await checkCollapsedPages(tab, view, '', density);
   // 停回 settings：展开态那次量测也是 settings，两轮同页面同口径
   await gotoVrc(tab, `${PAGE}#/settings`);
   await tab.waitForTimeout(400);
@@ -347,8 +374,16 @@ for (const [width, height] of VIEWS) {
   const darkOverflow = await tab.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   check(view, 'dark.overflow', darkOverflow, '≤0', darkOverflow <= 0);
 
+  // 深色展开态密度基线 → 深色收起逐页（主题不影响密度：列数/首列/行数与深色展开态比）
+  const darkDensity = await collectDensity(tab);
+  await gotoVrc(tab, `${PAGE}#/settings`);
+  await tab.waitForTimeout(300);
   await collapse(tab);
   await tab.waitForTimeout(350);
+  await checkCollapsedPages(tab, view, 'dark.', darkDensity);
+  await gotoVrc(tab, `${PAGE}#/settings`);
+  await tab.waitForTimeout(400);
+
   const dc = await tab.evaluate(measureCollapsed);
   check(view, 'dcoll.theme', dc.theme, 'dark', dc.theme === 'dark');
   assertCollapsed(view, dc, width, 'dcoll.', got.workspace.x - dc.workspace.x);

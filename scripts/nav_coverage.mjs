@@ -12,7 +12,10 @@
  * 主题：每档视口默认跑浅色 + 深色两态（vrc-theme 存 localStorage）。主题只改色，
  * 「点得到 + 标题对 + 折叠夹/收起按钮可用」在深色下也得成立；NAV_THEME=light|dark 只跑一态。
  *
- * 结束时验「收起导航栏」：按钮与顶栏展开按钮本身要过命中测试、reload 后仍收起
+ * 折叠夹：收起后子项必须真的不可点（不在 DOM、旧坐标处 elementFromPoint 也不命中它），
+ * 展开回来子项要过命中测试且点下去真换到那一页（此前只数 N→0→N）。
+ * 结束时验「收起导航栏」：按钮与顶栏展开按钮本身要过命中测试（展开按钮还须整颗在顶栏内、
+ * 与快速搜索横向不相交、搜索中心仍命中自己）、reload 后仍收起
  * （localStorage.vrc-nav-collapsed=1）、展开回来当前页项仍高亮/仍点得到/再点不换页。
  * 断言「能到 + 标题对 + 点得到」；密度/像素交给 frame_parity.mjs。
  * 产出 docs/ref/nav-coverage.json；有 FAIL 则 exit 1。
@@ -118,24 +121,60 @@ for (const [width, height] of VIEWS) {
         error: r.err || (okHit ? null : 'unreachable（命中测试失败）')
       });
     }
-    // 折叠夹行为：收起后子项消失，再展开回来（真机两夹默认展开）
+    // 折叠夹行为：收起后子项消失（DOM 里没有、旧坐标处也点不到），再展开回来子项可达且点得通
+    // （真机两夹默认展开）。只数 N→0→N 会让「子项还在只是被压扁/透明」这类回归漏过去。
     const fold = await page.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       const box = document.querySelector('aside.vrc-sidebar [data-nav-folder]');
       const key = box.dataset.navFolder;
       const head = box.querySelector('[data-nav-kind="folder"]');
-      const before = box.querySelectorAll('[data-nav-kind="sub"]').length;
+      const subEls = [...box.querySelectorAll('[data-nav-kind="sub"]')];
+      const before = subEls.length;
+      const subId = subEls[0]?.dataset.navId ?? '';
+      let spot = null;
+      if (subEls[0]) {
+        const b = subEls[0].getBoundingClientRect();
+        spot = { x: b.x + b.width / 2, y: b.y + b.height / 2 };
+      }
       head.click();
-      await new Promise((r) => setTimeout(r, 200));
+      await wait(250);
       const closed = box.querySelectorAll('[data-nav-kind="sub"]').length;
+      // 收起后：该子项不在 DOM，旧坐标处命中的元素也不是它（不可点）
+      const subGone = !document.querySelector(`aside.vrc-sidebar [data-nav-id="${subId}"]`);
+      const oldSpotHitsSub = spot
+        ? document.elementsFromPoint(spot.x, spot.y).some((e) => e.dataset?.navId === subId)
+        : false;
       head.click();
-      await new Promise((r) => setTimeout(r, 200));
+      await wait(250);
       const reopened = box.querySelectorAll('[data-nav-kind="sub"]').length;
-      return { key, before, closed, reopened };
+      // 展开回来：子项在、命中测试过、点下去真的换到那一页
+      let reach = false, hash = location.hash, title = '';
+      const again = document.querySelector(`aside.vrc-sidebar [data-nav-id="${subId}"]`);
+      if (again) {
+        again.scrollIntoView({ block: 'nearest' });
+        await wait(120);
+        const b = again.getBoundingClientRect();
+        const t = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2);
+        reach = !!t && (t === again || again.contains(t) || t.contains(again));
+        again.click();
+        const t0 = Date.now();
+        while (Date.now() - t0 < 8000) {
+          await wait(60);
+          hash = location.hash;
+          title = document.querySelector('#vrc-topbar h1')?.textContent?.trim() ?? '';
+          if (hash === `#/${subId}` && title) break;
+        }
+      }
+      return { key, before, closed, reopened, subId, subGone, oldSpotHitsSub, reach, hash, title };
     });
     push({
-      id: `folder:${fold.key}@${view}`, view, theme, nav: `folder:${fold.key}`, hash: '-',
-      title: `${fold.before}→${fold.closed}→${fold.reopened}`, want: 'N→0→N', active: '-', hit: '-',
-      ok: fold.before > 0 && fold.closed === 0 && fold.reopened === fold.before, error: null
+      id: `folder:${fold.key}@${view}`, view, theme, nav: `folder:${fold.key}`, hash: fold.hash || '-',
+      title: `${fold.before}→${fold.closed}→${fold.reopened}`, want: 'N→0→N，收起不可点、展开可点',
+      active: `gone=${fold.subGone} reach=${fold.reach}`, hit: '-',
+      ok: fold.before > 0 && fold.closed === 0 && fold.reopened === fold.before
+        && fold.subGone && !fold.oldSpotHitsSub && fold.reach
+        && fold.hash === `#/${fold.subId}` && (!WANT[fold.subId] || fold.title === WANT[fold.subId]),
+      error: null
     });
     // SidebarFooter「收起导航栏」：按钮本身要能点到（elementFromPoint 落在按钮内），收起后顶栏
     // 展开按钮同样要能点到；reload 后仍保持收起（localStorage 持久化）；展开回来当前页仍高亮、
@@ -159,9 +198,26 @@ for (const [width, height] of VIEWS) {
       await wait(300);
       const afterClick = !!document.querySelector('aside.vrc-sidebar');
       const ex = document.querySelector('[data-testid="nav-expand"]');
+      // 展开按钮几何：整颗落在顶栏内，且与「快速搜索」横向不重叠、搜索按钮中心仍命中自己
+      // （防：收起后按钮溢出顶栏 / 压住搜索）。
+      const tbEl = document.querySelector('#vrc-topbar');
+      const srch = document.querySelector('[data-topbar="search"]');
+      let geom = { inTopbar: false, gapSearch: null, searchHit: false };
+      if (ex && tbEl && srch) {
+        const tbr = tbEl.getBoundingClientRect();
+        const er = ex.getBoundingClientRect();
+        const sr = srch.getBoundingClientRect();
+        geom.inTopbar = er.left >= tbr.left - 1 && er.right <= tbr.right + 1
+          && er.top >= tbr.top - 1 && er.bottom <= tbr.bottom + 1;
+        geom.gapSearch = Math.round(sr.left - er.right);
+        if (sr.width > 1) {
+          const st = document.elementFromPoint(sr.x + sr.width / 2, sr.y + sr.height / 2);
+          geom.searchHit = !!st && (st === srch || srch.contains(st) || st.contains(srch));
+        }
+      }
       return {
         before, collapseHit, afterClick,
-        expandBtn: !!ex, expandHit: hitOf(ex),
+        expandBtn: !!ex, expandHit: hitOf(ex), geom,
         stored: localStorage.getItem('vrc-nav-collapsed'), curId, curTitle
       };
     });
@@ -171,6 +227,15 @@ for (const [width, height] of VIEWS) {
       want: 'nav→no，收起/展开按钮均命中', active: `hit=${collapse.collapseHit}/${collapse.expandHit}`, hit: '-',
       ok: collapse.before && !collapse.afterClick && collapse.expandBtn && collapse.collapseHit && collapse.expandHit
         && collapse.stored === '1',
+      error: null
+    });
+    // 展开按钮不能溢出顶栏，也不能压住「快速搜索」（收了侧栏顶上多一个按钮，最容易挤坏这一簇）
+    push({
+      id: `footer:expand_geom@${view}`, view, theme, nav: 'footer:expand_geom', hash: '-',
+      title: collapse.geom ? `in=${collapse.geom.inTopbar} gap=${collapse.geom.gapSearch}` : 'no geom',
+      want: '按钮在顶栏内，与搜索不相交，搜索中心仍命中', active: `searchHit=${collapse.geom?.searchHit}`,
+      hit: '-',
+      ok: !!collapse.geom && collapse.geom.inTopbar && collapse.geom.gapSearch > 0 && collapse.geom.searchHit === true,
       error: null
     });
     // 收起态写在 localStorage，reload 必须还是收起（刷新后不弹回展开）
