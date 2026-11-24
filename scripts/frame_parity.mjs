@@ -67,13 +67,18 @@ const { chromium } = _pw;
 const BASE = normBase(process.argv[2]?.startsWith('http') ? process.argv[2] : (process.env.VRC_BASE || 'http://127.0.0.1:8891'));
 const PAGE = pageBase(BASE);
 const ROOT = path.resolve(import.meta.dirname, '..');
-const OUT = path.join(ROOT, 'docs/ref/frame-parity.json');
+const OUT = process.env.FRAME_OUT || path.join(ROOT, 'docs/ref/frame-parity.json');
 const EXE = process.env.CHROME_PATH
   || '/opt/data/cache/pw-browsers/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell';
 
 // 矮窗两档（600 高）单列：导航 21 行 × 40 = 840 远超可用高，必须靠 <nav> 滚动而不是压扁行高。
 // 这是 1366×768 行高 36→23 那类回归最容易复发的区间。
-const VIEWS = [[1024, 600], [1024, 768], [1100, 800], [1280, 600], [1280, 800], [1366, 768], [1440, 900], [1600, 900], [1700, 1040]];
+const ALL_VIEWS = [[1024, 600], [1024, 768], [1100, 800], [1280, 600], [1280, 800], [1366, 768], [1440, 900], [1600, 900], [1700, 1040]];
+// FRAME_VIEWS="1024x600,1440x900" 只跑指定视口（调试/复现单档用，缺省全跑 9 档）
+const VIEWS = process.env.FRAME_VIEWS
+  ? ALL_VIEWS.filter(([w, h]) => process.env.FRAME_VIEWS.split(',').map((s) => s.trim()).includes(`${w}x${h}`))
+  : ALL_VIEWS;
+if (!VIEWS.length) { console.error(`FRAME_VIEWS 没匹配到任何视口：${process.env.FRAME_VIEWS}`); process.exit(2); }
 const PAGES = ['friends', 'feed', 'friendlist', 'gamelog', 'worlds', 'settings'];
 
 const rows = [];
@@ -701,11 +706,31 @@ const checkRosterDrag = async (tab, view, p) => {
   await tab.evaluate(installChrome);
 };
 
-const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+const launchBrowser = () => chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+
+// 一个视口一个浏览器：整轮 9 档 × 2 主题共用一个进程时渲染进程越跑越大，曾出现
+// 「Target page, context or browser has been closed」把整轮打挂在半路（cache/regress/frame.log:771）。
+// 每档起停一次，且中途关闭自动换新进程重试一次（重试前回滚该档已写入的断言行，避免重复计数）。
+const withBrowser = async (view, fn) => {
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const mark = rows.length;
+    const browser = await launchBrowser();
+    try {
+      await fn(browser);
+      await browser.close().catch(() => {});
+      return;
+    } catch (err) {
+      rows.length = mark;
+      await browser.close().catch(() => {});
+      const closed = /has been closed|Target closed|Target page|browser has been closed/i.test(String(err?.message ?? err));
+      if (!closed || attempt === 2) throw err;
+      console.warn(`[frame] ${view} 第 ${attempt} 次尝试浏览器中途关闭，换新进程重试`);
+    }
+  }
+};
 
 // ── 第一轮：浅色 + 侧栏展开 → 收起（同一页面顺序做，收起态不必重载）──────────
-for (const [width, height] of VIEWS) {
-  const view = `${width}x${height}`;
+const runLight = async (view, width, height, browser) => {
   const tab = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1, hasTouch: false });
   const overflow = [];
 
@@ -795,13 +820,12 @@ for (const [width, height] of VIEWS) {
   await checkCollapsedFriends(tab, view, 'lcoll.');
   lightColl.set(view, { ws: Math.round(lc.workspace.w), rosterW: Math.round(lc.roster?.w ?? 0) });
   await tab.close();
-}
+};
 
 // ── 第二轮：深色主题（展开）→ 深色 + 收起（组合态）──────────────────────────
 // 深色轮跑 assertFrame 全套：主题只改色，侧栏宽/行高/文本列/状态栏项距/顶栏右簇/页脚/
 // 右栏显隐都该与浅色一致；收起轮验证「主题 + 折叠」互不影响几何。
-for (const [width, height] of VIEWS) {
-  const view = `${width}x${height}`;
+const runDark = async (view, width, height, browser) => {
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1 });
   // 主题存 localStorage（vrc-theme），导航收起态存 vrc-nav-collapsed
   await ctx.addInitScript(() => { try { localStorage.setItem('vrc-theme', 'dark'); } catch {} });
@@ -851,9 +875,15 @@ for (const [width, height] of VIEWS) {
   if (width >= 1440) await checkRosterDragCollapsed(tab, view, 'dcoll.', expDarkRosterW);
   await checkCollapsedFriends(tab, view, 'dcoll.');
   await ctx.close();
+};
+
+for (const [width, height] of VIEWS) {
+  await withBrowser(`${width}x${height}`, (b) => runLight(`${width}x${height}`, width, height, b));
+}
+for (const [width, height] of VIEWS) {
+  await withBrowser(`dark@${width}x${height}`, (b) => runDark(`${width}x${height}`, width, height, b));
 }
 
-await browser.close();
 const pass = rows.filter((r) => r.ok).length;
 const result = { at: new Date().toISOString(), base: BASE, pass, total: rows.length, rows };
 fs.mkdirSync(path.dirname(OUT), { recursive: true });

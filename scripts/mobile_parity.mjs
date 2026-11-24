@@ -1210,8 +1210,15 @@ for (const c of [{ w: 390, h: 844 }, { w: 360, h: 800 }, { w: 430, h: 932 }, { w
   const tab = await browser.newPage({ viewport: { width: c.w, height: c.h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   await gotoVrc(tab, `${PAGE}#/friends`);
   await tab.waitForTimeout(1200);
-  await tab.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true }).catch(() => {});
-  await tab.waitForSelector('.fd-card', { timeout: 8000 }).catch(() => {});
+  // 卡片是接口回来才渲染的，直接点一次会偶发点空（React 重渲染把节点换掉，360×800 实测踩到过）。
+  // 点不到就重试最多 3 次，每次先关掉可能已开的弹窗再点，最后仍开不了才算 FAIL。
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    await tab.locator('.friend-row:not(.list-head)').first().click({ timeout: 8000, force: true }).catch(() => {});
+    const ok = await tab.waitForSelector('.fd-card', { timeout: 4000 }).then(() => true).catch(() => false);
+    if (ok) break;
+    await tab.keyboard.press('Escape').catch(() => {});
+    await tab.waitForTimeout(500);
+  }
   await tab.waitForTimeout(400);
   const r = await tab.evaluate(() => {
     const card = document.querySelector('.fd-card');
