@@ -23,7 +23,7 @@
  */
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { STRUCT_PAGES, assertVrcServer, normBase, pageBase, assertVrcPage, gotoVrc } from './lib/page_structure.mjs';
+import { STRUCT_PAGES, assertVrcServer, normBase, pageBase, assertVrcPage, gotoVrc, reloadVrc } from './lib/page_structure.mjs';
 
 const _req = createRequire(import.meta.url);
 let _pw;
@@ -1055,15 +1055,31 @@ for (const [w, h] of [[390, 844], [360, 800], [844, 390]]) {
   const tag = `sessions-search@${w}x${h}`;
   const tab = await browser.newPage({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   await gotoVrc(tab, `${PAGE}#/sessions`);
-  await tab.waitForTimeout(1500);
+  // 冷启动时固定等 1500ms 曾等不到分段按钮（React 还没挂上 → 点「搜索」是空操作 →
+  // 后面取 .sess-search input 的 rect 撞 null，整段以 TypeError 崩掉，后续断言全丢）。
+  // 改成等按钮真正出现；仍未出现则重载一次再等，仍无则记 FAIL 但不再崩。
+  const segReady = async () => {
+    try {
+      await tab.waitForFunction(() => document.querySelectorAll('.sess-seg button').length > 0, { timeout: 20000 });
+      return true;
+    } catch { return false; }
+  };
+  let segsUp = await segReady();
+  if (!segsUp) { await reloadVrc(tab, 2, 'sessions-search'); segsUp = await segReady(); }
+  await tab.waitForTimeout(300);
   const before = await tab.evaluate(() => ({
     inputs: document.querySelectorAll('.sess-search input').length,
     rows: document.querySelectorAll('.sess-row').length,
   }));
   check(tag, '默认按日无搜索框', `输入框 ${before.inputs}`, '0', before.inputs === 0);
 
-  await tab.evaluate(() => [...document.querySelectorAll('.sess-seg button')].find((b) => b.textContent.trim() === '搜索')?.click());
-  await tab.waitForTimeout(300);
+  // 点「搜索」段：等段按钮挂载后再点，然后等搜索框出现（冷启动/内存吃紧时 300ms 固定等待会假红，
+  // 之前 r48 mobile 就崩在这里：框没出来 → 下面 getBoundingClientRect 打到 null 直接抛异常中断整段）。
+  const clickSeg = async () => tab.evaluate(() => [...document.querySelectorAll('.sess-seg button')].find((b) => b.textContent.trim() === '搜索')?.click());
+  await clickSeg();
+  try { await tab.waitForSelector('.sess-search input', { timeout: 4000 }); }
+  catch { await clickSeg(); await tab.waitForSelector('.sess-search input', { timeout: 4000 }).catch(() => {}); }
+  await tab.waitForTimeout(200);
   const m = await tab.evaluate(() => {
     const inp = document.querySelector('.sess-search input');
     if (!inp) return { found: false };
@@ -1100,13 +1116,14 @@ for (const [w, h] of [[390, 844], [360, 800], [844, 390]]) {
   });
   await tab.waitForTimeout(500);
   const kb = await tab.evaluate(() => {
-    const inp = document.querySelector('.sess-search input').getBoundingClientRect();
-    const list = document.querySelector('.sess-scroll').getBoundingClientRect();
+    const inp = document.querySelector('.sess-search input')?.getBoundingClientRect();
+    const list = document.querySelector('.sess-scroll')?.getBoundingClientRect();
+    if (!inp || !list) return null;
     return { vh: Math.round(window.visualViewport.height), appVh: getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim(),
       top: Math.round(inp.top), bottom: Math.round(inp.bottom), listBottom: Math.round(list.bottom) };
   });
   // 横屏 844×390 本身只有 390 高，压到 380 差 10px 不算键盘（阈值 120），不做外壳断言
-  if (h > 500) {
+  if (h > 500 && kb) {
     check(tag, '键盘弹出外壳跟随可视高', `${kb.appVh}`, '380px', kb.appVh === '380px');
     check(tag, '键盘弹出输入框在可视区内', `框 ${kb.top}-${kb.bottom} 可视底=${kb.vh}`, `bottom≤${kb.vh}`, kb.bottom <= kb.vh + 1);
     check(tag, '键盘弹出列表不越可视底', `列表底=${kb.listBottom}`, `≤${kb.vh}`, kb.listBottom <= kb.vh + 1);
