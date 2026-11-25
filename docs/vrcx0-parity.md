@@ -676,3 +676,20 @@ structure_parity 只数「右栏榜单节数 0/3」，三块榜单的字号/头�
 - **汇总日志用唯一名**：BUSY 实例的调用方若用 `> cache/regress_all_rN.log` 重定向，会把正在跑那轮的汇总日志截断成 0 字节，只剩每段 log。起跑命令统一 `> cache/regress_all_r50_$(date +%H%M).log`。
 - **单跑时长要按后台任务算**：`mobile_parity` 单跑约 10 分钟，前台跑会被工具超时杀进程树，日志里留下的 `Target page ... has been closed` 是杀进程造成的假象，不是 OOM。
 - **重试只认环境性死亡**：`seg_retry` 的匹配模式必须窄，`Killed` / 浏览器关闭 / launch 超时 / 上游 408 可重试，断言 FAIL 绝不能重试（否则真差异被吞掉）。
+
+---
+
+# 第四十轮：主框架与导航密度断言补齐（第 40 轮，2026-11-25）
+
+前几轮把外壳的「高度/宽度/显隐」锁死了，但真机量测里还有一批**密度数字**（状态栏每项文字与圆点间距、顶栏图标按钮间距、导航行距/二级缩进/页脚行距）只写在 `docs/ref/vrcx0-spec.json` 里没有断言，布局漂移量不到。本轮把它们全部变成常驻断言。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 380 | `scripts/frame_parity.mjs` 的 `measureFrame` 新增 `topPitch` / `subPitch`（同组相邻行 y 差，>45 视为块间距剔除）、`subIndent`（二级相对一级左移）、`iconX`、`subTextFit`（二级文字右端距侧栏右缘）、`footPitch`、`footDivider`；`__chrome` 新增 statusbar 每项 `label/dotW/gapDT` 与 topbar `actPitch` | 单档 `FRAME_VIEWS=1024x600` → **237/237 FRAME OK**（`cache/scratch/frame_r31_v1.log`） |
+| 381 | 新增 13 条断言（浅/深各一套）：`statusbar.labels`（服务器状态/实时连接/VRChat/SteamVR）、`statusbar.dot`（圆点 8 + 点→字 9）、`topbar.actions_pitch` 36±1、`nav.top_pitch` 40、`nav.sub_pitch` 35、`nav.sub_indent` 27±1、`nav.icon_x` 18±2（真机 19，110% 取整）、`nav.sub_text_fit` ≤−8、`nav.footer_pitch` 39±1、`nav.footer_no_divider`（上边框宽 0，真机 SidebarFooter 无分割线） | 全 9 视口 → **2166/2166 · FRAME OK · exit 0**（相对第 39 轮 1932 每档 +26） |
+| 382 | 端到端 `bash scripts/regress_all.sh`（单实例，日志 `cache/scratch/regress_r31.log`） | structure 59/59、visual 215/215、**frame 2166/2166**、nav 366/366 逐段 OK（mobile 及之后各段本轮日志内确认） |
+
+踩坑记录：
+- `footer_no_divider` 一开始写成 `style === 'none'`，实际是 `0px solid`——判据要按「宽 = 0」而不是样式关键字，否则真无分割线也判红（两视口首跑 495/499，4 条红全是这一条）。
+- 二级行距/缩进是「同组相邻行」概念，跨块（如折叠夹边界）的行差是块间距（>45），必须在测量时剔除，否则 600 高视口上会量到 100+ 的假 pitch。
+- README 的 2166 口径（`docs/ref/frame-parity.json` per-view：600 高两档 237、1440×900 252、1600/1700 各 262、其余 4 档 229）与本轮实测一致。
