@@ -91,10 +91,22 @@ for (const [uid, name, tl, lang, st, loc, wid, wname] of extraFriends) {
       JSON.stringify([`language_${lang}`, 'system_trust_basic', 'system_trust_known']),
       0, at(now - 3 * MIN)]);
 }
+// 在线好友必须有「还没结束」的 friend_session：/api/roster 的 online_minutes 只从
+// friend_session(ended_at is null) 算，缺了就是 null → 好友位置卡片第二行（在线时长）整片空白。
+// 真机每张在线卡都写「36分钟」，之前只有 alice/carol 有种，其余在线好友全是空行。
+for (const [i, [uid, , , , , loc]] of extraFriends.entries()) {
+  if (!loc) continue;
+  await ins(`insert into friend_session (id, user_id, started_at, ended_at, minutes, location, world_id, world_name, status)
+             values (?,?,?,?,?,?,?,?,?)`,
+    [`s_${uid}`, uid, at(now - (12 + i * 7) * MIN), null, null, loc, null, null, null]);
+}
 // 好友位置分栏演示：同一实例 2 人（世界栏成组）+ 在线私人房间（可折叠组）
 await ins(`insert into friend (user_id, display_name, trust_level, platform, status, status_description, location, world_id, world_name, icon_url, avatar_id, is_favorite, updated_at)
            values (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
   ['usr_kudan', '旧日崩解', 'system_trust_trusted', 'standalonewindows', 'join me', '在挂机听歌', 'wrld_a:9~region(jp)', 'wrld_a', 'Alpha Club', null, 'av_2', 0, at(now - 4 * MIN)]);
+await ins(`insert into friend_session (id, user_id, started_at, ended_at, minutes, location, world_id, world_name, status)
+           values (?,?,?,?,?,?,?,?,?)`,
+  ['s_usr_kudan', 'usr_kudan', at(now - 88 * MIN), null, null, 'wrld_a:9~region(jp)', 'wrld_a', 'Alpha Club', 'join me']);
 await ins(`insert into friend (user_id, display_name, trust_level, platform, status, status_description, location, world_id, world_name, icon_url, avatar_id, is_favorite, updated_at)
            values (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
   ['usr_zk', 'ZKOAC', 'system_trust_known', 'standalonewindows', 'active', '喵喵可爱捏', 'private', null, null, null, 'av_3', 0, at(now - 5 * MIN)]);
@@ -102,6 +114,9 @@ await ins(`insert into friend (user_id, display_name, trust_level, platform, sta
 await ins(`insert into friend (user_id, display_name, trust_level, platform, status, location, world_id, world_name, icon_url, is_favorite, updated_at)
            values (?,?,?,?,?,?,?,?,?,?,?)`,
   ['usr_xiaohong', '小红', 'system_trust_known', 'standalonewindows', 'active', 'wrld_c:1~region(jp)', 'wrld_c', '夜の喫茶店', 'av_4', 0, at(now - MIN)]);
+await ins(`insert into friend_session (id, user_id, started_at, ended_at, minutes, location, world_id, world_name, status)
+           values (?,?,?,?,?,?,?,?,?)`,
+  ['s_usr_xiaohong', 'usr_xiaohong', at(now - 24 * MIN), null, null, 'wrld_c:1~region(jp)', 'wrld_c', '夜の喫茶店', 'active']);
 await ins(`insert into friend (user_id, display_name, trust_level, platform, status, status_description, location, world_id, world_name, icon_url, is_favorite, updated_at)
            values (?,?,?,?,?,?,?,?,?,?,?,?)`,
   ['usr_alice', 'Alice', 'system_trust_trusted', 'standalonewindows', 'active', '画图', 'wrld_a:1~hidden(usr_me)~region(jp)', 'wrld_a', 'Alpha Club', 'av_1', 1, at(now - MIN)]);

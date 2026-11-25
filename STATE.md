@@ -77,3 +77,11 @@
 - [2026-11-25 13:45] `server/scripts/demo.mjs` 补三条 profile 事件（只换模型 / 改昵称+状态 / 空 changes）；`cd web && npm test` → **51 pass 0 fail**；`npm run build` 通过（34.6s，FeedPage-CHZs135t.js 9.16 kB）。README 三处 + `docs/vrcx0-parity.md` 第四十七轮小节（402–405）已同步 19/19 口径。提交 54d8b27 并 push。
 - [2026-11-25 13:45] 端到端 `bash scripts/regress_all.sh http://127.0.0.1:8891`（日志 `cache/regress_all_r47.log`）后台起跑，本轮结束前未出末行（structure 段进行中）。
 - [2026-11-25 14:15] 端到端 `cache/regress_all_r47.log` 进度：structure 59/59 OK、visual 215/215 OK、**frame 2256/2256 FRAME OK**，nav 段进行中（feed 段排在 navinv/mobile/grid 之后）。
+
+## 第48轮 好友位置卡片「在线时长」补真内容（locations 25/25，2026-11-25 14:2x）
+
+- [2026-11-25 14:2x] 补上第 34 轮目标的最后一处内容缺口：卡片时长行整片空白。根因在数据侧——`/api/roster` 的 `online_minutes` 只从 `friend_session(ended_at is null)` 算，而 `server/scripts/demo.mjs` 只给 alice/carol 种了开着的会话，其余 13 个在线好友全 `null` → `dur()` 返回 `''`。几何断言（`名字/时长在头像右侧竖排`）只量元素在不在、位置对不对，空壳也 PASS，所以一直没被抓到。
+- [2026-11-25 14:2x] 修法：`demo.mjs` 给 `extraFriends` 在线项 + kudan/小红 补 `ended_at is null` 的 `friend_session`（起始 12+i×7 分钟错开）；私人房间的 `usr_zk` 不种（真机私人栏按设计无时长行）。
+- [2026-11-25 14:2x] 断言：`locations_parity.mjs` 第 25 条 `在线卡时长非空(非私人栏)`（`.loc-dur` textContent 须匹配 `^\d`）；顺手把 `LOC_NEG` 注入高度 120→140（判据允许 84~120，注 120 抓不到，NEG 自检一直 FAIL）。
+- [2026-11-25 14:2x] 证据：`node scripts/locations_parity.mjs http://127.0.0.1:8891` → **25/25 · LOCATIONS OK · exit 0**（14 张在线卡/空 0）；`LOC_NEG=1` → **21/25 · NEG OK**（卡片高/网格列数被抓）；`/api/roster` total 22 / online 15 / missing 只剩 `usr_zk`；截图 `cache/loc_r34.png` 视觉复核（旧日崩解 1小时29分 / Kirito 13分钟，无裁切溢出）；`cd web && npm test` → 51 pass 0 fail；`node --check` demo.mjs OK。
+- [2026-11-25 14:2x] 下一步：端到端 `bash scripts/regress_all.sh http://127.0.0.1:8891` 单实例复跑，确认 locations 段显示 25/25 且末行 `REGRESS OK 11/11`（r47 的 11/11 是 24/24 口径）；README 与 docs 已同步 25/25 与第四十八轮小节。

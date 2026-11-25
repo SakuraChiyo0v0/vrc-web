@@ -90,6 +90,7 @@ const readGroups = () => page.evaluate(() => {
             top: box(c.querySelector('.loc-top')),
             name: box(c.querySelector('.loc-name')),
             dur: box(c.querySelector('.loc-dur')),
+            durText: (c.querySelector('.loc-dur')?.textContent || '').trim(),
             world: box(c.querySelector('.loc-world')),
             status: box(c.querySelector('.loc-status')),
             overflowY: c.scrollHeight - c.clientHeight,
@@ -131,7 +132,7 @@ try {
 
   if (NEG) {
     await page.addStyleTag({ content: `
-      .loc-card { height: 120px !important; }
+      .loc-card { height: 140px !important; }   /* 判据允许 84~120，注 120 抓不到，取 140 */
       .loc-groups .loc-grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
       .loc-top { display: block !important; }
       .loc-status { width: 120px !important; }
@@ -199,7 +200,7 @@ try {
   check('网格列数(1688 内窗)', online.cols, SPEC.columns, online.cols === SPEC.columns);
 
   // 卡片内部两段式（真机裁图）：上段 = 头像左 + 名字/时长右竖排，下段 = 世界行/状态行跨整卡宽
-  const L = cards.map((c) => (c.layout ? { ...c.layout, gtype: c.gtype, u: c.u } : null)).filter(Boolean);
+  const L = cards.map((c) => (c.layout ? { ...c.layout, gtype: c.gtype, u: c.u, on: c.on } : null)).filter(Boolean);
   const near = (a, b, tol = 2) => Math.abs(a - b) <= tol;
   const topBad = L.filter((l) => !l.top || Math.abs(l.top.h - 56) > 1);
   check('卡上段高 56', L.length ? `${L[0].top?.h ?? '—'}` : '无', '56',
@@ -219,6 +220,13 @@ try {
   check('名字/时长在头像右侧竖排', L.length ? `name x=${L[0].name?.x} dur y=${L[0].dur?.y} name y=${L[0].name?.y}`
     : '无', 'name.x>头像右缘；非私人栏 dur 在名下且左对齐', L.length === cards.length && metaBad.length === 0,
     metaBad.length ? metaBad.map((l) => `${l.gtype}:x=${l.x} name(${l.name?.x},${l.name?.y}) dur(${l.dur?.x},${l.dur?.y})`).join(' | ') : '');
+
+  // 时长行不能是空壳：元素在、位置对，但 online_minutes 为 null 时 dur() 返回 '' —— 真机每张在线卡都写「36分钟」。
+  // demo 库曾经只给 alice/carol 种 friend_session，其余在线好友时长整片空白，上面三条几何断言全都量不到。
+  const durEmpty = L.filter((l) => l.gtype !== 'private' && l.on === '1' && !/^\d/.test(l.durText));
+  check('在线卡时长非空(非私人栏)', L.length ? `${L.filter((l) => l.gtype !== 'private' && l.on === '1').length} 张在线卡 / 空 ${durEmpty.length}` : '无',
+    '全部匹配 ^\\d（如 36分钟）', L.length === cards.length && durEmpty.length === 0,
+    durEmpty.length ? durEmpty.map((l) => `${l.u}:'${l.durText}'`).slice(0, 4).join(' ') : '');
 
   const lineBad = L.filter((l) => {
     if (!l.status) return true;

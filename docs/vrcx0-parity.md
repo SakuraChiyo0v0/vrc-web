@@ -805,3 +805,12 @@ structure_parity 只数「右栏榜单节数 0/3」，三块榜单的字号/头�
 - **payload 没出接口**：前端早就写了 `changesOf`，但 `/api/events` 的 select 里没有 `e.payload`，所以永远走「资料更新」分支——这类缺口单看页面看不出，必须拿 API 返回对照。
 - **断言别只判「非空」**：只写「不为 `—`」的话，全渲染成「资料更新」也能过。要按形态分别计数（模型/昵称/空各 ≥1），否则回归是假绿。
 - **模型名不可编**：`vrc.avatar` 空表、`friend.avatar_id` 是缩略图 URL，写「模型 → 已更换」是唯一有依据的表述。
+
+# 第四十八轮：好友位置卡片「在线时长」补真内容（locations 25/25）（2026-11-25）
+
+第 34 轮目标「好友位置分栏复刻」的最后一处内容缺口：卡片时长行整片空白。几何断言（`名字/时长在头像右侧竖排`）只量 `.loc-dur` 元素在不在、位置对不对，元素是空壳也照样 PASS。
+
+- 根因在数据侧：`/api/roster` 的 `online_minutes` 只从 `friend_session`（`ended_at is null`）算，而 `server/scripts/demo.mjs` 只给 alice/carol 种了开着的会话，其余 13 个在线好友全是 `null` → `dur()` 返回 `''` → 卡片第二行空白。
+- 修法：`demo.mjs` 给 `extraFriends` 里的在线项（以及 kudan / 小红）补 `ended_at is null` 的 `friend_session`，起始时间按序号错开（12 + i×7 分钟）。私人房间的 `usr_zk` 不种——真机私人栏卡片按设计不显示时长行。
+- 断言：`locations_parity.mjs` 加第 25 条 `在线卡时长非空(非私人栏)`（量 `.loc-dur` 的 textContent，须匹配 `^\d`，如「36分钟」）；顺手把 `LOC_NEG` 注入高度 120→140（判据允许 84~120，注 120 抓不到，NEG 自检一直是 FAIL）。
+- 证据：`node scripts/locations_parity.mjs http://127.0.0.1:8891` → **25/25 · LOCATIONS OK · exit 0**（14 张在线卡 / 空 0）；`LOC_NEG=1` → **21/25 · NEG OK**（卡片高 / 网格列数被抓）；`/api/roster` → total 22 / online 15 / missing_minutes 只剩 `usr_zk`；截图 `cache/loc_r34.png` 视觉复核（`旧日崩解 1小时29分`、`Kirito 13分钟`…无裁切/溢出）；`cd web && npm test` → 51 pass 0 fail。

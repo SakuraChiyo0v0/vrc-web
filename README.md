@@ -111,7 +111,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
 | 动态页表格 | `node scripts/feed_parity.mjs` | 19/19（列名/列序、无头像列、表头行高 44、列文字起点、右缘留白、工具条单行、无页脚、类型四色互异、类型图标为 12×12 矢量 SVG（非字体字符，避免缺字豆腐块）、详细信息三段、profile 行详细信息非空且给「字段 → 值」（模型 → 已更换 / 昵称 → 新名 / 状态 → 文案 / 空 changes → 资料更新）、三种形态各 ≥1、类型列文案按变更分（含 avatar_id → 模型变动，其余 → 资料变动，data-kind 仍 profile）） |
-| 好友位置分栏 | `node scripts/locations_parity.mjs` | 24/24（栏序、组头人数=卡数、世界栏 ≥2 人同实例、私人房间只收在线且不显示世界行、离线垫底、在线不丢不重、组头区域不重复、卡片 96 高/头像 56 正圆/6 列、卡上段 56 高、名字/时长在头像右侧竖排且左对齐（私人栏无时长行）、世界行/状态行从卡左内边起跨整卡宽且单行 12 高、卡内不横向/纵向溢出、列表视图分组一致、私人房间折叠/记忆跨刷新/展开恢复） |
+| 好友位置分栏 | `node scripts/locations_parity.mjs` | 25/25（栏序、组头人数=卡数、世界栏 ≥2 人同实例、私人房间只收在线且不显示世界行、离线垫底、在线不丢不重、组头区域不重复、卡片 96 高/头像 56 正圆/6 列、卡上段 56 高、名字/时长在头像右侧竖排且左对齐（私人栏无时长行）、在线卡时长文字非空、世界行/状态行从卡左内边起跨整卡宽且单行 12 高、卡内不横向/纵向溢出、列表视图分组一致、私人房间折叠/记忆跨刷新/展开恢复） |
 | 概览三榜单 | `node scripts/overview_parity.mjs` | 45/45（三块榜单顺序与标题、栏宽 300、标题 24/600、副标题 18（标题下 46）、首名 hero 116 圆头像 + 32/600 名字 + 20px 时长（名下 25）/ 下距 55、紧凑行 50 头像 + 22 名字 + 行距 71.5、灰条高 7/槽宽 67/左端固定/右内缩 25/长度∝榜首、hero 唯一且首行、空态文案、末行→下块标题 138、无横向溢出） |
 | 前端单测 | `cd web && npm test` | 51 pass |
 
@@ -146,7 +146,7 @@ node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 390/390（逐�
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 node scripts/grid_parity.mjs     http://172.30.0.7:8790/vrc/   # 60/60（.loc-grid 列数阶梯）
 node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 19/19（动态页表格，基线 docs/ref/feed-measure.json）
-node scripts/locations_parity.mjs http://172.30.0.7:8790/vrc/  # 24/24（好友位置分栏，基线 docs/ref/vrcx0-spec.json#friends_locations）
+node scripts/locations_parity.mjs http://172.30.0.7:8790/vrc/  # 25/25（好友位置分栏，基线 docs/ref/vrcx0-spec.json#friends_locations）
 node scripts/overview_parity.mjs  http://172.30.0.7:8790/vrc/  # 45/45（概览三榜单，基线 docs/ref/overview-lists-measure.json）
 ```
 
