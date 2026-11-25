@@ -90,7 +90,15 @@ try {
       if (!ek) continue;
       const k = ek.getAttribute('data-kind');
       if (k && !(k in kinds)) {
-        kinds[k] = { color: cs(ek).color, text: (ek.textContent || '').trim(), glyph: (ek.querySelector('.ek-glyph')?.textContent || '').trim() };
+        kinds[k] = {
+          color: cs(ek).color,
+          text: (ek.textContent || '').trim(),
+          glyph: (ek.querySelector('.ek-glyph')?.textContent || '').trim(),
+          svg: !!ek.querySelector('svg.ek-glyph'),
+          svgSize: ek.querySelector('svg.ek-glyph')
+            ? { w: Math.round(ek.querySelector('svg.ek-glyph').getBoundingClientRect().width), h: Math.round(ek.querySelector('svg.ek-glyph').getBoundingClientRect().height) }
+            : null
+        };
       }
     }
     // 详细信息列：拆 region / 世界名 / 访问级别
@@ -161,6 +169,15 @@ try {
     missing.length === 0, missing.length ? `缺 ${missing.join('/')}` : '');
   check('类型图标色互不相同', `${colors.length} 色 / ${uniq.size} 种`, '4 色 / 4 种', colors.length === 4 && uniq.size === 4,
     colors.join(' '));
+
+  // 类型图标必须是矢量（字体字符会因缺字渲染成豆腐块：⌖ U+2316 在 Geist/PingFang/msyh 链上就没有）
+  const svgKinds = needKinds.filter((k) => got.kinds[k]?.svg);
+  const textKinds = needKinds.filter((k) => (got.kinds[k]?.glyph || '').length > 0);
+  const sizes = needKinds.map((k) => got.kinds[k]?.svgSize).filter(Boolean);
+  check('类型图标为矢量(非字体字符)', `${svgKinds.length} 类 svg / 字符残留 ${textKinds.length} 类`,
+    '4 类 svg / 字符残留 0 类',
+    svgKinds.length === 4 && textKinds.length === 0,
+    sizes.map((s) => `${s.w}x${s.h}`).join(' '));
 
   // 详细信息列：真机是「区域 + 世界名 · 访问级别」
   const withRegion = got.details.filter((d) => d.region);

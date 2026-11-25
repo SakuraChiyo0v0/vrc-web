@@ -109,7 +109,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 导航可达 | `node scripts/nav_coverage.mjs` | 366/366（4 视口 × 浅/深色 × 45，含命中测试、折叠夹子项不可点/展开可点、展开按钮几何、reload 持久化、收起态 Ctrl+1..9 跳页、收起态 `?` 快捷键表跳页组 9 项且 Esc 关掉后仍收起、收起态 Ctrl K 命令面板打开/聚焦/不抢数字键/过滤归零/Esc 后仍收起/粘贴 wrld_ ID 回车开抽屉、展开态 Ctrl K 上下选/Enter 开抽屉/点遮罩关/鼠标点结果行/Esc 不改 hash、展开态 Ctrl+1..9 逐键跳页且当前项高亮、展开态 `?` 表且 Esc 后侧栏/高亮原样、展开态 reload 仍展开、收起侧栏 × 右栏折成 36 竖条互不干扰） |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
-| 动态页表格 | `node scripts/feed_parity.mjs` | 14/14（列名/列序、无头像列、表头行高 44、列文字起点、右缘留白、工具条单行、无页脚、类型四色互异、详细信息三段） |
+| 动态页表格 | `node scripts/feed_parity.mjs` | 15/15（列名/列序、无头像列、表头行高 44、列文字起点、右缘留白、工具条单行、无页脚、类型四色互异、类型图标为 12×12 矢量 SVG（非字体字符，避免缺字豆腐块）、详细信息三段） |
 | 好友位置分栏 | `node scripts/locations_parity.mjs` | 20/20（栏序、组头人数=卡数、世界栏 ≥2 人同实例、私人房间只收在线且不显示世界行、离线垫底、在线不丢不重、组头区域不重复、卡片 96 高/头像 56 正圆/6 列、列表视图分组一致、私人房间折叠/记忆跨刷新/展开恢复） |
 | 概览三榜单 | `node scripts/overview_parity.mjs` | 45/45（三块榜单顺序与标题、栏宽 300、标题 24/600、副标题 18（标题下 46）、首名 hero 116 圆头像 + 32/600 名字 + 20px 时长（名下 25）/ 下距 55、紧凑行 50 头像 + 22 名字 + 行距 71.5、灰条高 7/槽宽 67/左端固定/右内缩 25/长度∝榜首、hero 唯一且首行、空态文案、末行→下块标题 138、无横向溢出） |
 | 前端单测 | `cd web && npm test` | 48 pass |
@@ -142,7 +142,7 @@ node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
 node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 366/366（逐视口点侧栏项 + 命中测试）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 node scripts/grid_parity.mjs     http://172.30.0.7:8790/vrc/   # 60/60（.loc-grid 列数阶梯）
-node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 14/14（动态页表格，基线 docs/ref/feed-measure.json）
+node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 15/15（动态页表格，基线 docs/ref/feed-measure.json）
 node scripts/locations_parity.mjs http://172.30.0.7:8790/vrc/  # 20/20（好友位置分栏，基线 docs/ref/vrcx0-spec.json#friends_locations）
 node scripts/overview_parity.mjs  http://172.30.0.7:8790/vrc/  # 45/45（概览三榜单，基线 docs/ref/overview-lists-measure.json）
 ```

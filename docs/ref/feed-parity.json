@@ -4,10 +4,10 @@
   "width": 1688,
   "height": 1028
  },
- "at": "2026-11-25T00:55:44.767Z",
+ "at": "2026-11-25T01:16:10.845Z",
  "ref": "docs/ref/feed-measure.json",
- "pass": 14,
- "total": 14,
+ "pass": 15,
+ "total": 15,
  "rows": [
   {
    "name": "列名/列序",
@@ -87,6 +87,13 @@
    "extra": "rgb(63, 185, 80) rgb(139, 148, 158) rgb(47, 182, 168) rgb(163, 113, 247)"
   },
   {
+   "name": "类型图标为矢量(非字体字符)",
+   "got": "4 类 svg / 字符残留 0 类",
+   "want": "4 类 svg / 字符残留 0 类",
+   "ok": true,
+   "extra": "12x12 12x12 12x12 12x12"
+  },
+  {
    "name": "区域码格式",
    "got": "18 行全合法",
    "want": "两位大写",
@@ -146,33 +153,63 @@
   "kinds": {
    "online": {
     "color": "rgb(63, 185, 80)",
-    "text": "▲上线",
-    "glyph": "▲"
+    "text": "上线",
+    "glyph": "",
+    "svg": true,
+    "svgSize": {
+     "w": 12,
+     "h": 12
+    }
    },
    "location": {
     "color": "rgb(47, 182, 168)",
-    "text": "⌖位置变动",
-    "glyph": "⌖"
+    "text": "位置变动",
+    "glyph": "",
+    "svg": true,
+    "svgSize": {
+     "w": 12,
+     "h": 12
+    }
    },
    "status": {
     "color": "oklch(0.4528 0 0)",
-    "text": "◌状态变动",
-    "glyph": "◌"
+    "text": "状态变动",
+    "glyph": "",
+    "svg": true,
+    "svgSize": {
+     "w": 12,
+     "h": 12
+    }
    },
    "offline": {
     "color": "rgb(139, 148, 158)",
-    "text": "▼下线",
-    "glyph": "▼"
+    "text": "下线",
+    "glyph": "",
+    "svg": true,
+    "svgSize": {
+     "w": 12,
+     "h": 12
+    }
    },
    "profile": {
     "color": "rgb(163, 113, 247)",
-    "text": "◉模型变动",
-    "glyph": "◉"
+    "text": "模型变动",
+    "glyph": "",
+    "svg": true,
+    "svgSize": {
+     "w": 12,
+     "h": 12
+    }
    },
    "active": {
     "color": "rgb(201, 162, 39)",
-    "text": "◆活跃",
-    "glyph": "◆"
+    "text": "活跃",
+    "glyph": "",
+    "svg": true,
+    "svgSize": {
+     "w": 12,
+     "h": 12
+    }
    }
   },
   "details": [

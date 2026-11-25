@@ -693,3 +693,14 @@ structure_parity 只数「右栏榜单节数 0/3」，三块榜单的字号/头�
 - `footer_no_divider` 一开始写成 `style === 'none'`，实际是 `0px solid`——判据要按「宽 = 0」而不是样式关键字，否则真无分割线也判红（两视口首跑 495/499，4 条红全是这一条）。
 - 二级行距/缩进是「同组相邻行」概念，跨块（如折叠夹边界）的行差是块间距（>45），必须在测量时剔除，否则 600 高视口上会量到 100+ 的假 pitch。
 - README 的 2166 口径（`docs/ref/frame-parity.json` per-view：600 高两档 237、1440×900 252、1600/1700 各 262、其余 4 档 229）与本轮实测一致。
+
+---
+
+# 第四十一轮：动态页类型图标改矢量（第 32 轮目标，2026-11-25）
+
+`feed_parity` 的「类型图标四类齐全」只按 `data-kind` 存在判定，没管图标怎么画。实测发现类型列用的是字体字符：`⌖`（U+2316，位置变动=最高频类型）在 Geist → PingFang SC → Noto Sans SC → msyh 全链都缺字，整列渲染成空心方框豆腐块（canvas `measureText('⌖')` 宽度 6.6px，与私用区 U+E000 的 tofu 同宽）。真机用的是描边小图标，不是字符。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 383 | `FeedPage.jsx` 的 `kindCell` 改用 `<KindGlyph>`：9 类事件各一枚 12×12 内联 SVG（`viewBox 0 0 12 12`、`stroke=currentColor`、1.3 描边），颜色仍由 `.ek[data-kind]` 的 CSS 变量给；`styles.css` 的 `.ek-glyph` 由 `font-size:11px` 改为 `flex:none; width/height:12px` | 类型列截图逐行复核：位置变动=青色定位针、上线=绿箭头、下线=灰下箭头、模型变动=紫人形，9 行无豆腐块（`cache/scratch/feed_types_r32.png`） |
+| 384 | `feed_parity.mjs` 新增第 15 条断言「类型图标为矢量(非字体字符)」：四类必须有 `svg.ek-glyph` 且 `.ek-glyph` 无文本残留，并打印 12×12 尺寸 | `node scripts/feed_parity.mjs` → **15/15 · FEED OK · exit 0**（`cache/feed_r32_v2.log`）；`FEED_NEG=1` → 12/15 · NEG OK；`cd web && npm test` 48 pass |

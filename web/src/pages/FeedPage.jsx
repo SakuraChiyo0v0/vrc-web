@@ -26,6 +26,45 @@ const KIND = {
   self_profile: ['自己变更', '✎']
 };
 
+/**
+ * 类型图标走内联 SVG（12×12 描边，颜色由 .ek 的 currentColor 决定）。
+ * 原先用「▲▼⌖◉◌」等字体字符，⌖(U+2316) 在 Geist/PingFang/msyh 全链都缺字，
+ * 位置变动（最高频类型）整列渲染成豆腐块；矢量图标与真机描边小图标也更接近。
+ */
+const KIND_ICON = {
+  online: <path d="M6 10V2M6 2 3 5M6 2l3 3" />,
+  offline: <path d="M6 2v8M6 10 3 7M6 10l3-3" />,
+  location: (
+    <>
+      <path d="M6 10.5s3.5-3.1 3.5-5.4a3.5 3.5 0 1 0-7 0C2.5 7.4 6 10.5 6 10.5Z" />
+      <circle cx="6" cy="5.1" r="1.2" />
+    </>
+  ),
+  profile: (
+    <>
+      <circle cx="6" cy="4" r="2" />
+      <path d="M2.6 10c.6-1.9 1.9-2.9 3.4-2.9s2.8 1 3.4 2.9" />
+    </>
+  ),
+  status: <circle cx="6" cy="6" r="3.2" />,
+  active: <path d="M6 2.6 9.4 6 6 9.4 2.6 6Z" />,
+  friend_add: <path d="M6 3.2v5.6M3.2 6h5.6" />,
+  friend_delete: <path d="M3.2 6h5.6" />,
+  self_profile: <path d="M2.6 9.4 9 3l-.4-.4L2.2 9v.4h.4Z" />
+};
+
+function KindGlyph({ kind }) {
+  return (
+    <svg
+      className="ek-glyph" viewBox="0 0 12 12" width="12" height="12"
+      aria-hidden="true" focusable="false" fill="none" stroke="currentColor"
+      strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"
+    >
+      {KIND_ICON[kind] ?? <circle cx="6" cy="6" r="2" />}
+    </svg>
+  );
+}
+
 const KINDS = [['', '类型'], ['online', '上线'], ['location', '位置变动'], ['offline', '下线'], ['active', '活跃'], ['status', '状态变动'], ['profile', '模型变动']];
 const LIMIT = 80;
 
@@ -171,10 +210,10 @@ export default function FeedPage() {
   );
 
   const kindCell = (e) => {
-    const [label, glyph] = KIND[e.kind] ?? [e.kind, '·'];
+    const [label] = KIND[e.kind] ?? [e.kind];
     return (
       <span className="ek" data-kind={e.kind}>
-        <span className="ek-glyph">{glyph}</span>
+        <KindGlyph kind={e.kind} />
         {label}
       </span>
     );
