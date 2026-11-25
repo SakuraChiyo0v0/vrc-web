@@ -77,17 +77,23 @@ function LocCard({ f, showWorld, showDur, openFriend }) {
       data-online={f.online ? '1' : '0'}
       onClick={() => openFriend(f.user_id)}
     >
-      <UserHoverCard id={f.user_id}>
-        <Avatar f={f} />
-      </UserHoverCard>
       <div className="loc-body">
-        <div className="loc-name">
-          <span className="truncate">{f.display_name ?? f.user_id}</span>
-          {f.favorite ? <span className="loc-star">★</span> : null}
+        {/* 真机布局（docs/ref/vrcx0-locations.png 283,320 起像素图）：头像行右侧只放名字+时长，
+            世界行与状态行从卡片左内边距起跨整卡宽，排在头像下方。 */}
+        <div className="loc-top">
+          <UserHoverCard id={f.user_id}>
+            <Avatar f={f} />
+          </UserHoverCard>
+          <div className="loc-meta">
+            <div className="loc-name">
+              <span className="truncate">{f.display_name ?? f.user_id}</span>
+              {f.favorite ? <span className="loc-star">★</span> : null}
+            </div>
+            {showDur ? (
+              <div className="loc-dur tabular-nums">{f.online ? dur(f.online_minutes) : '离线'}</div>
+            ) : null}
+          </div>
         </div>
-        {showDur ? (
-          <div className="loc-dur tabular-nums">{f.online ? dur(f.online_minutes) : '离线'}</div>
-        ) : null}
         {showWorld && f.online ? (
           <div className="loc-world">
             {f.region ? <span className="loc-code">{String(f.region).toUpperCase()}</span> : null}
@@ -228,6 +234,13 @@ export default function FriendsPage() {
                   onClick={isPrivate ? togglePrivate : undefined}
                   data-collapsible={isPrivate ? '1' : undefined}
                 >
+                  {g.type === 'world' ? (
+                    <svg className="loc-glyph" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                      <path d="M6 1.5 10.5 4 6 6.5 1.5 4 6 1.5Z" />
+                      <path d="M1.5 6 6 8.5 10.5 6" />
+                      <path d="M1.5 8.2 6 10.7 10.5 8.2" />
+                    </svg>
+                  ) : null}
                   {g.region ? <span className="loc-code">{g.region}</span> : null}
                   <span className="loc-title truncate">{g.label}</span>
                   <span className="loc-count tabular-nums">{g.rows.length}</span>
