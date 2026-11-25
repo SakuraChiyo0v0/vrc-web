@@ -1,6 +1,6 @@
 {
   "_note": "由 scripts/structure_parity.mjs 生成：spec.pages[*].structure（真机截图量测）vs 我们的 DOM",
-  "at": "2026-11-25T05:43:46.386Z",
+  "at": "2026-11-25T06:11:55.255Z",
   "base": "http://127.0.0.1:8891",
   "pass": 59,
   "skipped": 0,
