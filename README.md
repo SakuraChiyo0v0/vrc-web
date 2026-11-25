@@ -105,7 +105,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 |---|---|---|
 | 桌面结构 | `node scripts/structure_parity.mjs` | 59/59 |
 | 桌面视觉 | `node scripts/visual_parity.mjs` | 215/215（100%） |
-| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 1932/1932（9 视口 × 浅/深色 × 展开/收起，收起态也跑整套外壳断言；展开态逐页也量外壳（顶栏39/状态栏35/内容区填满/侧栏宽恒 214|277），展开态收放折叠夹不动内容列/外壳、600 高矮窗 nav 滚到底不带动整页，浅/深色收起都逐页做溢出 + 顶栏39/状态栏35/内容区填满中间段 + 内容列 ≥720 + 表格密度对比；新 context 必须默认展开；浅/深色收起都验收起 × 右栏开关与收起态 friends，收起态右栏恒 353 且与展开态相等；右栏自身折成 36px 竖条时手柄消失、内容列接过 353−36 且不溢出（≥1440 三档）；同一视口浅/深色收起的面板宽必须相等） |
+| 主框架/导航密度 | `node scripts/frame_parity.mjs` | 2166/2166（9 视口 × 浅/深色 × 展开/收起，收起态也跑整套外壳断言；展开态逐页也量外壳（顶栏39/状态栏35/内容区填满/侧栏宽恒 214|277），展开态收放折叠夹不动内容列/外壳、600 高矮窗 nav 滚到底不带动整页，浅/深色收起都逐页做溢出 + 顶栏39/状态栏35/内容区填满中间段 + 内容列 ≥720 + 表格密度对比；新 context 必须默认展开；浅/深色收起都验收起 × 右栏开关与收起态 friends，收起态右栏恒 353 且与展开态相等；右栏自身折成 36px 竖条时手柄消失、内容列接过 353−36 且不溢出（≥1440 三档）；同一视口浅/深色收起的面板宽必须相等） |
 | 导航可达 | `node scripts/nav_coverage.mjs` | 366/366（4 视口 × 浅/深色 × 45，含命中测试、折叠夹子项不可点/展开可点、展开按钮几何、reload 持久化、收起态 Ctrl+1..9 跳页、收起态 `?` 快捷键表跳页组 9 项且 Esc 关掉后仍收起、收起态 Ctrl K 命令面板打开/聚焦/不抢数字键/过滤归零/Esc 后仍收起/粘贴 wrld_ ID 回车开抽屉、展开态 Ctrl K 上下选/Enter 开抽屉/点遮罩关/鼠标点结果行/Esc 不改 hash、展开态 Ctrl+1..9 逐键跳页且当前项高亮、展开态 `?` 表且 Esc 后侧栏/高亮原样、展开态 reload 仍展开、收起侧栏 × 右栏折成 36 竖条互不干扰） |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
@@ -114,7 +114,7 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 概览三榜单 | `node scripts/overview_parity.mjs` | 45/45（三块榜单顺序与标题、栏宽 300、标题 24/600、副标题 18（标题下 46）、首名 hero 116 圆头像 + 32/600 名字 + 20px 时长（名下 25）/ 下距 55、紧凑行 50 头像 + 22 名字 + 行距 71.5、灰条高 7/槽宽 67/左端固定/右内缩 25/长度∝榜首、hero 唯一且首行、空态文案、末行→下块标题 138、无横向溢出） |
 | 前端单测 | `cd web && npm test` | 48 pass |
 
-端到端实测（第 33 轮，`cache/regress_all_r50_0719.log`）：十段一次性全绿 `REGRESS OK 10/10`（structure 59/59、visual 215/215、frame 1932/1932、nav 366/366、mobile 1479/1479、grid 60/60、feed 14/14、locations 20/20、overview 45/45、unittest 0 fail）。frame 此前在串行路径下会中途 `browser has been closed` 崩掉，现在每视口独立起停浏览器并在被关闭时换进程重试一次（`FRAME_VIEWS` / `FRAME_OUT` 可单档复现）。全量回归**只能单实例跑**：`regress_all.sh` 用 `flock` 占 `cache/regress/.lock`，后到者打印 `REGRESS BUSY` 直接退出；每段起跑前等 MemAvailable ≥ 600MB，只对 `Killed` / `browser has been closed` / `browserType.launch: Timeout` / 上游 408 这类环境性死亡重试一次（断言失败不重试）。
+端到端实测（第 33 轮，`cache/regress_all_r50_0719.log`）：十段一次性全绿 `REGRESS OK 10/10`（structure 59/59、visual 215/215、frame 2166/2166、nav 366/366、mobile 1479/1479、grid 60/60、feed 14/14、locations 20/20、overview 45/45、unittest 0 fail）。frame 此前在串行路径下会中途 `browser has been closed` 崩掉，现在每视口独立起停浏览器并在被关闭时换进程重试一次（`FRAME_VIEWS` / `FRAME_OUT` 可单档复现）。全量回归**只能单实例跑**：`regress_all.sh` 用 `flock` 占 `cache/regress/.lock`，后到者打印 `REGRESS BUSY` 直接退出；每段起跑前等 MemAvailable ≥ 600MB，只对 `Killed` / `browser has been closed` / `browserType.launch: Timeout` / 上游 408 这类环境性死亡重试一次（断言失败不重试）。
 
 刷新回归说明：脚本里**别用裸 `page.reload()`**。等 `'load'` 会被 demo 的长连接拖过 30s 直接整轮 TimeoutError（拿不到 FAIL 明细）；等 `'domcontentloaded'` 又早于 React 挂载，调用方 `evaluate` 会撞 `Execution context was destroyed`。统一走 `scripts/lib/page_structure.mjs` 的 `reloadVrc/reloadVrcHard`：只等 domcontentloaded，先给 `<html>` 打 `dataset.reloadStamp`，刷新后看不到这枚戳且 `#vrc-topbar h1` 在才算「文档真换新」，否则整页 goto 硬重试——否则旧 DOM 会让「reload 后状态还在」的断言假 PASS（第 30 轮 `exp.dirty.264/280` 读到上一条用例的 353 就是这个原因）。
 
@@ -137,7 +137,7 @@ node scripts/mobile_parity.mjs                 # 默认 http://127.0.0.1:8891，
 五个脚本可以直接指向线上容器，不必先起 demo：
 
 ```bash
-node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 1932/1932
+node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 2166/2166
 node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
 node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 366/366（逐视口点侧栏项 + 命中测试）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
@@ -170,7 +170,7 @@ node scripts/overview_parity.mjs  http://172.30.0.7:8790/vrc/  # 45/45（概览�
 - **矮窗 nav 滚动不带动整页**（600 高两档）：`<nav>` 滚到底（`scrollTop>0`）后 `window.scrollY` 仍 0、顶栏仍在 y0、内容区 y/h 不变、末项整行落在 `nav` 可视区内、内容区顶部 `elementFromPoint` 仍命中 `.workspace` 内元素 —— 挡住「导航一滚整页跟着滑」「粘性顶盖住内容」。
 - **新 context 必须默认展开**：不带 `localStorage` 的干净 context 里侧栏要在、不能出现顶栏展开按钮、`vrc-nav-collapsed` ≠ `1` —— 收起只能由用户点出来。
 
-每档视口项数：主轮初始化 9 项（3 项默认展开 + 6 页溢出）+ 浅色展开 60 项（外壳/侧栏几何 36 + 6 页逐页外壳 24：顶栏39/状态栏35/内容区填满/侧栏宽恒 214|277）+ 浅色收起 39 项（外壳/折叠 + 6 页溢出 + 6 页内容列 ≥720 + 6 页顶栏/状态栏/内容区填满 + 2 页表格密度 + 收起态 friends 2 项）+ 深色展开 24 项 + 深色收起 55 项（浅色收起那套 + 主题标记 + 浅/深同宽），≥1440 的三档每档再加「收起 × 右栏开关」组合 5 项（内容列让宽/复原/无溢出/右栏恒 353 与展开态相等/aside 仍收起）；展开态另加折叠夹收放 12 项（两页 × 3 断言 × 浅/深）+ 矮窗 nav 滚动 8 项（仅 600 高两档 × 浅/深 × 4 断言）；合计 1932 项（取自 `docs/ref/frame-parity.json` 的 per-view 计数：600 高两档各 211、1440×900 226、1600×900 与 1700×1040 各 236、其余 4 档各 203）。≥1440 三档另跑「右栏自身折成 36px 竖条」3 断言 × 浅/深（原只 ≥1600 两档）：点 ⋯ 折叠后 rail 宽 36、拖宽手柄消失、内容列正好接过让出的 353−36 且面板总宽不变/无溢出；在竖条左缘按下左拖 120px 宽度/内容列/localStorage 全不动；点 ‹ 展开回原宽且手柄回来。另加「右栏宽记忆脏值/越界回落」7 例 × ≥1440 三档浅色：`vrc-roster-w` 写 `abc` / `99999` / `-5` / `0` 必须回落 353，写 `264` / `280` / `770` 原样生效，且内容列 = workspace − 右栏宽、无横向溢出、拖宽手柄仍在，跑完复位 353 再 reload。右栏是 `.workspace` 内部的 flex 列，关掉它面板本身不变宽、让出来的是内容列（353px）。右栏在 `friends` 页刻意不渲染（`App.jsx: roster && page !== 'friends'`），所以右栏显隐/宽度量测固定停在 `settings`，其余外壳项（顶栏/状态栏/内容区高度/侧栏宽）逐页跑。600 高的两档矮窗（1024×600 / 1280×600）单列进来，因为导航 21 行 × 40 = 840 远超可用高，是「行高被 flex 压扁」最容易复发的区间。
+每档视口项数：主轮初始化 9 项（3 项默认展开 + 6 页溢出）+ 浅色展开 60 项（外壳/侧栏几何 36 + 6 页逐页外壳 24：顶栏39/状态栏35/内容区填满/侧栏宽恒 214|277）+ 浅色收起 39 项（外壳/折叠 + 6 页溢出 + 6 页内容列 ≥720 + 6 页顶栏/状态栏/内容区填满 + 2 页表格密度 + 收起态 friends 2 项）+ 深色展开 24 项 + 深色收起 55 项（浅色收起那套 + 主题标记 + 浅/深同宽），≥1440 的三档每档再加「收起 × 右栏开关」组合 5 项（内容列让宽/复原/无溢出/右栏恒 353 与展开态相等/aside 仍收起）；展开态另加折叠夹收放 12 项（两页 × 3 断言 × 浅/深）+ 矮窗 nav 滚动 8 项（仅 600 高两档 × 浅/深 × 4 断言）；合计 2166 项（取自 `docs/ref/frame-parity.json` 的 per-view 计数：600 高两档各 237、1440×900 252、1600×900 与 1700×1040 各 262、其余 4 档各 229；相对第 39 轮的 1932 每档 +26 = 13 条新断言 × 浅/深两套。新增：状态栏 4 项文字与顺序（服务器状态,实时连接,VRChat,SteamVR）、圆点 8 且圆点→文字 9、顶栏图标按钮中心距 36、导航顶层行距 40 / 二级行距 35 / 二级左移 27 / 图标距左 18 / 二级文字右内缩 ≤−8 / 页脚行距 39 / 页脚无上分割线）。≥1440 三档另跑「右栏自身折成 36px 竖条」3 断言 × 浅/深（原只 ≥1600 两档）：点 ⋯ 折叠后 rail 宽 36、拖宽手柄消失、内容列正好接过让出的 353−36 且面板总宽不变/无溢出；在竖条左缘按下左拖 120px 宽度/内容列/localStorage 全不动；点 ‹ 展开回原宽且手柄回来。另加「右栏宽记忆脏值/越界回落」7 例 × ≥1440 三档浅色：`vrc-roster-w` 写 `abc` / `99999` / `-5` / `0` 必须回落 353，写 `264` / `280` / `770` 原样生效，且内容列 = workspace − 右栏宽、无横向溢出、拖宽手柄仍在，跑完复位 353 再 reload。右栏是 `.workspace` 内部的 flex 列，关掉它面板本身不变宽、让出来的是内容列（353px）。右栏在 `friends` 页刻意不渲染（`App.jsx: roster && page !== 'friends'`），所以右栏显隐/宽度量测固定停在 `settings`，其余外壳项（顶栏/状态栏/内容区高度/侧栏宽）逐页跑。600 高的两档矮窗（1024×600 / 1280×600）单列进来，因为导航 21 行 × 40 = 840 远超可用高，是「行高被 flex 压扁」最容易复发的区间。
 
 ### 已知形态差（不进 FAIL）
 

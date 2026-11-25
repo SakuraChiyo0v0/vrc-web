@@ -1,8 +1,8 @@
 {
- "at": "2026-11-24T19:17:37.291Z",
+ "at": "2026-11-25T00:38:47.130Z",
  "base": "http://127.0.0.1:8891",
- "pass": 1932,
- "total": 1932,
+ "pass": 2166,
+ "total": 2166,
  "rows": [
   {
    "view": "1024x600",
@@ -286,6 +286,20 @@
   },
   {
    "view": "1024x600",
+   "name": "statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "roster.visible",
    "ours": "no",
    "want": "no",
@@ -324,6 +338,13 @@
    "name": "topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -373,6 +394,55 @@
    "name": "nav.scrollable",
    "ours": "303px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.sub_text_fit",
+   "ours": -75,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -748,6 +818,20 @@
   },
   {
    "view": "1024x600",
+   "name": "lcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "lcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -786,6 +870,13 @@
    "name": "lcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "lcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -1126,6 +1217,20 @@
   },
   {
    "view": "1024x768",
+   "name": "statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "roster.visible",
    "ours": "no",
    "want": "no",
@@ -1164,6 +1269,13 @@
    "name": "topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -1213,6 +1325,55 @@
    "name": "nav.scrollable",
    "ours": "135px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.sub_text_fit",
+   "ours": -75,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -1560,6 +1721,20 @@
   },
   {
    "view": "1024x768",
+   "name": "lcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "lcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -1598,6 +1773,13 @@
    "name": "lcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "lcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -1938,6 +2120,20 @@
   },
   {
    "view": "1100x800",
+   "name": "statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "roster.visible",
    "ours": "no",
    "want": "no",
@@ -1976,6 +2172,13 @@
    "name": "topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -2025,6 +2228,55 @@
    "name": "nav.scrollable",
    "ours": "103px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.sub_text_fit",
+   "ours": -75,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -2372,6 +2624,20 @@
   },
   {
    "view": "1100x800",
+   "name": "lcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "lcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -2410,6 +2676,13 @@
    "name": "lcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "lcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -2750,6 +3023,20 @@
   },
   {
    "view": "1280x600",
+   "name": "statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "roster.visible",
    "ours": "no",
    "want": "no",
@@ -2788,6 +3075,13 @@
    "name": "topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -2837,6 +3131,55 @@
    "name": "nav.scrollable",
    "ours": "303px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -3212,6 +3555,20 @@
   },
   {
    "view": "1280x600",
+   "name": "lcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "lcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -3250,6 +3607,13 @@
    "name": "lcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "lcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -3590,6 +3954,20 @@
   },
   {
    "view": "1280x800",
+   "name": "statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "roster.visible",
    "ours": "no",
    "want": "no",
@@ -3628,6 +4006,13 @@
    "name": "topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -3677,6 +4062,55 @@
    "name": "nav.scrollable",
    "ours": "103px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -4024,6 +4458,20 @@
   },
   {
    "view": "1280x800",
+   "name": "lcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "lcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -4062,6 +4510,13 @@
    "name": "lcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "lcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -4402,6 +4857,20 @@
   },
   {
    "view": "1366x768",
+   "name": "statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "roster.visible",
    "ours": "no",
    "want": "no",
@@ -4440,6 +4909,13 @@
    "name": "topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -4489,6 +4965,55 @@
    "name": "nav.scrollable",
    "ours": "135px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -4836,6 +5361,20 @@
   },
   {
    "view": "1366x768",
+   "name": "lcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "lcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -4874,6 +5413,13 @@
    "name": "lcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "lcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -5214,6 +5760,20 @@
   },
   {
    "view": "1440x900",
+   "name": "statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -5252,6 +5812,13 @@
    "name": "topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -5301,6 +5868,55 @@
    "name": "nav.scrollable",
    "ours": "3px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -5697,6 +6313,20 @@
   },
   {
    "view": "1440x900",
+   "name": "lcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "lcoll.roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -5735,6 +6365,13 @@
    "name": "lcoll.topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "lcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -6131,6 +6768,20 @@
   },
   {
    "view": "1600x900",
+   "name": "statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -6169,6 +6820,13 @@
    "name": "topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -6218,6 +6876,55 @@
    "name": "nav.scrollable",
    "ours": "3px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -6649,6 +7356,20 @@
   },
   {
    "view": "1600x900",
+   "name": "lcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "lcoll.roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -6687,6 +7408,13 @@
    "name": "lcoll.topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "lcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -7083,6 +7811,20 @@
   },
   {
    "view": "1700x1040",
+   "name": "statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -7121,6 +7863,13 @@
    "name": "topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -7170,6 +7919,55 @@
    "name": "nav.scrollable",
    "ours": "0px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -7601,6 +8399,20 @@
   },
   {
    "view": "1700x1040",
+   "name": "lcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "lcoll.roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -7639,6 +8451,13 @@
    "name": "lcoll.topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "lcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -7811,6 +8630,20 @@
   },
   {
    "view": "1024x600",
+   "name": "dark.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "dark.roster.visible",
    "ours": "no",
    "want": "no",
@@ -7849,6 +8682,13 @@
    "name": "dark.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -7898,6 +8738,55 @@
    "name": "dark.nav.scrollable",
    "ours": "303px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.sub_text_fit",
+   "ours": -75,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -8287,6 +9176,20 @@
   },
   {
    "view": "1024x600",
+   "name": "dcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "dcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -8325,6 +9228,13 @@
    "name": "dcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -8448,6 +9358,20 @@
   },
   {
    "view": "1024x768",
+   "name": "dark.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "dark.roster.visible",
    "ours": "no",
    "want": "no",
@@ -8486,6 +9410,13 @@
    "name": "dark.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -8535,6 +9466,55 @@
    "name": "dark.nav.scrollable",
    "ours": "135px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.sub_text_fit",
+   "ours": -75,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -8896,6 +9876,20 @@
   },
   {
    "view": "1024x768",
+   "name": "dcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "dcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -8934,6 +9928,13 @@
    "name": "dcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -9057,6 +10058,20 @@
   },
   {
    "view": "1100x800",
+   "name": "dark.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "dark.roster.visible",
    "ours": "no",
    "want": "no",
@@ -9095,6 +10110,13 @@
    "name": "dark.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -9144,6 +10166,55 @@
    "name": "dark.nav.scrollable",
    "ours": "103px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.sub_text_fit",
+   "ours": -75,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -9505,6 +10576,20 @@
   },
   {
    "view": "1100x800",
+   "name": "dcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "dcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -9543,6 +10628,13 @@
    "name": "dcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -9666,6 +10758,20 @@
   },
   {
    "view": "1280x600",
+   "name": "dark.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "dark.roster.visible",
    "ours": "no",
    "want": "no",
@@ -9704,6 +10810,13 @@
    "name": "dark.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -9753,6 +10866,55 @@
    "name": "dark.nav.scrollable",
    "ours": "303px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -10142,6 +11304,20 @@
   },
   {
    "view": "1280x600",
+   "name": "dcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
    "name": "dcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -10180,6 +11356,13 @@
    "name": "dcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -10303,6 +11486,20 @@
   },
   {
    "view": "1280x800",
+   "name": "dark.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "dark.roster.visible",
    "ours": "no",
    "want": "no",
@@ -10341,6 +11538,13 @@
    "name": "dark.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -10390,6 +11594,55 @@
    "name": "dark.nav.scrollable",
    "ours": "103px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -10751,6 +12004,20 @@
   },
   {
    "view": "1280x800",
+   "name": "dcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "dcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -10789,6 +12056,13 @@
    "name": "dcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -10912,6 +12186,20 @@
   },
   {
    "view": "1366x768",
+   "name": "dark.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "dark.roster.visible",
    "ours": "no",
    "want": "no",
@@ -10950,6 +12238,13 @@
    "name": "dark.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -10999,6 +12294,55 @@
    "name": "dark.nav.scrollable",
    "ours": "135px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -11360,6 +12704,20 @@
   },
   {
    "view": "1366x768",
+   "name": "dcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "dcoll.roster.visible",
    "ours": "no",
    "want": "no",
@@ -11398,6 +12756,13 @@
    "name": "dcoll.topbar.actions_count",
    "ours": 5,
    "want": "5",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -11521,6 +12886,20 @@
   },
   {
    "view": "1440x900",
+   "name": "dark.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "dark.roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -11559,6 +12938,13 @@
    "name": "dark.topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -11608,6 +12994,55 @@
    "name": "dark.nav.scrollable",
    "ours": "3px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -11969,6 +13404,20 @@
   },
   {
    "view": "1440x900",
+   "name": "dcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
    "name": "dcoll.roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -12007,6 +13456,13 @@
    "name": "dcoll.topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -12186,6 +13642,20 @@
   },
   {
    "view": "1600x900",
+   "name": "dark.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "dark.roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -12224,6 +13694,13 @@
    "name": "dark.topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -12273,6 +13750,55 @@
    "name": "dark.nav.scrollable",
    "ours": "3px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -12669,6 +14195,20 @@
   },
   {
    "view": "1600x900",
+   "name": "dcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
    "name": "dcoll.roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -12707,6 +14247,13 @@
    "name": "dcoll.topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -12886,6 +14433,20 @@
   },
   {
    "view": "1700x1040",
+   "name": "dark.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "dark.roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -12924,6 +14485,13 @@
    "name": "dark.topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {
@@ -12973,6 +14541,55 @@
    "name": "dark.nav.scrollable",
    "ours": "0px",
    "want": "≥0 且滚到底可见末项",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.top_pitch",
+   "ours": "40",
+   "want": "40",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.sub_pitch",
+   "ours": "35",
+   "want": "35",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.sub_indent",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.icon_x",
+   "ours": 18,
+   "want": "18±2（真机 19，110% 取整）",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.sub_text_fit",
+   "ours": -138,
+   "want": "≤-8",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.footer_pitch",
+   "ours": 40,
+   "want": "39±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.footer_no_divider",
+   "ours": "0px/solid",
+   "want": "上边框宽 0",
    "ok": true
   },
   {
@@ -13369,6 +14986,20 @@
   },
   {
    "view": "1700x1040",
+   "name": "dcoll.statusbar.labels",
+   "ours": "服务器状态,实时连接,VRChat,SteamVR",
+   "want": "服务器状态,实时连接,VRChat,SteamVR",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.statusbar.dot",
+   "ours": "8/9 8/9 8/9 8/9",
+   "want": "8/9 ×4",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "dcoll.roster.visible",
    "ours": "yes",
    "want": "yes",
@@ -13407,6 +15038,13 @@
    "name": "dcoll.topbar.actions_count",
    "ours": 6,
    "want": "6",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dcoll.topbar.actions_pitch",
+   "ours": 36,
+   "want": "36±1",
    "ok": true
   },
   {

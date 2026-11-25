@@ -525,6 +525,7 @@ structure_parity 唯一残留 DIFF 是动态页行高「我们 46 / 真机 44」
 | 311 | `scripts/lib/page_structure.mjs` 新增 `reloadVrc` / `reloadVrcHard`：只等 `domcontentloaded`（30s），失败整页 `goto` 兜底；给 `<html>` 打 `dataset.reloadStamp`，刷新后必须看不到这枚戳且 `#vrc-topbar h1` 在才算成功，否则再 goto 硬重试；`frame_parity` 4 处、`nav_coverage` 2 处裸 `page.reload()` 全改走它 | 压力探针 `cache/probes/reload_stress.mjs`：1440×900 连刷 20 次（353/264 交替）bad=0、maxMs=117（旧版单次 0.5s 且偶发卡死） |
 | 312 | 单独复跑两个脚本：`node scripts/frame_parity.mjs` → **1932/1932 · FRAME OK · exit 0**（`cache/frame_r31_run4.log`）；`node scripts/nav_coverage.mjs` → **366/366 · exit 0**（`cache/nav_r31_run2.log`） | 全程零 FAIL 行，`docs/ref/frame-parity.json` pass=1932 total=1932 |
 | 313 | 端到端 `bash scripts/regress_all.sh http://127.0.0.1:8891`（后台串行跑，不与其它浏览器任务并发） | 末行 **`REGRESS OK 7/7`**：structure 59/59、visual 215/215、frame 1932/1932、nav 366/366、mobile 1479/1479、grid 60/60、unittest 48 pass/0 fail（`cache/regress_all_r32.log` + `cache/regress/*.log`） |
+| 380 | 第 40 轮主框架/导航密度断言加固：`frame_parity.mjs` 新增 13 条契约（状态栏 4 项文字与顺序、圆点 8 + 圆点→文字 9、顶栏图标按钮中心距 36、导航顶层行距 40 / 二级行距 35 / 二级左移 27 / 图标距左 18 / 二级文字右内缩 ≤−8 / 页脚行距 39 / 页脚无上分割线），每档视口 203/211/226/236 → 229/237/252/262，合计 1932 → **2166** | `node scripts/frame_parity.mjs http://127.0.0.1:8891` → **2166/2166 · FRAME OK**（`cache/frame_r51.log`，全 9 视口浅/深 × 展开/收起，`docs/ref/frame-parity.json` pass=2166 total=2166） |
 
 踩坑记录：
 - `page.reload({waitUntil:'load'})` 在 demo 长连接下可能永不落地，两次 60s 超时后进程挂住（`cache/frame_r31_run3.log` 只有 3 行报错、618s 未收尾）。

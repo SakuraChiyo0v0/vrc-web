@@ -111,8 +111,17 @@ const installChrome = () => {
     const sbItems = sbEl ? [...sbEl.children].map((e) => {
       const b = e.getBoundingClientRect();
       const cs = getComputedStyle(e);
-      return (cs.display === 'none' || cs.visibility === 'hidden') ? null
-        : { x: Math.round(b.x), w: Math.round(b.width) };
+      if (cs.display === 'none' || cs.visibility === 'hidden') return null;
+      // 每项 = 圆点 + 文字（真机 footer-measure.json：dot_w 8、4 项顺序固定）
+      const [dot, lab] = e.querySelectorAll('span');
+      const db = dot?.getBoundingClientRect();
+      const lb = lab?.getBoundingClientRect();
+      return {
+        x: Math.round(b.x), w: Math.round(b.width),
+        label: (lab?.textContent || '').trim(),
+        dotW: db ? Math.round(db.width * 10) / 10 : null,
+        gapDT: (db && lb) ? Math.round((lb.left - db.right) * 10) / 10 : null
+      };
     }).filter(Boolean) : [];
     const tbEl = document.querySelector('#vrc-topbar');
     const tbKids = [...tbEl.children].map((e) => {
@@ -142,6 +151,10 @@ const installChrome = () => {
         kbdRel: kbd ? relRight(kbd) : null,
         kbdW: kbd ? Math.round(kbd.getBoundingClientRect().width * 10) / 10 : null,
         actCount: actEls.length,
+        // 真机 topbar-measure.json actions.pitch 36（图标按钮中心距），只锁 pitch 不锁绝对 x
+        actPitch: actEls.length > 1
+          ? Math.round((actEls[1].getBoundingClientRect().left - actEls[0].getBoundingClientRect().left) * 10) / 10
+          : null,
         gapSearchActions: actEls.length && kbd ? Math.round(relRight(kbd) - relLeft(actEls[0])) : null,
         gapActionsWin: winEls.length && actEls.length ? Math.round(relRight(actEls[actEls.length - 1]) - relLeft(winEls[0])) : null,
         winCount: winEls.length,
@@ -182,8 +195,33 @@ const measureFrame = () => {
     const b = el?.querySelectorAll('span')?.[1]?.getBoundingClientRect();
     return b ? Math.round(b.left - el.getBoundingClientRect().left) : null;
   };
+  // 行距（真机 nav-measure.json：顶层 pitch 40、二级 pitch 35）：只取同组相邻行的 y 差，
+  // 折叠夹下面接了子项块的那一处差值是「块间距」不是行距，按 >45 过滤掉。
+  const pitchOf = (els) => {
+    const ys = els.map((el) => el.getBoundingClientRect().top);
+    const ds = ys.slice(1).map((y, i) => Math.round(y - ys[i])).filter((d) => d > 0 && d <= 45);
+    return [...new Set(ds)];
+  };
+  const asideR = aside.getBoundingClientRect();
+  const subTextFit = subs.length
+    ? Math.max(...subs.map((el) => {
+      const t = el.querySelectorAll('span')?.[1]?.getBoundingClientRect();
+      return t ? Math.round(t.right - asideR.right) : -999;
+    }))
+    : null;
+  const footStyle = foot ? getComputedStyle(foot) : null;
   return {
     ...c,
+    topPitch: pitchOf(tops),
+    subPitch: pitchOf(subs),
+    subIndent: subs.length && tops.length
+      ? Math.round(subs[0].getBoundingClientRect().left - tops[0].getBoundingClientRect().left) : null,
+    iconX: tops.length
+      ? Math.round(tops[0].querySelector('span').getBoundingClientRect().left - asideR.left) : null,
+    subTextFit,
+    footPitch: footRows.length > 1
+      ? Math.round(footRows[1].getBoundingClientRect().top - footRows[0].getBoundingClientRect().top) : null,
+    footDivider: footStyle ? `${footStyle.borderTopWidth}/${footStyle.borderTopStyle}` : null,
     sidebar: box(aside),
     topH: tops.length ? [...new Set(tops.map((el) => Math.round(el.getBoundingClientRect().height)))] : [],
     subH: subs.length ? [...new Set(subs.map((el) => Math.round(el.getBoundingClientRect().height)))] : [],
@@ -238,6 +276,13 @@ const assertChrome = (view, got, width, p = '') => {
   check(view, `${p}statusbar.item_count`, got.sbItems.length, 4, got.sbItems.length === 4);
   check(view, `${p}statusbar.first_x`, got.sbItems[0]?.x, '10±1', Math.abs((got.sbItems[0]?.x ?? -99) - 10) <= 1);
   check(view, `${p}statusbar.gap`, sbGaps.join(','), '23±1', sbGaps.length === 3 && sbGaps.every((g) => Math.abs(g - 23) <= 1));
+  // 4 项的文字与顺序是真机契约（footer-measure.json），不只是「有 4 个东西」；
+  // 圆点 8、圆点→文字 9（我们自己的密度契约，dot 变大会把项间距吃掉）。
+  const wantLabels = '服务器状态,实时连接,VRChat,SteamVR';
+  check(view, `${p}statusbar.labels`, got.sbItems.map((it) => it.label).join(','), wantLabels,
+    got.sbItems.map((it) => it.label).join(',') === wantLabels);
+  check(view, `${p}statusbar.dot`, got.sbItems.map((it) => `${it.dotW}/${it.gapDT}`).join(' '), '8/9 ×4',
+    got.sbItems.length === 4 && got.sbItems.every((it) => it.dotW === 8 && Math.abs(it.gapDT - 9) <= 1));
   const wantRoster = width >= 1440;
   check(view, `${p}roster.visible`, got.roster ? 'yes' : 'no', wantRoster ? 'yes' : 'no', !!got.roster === wantRoster);
   check(view, `${p}roster.toggle_visible`, got.toggle ? 'yes' : 'no', wantRoster ? 'yes' : 'no', !!got.toggle === wantRoster);
@@ -248,6 +293,7 @@ const assertChrome = (view, got, width, p = '') => {
   check(view, `${p}topbar.gap_search_actions`, tb.gapSearchActions, '22±1', tb.gapSearchActions !== null && Math.abs(tb.gapSearchActions - 22) <= 1);
   check(view, `${p}topbar.gap_actions_win`, tb.gapActionsWin, '15±1', tb.gapActionsWin !== null && Math.abs(tb.gapActionsWin - 15) <= 1);
   check(view, `${p}topbar.actions_count`, tb.actCount, wantRoster ? '6' : '5', tb.actCount === (wantRoster ? 6 : 5));
+  check(view, `${p}topbar.actions_pitch`, tb.actPitch, '36±1', tb.actPitch !== null && Math.abs(tb.actPitch - 36) <= 1);
   check(view, `${p}topbar.win`, `${tb.winCount}×${tb.winW} pitch${tb.winPitch} @${tb.winLastRel}`,
     '3×24 pitch40，末项距右缘 8±1',
     tb.winCount === 3 && tb.winW === 24 && tb.winPitch === 40 && Math.abs(tb.winLastRel - 8) <= 1);
@@ -265,6 +311,18 @@ const assertNav = (view, got, width, p = '') => {
   // 装不下时必须靠滚动（scrollHeight > clientHeight），且滚到底最后一项完整可见
   check(view, `${p}nav.scrollable`, `${got.navOverflow}px`, '≥0 且滚到底可见末项',
     got.navOverflow >= 0 && got.lastBottom <= got.navBottom + 1);
+  // 行距（真机 nav-measure.json：顶层 40、二级 35）：行高之外还得有正确间隙，否则 36+4 变 36+0 就挤成一坨
+  check(view, `${p}nav.top_pitch`, got.topPitch.join(','), '40', got.topPitch.length === 1 && got.topPitch[0] === 40);
+  check(view, `${p}nav.sub_pitch`, got.subPitch.join(','), '35', got.subPitch.length === 1 && got.subPitch[0] === 35);
+  // 二级左移 27（真机 sub_indent 27）：侧栏 214 档下二级项不能顶到边、文字不能被裁
+  check(view, `${p}nav.sub_indent`, got.subIndent, '27±1', got.subIndent !== null && Math.abs(got.subIndent - 27) <= 1);
+  check(view, `${p}nav.icon_x`, got.iconX, '18±2（真机 19，110% 取整）',
+    got.iconX !== null && Math.abs(got.iconX - 18) <= 2);
+  check(view, `${p}nav.sub_text_fit`, got.subTextFit, '≤-8', got.subTextFit !== null && got.subTextFit <= -8);
+  check(view, `${p}nav.footer_pitch`, got.footPitch, '39±1', got.footPitch !== null && Math.abs(got.footPitch - 39) <= 1);
+  // 真机 SidebarFooter 上方无分割线（divider_above=false）：页脚容器不该画上边框
+  check(view, `${p}nav.footer_no_divider`, got.footDivider, '上边框宽 0',
+    got.footDivider !== null && parseFloat(got.footDivider) === 0);
   check(view, `${p}nav.footer_count`, got.footCount, 2, got.footCount === 2);
   check(view, `${p}nav.footer_visible`, `${got.footBottom} / ${Math.min(got.sidebarBottom, got.statusbar.y)}`,
     '页脚在侧栏内且高于状态栏', got.footBottom !== null && got.footBottom <= Math.min(got.sidebarBottom, got.statusbar.y) + 1);
