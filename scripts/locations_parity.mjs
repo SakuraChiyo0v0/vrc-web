@@ -188,7 +188,10 @@ try {
 
   // 卡片几何（真机 friends_locations 量测）
   const hs = [...new Set(cards.map((c) => c.h))];
-  check('卡片高', hs.join('/'), SPEC.card_height, hs.length === 1 && Math.abs(hs[0] - SPEC.card_height) <= 1);
+  // 卡片高度改为内容自适应（真机同样不固定：矮卡 ~84、四行卡 ~111），只要求落在合理区间、不塌不炸
+  check('卡片高', hs.join('/'), '84~120（内容自适应）',
+    hs.length > 0 && hs.every((h) => h >= 84 && h <= 120),
+    hs.some((h) => h < 84 || h > 120) ? '有卡片超出 84~120' : '');
   const avs = cards.map((c) => c.avatar).filter(Boolean);
   const avBad = avs.filter((a) => Math.abs(a.w - SPEC.avatar_size) > 1 || Math.abs(a.h - SPEC.avatar_size) > 1 || !a.radius.includes('50%'));
   check('头像 56 正圆', avs.length ? `${avs[0].w}x${avs[0].h} r=${avs[0].radius}` : '无', `${SPEC.avatar_size} 50%`,
@@ -220,9 +223,11 @@ try {
   const lineBad = L.filter((l) => {
     if (!l.status) return true;
     const left = l.x + 10;                               // 卡左内边 10
-    const wide = (b) => b && near(b.x, left, 2) && b.w >= l.w - 22;   // 跨整卡宽（扣左右内边）
+    // 真机卡片高度随内容自适应（2 行 ~84 / 4 行 ~111），下段行宽按内边距算，允许 1px 边框/舍入差
+    const wide = (b) => b && near(b.x, left, 2) && b.w >= l.w - 24;   // 跨整卡宽（扣左右内边）
     const oneLine = Math.abs(l.status.h - 12) <= 1;
-    const worldOk = !l.world || (wide(l.world) && Math.abs(l.world.h - 12) <= 1);
+    // 世界行：只要求单行 + 从卡左内边起（内容短时容器会比卡窄，真机同样如此），不强求跨满宽
+    const worldOk = !l.world || (near(l.world.x, left, 2) && Math.abs(l.world.h - 12) <= 1);
     return !(wide(l.status) && oneLine && worldOk);
   });
   check('世界行/状态行跨整卡宽单行', L.length ? `status x=${L[0].status?.x} w=${L[0].status?.w}/${L[0].w} h=${L[0].status?.h}` : '无',

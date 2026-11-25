@@ -1372,9 +1372,10 @@ html[data-phone='1'] #root {
 .loc-card {
   /* 真机两段式（docs/ref/vrcx0-locations.png 裁图）：上段 = 头像(左) + 名字/时长(右，竖排)，
    * 下段 = 区域+世界、状态消息两行从卡片左内边距起跨整宽。
-   * 高度锁 96：上下 padding 8 + 上段 56 + 两行 12×2 = 96，多出的部分裁掉。 */
+   * 高度**内容自适应**（真机实测 2 行矮卡 ~84、4 行卡 ~111，不是固定 96）：
+   * 以前锁 96 + overflow:hidden，长世界名/状态换行时被裁，文字压到卡片外和下一个分组标题重叠。 */
   display: block;
-  height: 96px; min-height: 0; padding: 7px 10px; overflow: hidden;
+  height: auto; min-height: 96px; padding: 7px 10px; overflow: visible;
   border: 1px solid var(--stroke-subtle); border-radius: 10px; background: var(--surface-panel);
   grid-template-columns: none; grid-template-areas: none;
 }
@@ -1394,10 +1395,10 @@ html[data-phone='1'] #root {
 }
 .loc-star { flex: none; font-size: 11px; color: var(--status-joinme); }
 .loc-dur { color: var(--content-tertiary); line-height: 1.3; }
-.loc-world { min-width: 0; flex: none; height: 12px; display: flex; align-items: center; gap: 4px; color: var(--content-tertiary); line-height: 12px; }
+.loc-world { min-width: 0; width: 100%; flex: none; min-height: 12px; display: flex; align-items: center; gap: 4px; color: var(--content-tertiary); line-height: 12px; white-space: nowrap; overflow: hidden; }
 .loc-world > .chip, .loc-world > .tag, .loc-world > [data-region] { flex: none; }
 .loc-status {
-  flex: none; height: 12px; line-height: 12px;
+  flex: none; width: 100%; min-height: 12px; line-height: 12px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   color: var(--content-secondary);
 }
