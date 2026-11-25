@@ -1,6 +1,6 @@
 # 移动端验收基线（自动生成，勿手改）
 
-生成：2026-11-24 19:32:48 · 断言 1479/1479 PASS · 页面 14 × 视口 11
+生成：2026-11-25 00:55:30 · 断言 1479/1479 PASS · 页面 14 × 视口 11
 
 移动形态判据：宽 ≤1023 或高 ≤500（styles.css / tailwind md raw / Sidebar matchMedia 三处一致）。
 重新生成：`node scripts/mobile_parity.mjs`（脚本末尾自动写回本文件）。
@@ -1431,7 +1431,7 @@
 | --- | --- | --- | --- |
 | 无横向溢出 | scrollW=320 vw=320 | ≤vw+1 | PASS |
 | 表格卡片化(n/a 无表格) | thead=null tr=null | thead=none tr=flex | PASS |
-| 触控目标≥32 | 36px | ≥32px | PASS |
+| 触控目标≥32 | 32px | ≥32px | PASS |
 | 最小字号≥11 | 11px | ≥11px | PASS |
 | 内容区非零宽 | 320px | >0 | PASS |
 | 侧栏默认收起 | left=-214 | <0 | PASS |
@@ -1923,7 +1923,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 0ms（36 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 1ms（36 行） | ≤300ms | PASS |
 
 ## extreme@friendlist@360
 

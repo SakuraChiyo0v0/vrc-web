@@ -1,6 +1,6 @@
 {
   "_note": "由 scripts/structure_parity.mjs 生成：spec.pages[*].structure（真机截图量测）vs 我们的 DOM",
-  "at": "2026-11-24T19:04:29.216Z",
+  "at": "2026-11-25T00:32:56.517Z",
   "base": "http://127.0.0.1:8891",
   "pass": 59,
   "skipped": 0,
@@ -415,7 +415,7 @@
     {
       "page": "locations",
       "name": "分栏标题",
-      "ours": "Alpha Club · 公开/夜の喫茶店 · 公开/好友收藏/其他在线好友/位于私人房间",
+      "ours": "好友收藏/其他在线好友/位于私人房间",
       "want": "好友收藏/其他在线好友/位于私人房间",
       "ok": true
     }

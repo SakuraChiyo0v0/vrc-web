@@ -1,6 +1,6 @@
 {
   "_note": "由 scripts/visual_parity.mjs 生成：spec 基准 vs 我们的 DOM/截图；page_scores=每页自有断言+外壳断言",
-  "at": "2026-11-24T19:07:04.244Z",
+  "at": "2026-11-25T00:35:23.750Z",
   "base": "http://127.0.0.1:8891",
   "pages": [
     "friends",
@@ -425,7 +425,7 @@
       "page": "overview",
       "key": "overview",
       "name": "概览每日柱数",
-      "ours": 7,
+      "ours": 8,
       "want": "7–31",
       "ok": true
     },
@@ -1928,7 +1928,7 @@
     {
       "page": "locations",
       "name": "分栏标题",
-      "ours": "Alpha Club · 公开/夜の喫茶店 · 公开/好友收藏/其他在线好友/位于私人房间",
+      "ours": "好友收藏/其他在线好友/位于私人房间",
       "want": "好友收藏/其他在线好友/位于私人房间",
       "ok": true,
       "key": "locations"
