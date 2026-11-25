@@ -68,3 +68,12 @@
 - [2026-11-25 13:20] 收尾第 45 轮：清掉上一轮遗留并发 regress_all/mobile_parity 僵尸进程与 `cache/regress/.lock`；`web npm test` 51 pass / 0 fail、`npm run build` 通过。全量首跑 visual 212/215，3 条红全是「字号档位」（friends / drawer / friends@1440 出现 10px）：根因是 12:10 修好友位置世界行超高时把 `.loc-code` 压到 10px/10 行高 + 1px 边框，与 `spec.typography` ≥11 档位冲突。改法：`.loc-code` 11px 字 + `line-height:12` + `height:12` + 去边框（改 `--surface-raised` 胶囊底），两套规格同时满足。证据：`node scripts/visual_parity.mjs` → 215/215 100%；全量 `bash scripts/regress_all.sh http://127.0.0.1:8891 > cache/regress_all_r46c.log` 中 structure 59/59、visual 215/215、frame 2256/2256 已 OK，nav 及之后各段尚在跑。README 同步：十一段/`REGRESS OK 11/11`、新增「侧栏清单对齐」行（22/22）、前端单测 51 pass。
 
 - [2026-11-25 13:20] 下一步：① 等 `cache/regress_all_r46c.log` 末行确认 `REGRESS OK 11/11`（若 nav/navinv/mobile 有红，按 `cache/regress/<环节>.log` 修）；② 拿到 nav 新分母（上轮 390/390）后把 README 表格里 `366/366（4 视口 × 浅/深色 × 45）` 与 `21 行` 改成实际值（22 行）；③ 在 `docs/vrcx0-parity.md` 补第四十五轮小节（loc-code 双规格、侧栏 22 行对齐、navinv 进回归）；④ 提交并把未跟踪的 nav-inventory*.json / FavKindList / 5 个新页面 / nav_inventory_check.mjs 一起入库，push。
+
+## 第47轮 动态页 profile 行「详细信息」补真内容（feed 19/19，2026-11-25 13:4x）
+
+- [2026-11-25 13:45] 修根因：`/api/events` 的 select 里没有 `e.payload`（只有 location/world），前端 `changesOf()` 永远拿不到 changes → profile 行全渲染 `—`。补 `e.payload` 后 SQLite 给字符串、PG jsonb 给对象，前端两种都认。
+- [2026-11-25 13:45] `FeedPage.jsx` 补 `changesOf/showValue/profileText/kindLabel`：`昵称 → 新名` / `状态 → 文案` / `在线状态 → 中文标签`（active→活跃、join me→求邀请…）/ `头像更新` / `模型 → 已更换`，多字段 ` · ` 连接，空 changes →「资料更新」；URL 值一律「已更换」不外露。类型列：含 `avatar_id` →「模型变动」，其余 →「资料变动」，`data-kind` 仍 `profile`（四色断言不受影响）。模型名无来源（`vrc.avatar` 0 行、`friend.avatar_id` 只是缩略图 URL）→ 不猜名字。
+- [2026-11-25 13:45] 断言：`feed_parity.mjs` 加 4 条（变更行非空 / 字段→值且不含 URL/未知 / 三形态各≥1 / 类型列按变更分文案）。证据：`node scripts/feed_parity.mjs http://127.0.0.1:8891` → **19/19 · FEED OK · exit 0**（7 条 profile 行实测 `模型 → 已更换`×1、`昵称 → Bob · 状态 → 今晚 VR 见`×1、`资料更新`×5；类型列 模型变动 1 / 资料变动 6）；`FEED_NEG=1` → 16/19 · NEG OK（行高 / 列文字起点被抓）。
+- [2026-11-25 13:45] `server/scripts/demo.mjs` 补三条 profile 事件（只换模型 / 改昵称+状态 / 空 changes）；`cd web && npm test` → **51 pass 0 fail**；`npm run build` 通过（34.6s，FeedPage-CHZs135t.js 9.16 kB）。README 三处 + `docs/vrcx0-parity.md` 第四十七轮小节（402–405）已同步 19/19 口径。提交 54d8b27 并 push。
+- [2026-11-25 13:45] 端到端 `bash scripts/regress_all.sh http://127.0.0.1:8891`（日志 `cache/regress_all_r47.log`）后台起跑，本轮结束前未出末行（structure 段进行中）。
+- [2026-11-25 14:15] 端到端 `cache/regress_all_r47.log` 进度：structure 59/59 OK、visual 215/215 OK、**frame 2256/2256 FRAME OK**，nav 段进行中（feed 段排在 navinv/mobile/grid 之后）。
