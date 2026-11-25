@@ -1,5 +1,5 @@
 {
- "at": "2026-11-25T02:57:59.942Z",
+ "at": "2026-11-25T05:09:33.292Z",
  "base": "http://127.0.0.1:8891",
  "pass": 2256,
  "total": 2256,
@@ -392,7 +392,7 @@
   {
    "view": "1024x600",
    "name": "nav.scrollable",
-   "ours": "303px",
+   "ours": "383px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -427,7 +427,7 @@
   {
    "view": "1024x600",
    "name": "nav.sub_text_fit",
-   "ours": -75,
+   "ours": -99,
    "want": "≤-8",
    "ok": true
   },
@@ -469,7 +469,7 @@
   {
    "view": "1024x600",
    "name": "nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -511,15 +511,15 @@
   {
    "view": "1024x600",
    "name": "exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→568 ch438",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1024x600",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
@@ -539,21 +539,21 @@
   {
    "view": "1024x600",
    "name": "exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→568 ch438",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1024x600",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
    "view": "1024x600",
    "name": "exp.navscroll.moved",
-   "ours": "0→303 overflow303",
+   "ours": "0→383 overflow383",
    "want": ">0 且溢出 ≥0",
    "ok": true
   },
@@ -1358,7 +1358,7 @@
   {
    "view": "1024x768",
    "name": "nav.scrollable",
-   "ours": "135px",
+   "ours": "215px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -1393,7 +1393,7 @@
   {
    "view": "1024x768",
    "name": "nav.sub_text_fit",
-   "ours": -75,
+   "ours": -99,
    "want": "≤-8",
    "ok": true
   },
@@ -1435,7 +1435,7 @@
   {
    "view": "1024x768",
    "name": "nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -1477,15 +1477,15 @@
   {
    "view": "1024x768",
    "name": "exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→606 ch606",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1024x768",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
@@ -1505,15 +1505,15 @@
   {
    "view": "1024x768",
    "name": "exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→606 ch606",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1024x768",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
@@ -2296,7 +2296,7 @@
   {
    "view": "1100x800",
    "name": "nav.scrollable",
-   "ours": "103px",
+   "ours": "183px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -2331,7 +2331,7 @@
   {
    "view": "1100x800",
    "name": "nav.sub_text_fit",
-   "ours": -75,
+   "ours": -99,
    "want": "≤-8",
    "ok": true
   },
@@ -2373,7 +2373,7 @@
   {
    "view": "1100x800",
    "name": "nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -2415,15 +2415,15 @@
   {
    "view": "1100x800",
    "name": "exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→638 ch638",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1100x800",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 873/873 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 873、侧栏宽回 214、内容高回 729",
+   "ours": "ws 873/873 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 873、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
@@ -2443,15 +2443,15 @@
   {
    "view": "1100x800",
    "name": "exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→638 ch638",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1100x800",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 873/873 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 873、侧栏宽回 214、内容高回 729",
+   "ours": "ws 873/873 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 873、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
@@ -3234,7 +3234,7 @@
   {
    "view": "1280x600",
    "name": "nav.scrollable",
-   "ours": "303px",
+   "ours": "383px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -3269,7 +3269,7 @@
   {
    "view": "1280x600",
    "name": "nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -3311,7 +3311,7 @@
   {
    "view": "1280x600",
    "name": "nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -3353,15 +3353,15 @@
   {
    "view": "1280x600",
    "name": "exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→568 ch438",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1280x600",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -3381,21 +3381,21 @@
   {
    "view": "1280x600",
    "name": "exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→568 ch438",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1280x600",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
    "view": "1280x600",
    "name": "exp.navscroll.moved",
-   "ours": "0→303 overflow303",
+   "ours": "0→383 overflow383",
    "want": ">0 且溢出 ≥0",
    "ok": true
   },
@@ -4200,7 +4200,7 @@
   {
    "view": "1280x800",
    "name": "nav.scrollable",
-   "ours": "103px",
+   "ours": "183px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -4235,7 +4235,7 @@
   {
    "view": "1280x800",
    "name": "nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -4277,7 +4277,7 @@
   {
    "view": "1280x800",
    "name": "nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -4319,15 +4319,15 @@
   {
    "view": "1280x800",
    "name": "exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→638 ch638",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1280x800",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -4347,15 +4347,15 @@
   {
    "view": "1280x800",
    "name": "exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→638 ch638",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1280x800",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -5138,7 +5138,7 @@
   {
    "view": "1366x768",
    "name": "nav.scrollable",
-   "ours": "135px",
+   "ours": "215px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -5173,7 +5173,7 @@
   {
    "view": "1366x768",
    "name": "nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -5215,7 +5215,7 @@
   {
    "view": "1366x768",
    "name": "nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -5257,15 +5257,15 @@
   {
    "view": "1366x768",
    "name": "exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→606 ch606",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1366x768",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 1076/1076 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1076、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1076/1076 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1076、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -5285,15 +5285,15 @@
   {
    "view": "1366x768",
    "name": "exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→606 ch606",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1366x768",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 1076/1076 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1076、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1076/1076 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1076、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -6076,7 +6076,7 @@
   {
    "view": "1440x900",
    "name": "nav.scrollable",
-   "ours": "3px",
+   "ours": "83px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -6111,7 +6111,7 @@
   {
    "view": "1440x900",
    "name": "nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -6153,7 +6153,7 @@
   {
    "view": "1440x900",
    "name": "nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -6195,15 +6195,15 @@
   {
    "view": "1440x900",
    "name": "exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→738 ch738",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1440x900",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 1150/1150 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1150、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1150/1150 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1150、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -6223,15 +6223,15 @@
   {
    "view": "1440x900",
    "name": "exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→738 ch738",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1440x900",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 1150/1150 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1150、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1150/1150 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1150、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -7119,7 +7119,7 @@
   {
    "view": "1600x900",
    "name": "nav.scrollable",
-   "ours": "3px",
+   "ours": "83px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -7154,7 +7154,7 @@
   {
    "view": "1600x900",
    "name": "nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -7196,7 +7196,7 @@
   {
    "view": "1600x900",
    "name": "nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -7238,15 +7238,15 @@
   {
    "view": "1600x900",
    "name": "exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→738 ch738",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1600x900",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 1310/1310 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1310、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1310/1310 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1310、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -7266,15 +7266,15 @@
   {
    "view": "1600x900",
    "name": "exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→738 ch738",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1600x900",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 1310/1310 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1310、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1310/1310 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1310、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -8232,7 +8232,7 @@
   {
    "view": "1700x1040",
    "name": "nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -8274,7 +8274,7 @@
   {
    "view": "1700x1040",
    "name": "nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -8316,15 +8316,15 @@
   {
    "view": "1700x1040",
    "name": "exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 878→878 ch878",
+   "ours": "extent 809→556 (−253，子项 217) sh 878→878 ch878",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1700x1040",
    "name": "exp.fold.feed.restore",
-   "ours": "ws 1410/1410 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1410、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1410/1410 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1410、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -8344,15 +8344,15 @@
   {
    "view": "1700x1040",
    "name": "exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 878→878 ch878",
+   "ours": "extent 809→556 (−253，子项 217) sh 878→878 ch878",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1700x1040",
    "name": "exp.fold.friends.restore",
-   "ours": "ws 1410/1410 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1410、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1410/1410 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1410、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -9051,7 +9051,7 @@
   {
    "view": "1024x600",
    "name": "dark.nav.scrollable",
-   "ours": "303px",
+   "ours": "383px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -9086,7 +9086,7 @@
   {
    "view": "1024x600",
    "name": "dark.nav.sub_text_fit",
-   "ours": -75,
+   "ours": -99,
    "want": "≤-8",
    "ok": true
   },
@@ -9128,7 +9128,7 @@
   {
    "view": "1024x600",
    "name": "dark.nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -9177,15 +9177,15 @@
   {
    "view": "1024x600",
    "name": "dark.exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→568 ch438",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1024x600",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
@@ -9205,21 +9205,21 @@
   {
    "view": "1024x600",
    "name": "dark.exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→568 ch438",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1024x600",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
    "view": "1024x600",
    "name": "dark.exp.navscroll.moved",
-   "ours": "0→303 overflow303",
+   "ours": "0→383 overflow383",
    "want": ">0 且溢出 ≥0",
    "ok": true
   },
@@ -9814,7 +9814,7 @@
   {
    "view": "1024x768",
    "name": "dark.nav.scrollable",
-   "ours": "135px",
+   "ours": "215px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -9849,7 +9849,7 @@
   {
    "view": "1024x768",
    "name": "dark.nav.sub_text_fit",
-   "ours": -75,
+   "ours": -99,
    "want": "≤-8",
    "ok": true
   },
@@ -9891,7 +9891,7 @@
   {
    "view": "1024x768",
    "name": "dark.nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -9940,15 +9940,15 @@
   {
    "view": "1024x768",
    "name": "dark.exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→606 ch606",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1024x768",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
@@ -9968,15 +9968,15 @@
   {
    "view": "1024x768",
    "name": "dark.exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→606 ch606",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1024x768",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 797/797 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 797、侧栏宽回 214、内容高回 729",
+   "ours": "ws 797/797 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 797、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
@@ -10549,7 +10549,7 @@
   {
    "view": "1100x800",
    "name": "dark.nav.scrollable",
-   "ours": "103px",
+   "ours": "183px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -10584,7 +10584,7 @@
   {
    "view": "1100x800",
    "name": "dark.nav.sub_text_fit",
-   "ours": -75,
+   "ours": -99,
    "want": "≤-8",
    "ok": true
   },
@@ -10626,7 +10626,7 @@
   {
    "view": "1100x800",
    "name": "dark.nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -10675,15 +10675,15 @@
   {
    "view": "1100x800",
    "name": "dark.exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→638 ch638",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1100x800",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 873/873 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 873、侧栏宽回 214、内容高回 729",
+   "ours": "ws 873/873 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 873、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
@@ -10703,15 +10703,15 @@
   {
    "view": "1100x800",
    "name": "dark.exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→638 ch638",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1100x800",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 873/873 aside 214/214 sub7 extent 729/729",
-   "want": "ws 回 873、侧栏宽回 214、内容高回 729",
+   "ours": "ws 873/873 aside 214/214 sub7 extent 809/809",
+   "want": "ws 回 873、侧栏宽回 214、内容高回 809",
    "ok": true
   },
   {
@@ -11284,7 +11284,7 @@
   {
    "view": "1280x600",
    "name": "dark.nav.scrollable",
-   "ours": "303px",
+   "ours": "383px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -11319,7 +11319,7 @@
   {
    "view": "1280x600",
    "name": "dark.nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -11361,7 +11361,7 @@
   {
    "view": "1280x600",
    "name": "dark.nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -11410,15 +11410,15 @@
   {
    "view": "1280x600",
    "name": "dark.exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→568 ch438",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1280x600",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -11438,21 +11438,21 @@
   {
    "view": "1280x600",
    "name": "dark.exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→488 ch438",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→568 ch438",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1280x600",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
    "view": "1280x600",
    "name": "dark.exp.navscroll.moved",
-   "ours": "0→303 overflow303",
+   "ours": "0→383 overflow383",
    "want": ">0 且溢出 ≥0",
    "ok": true
   },
@@ -12047,7 +12047,7 @@
   {
    "view": "1280x800",
    "name": "dark.nav.scrollable",
-   "ours": "103px",
+   "ours": "183px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -12082,7 +12082,7 @@
   {
    "view": "1280x800",
    "name": "dark.nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -12124,7 +12124,7 @@
   {
    "view": "1280x800",
    "name": "dark.nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -12173,15 +12173,15 @@
   {
    "view": "1280x800",
    "name": "dark.exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→638 ch638",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1280x800",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -12201,15 +12201,15 @@
   {
    "view": "1280x800",
    "name": "dark.exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→638 ch638",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→638 ch638",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1280x800",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 990/990 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 990、侧栏宽回 277、内容高回 729",
+   "ours": "ws 990/990 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 990、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -12782,7 +12782,7 @@
   {
    "view": "1366x768",
    "name": "dark.nav.scrollable",
-   "ours": "135px",
+   "ours": "215px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -12817,7 +12817,7 @@
   {
    "view": "1366x768",
    "name": "dark.nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -12859,7 +12859,7 @@
   {
    "view": "1366x768",
    "name": "dark.nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -12908,15 +12908,15 @@
   {
    "view": "1366x768",
    "name": "dark.exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→606 ch606",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1366x768",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 1076/1076 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1076、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1076/1076 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1076、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -12936,15 +12936,15 @@
   {
    "view": "1366x768",
    "name": "dark.exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→606 ch606",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→606 ch606",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1366x768",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 1076/1076 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1076、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1076/1076 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1076、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -13517,7 +13517,7 @@
   {
    "view": "1440x900",
    "name": "dark.nav.scrollable",
-   "ours": "3px",
+   "ours": "83px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -13552,7 +13552,7 @@
   {
    "view": "1440x900",
    "name": "dark.nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -13594,7 +13594,7 @@
   {
    "view": "1440x900",
    "name": "dark.nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -13643,15 +13643,15 @@
   {
    "view": "1440x900",
    "name": "dark.exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→738 ch738",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1440x900",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 1150/1150 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1150、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1150/1150 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1150、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -13671,15 +13671,15 @@
   {
    "view": "1440x900",
    "name": "dark.exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→738 ch738",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1440x900",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 1150/1150 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1150、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1150/1150 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1150、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -14308,7 +14308,7 @@
   {
    "view": "1600x900",
    "name": "dark.nav.scrollable",
-   "ours": "3px",
+   "ours": "83px",
    "want": "≥0 且滚到底可见末项",
    "ok": true
   },
@@ -14343,7 +14343,7 @@
   {
    "view": "1600x900",
    "name": "dark.nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -14385,7 +14385,7 @@
   {
    "view": "1600x900",
    "name": "dark.nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -14434,15 +14434,15 @@
   {
    "view": "1600x900",
    "name": "dark.exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→738 ch738",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1600x900",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 1310/1310 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1310、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1310/1310 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1310、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -14462,15 +14462,15 @@
   {
    "view": "1600x900",
    "name": "dark.exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 741→738 ch738",
+   "ours": "extent 809→556 (−253，子项 217) sh 821→738 ch738",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1600x900",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 1310/1310 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1310、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1310/1310 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1310、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -15169,7 +15169,7 @@
   {
    "view": "1700x1040",
    "name": "dark.nav.sub_text_fit",
-   "ours": -138,
+   "ours": -162,
    "want": "≤-8",
    "ok": true
   },
@@ -15211,7 +15211,7 @@
   {
    "view": "1700x1040",
    "name": "dark.nav.icon_vector",
-   "ours": "19/19",
+   "ours": "21/21",
    "want": "全矢量",
    "ok": true
   },
@@ -15260,15 +15260,15 @@
   {
    "view": "1700x1040",
    "name": "dark.exp.fold.feed.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 878→878 ch878",
+   "ours": "extent 809→556 (−253，子项 217) sh 878→878 ch878",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1700x1040",
    "name": "dark.exp.fold.feed.restore",
-   "ours": "ws 1410/1410 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1410、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1410/1410 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1410、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {
@@ -15288,15 +15288,15 @@
   {
    "view": "1700x1040",
    "name": "dark.exp.fold.friends.shrink",
-   "ours": "extent 729→476 (−253，子项 217) sh 878→878 ch878",
+   "ours": "extent 809→556 (−253，子项 217) sh 878→878 ch878",
    "want": "内容高减 ≥ 子项高一半；溢出时 scrollHeight 也降",
    "ok": true
   },
   {
    "view": "1700x1040",
    "name": "dark.exp.fold.friends.restore",
-   "ours": "ws 1410/1410 aside 277/277 sub7 extent 729/729",
-   "want": "ws 回 1410、侧栏宽回 277、内容高回 729",
+   "ours": "ws 1410/1410 aside 277/277 sub7 extent 809/809",
+   "want": "ws 回 1410、侧栏宽回 277、内容高回 809",
    "ok": true
   },
   {

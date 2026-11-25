@@ -123,6 +123,10 @@ export const PG = [
      at timestamptz not null default now()
    )`,
   `create index if not exists friend_status_user_idx on vrc.friend_status_history (user_id, at desc)`,
+  `create table if not exists vrc.avatar (
+     id text primary key, name text, author_name text, thumbnail text,
+     is_favorite boolean default false, updated_at timestamptz not null default now()
+   )`,
   `create table if not exists vrc.friend_avatar_history (
      id bigserial primary key, user_id text not null, kind text not null, value text,
      at timestamptz not null default now()
@@ -257,6 +261,10 @@ export const SQLITE = [
      at text not null default (datetime('now'))
    )`,
   `create index if not exists friend_status_user_idx on friend_status_history (user_id, at desc)`,
+  `create table if not exists avatar (
+     id text primary key, name text, author_name text, thumbnail text,
+     is_favorite integer default 0, updated_at text
+   )`,
   `create table if not exists friend_avatar_history (
      id integer primary key autoincrement, user_id text not null, kind text not null, value text,
      at text not null default (datetime('now'))

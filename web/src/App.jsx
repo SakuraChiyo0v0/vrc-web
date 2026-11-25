@@ -32,31 +32,45 @@ const PAGES = {
   favorites: lazy(() => import('./pages/FavoritesPage.jsx')),
   insights: lazy(() => import('./pages/InsightsPage.jsx')),
   worlds: lazy(() => import('./pages/WorldsPage.jsx')),
+  groupfav: lazy(() => import('./pages/GroupFavPage.jsx')),
+  avatarfav: lazy(() => import('./pages/AvatarFavPage.jsx')),
+  models: lazy(() => import('./pages/MyModelsPage.jsx')),
+  activity: lazy(() => import('./pages/ActivityPage.jsx')),
+  friendgraph: lazy(() => import('./pages/FriendGraphPage.jsx')),
+  history: lazy(() => import('./pages/WorldsPage.jsx')),
   calendar: lazy(() => import('./pages/CalendarPage.jsx')),
   friendlist: lazy(() => import('./pages/FriendListPage.jsx')),
   friendlog: lazy(() => import('./pages/FriendLogPage.jsx')),
   gamelog: lazy(() => import('./pages/GameLogPage.jsx')),
+  tools: lazy(() => import('./pages/ToolsPage.jsx')),
   settings: lazy(() => import('./pages/SettingsPage.jsx'))
 };
 
 const TITLES = {
-  overview: ['概览', '总时长、每日与活跃时段，三块榜单'],
+  overview: ['仪表板', '总时长、每日与活跃时段，三块榜单'],
   search: ['搜索', '好友 / 世界 / 玩家一次搜完，可深链分享'],
   friends: ['好友位置', '谁在线、在哪个世界'],
-  feed: ['动态', '好友状态 / 位置 / 资料变更'],
+  feed: ['好友动态', '好友状态 / 位置 / 资料变更'],
   notifications: ['通知', '邀请 / 好友请求 / 群公告'],
-  sessions: ['我的行程', '进出过的世界与停留时长'],
+  sessions: ['房间历史', '进出过的世界与停留时长'],
   players: ['房内玩家', '和我在同一个实例的好友'],
   moderation: ['玩家管理', '屏蔽 / 静音记录'],
   encounters: ['遇到过的玩家', '同房遇到过的人、共处次数排行'],
   stats: ['统计', '近 24 小时'],
-  favorites: ['收藏', '世界 / 好友、分组与备注，固定的世界在侧栏'],
+  favorites: ['好友收藏', '好友、分组与备注，固定的好友在侧栏'],
   insights: ['洞察', '常一起玩 / 渐行渐远 / 最常遇到的时段'],
-  worlds: ['世界库', '去过的世界：搜索、按最近活跃或访问次数排序'],
+  worlds: ['世界收藏', '去过的世界：搜索、按最近活跃或访问次数排序'],
+  groupfav: ['群组收藏', '收藏的 VRChat 群组'],
+  avatarfav: ['模型收藏', '收藏的 VRChat 模型'],
+  models: ['我的模型', '账号下的 VRChat 模型列表'],
+  activity: ['活动', '当天去过的世界与同房玩家'],
+  friendgraph: ['好友关系图', '近 90 天一起玩过的人，连线越粗共处越多'],
+  history: ['浏览记录', '按最近到访排序的世界历史（全部去过的世界）'],
   calendar: ['日历', '按天回看事件，点某天看当天'],
   friendlist: ['好友列表', '全量好友：信任等级 / 标签 / 收藏，最后在线'],
-  friendlog: ['好友历史', '最近 24 小时全好友流水：上线 / 换世界 / 资料 / 状态'],
+  friendlog: ['好友日志', '最近 24 小时全好友流水：上线 / 换世界 / 资料 / 状态'],
   gamelog: ['游戏日志', '自己的进出实例明细，可按世界过滤'],
+  tools: ['工具', '统计 / 洞察 / 通知 / 日历 / 遇到过的玩家'],
   settings: ['设置', '采集器状态、事件速率、最近错误']
 };
 
@@ -288,7 +302,7 @@ export default function App() {
               <div className="min-h-0 min-w-0 flex-1 overflow-auto">
                 <ErrorBoundary key={page}>
                   <Suspense fallback={<div className="p-4"><Skeleton rows={6} cols={4} /></div>}>
-                    <Page onNavigate={setPage} />
+                    <Page onNavigate={setPage} mode={page === 'history' ? 'history' : undefined} />
                   </Suspense>
                 </ErrorBoundary>
               </div>

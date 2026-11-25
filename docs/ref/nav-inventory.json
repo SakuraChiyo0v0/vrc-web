@@ -1,0 +1,281 @@
+{
+ "_note": "只读对齐表：VRCX-0 真机侧栏（基准）↔ vrc-web 当前 NAV（web/src/components/Sidebar.jsx）。真机条目来自 nav_ref_full.png 的逐行 OCR（vision 双次复核，2026-11-25）。本文件只做映射，不代表已改代码；Sidebar.jsx 的增删需另一轮结构性改动（会牵动 pages 与 nav_coverage 基数）。",
+ "_source": {
+  "reference_image": "cache/scratch/nav_ref_full.png",
+  "reference_rows": 24,
+  "our_rows": 22,
+  "our_nav_file": "web/src/components/Sidebar.jsx",
+  "captured_at": "2026-11-25T11:09+08:00",
+  "aligned_at": "2026-11-25T12:2x+08:00"
+ },
+ "_verdicts": {
+  "same": "文案与顺序都一致",
+  "rename": "同一页面，文案不同（真机文案为准）",
+  "missing_page": "真机有、我们没有对应页面 → 需新增页",
+  "missing_control": "真机有、我们没有该控件（非页面）",
+  "extra": "我们有、真机没有 → 考虑删或降级到别处",
+  "wrong_children": "折叠夹子项集合不一致"
+ },
+ "reference": [
+  {
+   "row": 1,
+   "label": "新建仪表板",
+   "depth": 0,
+   "kind": "action",
+   "ours": null,
+   "verdict": "missing_control",
+   "note": "真机是侧栏顶部的 + 按钮，不是路由页；我们目前无此入口"
+  },
+  {
+   "row": 2,
+   "label": "好友动态",
+   "depth": 0,
+   "kind": "page",
+   "ours": "feed",
+   "verdict": "same",
+   "note": "文案与顺序已对齐（本轮把「动态」改为「好友动态」）"
+  },
+  {
+   "row": 3,
+   "label": "好友位置",
+   "depth": 0,
+   "kind": "page",
+   "ours": "friends",
+   "verdict": "same"
+  },
+  {
+   "row": 4,
+   "label": "游戏日志",
+   "depth": 0,
+   "kind": "page",
+   "ours": "gamelog",
+   "verdict": "same"
+  },
+  {
+   "row": 5,
+   "label": "房间历史",
+   "depth": 0,
+   "kind": "page",
+   "ours": "sessions",
+   "verdict": "same",
+   "note": "sessions 页本就是 VRCX-0 #/room-history 复刻，本轮文案由「我的行程」改为「房间历史」"
+  },
+  {
+   "row": 6,
+   "label": "房内玩家",
+   "depth": 0,
+   "kind": "page",
+   "ours": "players",
+   "verdict": "same"
+  },
+  {
+   "row": 7,
+   "label": "搜索",
+   "depth": 0,
+   "kind": "page",
+   "ours": "search",
+   "verdict": "same"
+  },
+  {
+   "row": 8,
+   "label": "浏览记录",
+   "depth": 0,
+   "kind": "page",
+   "ours": "history",
+   "verdict": "same",
+   "note": "本轮新增：route history 复用 WorldsPage(mode=\"history\")，数据 /api/worlds 按最近到访排序，与「世界收藏」共用组件但独立筛选记忆"
+  },
+  {
+   "row": 9,
+   "label": "收藏",
+   "depth": 0,
+   "kind": "folder",
+   "ours": "fav",
+   "verdict": "same",
+   "note": "父夹同名，四子项（好友收藏/群组收藏/世界收藏/模型收藏）齐"
+  },
+  {
+   "row": 10,
+   "label": "好友收藏",
+   "depth": 1,
+   "kind": "sub",
+   "parent": "收藏",
+   "ours": "favorites",
+   "verdict": "same",
+   "note": "本轮由「收藏」改为「好友收藏」"
+  },
+  {
+   "row": 11,
+   "label": "群组收藏",
+   "depth": 1,
+   "kind": "sub",
+   "parent": "收藏",
+   "ours": "groupfav",
+   "verdict": "same",
+   "note": "群组收藏页已建（pages/GroupFavPage.jsx → components/FavKindList kind=group），读 favorite 表 kind=group；采集器未接群组接口时是带原因的真空态"
+  },
+  {
+   "row": 12,
+   "label": "世界收藏",
+   "depth": 1,
+   "kind": "sub",
+   "parent": "收藏",
+   "ours": "worlds",
+   "verdict": "same",
+   "note": "本轮由「世界库」改为「世界收藏」"
+  },
+  {
+   "row": 13,
+   "label": "模型收藏",
+   "depth": 1,
+   "kind": "sub",
+   "parent": "收藏",
+   "ours": "avatarfav",
+   "verdict": "same",
+   "note": "模型收藏页已建（pages/AvatarFavPage.jsx → FavKindList kind=avatar），读 favorite 表 kind=avatar"
+  },
+  {
+   "row": 14,
+   "label": "社交",
+   "depth": 0,
+   "kind": "folder",
+   "ours": "social",
+   "verdict": "same",
+   "note": "父夹同名，三子项（好友日志/好友列表/玩家管理）齐"
+  },
+  {
+   "row": 15,
+   "label": "好友日志",
+   "depth": 1,
+   "kind": "sub",
+   "parent": "社交",
+   "ours": "friendlog",
+   "verdict": "same",
+   "note": "本轮由「好友历史」改为「好友日志」，并移到子项第一位（真机顺序）"
+  },
+  {
+   "row": 16,
+   "label": "好友列表",
+   "depth": 1,
+   "kind": "sub",
+   "parent": "社交",
+   "ours": "friendlist",
+   "verdict": "same"
+  },
+  {
+   "row": 17,
+   "label": "玩家管理",
+   "depth": 1,
+   "kind": "sub",
+   "parent": "社交",
+   "ours": "moderation",
+   "verdict": "same"
+  },
+  {
+   "row": 18,
+   "label": "我的模型",
+   "depth": 0,
+   "kind": "page",
+   "ours": "models",
+   "verdict": "same",
+   "note": "我的模型页已建（pages/MyModelsPage.jsx），读 /api/avatars"
+  },
+  {
+   "row": 19,
+   "label": "活动",
+   "depth": 0,
+   "kind": "page",
+   "ours": "activity",
+   "verdict": "same",
+   "note": "活动页已建（pages/ActivityPage.jsx），当天到访世界 + 同房玩家"
+  },
+  {
+   "row": 20,
+   "label": "好友关系图",
+   "depth": 0,
+   "kind": "page",
+   "ours": "friendgraph",
+   "verdict": "same",
+   "note": "好友关系图页已建（pages/FriendGraphPage.jsx），近 90 天共玩关系图"
+  },
+  {
+   "row": 21,
+   "label": "工具",
+   "depth": 0,
+   "kind": "page",
+   "ours": "tools",
+   "verdict": "same",
+   "note": "本轮新增 #/tools 工具页（真机有、我们缺的入口页）：统计/洞察/通知/日历/遇到过的玩家收成卡片，主干侧栏因此不再有自造条目"
+  },
+  {
+   "row": 22,
+   "label": "仪表板",
+   "depth": 0,
+   "kind": "page",
+   "ours": "overview",
+   "verdict": "same",
+   "note": "本轮由「概览」改为「仪表板」，并移到主干末尾（真机位置）"
+  },
+  {
+   "row": 23,
+   "label": "设置",
+   "depth": 0,
+   "kind": "page",
+   "ours": "settings",
+   "verdict": "same",
+   "note": "SettingsPage 在页脚 [data-nav-footer]，本轮让 nav_inventory_check 一并读页脚"
+  },
+  {
+   "row": 24,
+   "label": "收起导航栏",
+   "depth": 0,
+   "kind": "action",
+   "ours": "collapse",
+   "verdict": "same",
+   "note": "我们已实现为折叠按钮（图标 + 文案）"
+  }
+ ],
+ "extra_in_ours": [],
+ "summary": {
+  "reference_rows": 24,
+  "ours_rows": 22,
+  "same": 22,
+  "rename": 0,
+  "missing_page": 0,
+  "missing_control": 1,
+  "wrong_children": 0,
+  "extra": 0,
+  "top_level_ref": 17,
+  "top_level_ours": 17,
+  "next_step": "侧栏条目集合/文案/顺序已与真机 24 行基准对齐（SAME 22，仅剩「新建仪表板」+ 按钮为 missing_control，非路由页）；nav_inventory_check --strict 已可接入回归",
+  "ours_pages": 22,
+  "check_cmd": "node scripts/nav_inventory_check.mjs --strict → SAME 22 / MISSING 0 / EXTRA 0 / ORDER 0（docs/ref/nav-inventory-check.json）"
+ },
+ "resolved_in_ours": [
+  {
+   "id": "notifications",
+   "label": "通知",
+   "resolution": "移入 #/tools 工具页卡片，主干侧栏不再出现"
+  },
+  {
+   "id": "stats",
+   "label": "统计",
+   "resolution": "移入 #/tools 工具页卡片，主干侧栏不再出现"
+  },
+  {
+   "id": "insights",
+   "label": "洞察",
+   "resolution": "移入 #/tools 工具页卡片，主干侧栏不再出现"
+  },
+  {
+   "id": "calendar",
+   "label": "日历",
+   "resolution": "移入 #/tools 工具页卡片，主干侧栏不再出现"
+  },
+  {
+   "id": "encounters",
+   "label": "遇到过的玩家",
+   "resolution": "移入 #/tools 工具页卡片，主干侧栏不再出现"
+  }
+ ]
+}

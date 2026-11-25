@@ -1349,9 +1349,11 @@ html[data-phone='1'] #root {
   color: var(--content-secondary);
 }
 .loc-head[data-collapsible] { cursor: pointer; user-select: none; }
+/* 区域徽标（JP/JPJP…）：真机世界行整体 12 高。字号必须留在 ≥11 档（视觉回归的「字号档位」只认
+ * spec.typography），所以不靠 10px 压高，改成 11px 字 + 12 行高的无边框胶囊（边框会把盒撑到 14）。 */
 .loc-code {
-  flex: none; font-size: 11px; line-height: 14px; padding: 0 4px;
-  border: 1px solid var(--stroke-subtle); border-radius: 4px;
+  flex: none; font-size: 11px; line-height: 12px; height: 12px; padding: 0 4px; box-sizing: border-box;
+  border-radius: 3px; background: var(--surface-raised);
   color: var(--platform-pc); font-variant-numeric: tabular-nums;
 }
 .loc-title { color: var(--content-primary); }

@@ -8,26 +8,38 @@
 
 /** 侧栏顺序（Sidebar.jsx GROUPS 展开后的顺序，1~9 对应前九个页面） */
 export const PAGE_ORDER = [
-  'friends', 'feed', 'notifications',
-  'friendlist', 'friendlog', 'players',
-  'stats', 'insights', 'sessions',
-  'gamelog', 'worlds', 'calendar', 'favorites', 'settings'
+  'feed', 'friends', 'gamelog',
+  'sessions', 'players', 'search', 'history',
+  'favorites', 'groupfav', 'worlds', 'avatarfav',
+  'friendlog', 'friendlist', 'moderation',
+  'models', 'activity', 'friendgraph',
+  'tools', 'overview'
 ];
 
 export const PAGE_LABEL = {
+  feed: '好友动态',
   friends: '好友位置',
-  feed: '动态',
-  notifications: '通知',
+  gamelog: '游戏日志',
+  sessions: '房间历史',
+  players: '房内玩家',
+  search: '搜索',
+  favorites: '好友收藏',
+  groupfav: '群组收藏',
+  worlds: '世界收藏',
+  avatarfav: '模型收藏',
+  models: '我的模型',
+  activity: '活动',
+  friendgraph: '好友关系图',
+  calendar: '日历',
+  friendlog: '好友日志',
   friendlist: '好友列表',
-  friendlog: '好友历史',
-  players: '玩家',
+  moderation: '玩家管理',
+  encounters: '遇到过的玩家',
+  tools: '工具',
+  overview: '仪表板',
+  notifications: '通知',
   stats: '统计',
   insights: '洞察',
-  sessions: '我的行程',
-  gamelog: '游戏日志',
-  worlds: '世界库',
-  calendar: '日历',
-  favorites: '收藏',
   settings: '设置'
 };
 

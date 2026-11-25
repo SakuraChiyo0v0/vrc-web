@@ -34,16 +34,19 @@ test('70 无数据时空态：bars 为空、peak=null（不画空轴）', () => 
 });
 
 test('68 Ctrl/⌘+数字按侧栏顺序跳页', () => {
-  assert.deepEqual(resolveShortcut({ key: '1', ctrlKey: true }), { type: 'navigate', page: 'friends', digit: 1 });
-  assert.equal(resolveShortcut({ key: '3', metaKey: true }).page, 'notifications');
-  assert.equal(resolveShortcut({ key: '7', ctrlKey: true }).page, 'stats');
-  assert.equal(resolveShortcut({ key: '9', ctrlKey: true }).page, 'sessions');
-  assert.equal(PAGE_ORDER.length, 14);
+  // 顺序 = Sidebar NAV 顺序（真机 nav-inventory.json 对齐后：好友动态/好友位置/游戏日志/房间历史…）
+  assert.deepEqual(resolveShortcut({ key: '1', ctrlKey: true }), { type: 'navigate', page: 'feed', digit: 1 });
+  assert.equal(resolveShortcut({ key: '3', metaKey: true }).page, 'gamelog');
+  assert.equal(resolveShortcut({ key: '7', ctrlKey: true }).page, 'history');
+  assert.equal(resolveShortcut({ key: '9', ctrlKey: true }).page, 'groupfav');
+  // 真机侧栏 22 行（含 2 夹 7 子项）→ 页面 19 个，第 19 个是仪表板
+  assert.equal(PAGE_ORDER.length, 19);
+  assert.equal(PAGE_ORDER.at(-1), 'overview');
 });
 
 test('68 输入框内 Ctrl+数字仍生效，裸数字与 ? 不抢输入', () => {
   const input = { tagName: 'INPUT', isContentEditable: false };
-  assert.equal(resolveShortcut({ key: '5', ctrlKey: true, target: input }).page, 'friendlog');
+  assert.equal(resolveShortcut({ key: '5', ctrlKey: true, target: input }).page, 'players');
   assert.equal(resolveShortcut({ key: '5', target: input }), null);
   assert.equal(resolveShortcut({ key: '?', shiftKey: true, target: input }), null);
   assert.deepEqual(resolveShortcut({ key: '?', shiftKey: true }), { type: 'help' });
@@ -76,4 +79,29 @@ test('69 普通搜索词不当 ID（不误触）', () => {
   assert.equal(parseVrcTarget('https://example.com/x'), null);
   assert.equal(parseVrcTarget(''), null);
   assert.equal(parseVrcTarget(null), null);
+});
+
+// 页面上 useSort('<section>') 的 section 必须真的在 SORT_COLUMNS 里：
+// 少一个键，useSort 里 cols[defKey] 就抛 TypeError，整页被 ErrorBoundary 接住变「这个页面出错了」
+// （世界收藏/浏览记录共用 WorldsPage 传 'worlds-library' / 'worlds-history' 时踩过）。
+test('useSort 的 section 都在 SORT_COLUMNS 里', async () => {
+  const { SORT_COLUMNS } = await import('../src/lib/sort.js');
+  const { readdirSync, readFileSync, statSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const files = [];
+  const walk = (dir) => {
+    for (const name of readdirSync(dir)) {
+      const p = join(dir, name);
+      if (statSync(p).isDirectory()) walk(p);
+      else if (/\.jsx?$/.test(name)) files.push(p);
+    }
+  };
+  walk(new URL('../src', import.meta.url).pathname);
+  const used = new Set();
+  for (const f of files) {
+    for (const m of readFileSync(f, 'utf8').matchAll(/useSort\(\s*['"`]([^'"`]+)['"`]/g)) used.add(m[1]);
+  }
+  assert.ok(used.size > 0, '至少要扫到一个 useSort 调用');
+  const missing = [...used].filter((k) => !SORT_COLUMNS[k]);
+  assert.deepEqual(missing, [], `SORT_COLUMNS 缺这些 section：${missing.join(', ')}`);
 });

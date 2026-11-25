@@ -4,7 +4,7 @@
   "width": 1688,
   "height": 1028
  },
- "at": "2026-11-25T02:33:15.570Z",
+ "at": "2026-11-25T05:20:40.425Z",
  "ref": "docs/ref/overview-lists-measure.json",
  "pass": 45,
  "total": 45,
@@ -409,7 +409,7 @@
       },
       "bar": null,
       "zone": null,
-      "label": "Alice · 13小时25分"
+      "label": "Alice · 16小时13分"
      },
      {
       "hero": false,

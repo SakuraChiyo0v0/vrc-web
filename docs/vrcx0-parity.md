@@ -740,3 +740,52 @@ structure_parity 只数「右栏榜单节数 0/3」，三块榜单的字号/头�
 - **字体字符 = 隐式依赖系统字体**：缺字时不报错，只是渲染成 6.6px 方框，且只有量 glyph 宽度或看截图才发现（`⧉` 与 `⌖` 两次都是这样）。凡图标一律内联 SVG，并让断言判「有 `<svg>` 且无文本节点」，不要判「宽度 > 0」（豆腐框也有宽度）。
 - **换矢量后图标列宽会变**：字体字符 11px 行内盒子靠 `w-3.5` 撑；`<svg>` 是 inline 元素，垂直对齐会带基线空隙，必须 `display:flex` + 固定 `height:14px`，否则行高被撑、`nav.top_pitch` 40 立刻红。
 - **单测里的结构正则跟着改**：`nav.test.mjs` 用正则从 `Sidebar.jsx` 源码解析 NAV，删字段就等于改格式，正则会静默匹配 0 条（不报错），断言反而变成「空集合全过」或「把夹子当页」。
+
+---
+
+# 第四十五轮：真机侧栏基准 + 只读对照脚本（NAV 文案/顺序盲区第一次可量化）（2026-11-25）
+
+上一轮实测发现「侧栏清单与真机不符」是 2256 条断言里的盲区：`frame_parity` 只断言行数/密度/矢量，`visual_parity` 比的是 DOM vs 我们自建的 spec，两边都不比文案与集合。本轮先把**差异量化成可复跑的对照**，不动 NAV 本身（增删页会改 `pages` 与 nav_coverage 366 的基数，属结构性改动）。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 393 | 新增 `docs/ref/nav-inventory.json`：真机 24 行（`nav_ref_full.png` 逐行 OCR，vision 双次复核）↔ 我们 19 行逐条映射，每行带 `ours`（nav id）/`verdict`（same/rename/missing_page/missing_control/wrong_children）/`note`，末尾 `extra_in_ours` 列 6 条多出项与处置建议 | 文件 5702 字节、JSON lint ok；汇总 ref=24 / ours=19，SAME 6、RENAME 6、缺页 9、多出 6、夹子子项 2 处不符 |
+| 394 | 新增 `scripts/nav_inventory_check.mjs`：playwright 抓 `.vrc-sidebar` 实际渲染行（`data-nav-kind`/`data-nav-id`/文案/层级），**按 id 配对**（不是按下标硬比，避免顺序差一条就全红）→ SAME/RENAME，配不上 → MISSING/EXTRA，再查配对项 DOM 下标单调性 → ORDER；产出 `docs/ref/nav-inventory-check.json`，默认报告模式 exit 0，`--strict` 才 fail（对齐未做完前不该染红流水线） | `node scripts/nav_inventory_check.mjs http://127.0.0.1:8891` → `SAME 8 / RENAME 5 / MISSING 9 / EXTRA 6 / ORDER 2`，exit 0；数字与 393 的汇总独立吻合（SAME 6 页 + 收藏/社交 2 夹 = 8） |
+| 395 | `Sidebar.jsx` 的 `NavFolder` 按钮补 `data-nav-id={item.id}`（纯 DOM 标记，不改行为/样式） | 补之前两个折叠夹 id=null → 配不上 → MISSING 11；补之后 MISSING 回落到 9（真实缺页数），SAME 6→8。`web npm test` 48 pass 0 fail、`npm run build` built in 10.47s |
+
+真机 vs 我们（基准表结论）：
+
+| 类别 | 条目 |
+|---|---|
+| 同页改名（5+1） | 动态→**好友动态**、概览→**仪表板**、世界库→**世界收藏**、好友历史→**好友日志**、收藏(子)→**好友收藏** |
+| 真机有我们没有（9 页） | 房间历史、浏览记录、群组收藏、模型收藏、我的模型、活动、好友关系图、工具、设置（`SettingsPage.jsx` 已存在但未进 NAV） |
+| 我们有真机没有（6） | 我的行程、通知、统计、洞察、日历、遇到过的玩家 |
+| 非页面控件 | 真机顶部「+ 新建仪表板」我们没有；「收起导航栏」两边一致 |
+
+踩坑记录：
+- **按下标比是错的**：第一版按 index 逐行比，因为「概览」在首位而真机「仪表板」在倒数第三，一条错位就把它后面 16 行全报成 DIVERGE。改成先按 `ours` id 配对、再单独查顺序单调性，报告才可读（MISSING/EXTRA/ORDER 三类互不污染）。
+- **折叠夹行没有 `data-nav-id`**：`NavFolder` 之前只挂 `data-nav-folder`，DOM 里夹子行 id=null，配对必失败 → 两个夹子被误报成「真机有我们没有」。这类纯标记缺失会让对照工具静默失真，断言前先确认选择器取得到。
+- **报告脚本别默认 exit 1**：基准刚建立时差异是「已知待办」而非「回归」，`--strict` 留给对齐完成后再接进 `regress_all.sh`。
+
+---
+
+# 第四十六轮：补齐真机缺页 + 侧栏清单对齐接入回归（nav 390/390、REGRESS 11/11）（2026-11-25）
+
+第 45 轮把差异量化成 `nav_inventory_check.mjs` 后，本轮把它从「报告」变成「门禁」：补掉 5 个真机有我们没有的页面，侧栏回到真机 11 页 + 2 夹的结构，`navinv` 接进 `regress_all.sh` 成为第 11 段。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 396 | 新增 `web/src/pages/ToolsPage.jsx`（真机有、我们缺的「工具」入口页），把真机没有独立入口的统计/洞察/通知/日历/遇到过的玩家收成卡片；`Sidebar.jsx` 主干改为真机 11 页 + 2 夹（21 行 → 16 行） | `node scripts/nav_inventory_check.mjs` → SAME 17 / EXTRA 0 / ORDER 0（原 EXTRA 5）；`FRAME_VIEWS=1024x600 node scripts/frame_parity.mjs` → 247/247 FRAME OK |
+| 397 | 补 `GroupFavPage/AvatarFavPage`（共用 `components/FavKindList.jsx`，kind=group/avatar）、`MyModelsPage`、`ActivityPage`、`FriendGraphPage`，接进 `Sidebar` NAV + `App` PAGES/TITLES，`shortcuts.js` PAGE_ORDER 扩到 19 项 | `web npm test` 51 pass 0 fail；`npm run build` 通过；`nav_inventory_check --strict` → SAME 22 / RENAME 0 / MISSING 0 / EXTRA 0 / ORDER 0 exit 0 |
+| 398 | `scripts/regress_all.sh` 新增第 5 环节 `navinv`（`--strict`，有 MISSING/EXTRA/ORDER 即 exit 1），口径 10/10 → 11/11 | 全量 `bash scripts/regress_all.sh` → **REGRESS OK 11/11**（`cache/regress_all_r46c.log`），navinv 段 OK |
+| 399 | 修 `nav_coverage.mjs` 把折叠夹标题当页面点（`data-nav-kind=folder` 过滤掉，folder 段改为逐个验两个夹），此前 78/94 的 7 条假红消失 | `NAV_VIEWS=1688x1028` → 92/92；全口径 4 视口浅/深 → **390/390（100%）** |
+| 400 | 修世界收藏页整页崩（`useSort('worlds-library'/'worlds-history')` 在 `lib/sort.js` 没有 section → `cols[defKey]` 抛错被 ErrorBoundary 接住，卡片 0）：`sort.js` 加两别名指向同一套 worlds 列，`WorldsPage` 改显式常量；新增单测「`useSort` 的 section 都在 `SORT_COLUMNS` 里」扫 `web/src/**/*.jsx` | `cd web && npm test` → 51 pass（+1） |
+| 401 | 修 `.loc-code` 兼顾两套规格：好友位置世界行要 12 高，字号档位要 ≥11 → 11px 字 + line-height 12 + height 12 + 无边框（改 `--surface-raised` 胶囊底） | `visual_parity` → 215/215（100%），三条字号档位红转绿；`locations_parity` 24/24 |
+
+口径变化：`nav_coverage` 分母 366 → **390**（页面项 18 → 19；1688×1028 档 51，其余三档 48，× 浅/深 × 4 视口）；侧栏行数 21 → 16（含页脚「设置」），但 `frame` 的 `nav.icon_vector` 仍量到 21 个图标单元（含折叠夹箭头与收起按钮），断言按 DOM 实数比，不是写死 21。
+
+踩坑记录：
+- **并发进程改同一批文件**：12:05 起有另一进程在加同样的 5 个页面，我这边已经改完 ToolsPage，双方都动 `Sidebar/App/shortcuts` 会互相覆盖。判定方式：`pgrep -af node` + `git status` 看 mtime 突变。这轮的处理是先停手、等对方收口，再在它基础上补齐断言，而不是各自写一版。
+- **折叠夹标题被当页面点**：`nav_coverage` 按 `[data-nav-id]` 收集页面项，夹子按钮补了 `data-nav-id` 后也被算成页，点它等于收起子项 → 子项后续全红。选择器必须带 `data-nav-kind=page` 语义，别复用同一个属性。
+- **模板串里的 `useSort` 静态扫不到**：`useSort(\`worlds-${mode}\`)` 逃过所有静态断言，直到整页崩才暴露。要么写显式常量，要么让单测能覆盖到（本轮两条都做）。
+- **回归脚本自身也要有分母来源**：nav 从 366 变 390 是「页面变多」而不是回归，README 里的数必须跟着实测走，否则下次有人拿 366 当基准反而把正确结果当失败。

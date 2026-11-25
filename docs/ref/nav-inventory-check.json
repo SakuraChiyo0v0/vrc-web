@@ -1,0 +1,213 @@
+{
+ "_note": "nav_inventory_check.mjs：真机基准 docs/ref/nav-inventory.json ↔ 实际渲染侧栏。先按 id 配对（SAME=文案层级都对 / RENAME=同页文案不同），配不上→MISSING(真机有我们没有)/EXTRA(我们有真机没有)，再查顺序单调性→ORDER。",
+ "base": "http://127.0.0.1:8891",
+ "strict": true,
+ "ref_rows": 22,
+ "actual_rows": 22,
+ "same": 22,
+ "rename": 0,
+ "missing": [],
+ "extra": [],
+ "order_inversions": 0,
+ "matched": [
+  {
+   "ref": "好友动态",
+   "actual": "好友动态",
+   "id": "feed",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 0,
+   "act_index": 0
+  },
+  {
+   "ref": "好友位置",
+   "actual": "好友位置",
+   "id": "friends",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 1,
+   "act_index": 1
+  },
+  {
+   "ref": "游戏日志",
+   "actual": "游戏日志",
+   "id": "gamelog",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 2,
+   "act_index": 2
+  },
+  {
+   "ref": "房间历史",
+   "actual": "房间历史",
+   "id": "sessions",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 3,
+   "act_index": 3
+  },
+  {
+   "ref": "房内玩家",
+   "actual": "房内玩家",
+   "id": "players",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 4,
+   "act_index": 4
+  },
+  {
+   "ref": "搜索",
+   "actual": "搜索",
+   "id": "search",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 5,
+   "act_index": 5
+  },
+  {
+   "ref": "浏览记录",
+   "actual": "浏览记录",
+   "id": "history",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 6,
+   "act_index": 6
+  },
+  {
+   "ref": "收藏",
+   "actual": "收藏",
+   "id": "fav",
+   "kind": "folder",
+   "status": "SAME",
+   "ref_index": 7,
+   "act_index": 7
+  },
+  {
+   "ref": "好友收藏",
+   "actual": "好友收藏",
+   "id": "favorites",
+   "kind": "sub",
+   "status": "SAME",
+   "ref_index": 8,
+   "act_index": 8
+  },
+  {
+   "ref": "群组收藏",
+   "actual": "群组收藏",
+   "id": "groupfav",
+   "kind": "sub",
+   "status": "SAME",
+   "ref_index": 9,
+   "act_index": 9
+  },
+  {
+   "ref": "世界收藏",
+   "actual": "世界收藏",
+   "id": "worlds",
+   "kind": "sub",
+   "status": "SAME",
+   "ref_index": 10,
+   "act_index": 10
+  },
+  {
+   "ref": "模型收藏",
+   "actual": "模型收藏",
+   "id": "avatarfav",
+   "kind": "sub",
+   "status": "SAME",
+   "ref_index": 11,
+   "act_index": 11
+  },
+  {
+   "ref": "社交",
+   "actual": "社交",
+   "id": "social",
+   "kind": "folder",
+   "status": "SAME",
+   "ref_index": 12,
+   "act_index": 12
+  },
+  {
+   "ref": "好友日志",
+   "actual": "好友日志",
+   "id": "friendlog",
+   "kind": "sub",
+   "status": "SAME",
+   "ref_index": 13,
+   "act_index": 13
+  },
+  {
+   "ref": "好友列表",
+   "actual": "好友列表",
+   "id": "friendlist",
+   "kind": "sub",
+   "status": "SAME",
+   "ref_index": 14,
+   "act_index": 14
+  },
+  {
+   "ref": "玩家管理",
+   "actual": "玩家管理",
+   "id": "moderation",
+   "kind": "sub",
+   "status": "SAME",
+   "ref_index": 15,
+   "act_index": 15
+  },
+  {
+   "ref": "我的模型",
+   "actual": "我的模型",
+   "id": "models",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 16,
+   "act_index": 16
+  },
+  {
+   "ref": "活动",
+   "actual": "活动",
+   "id": "activity",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 17,
+   "act_index": 17
+  },
+  {
+   "ref": "好友关系图",
+   "actual": "好友关系图",
+   "id": "friendgraph",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 18,
+   "act_index": 18
+  },
+  {
+   "ref": "工具",
+   "actual": "工具",
+   "id": "tools",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 19,
+   "act_index": 19
+  },
+  {
+   "ref": "仪表板",
+   "actual": "仪表板",
+   "id": "overview",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 20,
+   "act_index": 20
+  },
+  {
+   "ref": "设置",
+   "actual": "设置",
+   "id": "settings",
+   "kind": "page",
+   "status": "SAME",
+   "ref_index": 21,
+   "act_index": 21
+  }
+ ],
+ "inversions": []
+}

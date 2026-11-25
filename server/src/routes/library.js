@@ -57,7 +57,7 @@ export function registerLibraryRoutes(app, { db, T, iso }) {
     const b = req.body ?? {};
     const kind = b.kind;
     const targetId = b.targetId ?? b.target_id;
-    if (!['world', 'friend'].includes(kind)) return bad(reply, 'kind 只能是 world 或 friend');
+    if (!['world', 'friend', 'group', 'avatar'].includes(kind)) return bad(reply, 'kind 只能是 world / friend / group / avatar');
     if (!targetId || typeof targetId !== 'string') return bad(reply, '缺 targetId');
 
     const note = b.note ?? null;
@@ -107,6 +107,23 @@ export function registerLibraryRoutes(app, { db, T, iso }) {
     await db.query(`update ${T('favorite')} set group_id = null where group_id = ?`, [req.params.id]);
     await db.query(`delete from ${T('favorite_group')} where id = ?`, [req.params.id]);
     return { ok: true, deleted: req.params.id };
+  });
+
+  /**
+   * 我的模型：账号下的 Avatar 列表。
+   * 采集器目前只记好友当前 avatar_id，没有自己的模型库；表建好了先给读接口，
+   * 采集接入后不用再改前端。没有数据就是空数组（前端显示空态），不编假数据。
+   */
+  app.get('/api/avatars', async () => {
+    let rows = [];
+    try {
+      rows = await db.query(
+        `select id, name, author_name, thumbnail, is_favorite, updated_at from ${T('avatar')} order by name`,
+      );
+    } catch {
+      rows = []; // 旧库还没建表（migrate 未跑）时按空处理
+    }
+    return { avatars: rows.map((r) => ({ ...r, is_favorite: !!Number(r.is_favorite) })) };
   });
 
   /** 侧栏固定区：固定的世界 + 当前在里面的人数 */

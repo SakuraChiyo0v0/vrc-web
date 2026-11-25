@@ -45,6 +45,11 @@ export const SORT_COLUMNS = {
   }
 };
 
+// 世界页有两个入口（世界收藏 / 浏览记录）共用一套列定义，但排序偏好各记各的：
+// 别让 useSort('worlds-library') 拿到 undefined 直接把页面渲染炸掉（缺 cols 时 cols[defKey] 抛错）。
+SORT_COLUMNS['worlds-library'] = SORT_COLUMNS.worlds;
+SORT_COLUMNS['worlds-history'] = SORT_COLUMNS.worlds;
+
 const tiebreak = (a, b) => COLL.compare(
   text(a?.display_name ?? a?.name ?? a?.user_id ?? a?.id),
   text(b?.display_name ?? b?.name ?? b?.user_id ?? b?.id)

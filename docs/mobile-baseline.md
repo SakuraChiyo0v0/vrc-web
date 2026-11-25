@@ -1,6 +1,6 @@
 # 移动端验收基线（自动生成，勿手改）
 
-生成：2026-11-25 02:32:52 · 断言 1479/1479 PASS · 页面 14 × 视口 11
+生成：2026-11-25 05:20:19 · 断言 1479/1479 PASS · 页面 14 × 视口 11
 
 移动形态判据：宽 ≤1023 或高 ≤500（styles.css / tailwind md raw / Sidebar matchMedia 三处一致）。
 重新生成：`node scripts/mobile_parity.mjs`（脚本末尾自动写回本文件）。
@@ -1767,8 +1767,8 @@
 | 断言 | 实测 | 期望 | 结果 |
 | --- | --- | --- | --- |
 | ☰ 打开抽屉 | left=-214→0 data-open=true | left≥-1 且 data-open=true | PASS |
-| 抽屉导航 ≥44/40 | 顶层 14 项 44px / 二级 7 项 40px | 顶层≥44 二级≥40 | PASS |
-| 导航文字对比度≥4.5:1 | 6.73:1（21 项，最小字号 12px） | ≥4.5:1 | PASS |
+| 抽屉导航 ≥44/40 | 顶层 16 项 44px / 二级 7 项 40px | 顶层≥44 二级≥40 | PASS |
+| 导航文字对比度≥4.5:1 | 6.73:1（23 项，最小字号 12px） | ≥4.5:1 | PASS |
 | ✕ 关闭抽屉 | left=-214 | <0 | PASS |
 | 打开后焦点进抽屉 | true | true | PASS |
 | Tab 焦点锁在抽屉内 | 漏出 0/40 次 | 0 | PASS |
@@ -1887,7 +1887,7 @@
 | --- | --- | --- | --- |
 | 开抽屉后转桌面：data-open 清掉 | 打开时 true → 转后 false | false | PASS |
 | 桌面侧栏常驻可见 | left=0 w=214 | left=0 | PASS |
-| 焦点陷阱已卸载（Tab 能出侧栏） | 21 项，末项 Tab 后 → ▦（侧栏内=false） | false | PASS |
+| 焦点陷阱已卸载（Tab 能出侧栏） | 23 项，末项 Tab 后 → ▦（侧栏内=false） | false | PASS |
 | 桌面 Esc 不改抽屉状态 | data-open=false left=0 | false/0 | PASS |
 | 转回 390 抽屉默认收起 | data-open=false left=-214 | false 且 <0 | PASS |
 
@@ -1915,7 +1915,7 @@
 | --- | --- | --- | --- |
 | 开合抽屉后滚动位置保持 | 250→250 | ±2px | PASS |
 | 旋转回竖屏后滚动位置保持 | 250→250 | ±2px | PASS |
-| 30 次深滚 ≤300ms | 1ms（20 行） | ≤300ms | PASS |
+| 30 次深滚 ≤300ms | 0ms（20 行） | ≤300ms | PASS |
 
 ## scroll@feed@390
 
@@ -1996,7 +1996,7 @@
 | 至少一张卡片完整可见 | 1/36 张完整（卡片 84px，可视 170） | ≥1 | PASS |
 | 卡片压成两列（标题独占一行） | 首卡 3 行文本 | ≤4 行 | PASS |
 | 结果列表可继续下滚 | scrollTop→400 | >0 | PASS |
-| 抽屉在极矮可视区可滚到最后项 | n=21 client=170 scroll=1040 lastBottom=158 scrollerBottom=170 | 可滚且末项在容器内 | PASS |
+| 抽屉在极矮可视区可滚到最后项 | n=23 client=170 scroll=1136 lastBottom=158 scrollerBottom=170 | 可滚且末项在容器内 | PASS |
 
 ## kb-landscape@932x430
 
@@ -2011,7 +2011,7 @@
 | 至少一张卡片完整可见 | 1/36 张完整（卡片 84px，可视 190） | ≥1 | PASS |
 | 卡片压成两列（标题独占一行） | 首卡 3 行文本 | ≤4 行 | PASS |
 | 结果列表可继续下滚 | scrollTop→400 | >0 | PASS |
-| 抽屉在极矮可视区可滚到最后项 | n=21 client=190 scroll=1040 lastBottom=178 scrollerBottom=190 | 可滚且末项在容器内 | PASS |
+| 抽屉在极矮可视区可滚到最后项 | n=23 client=190 scroll=1136 lastBottom=178 scrollerBottom=190 | 可滚且末项在容器内 | PASS |
 
 ## keyboard@desktop@1440
 

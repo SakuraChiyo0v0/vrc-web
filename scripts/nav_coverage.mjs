@@ -119,7 +119,11 @@ for (const [width, height] of VIEWS) {
     await assertVrcPage(page, `nav@${view}`);
     // 等侧栏渲染出至少一个导航项（demo 种子要一点时间）
     await page.waitForSelector('aside.vrc-sidebar [data-nav-id]', { timeout: 30_000 });
-    const ids = await page.evaluate(() => [...document.querySelectorAll('aside.vrc-sidebar [data-nav-id]')].map((el) => el.dataset.navId));
+    // 折叠夹标题（data-nav-kind=folder）是开关不是页面：点它会收起子项，不该按「点进某页」判。
+    // 折叠夹本身的行为由下面的 folder 段逐个验（收起子项消失/旧坐标点不到/展开回来点得通）。
+    const ids = await page.evaluate(() => [...document.querySelectorAll('aside.vrc-sidebar [data-nav-id]')]
+      .filter((el) => el.dataset.navKind !== 'folder')
+      .map((el) => el.dataset.navId));
 
     for (const id of ids) {
       const r = await page.evaluate(async (id) => {
@@ -167,9 +171,9 @@ for (const [width, height] of VIEWS) {
     }
     // 折叠夹行为：收起后子项消失（DOM 里没有、旧坐标处也点不到），再展开回来子项可达且点得通
     // （真机两夹默认展开）。只数 N→0→N 会让「子项还在只是被压扁/透明」这类回归漏过去。
-    const fold = await page.evaluate(async () => {
+    const foldOf = (idx) => page.evaluate(async (idx) => {
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-      const box = document.querySelector('aside.vrc-sidebar [data-nav-folder]');
+      const box = document.querySelectorAll('aside.vrc-sidebar [data-nav-folder]')[idx];
       const key = box.dataset.navFolder;
       const head = box.querySelector('[data-nav-kind="folder"]');
       const subEls = [...box.querySelectorAll('[data-nav-kind="sub"]')];
@@ -210,8 +214,12 @@ for (const [width, height] of VIEWS) {
         }
       }
       return { key, before, closed, reopened, subId, subGone, oldSpotHitsSub, reach, hash, title };
-    });
-    push({
+    }, idx);
+    // 两夹都验（收藏 / 社交）：真机两个折叠夹默认展开，任一夹收起后子项都得真的不可点
+    const folderCount = await page.evaluate(() => document.querySelectorAll('aside.vrc-sidebar [data-nav-folder]').length);
+    for (let idx = 0; idx < folderCount; idx += 1) {
+      const fold = await foldOf(idx);
+      push({
       id: `folder:${fold.key}@${view}`, view, theme, nav: `folder:${fold.key}`, hash: fold.hash || '-',
       title: `${fold.before}→${fold.closed}→${fold.reopened}`, want: 'N→0→N，收起不可点、展开可点',
       active: `gone=${fold.subGone} reach=${fold.reach}`, hit: '-',
@@ -219,7 +227,8 @@ for (const [width, height] of VIEWS) {
         && fold.subGone && !fold.oldSpotHitsSub && fold.reach
         && fold.hash === `#/${fold.subId}` && (!WANT[fold.subId] || fold.title === WANT[fold.subId]),
       error: null
-    });
+      });
+    }
     // SidebarFooter「收起导航栏」：按钮本身要能点到（elementFromPoint 落在按钮内），收起后顶栏
     // 展开按钮同样要能点到；reload 后仍保持收起（localStorage 持久化）；展开回来当前页仍高亮、
     // 仍点得到，再点一次页面不变（收起再展开不该丢位置）。

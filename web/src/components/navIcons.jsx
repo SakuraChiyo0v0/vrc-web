@@ -35,6 +35,12 @@ export const NAV_ICON = {
   notifications: <Svg><path d="M5.2 6.6a2.8 2.8 0 015.6 0c0 2.6.8 3.4.8 3.4H4.4s.8-.8.8-3.4z" /><path d="M6.9 12.2a1.4 1.4 0 002.2 0" /></Svg>,
   stats: <Svg><path d="M3 12.4V8.6M8 12.4V3.6M13 12.4V6.4" /><path d="M1.8 14h12.4" /></Svg>,
   insights: <Svg><path d="M6.6 2.2l1.1 2.8 2.8 1.1-2.8 1.1-1.1 2.8-1.1-2.8L2.7 6.1l2.8-1.1z" /><path d="M11.6 9.4l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7z" /></Svg>,
+  tools: <Svg><path d="M9.4 2.6a3.6 3.6 0 00-4.5 4.6L2.4 9.7a1.4 1.4 0 002 2l2.5-2.5a3.6 3.6 0 004.6-4.5l-2 2-1.6-.4-.4-1.6z" /></Svg>,
+  groupfav: <Svg><circle cx="5.4" cy="5.6" r="2" /><circle cx="10.6" cy="5.6" r="2" /><circle cx="8" cy="10.8" r="2" /></Svg>,
+  avatarfav: <Svg><path d="M8 1.9l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.7 4.2 13.7l.7-4.3-3.1-3 4.3-.6z" /><path d="M8 11.2v3.4" /></Svg>,
+  models: <Svg><path d="M8 2.4l5.2 3v5.2L8 13.6l-5.2-3V5.4z" /><path d="M2.8 5.4L8 8.4l5.2-3M8 8.4v5.2" /></Svg>,
+  activity: <Svg><path d="M1.8 8.4h2.8l1.6-4 3 8 1.6-4h3.4" /></Svg>,
+  friendgraph: <Svg><circle cx="8" cy="8" r="2.2" /><circle cx="3" cy="3.4" r="1.6" /><circle cx="13" cy="3.4" r="1.6" /><circle cx="3" cy="12.6" r="1.6" /><circle cx="13" cy="12.6" r="1.6" /><path d="M6.4 6.6L4.2 4.6M9.6 6.6l2.2-2M6.4 9.4l-2.2 2M9.6 9.4l2.2 2" /></Svg>,
   settings: <Svg><circle cx="8" cy="8" r="2.2" /><path d="M8 1.8v1.8M8 12.4v1.8M1.8 8h1.8M12.4 8h1.8M3.6 3.6l1.3 1.3M11.1 11.1l1.3 1.3M12.4 3.6l-1.3 1.3M4.9 11.1l-1.3 1.3" /></Svg>,
   collapse: <Svg><path d="M2.6 2.6v10.8" /><path d="M13 8H5.8" /><path d="M8.6 5.2L5.4 8l3.2 2.8" /></Svg>
 };

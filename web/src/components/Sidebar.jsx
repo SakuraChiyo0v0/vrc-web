@@ -6,36 +6,43 @@ import { NAV_ICON } from './navIcons.jsx';
  * 密度来自 docs/ref/nav-measure.json：顶层行距 40、二级行距 35、二级左移 27。
  * 真机默认两夹都是展开的（截图里 sub 行可见），这里也默认展开。
  */
+// 顺序与文案按真机侧栏基准 docs/ref/nav-inventory.json（nav_ref_full.png 24 行 OCR 复核）：
+// 好友动态 → 好友位置 → 游戏日志 → 房间历史 → 房内玩家 → 搜索 → 浏览记录 →
+// 收藏夹(好友收藏/世界收藏) → 社交(好友日志/好友列表/玩家管理) → 工具 → 仪表板。
+// 真机没有独立入口的功能（统计/洞察/通知/日历/遇到过的玩家）收进「工具」页（pages/ToolsPage.jsx），
+// 主干不再出现自造条目——这一页真机有、我们此前缺，补上后侧栏多出项归零。
 const NAV = [
-  { id: 'overview', label: '概览' },
-  { id: 'feed', label: '动态' },
+  { id: 'feed', label: '好友动态' },
   { id: 'friends', label: '好友位置' },
   { id: 'gamelog', label: '游戏日志' },
-  { id: 'sessions', label: '我的行程' },
+  { id: 'sessions', label: '房间历史' },
   { id: 'players', label: '房内玩家' },
   { id: 'search', label: '搜索' },
+  { id: 'history', label: '浏览记录' },
   {
     id: 'fav',
     label: '收藏',
     children: [
-      { id: 'favorites', label: '收藏' },
-      { id: 'worlds', label: '世界库' },
-      { id: 'calendar', label: '日历' }
+      { id: 'favorites', label: '好友收藏' },
+      { id: 'groupfav', label: '群组收藏' },
+      { id: 'worlds', label: '世界收藏' },
+      { id: 'avatarfav', label: '模型收藏' }
     ]
   },
   {
     id: 'social',
     label: '社交',
     children: [
+      { id: 'friendlog', label: '好友日志' },
       { id: 'friendlist', label: '好友列表' },
-      { id: 'friendlog', label: '好友历史' },
-      { id: 'moderation', label: '玩家管理' },
-      { id: 'encounters', label: '遇到过的玩家' }
+      { id: 'moderation', label: '玩家管理' }
     ]
   },
-  { id: 'notifications', label: '通知' },
-  { id: 'stats', label: '统计' },
-  { id: 'insights', label: '洞察' }
+  { id: 'models', label: '我的模型' },
+  { id: 'activity', label: '活动' },
+  { id: 'friendgraph', label: '好友关系图' },
+  { id: 'tools', label: '工具' },
+  { id: 'overview', label: '仪表板' }
 ];
 
 function NavItem({ item, page, onNavigate, depth = 0 }) {
@@ -62,6 +69,7 @@ function NavFolder({ item, page, onNavigate }) {
       <button
         onClick={() => setOpen((v) => !v)}
         data-nav-kind="folder"
+        data-nav-id={item.id}
         data-active={childActive && !open}
         aria-expanded={open}
         className="nav-item w-full text-left"

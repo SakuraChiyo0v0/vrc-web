@@ -99,22 +99,25 @@ cd web && npm run build && cd ..
 scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 ```
 
-十段全过才打印 `REGRESS OK 10/10`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
+十一段全过才打印 `REGRESS OK 11/11`，任一失败 exit 1，明细在 `cache/regress/<环节>.log`：
 
 | 环节 | 脚本 | 现在跑出来的数 |
 |---|---|---|
 | 桌面结构 | `node scripts/structure_parity.mjs` | 59/59 |
 | 桌面视觉 | `node scripts/visual_parity.mjs` | 215/215（100%） |
 | 主框架/导航密度 | `node scripts/frame_parity.mjs` | 2256/2256（9 视口 × 浅/深色 × 展开/收起，收起态也跑整套外壳断言；导航密度另锁 5 条：行间隙 4、图标全矢量（21 行 `<svg>`、无字体字符）、二级图标列 +27、二级竖线 1px/solid@25、两折叠夹 + 12px 箭头右距 19；展开态逐页也量外壳（顶栏39/状态栏35/内容区填满/侧栏宽恒 214|277），展开态收放折叠夹不动内容列/外壳、600 高矮窗 nav 滚到底不带动整页，浅/深色收起都逐页做溢出 + 顶栏39/状态栏35/内容区填满中间段 + 内容列 ≥720 + 表格密度对比；新 context 必须默认展开；浅/深色收起都验收起 × 右栏开关与收起态 friends，收起态右栏恒 353 且与展开态相等；右栏自身折成 36px 竖条时手柄消失、内容列接过 353−36 且不溢出（≥1440 三档）；同一视口浅/深色收起的面板宽必须相等） |
-| 导航可达 | `node scripts/nav_coverage.mjs` | 366/366（4 视口 × 浅/深色 × 45，含命中测试、折叠夹子项不可点/展开可点、展开按钮几何、reload 持久化、收起态 Ctrl+1..9 跳页、收起态 `?` 快捷键表跳页组 9 项且 Esc 关掉后仍收起、收起态 Ctrl K 命令面板打开/聚焦/不抢数字键/过滤归零/Esc 后仍收起/粘贴 wrld_ ID 回车开抽屉、展开态 Ctrl K 上下选/Enter 开抽屉/点遮罩关/鼠标点结果行/Esc 不改 hash、展开态 Ctrl+1..9 逐键跳页且当前项高亮、展开态 `?` 表且 Esc 后侧栏/高亮原样、展开态 reload 仍展开、收起侧栏 × 右栏折成 36 竖条互不干扰） |
+| 导航可达 | `node scripts/nav_coverage.mjs` | 390/390（4 视口 × 浅/深色 × 48/51，1688×1028 档 51、其余三档 48；侧栏 19 个页面项 + 折叠夹 + 收起态，含命中测试、折叠夹子项不可点/展开可点、展开按钮几何、reload 持久化、收起态 Ctrl+1..9 跳页、收起态 `?` 快捷键表跳页组 9 项且 Esc 关掉后仍收起、收起态 Ctrl K 命令面板打开/聚焦/不抢数字键/过滤归零/Esc 后仍收起/粘贴 wrld_ ID 回车开抽屉、展开态 Ctrl K 上下选/Enter 开抽屉/点遮罩关/鼠标点结果行/Esc 不改 hash、展开态 Ctrl+1..9 逐键跳页且当前项高亮、展开态 `?` 表且 Esc 后侧栏/高亮原样、展开态 reload 仍展开、收起侧栏 × 右栏折成 36 竖条互不干扰） |
+| 侧栏清单对齐 | `node scripts/nav_inventory_check.mjs --strict` | 22/22（真机基准 `docs/ref/nav-inventory.json` ↔ 实际渲染侧栏：SAME 22 / RENAME 0 / MISSING 0 / EXTRA 0 / ORDER 0，`--strict` 下任一不齐 exit 1；补上 frame 只比密度不比文案的盲区） |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
 | 动态页表格 | `node scripts/feed_parity.mjs` | 15/15（列名/列序、无头像列、表头行高 44、列文字起点、右缘留白、工具条单行、无页脚、类型四色互异、类型图标为 12×12 矢量 SVG（非字体字符，避免缺字豆腐块）、详细信息三段） |
 | 好友位置分栏 | `node scripts/locations_parity.mjs` | 24/24（栏序、组头人数=卡数、世界栏 ≥2 人同实例、私人房间只收在线且不显示世界行、离线垫底、在线不丢不重、组头区域不重复、卡片 96 高/头像 56 正圆/6 列、卡上段 56 高、名字/时长在头像右侧竖排且左对齐（私人栏无时长行）、世界行/状态行从卡左内边起跨整卡宽且单行 12 高、卡内不横向/纵向溢出、列表视图分组一致、私人房间折叠/记忆跨刷新/展开恢复） |
 | 概览三榜单 | `node scripts/overview_parity.mjs` | 45/45（三块榜单顺序与标题、栏宽 300、标题 24/600、副标题 18（标题下 46）、首名 hero 116 圆头像 + 32/600 名字 + 20px 时长（名下 25）/ 下距 55、紧凑行 50 头像 + 22 名字 + 行距 71.5、灰条高 7/槽宽 67/左端固定/右内缩 25/长度∝榜首、hero 唯一且首行、空态文案、末行→下块标题 138、无横向溢出） |
-| 前端单测 | `cd web && npm test` | 48 pass |
+| 前端单测 | `cd web && npm test` | 51 pass |
 
 端到端实测（第 33 轮，`cache/regress_all_r33.log`，09:40 起跑）：十段一次性全绿 `REGRESS OK 10/10`（structure 59/59、visual 215/215、frame 2166/2166、nav 366/366、mobile 1479/1479、grid 60/60、feed 15/15、locations 20/20→随后补断言后 24/24、overview 45/45、unittest 0 fail）。frame 此前在串行路径下会中途 `browser has been closed` 崩掉，现在每视口独立起停浏览器并在被关闭时换进程重试一次（`FRAME_VIEWS` / `FRAME_OUT` 可单档复现）。全量回归**只能单实例跑**：`regress_all.sh` 用 `flock` 占 `cache/regress/.lock`，后到者打印 `REGRESS BUSY` 直接退出；每段起跑前等 MemAvailable ≥ 600MB，只对 `Killed` / `browser has been closed` / `browserType.launch: Timeout` / 上游 408 这类环境性死亡重试一次（断言失败不重试）。
+
+端到端实测（第 46 轮，`cache/regress_all_r46c.log`，13:09 起跑）：**`REGRESS OK 11/11`** —— structure 59/59、visual 215/215、frame 2256/2256、nav 390/390、navinv 22/22、mobile 1479/1479、grid 60/60、feed 15/15、locations 24/24、overview 45/45、unittest 51 pass。本轮 nav 分母从 366 涨到 390，因为侧栏补齐真机 5 个缺页（群组收藏/模型收藏/我的模型/活动/好友关系图）后页面项 18→19；`navinv` 作为第 11 段常驻，专门守「文案与集合」这条 frame 只比密度时看不见的盲区。
 
 刷新回归说明：脚本里**别用裸 `page.reload()`**。等 `'load'` 会被 demo 的长连接拖过 30s 直接整轮 TimeoutError（拿不到 FAIL 明细）；等 `'domcontentloaded'` 又早于 React 挂载，调用方 `evaluate` 会撞 `Execution context was destroyed`。统一走 `scripts/lib/page_structure.mjs` 的 `reloadVrc/reloadVrcHard`：只等 domcontentloaded，先给 `<html>` 打 `dataset.reloadStamp`，刷新后看不到这枚戳且 `#vrc-topbar h1` 在才算「文档真换新」，否则整页 goto 硬重试——否则旧 DOM 会让「reload 后状态还在」的断言假 PASS（第 30 轮 `exp.dirty.264/280` 读到上一条用例的 353 就是这个原因）。
 
@@ -139,7 +142,7 @@ node scripts/mobile_parity.mjs                 # 默认 http://127.0.0.1:8891，
 ```bash
 node scripts/frame_parity.mjs    http://172.30.0.7:8790/vrc/   # 2256/2256
 node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
-node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 366/366（逐视口点侧栏项 + 命中测试）
+node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 390/390（逐视口点侧栏项 + 命中测试）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 node scripts/grid_parity.mjs     http://172.30.0.7:8790/vrc/   # 60/60（.loc-grid 列数阶梯）
 node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 15/15（动态页表格，基线 docs/ref/feed-measure.json）
@@ -154,7 +157,7 @@ node scripts/overview_parity.mjs  http://172.30.0.7:8790/vrc/  # 45/45（概览�
 
 ### 导航可达性口径
 
-`nav_coverage.mjs` 默认跑 4 个桌面视口（1688×1028 / 1366×768 / 1100×800 / 1024×768），每个视口把侧栏 18 个页面项全点一遍（`hash`、顶栏标题对得上方算过、不许蹦错误边界），外加折叠夹收起/展开（收起后子项不在 DOM、旧坐标处也点不到；展开回来命中测试过且真能点进那一页）、「收起导航栏」以及收起后**再展开还原**（当前页那一项仍高亮、仍过命中测试、再点不换页），还有**收起态快捷键**：逐个按 Ctrl+1..9，每个数字的 hash 必须等于 `web/src/lib/shortcuts.js` 的 `PAGE_ORDER[d-1]`（不拿 DOM 顺序当期望，否则快捷键表和侧栏顺序错位会一起放过）、顶栏标题跟变、侧栏仍不出现、展开按钮还在；最后展开回来当前项已高亮且过命中测试；收起态还验 **`?` 快捷键表**（收起侧栏后记不住数字键只能看这张表）：按 `?` 打开面板、`跳页` 组必须正好 9 项且标签与按键顺序都跟着 `PAGE_ORDER` / `PAGE_LABEL` 走（从源文件解析，不从 DOM 反推）、面板整块落在视口内、Esc 关掉后仍是收起态，再按 Ctrl+5 照旧跳到 `PAGE_ORDER[4]`。收起态还验 **Ctrl K 命令面板**（收起后找东西只剩这一条路）：按 Ctrl K 面板打开、输入框已聚焦、侧栏不回来、整块落在视口内；面板开着时 Ctrl+3 不许偷偷跳页（`App.jsx` 的 `if (palette) return`）；输入无匹配串结果必须归 0 并给空态文案；Esc 关掉仍收起、再 Ctrl K 能再开；粘贴 `wrld_` ID → 置顶「直接打开」→ Enter 关面板并真开世界抽屉（带该 ID），关掉抽屉仍是收起态。「收起导航栏」与顶栏展开按钮本身也要过命中测试（`elementFromPoint` 落在按钮内），顶栏展开按钮还必须整颗落在顶栏内、与「快速搜索」横向不相交且搜索中心仍命中自己（收侧栏顶上多一个按钮，最容易挤坏这簇），且收起后 **reload 仍是收起**（`localStorage.vrc-nav-collapsed=1`，刷新不弹回展开）。矮窗下侧栏要靠滚动，所以每项先 `scrollIntoView` 再做**命中测试**：行框中心点 `elementFromPoint` 必须落回该项自己，且整行落在 `<nav>`（页脚项则用 `[data-nav-footer]`）可视区内 —— 挡住「JS click 能过、人点不到」。每档视口默认再跑一遍**深色主题**（`localStorage.vrc-theme=dark`）：点得到、标题对、折叠夹收放、收起导航栏回升，主题下同样成立；`NAV_THEME=light` 只跑浅色。展开态再补**快捷键与？表**：逐个按 Ctrl+1..9 必须跳到 `PAGE_ORDER[d-1]`、标题跟变、**侧栏始终在位**、当前页那一项 `data-active=true` 且过命中测试（侧栏在场时「高亮没跟快捷键走」最容易复发），reload 后仍是展开（`vrc-nav-collapsed` ≠ 1，与收起态那条互为对照）；按 `?` 打开快捷键表时侧栏与当前页高亮不许被弄丢、跳页组同样 9 项且顺序按 `PAGE_ORDER` / `PAGE_LABEL`，Esc 关掉后侧栏/高亮原样、再按 Ctrl+7 照旧跳到 `PAGE_ORDER[6]`。展开态 Ctrl K 另验**鼠标点结果行**（另一条入口，别只测键盘）：输入 `a` 后点「好友」组第一行中心 → 面板关、好友抽屉开、抽屉名字=那一行 label、侧栏在位、hash 不变；以及**Esc 关面板不改 hash**（输入无匹配串后 Esc，hash 必须与打开前逐字相同）。`NAV_VIEWS=all` 跑 9 个视口（与 `frame_parity` 同口径，含 1024×600 / 1280×600 两档矮窗，828/828），`NAV_VIEWS=1688x1028,1440x900` 自定义。
+`nav_coverage.mjs` 默认跑 4 个桌面视口（1688×1028 / 1366×768 / 1100×800 / 1024×768），每个视口把侧栏 19 个页面项全点一遍（`hash`、顶栏标题对得上方算过、不许蹦错误边界），外加折叠夹收起/展开（收起后子项不在 DOM、旧坐标处也点不到；展开回来命中测试过且真能点进那一页）、「收起导航栏」以及收起后**再展开还原**（当前页那一项仍高亮、仍过命中测试、再点不换页），还有**收起态快捷键**：逐个按 Ctrl+1..9，每个数字的 hash 必须等于 `web/src/lib/shortcuts.js` 的 `PAGE_ORDER[d-1]`（不拿 DOM 顺序当期望，否则快捷键表和侧栏顺序错位会一起放过）、顶栏标题跟变、侧栏仍不出现、展开按钮还在；最后展开回来当前项已高亮且过命中测试；收起态还验 **`?` 快捷键表**（收起侧栏后记不住数字键只能看这张表）：按 `?` 打开面板、`跳页` 组必须正好 9 项且标签与按键顺序都跟着 `PAGE_ORDER` / `PAGE_LABEL` 走（从源文件解析，不从 DOM 反推）、面板整块落在视口内、Esc 关掉后仍是收起态，再按 Ctrl+5 照旧跳到 `PAGE_ORDER[4]`。收起态还验 **Ctrl K 命令面板**（收起后找东西只剩这一条路）：按 Ctrl K 面板打开、输入框已聚焦、侧栏不回来、整块落在视口内；面板开着时 Ctrl+3 不许偷偷跳页（`App.jsx` 的 `if (palette) return`）；输入无匹配串结果必须归 0 并给空态文案；Esc 关掉仍收起、再 Ctrl K 能再开；粘贴 `wrld_` ID → 置顶「直接打开」→ Enter 关面板并真开世界抽屉（带该 ID），关掉抽屉仍是收起态。「收起导航栏」与顶栏展开按钮本身也要过命中测试（`elementFromPoint` 落在按钮内），顶栏展开按钮还必须整颗落在顶栏内、与「快速搜索」横向不相交且搜索中心仍命中自己（收侧栏顶上多一个按钮，最容易挤坏这簇），且收起后 **reload 仍是收起**（`localStorage.vrc-nav-collapsed=1`，刷新不弹回展开）。矮窗下侧栏要靠滚动，所以每项先 `scrollIntoView` 再做**命中测试**：行框中心点 `elementFromPoint` 必须落回该项自己，且整行落在 `<nav>`（页脚项则用 `[data-nav-footer]`）可视区内 —— 挡住「JS click 能过、人点不到」。每档视口默认再跑一遍**深色主题**（`localStorage.vrc-theme=dark`）：点得到、标题对、折叠夹收放、收起导航栏回升，主题下同样成立；`NAV_THEME=light` 只跑浅色。展开态再补**快捷键与？表**：逐个按 Ctrl+1..9 必须跳到 `PAGE_ORDER[d-1]`、标题跟变、**侧栏始终在位**、当前页那一项 `data-active=true` 且过命中测试（侧栏在场时「高亮没跟快捷键走」最容易复发），reload 后仍是展开（`vrc-nav-collapsed` ≠ 1，与收起态那条互为对照）；按 `?` 打开快捷键表时侧栏与当前页高亮不许被弄丢、跳页组同样 9 项且顺序按 `PAGE_ORDER` / `PAGE_LABEL`，Esc 关掉后侧栏/高亮原样、再按 Ctrl+7 照旧跳到 `PAGE_ORDER[6]`。展开态 Ctrl K 另验**鼠标点结果行**（另一条入口，别只测键盘）：输入 `a` 后点「好友」组第一行中心 → 面板关、好友抽屉开、抽屉名字=那一行 label、侧栏在位、hash 不变；以及**Esc 关面板不改 hash**（输入无匹配串后 Esc，hash 必须与打开前逐字相同）。`NAV_VIEWS=all` 跑 9 个视口（与 `frame_parity` 同口径，含 1024×600 / 1280×600 两档矮窗，828/828），`NAV_VIEWS=1688x1028,1440x900` 自定义。
 
 ### 框架状态的两种额外形态
 

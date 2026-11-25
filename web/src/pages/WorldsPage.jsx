@@ -35,16 +35,21 @@ function Thumb({ w }) {
   return <div className="thumb thumb-empty">{(w.name ?? '?').slice(0, 1)}</div>;
 }
 
-/** 41 世界库：所有去过的世界，搜索 + 表头排序（名字/作者/访问次数/最近活跃），点进详情 */
-export default function WorldsPage() {
-  // 102 搜索词与排序写到 localStorage，刷新保持
-  const [q, setQ] = usePref('worlds:q', '');
-  const [sort, onSort] = useSort('worlds', 'recent');
+/** 41 世界库：所有去过的世界，搜索 + 表头排序（名字/作者/访问次数/最近活跃），点进详情。
+ *  mode='history' = 真机侧栏「浏览记录」：同一份 /api/worlds 数据，独立的筛选/排序记忆，
+ *  按最近到访倒序（默认 recent），语义是「我去过哪些世界、最近一次什么时候」。 */
+export default function WorldsPage({ mode = 'library' }) {
+  // 102 搜索词与排序写到 localStorage，刷新保持（两个入口各自记各自的）
+  const pk = (k) => `worlds:${mode}:${k}`;
+  const [q, setQ] = usePref(pk('q'), '');
+  // 排序偏好按入口分开记（世界收藏 / 浏览记录），但列定义同一套：见 lib/sort.js 的 worlds-library|history
+  const sortSection = mode === 'history' ? 'worlds-history' : 'worlds-library';
+  const [sort, onSort] = useSort(sortSection, 'recent');
   const [offset, setOffset] = useState(0);
   // 114 三个筛选项，和搜索/排序一起进 queryKey，刷新后保持
-  const [fav, setFav] = usePref('worlds:fav', false);
-  const [minVisits, setMinVisits] = usePref('worlds:minVisits', 0);
-  const [capacity, setCapacity] = usePref('worlds:capacity', 'any');
+  const [fav, setFav] = usePref(pk('fav'), false);
+  const [minVisits, setMinVisits] = usePref(pk('minVisits'), 0);
+  const [capacity, setCapacity] = usePref(pk('capacity'), 'any');
   const changeSort = (key) => { onSort(key); setOffset(0); };
   const { openWorld } = useDrawer();
   const LIMIT = 50;
@@ -54,7 +59,7 @@ export default function WorldsPage() {
     `&min_visits=${Number(minVisits) || 0}&capacity=${encodeURIComponent(capacity)}${extra}`;
 
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['worlds', q, sort.key, sort.dir, fav, minVisits, capacity, offset],
+    queryKey: ['worlds', mode, q, sort.key, sort.dir, fav, minVisits, capacity, offset],
     queryFn: () => api(`worlds?${filterQs(`&limit=${LIMIT}&offset=${offset}`)}`),
   });
 
