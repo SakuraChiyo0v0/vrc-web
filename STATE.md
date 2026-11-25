@@ -49,3 +49,10 @@
 - [2026-11-25 11:0x] 单测同步：`web/test/nav.test.mjs` 折叠夹判据从 `id/label/icon/children` 收窄到 `id/label/children`（NAV 已无 icon 字段，否则 folderIds 全空、收藏/社交被当页、快捷键断言假红）。
 - [2026-11-25 11:0x] 踩坑：跑 frame 期间我重建了 `web/dist`（demo 服务读 dist），旧 hash 资源被清 → 在跑的 frame 段 `browser has been closed` 重试；另有上一轮 10:40 遗留的 frame_parity 进程在跑。两个并发 frame 进程互相抢浏览器，kill 干净后单实例重跑才拿到 2256。**改 dist 前先确认没有 parity 在跑**。
 - [2026-11-25 11:0x] 下一步：`bash scripts/regress_all.sh` 单实例跑一次，确认十段仍全绿且 frame 段显示 2256/2256；README 已同步 2256 口径（表格/命令示例/per-view 计数），docs/vrcx0-parity.md 已加第四十三轮小节（389–392）。
+
+## 第44轮 端到端复跑确认 + 侧栏清单与真机不符的实测发现（2026-11-25）
+
+- [2026-11-25 11:2x] 单实例端到端 `bash scripts/regress_all.sh http://127.0.0.1:8891`（日志 `cache/regress_all_r45.log`，跑前确认无 parity/chrome 残留、8891 返回 200）：structure **59/59** OK、visual **215/215（100%）** OK、**frame 2256/2256 FRAME OK**、**nav 366/366（100%）** OK —— 上一轮图标矢量化的 5 条新断言在端到端里全绿，2256 口径成立；mobile 及之后各段本轮预算内未跑完，末行未出。
+- [2026-11-25 11:2x] 新发现（未修，需拍板）：侧栏**清单本身**与真机截图不一致。`docs/ref/nav-measure.json` 的 24 条文字带（真机）逐段放大 OCR（`cache/scratch/nav_ref_full.png`、`nav_ref_a/b.png`、`row_top.png`、`row0..4.png`，vision 两次独立复核一致）读到：`新建仪表板`(顶部虚线按钮) / 好友动态 / 好友位置 / 游戏日志 / 房间历史 / 房内玩家 / 搜索 / 浏览记录 / 收藏(好友收藏·群组收藏·世界收藏·模型收藏) / 社交(好友日志·好友列表·玩家管理) / 我的模型 / 活动 / 好友关系图 / 工具 / 仪表板(选中) / 设置 / 收起导航栏。我们 `Sidebar.jsx` 的 NAV 只有 19 行（7 顶层 + 收藏 3 子 + 社交 4 子 + 3 顶层）+ 页脚 2 = 21 枚图标，文案也不同（概览/动态/我的行程/通知/统计/洞察；收藏子项是 收藏·世界库·日历）。密度数字（行距 40/35、缩进 27、页脚 39）全对，缺的是**条目清单**。
+- [2026-11-25 11:2x] 为什么一直没被抓到：`visual_parity` 比的是 DOM 量测 vs `docs/ref/vrcx0-spec.json`（spec 的 pages 就是我们自己建的 17 页），不是像素；`frame_parity` 只断言行数/密度/矢量，不比文案与集合。所以侧栏文案漂移在 2256 条断言里是盲区。
+- [2026-11-25 11:2x] 下一步：先做只读对齐表——把真机 24 条 band 与我们 19 行逐条映射（哪些是同义改名、哪些要新增页、哪些该删），产出 `docs/ref/nav-inventory.json` + 一条「NAV 文案/顺序与真机一致」的断言骨架；映射表定稿前不动 NAV（新增 房间历史/浏览记录/我的模型/活动/好友关系图/工具 会牵动 pages 与 nav_coverage 366 的基数，属结构性改动）。
