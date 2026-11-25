@@ -35,3 +35,8 @@
 - [2026-11-25 09:41] 证据：`web npm run build` 通过；量测卡片 221×96、avatar(11,8)56×56、name(77,27)、status(11,64,w199) → 头像左、名字/时长右侧竖排、世界/状态跨整卡宽，与 `docs/ref/vrcx0-locations.png` 裁图一致（截图 `cache/loc_r33.png`，vision 复核无裁字/重叠）；`node scripts/locations_parity.mjs` → 20/20 · LOCATIONS OK · exit 0；`grid_parity` 60/60 GRID OK；`structure_parity` 59/59；`cd web && npm test` 48 pass 0 fail。提交 74cb7d0。
 - [2026-11-25 09:52] 端到端 `bash scripts/regress_all.sh`（日志 `cache/regress_all_r33.log`）进行中：structure 59/59 OK、visual 215/215 OK（100%），frame 段仍在跑，末行未出。
 - [2026-11-25 09:52] 下一步：等 cache/regress_all_r33.log 出末行；若 `REGRESS OK 10/10` 则把 r33 数字写进 README 第 117 行与 docs/vrcx0-parity.md（新增「第四十二轮」小节：卡片两段式 + 三条踩坑：CSS 未构建/未补类导致静默竖排、世界栏卡片是否显示世界行、demo 数据缺 online_minutes 导致时长空行）并 push；若某段 FAIL 先看 cache/regress/<段>.log。另：demo 数据里世界栏好友没有 `online_minutes`，卡片时长行为空——属数据侧缺口，不编造。
+
+## 第34轮 概览三榜单复刻收口（2026-11-25）
+
+- [2026-11-25 10:5x] 复核概览三榜单：`node scripts/overview_parity.mjs http://127.0.0.1:8891/vrc/` → **45/45 · OVERVIEW LISTS OK · exit 0**（节间距 138、无横向溢出 1688/1688 均 PASS）。修 README:146 命令示例 locations 20/20 → 24/24。
+- [2026-11-25 10:5x] 端到端 `cache/regress_all_r34.log`：structure 59/59、visual 215/215、frame 2166/2166 已 OK，nav 起跑；上一轮 r33 全量 `REGRESS OK 10/10`（overview 段 45/45）。

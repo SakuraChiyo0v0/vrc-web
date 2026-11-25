@@ -143,7 +143,7 @@ node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 366/366（逐�
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 node scripts/grid_parity.mjs     http://172.30.0.7:8790/vrc/   # 60/60（.loc-grid 列数阶梯）
 node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 15/15（动态页表格，基线 docs/ref/feed-measure.json）
-node scripts/locations_parity.mjs http://172.30.0.7:8790/vrc/  # 20/20（好友位置分栏，基线 docs/ref/vrcx0-spec.json#friends_locations）
+node scripts/locations_parity.mjs http://172.30.0.7:8790/vrc/  # 24/24（好友位置分栏，基线 docs/ref/vrcx0-spec.json#friends_locations）
 node scripts/overview_parity.mjs  http://172.30.0.7:8790/vrc/  # 45/45（概览三榜单，基线 docs/ref/overview-lists-measure.json）
 ```
 
