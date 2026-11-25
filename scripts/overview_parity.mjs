@@ -94,11 +94,17 @@ try {
         const val = r.querySelector('.ov-person-val');
         const bar = r.querySelector('.ov-person-bar');
         const zone = r.querySelector('.ov-person-barzone');
+        const avImg = av ? av.querySelector('img') : null;
         return {
           hero: r.dataset.hero === 'true',
           box: R(r),
           av: av ? R(av) : null,
           avRadius: av ? cs(av).borderRadius : null,
+          avImg: !!avImg,
+          avImgOk: !!avImg && avImg.complete && avImg.naturalWidth > 0,
+          avCh: av ? (av.querySelector('.ov-av-ch')?.textContent || '').trim() : '',
+          nameText: nm ? (nm.textContent || '').trim() : '',
+          valText: val ? (val.textContent || '').trim() : '',
           name: nm ? { ...R(nm), font: cs(nm).fontSize, weight: cs(nm).fontWeight } : null,
           val: val ? { ...R(val), font: cs(val).fontSize } : null,
           bar: bar ? R(bar) : null,
@@ -143,6 +149,8 @@ try {
   const sub = secs[0]?.sub;
   check('副标题字号', sub?.font, `${want.subtitle.font_px}px`, near(parseFloat(sub?.font), want.subtitle.font_px, 0.5));
   check('副标题文案', sub?.text || '—', '遇到过 N 人', /^遇到过\s*\d+\s*人$/.test(sub?.text || ''));
+  const subN = Number((sub?.text || '').match(/\d+/)?.[0]);
+  check('副标题人数=接口 people_met', subN, data.people_met, subN === Number(data.people_met));
   check('标题→副标题间距', Math.round((sub?.y ?? 0) - (t0?.y ?? 0)), want.subtitle.y[0] - want.title.y[0],
     near((sub?.y ?? 0) - (t0?.y ?? 0), want.subtitle.y[0] - want.title.y[0], 2));
 
@@ -150,11 +158,32 @@ try {
   const filled = secs.filter((s) => s.list2.length > 0);
   check('有数据榜单块数', filled.length, '≥2', filled.length >= 2,
     filled.map((s) => `${s.list}:${s.list2.length}行`).join(' '));
+  // 页面上有行的块数必须等于接口里非空的榜单数 —— 防止接口有数据但渲染丢行
+  const dataRows = (k) => (Array.isArray(data[k]) ? data[k].length : 0);
+  const dataFilled = LISTS.filter((k) => dataRows(k) > 0).length;
+  check('有数据榜单块数=接口非空榜数', filled.length, dataFilled, filled.length === dataFilled,
+    LISTS.map((k) => `${k}:${dataRows(k)}`).join(' '));
 
   for (const s of filled) {
     const list = s.list2;
     const hero = list.find((r) => r.hero);
     const rest = list.filter((r) => !r.hero);
+    const src = s.list === 'companions' ? data.companions : s.list === 'passersby' ? data.passersby : data.shrinking;
+    // 内容不空：名字、头像、首名数值都必须有真东西（空壳行几何再对也没意义）
+    const noName = list.filter((r) => !r.nameText).length;
+    check(`[${s.list}] 行名字非空`, noName ? `${noName} 行为空` : `${list.length}/${list.length}`, '全部非空', noName === 0);
+    // 头像要么是真正加载出来的图，要么是首字占位；img 403 后不能留空心圆
+    const noAv = list.filter((r) => !r.avImgOk && !r.avCh).length;
+    check(`[${s.list}] 行头像有内容`, noAv ? `${noAv} 行空白` : `${list.length}/${list.length}`, '图或首字', noAv === 0,
+      list.map((r) => `${r.nameText}:${r.avImgOk ? 'img' : r.avCh ? `字「${r.avCh}」` : '空'}`).slice(0, 3).join(' '));
+    check(`[${s.list}] hero 数值格式`, hero?.valText || '—', '时长/次数', /^\d+\s*(分钟|小时|天)/.test(hero?.valText || ''));
+    check(`[${s.list}] 顺序与接口一致`, list.map((r) => r.nameText).join('/'), src.map((r) => r.name).join('/'),
+      list.length === src.length && list.every((r, i) => r.nameText === src[i]?.name));
+    if (s.list === 'shrinking') {
+      const noDrop = list.filter((r) => !/少\s*\d+%/.test(r.label || '')).length;
+      check('[shrinking] 每行带「少 N%」', noDrop ? `${noDrop} 行缺降幅` : `${list.length}/${list.length}`, '全部带', noDrop === 0,
+        list.map((r) => r.label).slice(0, 2).join(' | '));
+    }
     check(`[${s.list}] 首行是 hero`, list[0]?.hero ? '是' : '否', '是', !!list[0]?.hero);
     check(`[${s.list}] hero 唯一`, list.filter((r) => r.hero).length, 1, list.filter((r) => r.hero).length === 1);
     check(`[${s.list}] hero 头像 116 圆`, `${Math.round(hero?.av?.w)}×${Math.round(hero?.av?.h)} / ${hero?.avRadius}`,

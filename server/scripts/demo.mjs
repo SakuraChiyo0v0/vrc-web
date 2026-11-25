@@ -135,6 +135,15 @@ await ins(`insert into friend_session (id, user_id, started_at, ended_at, minute
 await ins(`insert into friend_session (id, user_id, started_at, ended_at, minutes, location, world_id, world_name, status)
            values (?,?,?,?,?,?,?,?,?)`,
   ['s_bob', 'usr_bob', at(now - 90 * MIN), at(now - 60 * MIN), 30, 'wrld_a:1', 'wrld_a', 'Alpha Club', 'active']);
+// 概览右栏「相处变少的人」：演示库原来第一半/第二半没有落差，这块永远是空态，
+// 行规格（22px 名字 + 「少 N%」降幅）也就从来没在页面上出现过。
+// 给 Carol 造一次前一半 60 分钟、后一半 30 分钟的同房落差（配合下面 plan 里 day5 的夜の喫茶店）。
+await ins(`insert into friend_session (id, user_id, started_at, ended_at, minutes, location, world_id, world_name, status)
+           values (?,?,?,?,?,?,?,?,?)`,
+  ['s_carol_d5', 'usr_carol', at(daysAgo(5) - 60 * MIN - 2 * 60 * MIN), at(daysAgo(5) - 2 * 60 * MIN), 60, 'wrld_c:2~region(us)', 'wrld_c', '夜の喫茶店', 'active']);
+await ins(`insert into friend_session (id, user_id, started_at, ended_at, minutes, location, world_id, world_name, status)
+           values (?,?,?,?,?,?,?,?,?)`,
+  ['s_carol_d3', 'usr_carol', at(daysAgo(3) - 55 * MIN - 2 * 60 * MIN), at(daysAgo(3) - 25 * MIN - 2 * 60 * MIN), 30, 'wrld_c:2~region(us)', 'wrld_c', '夜の喫茶店', 'active']);
 
 // 124 足迹：抽屉「足迹」tab 要能看到「默认折叠 + 展开只取最近 10 条」。
 // friend_event（上线/下线/换房）在足迹里被过滤掉，所以这里只种会话/到访/状态/资料变更：
@@ -206,6 +215,7 @@ for (const [uid, name, payload, mins] of profiles) {
 const plan = [
   [6, 'wrld_a', 'Alpha Club', 95], [6, 'wrld_c', '夜の喫茶店', 40],
   [5, 'wrld_b', 'Beta Lounge', 70], [4, 'wrld_a', 'Alpha Club', 120],
+  [5, 'wrld_c', '夜の喫茶店', 60], // 与 Carol 的 day5 会话重叠：概览「相处变少的人」需要前后半落差
   [3, 'wrld_c', '夜の喫茶店', 55], [2, 'wrld_a', 'Alpha Club', 80],
   [1, 'wrld_b', 'Beta Lounge', 45], [1, 'wrld_a', 'Alpha Club', 30],
   [0, 'wrld_a', 'Alpha Club', 60],

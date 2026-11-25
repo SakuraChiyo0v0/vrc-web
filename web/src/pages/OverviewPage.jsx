@@ -103,6 +103,9 @@ function oav(r, name) {
 function PersonRow({ r, hero, max, suffix, onClick }) {
   const v = Number(r.minutes ?? r.meets ?? 0);
   const av = oav(r);
+  // VRChat 图片是带签名的 CDN 地址，过期/演示库占位键都会 403。以前 onError 只把 img
+  // 隐藏，留一个空心圆；改成回落到首字占位，和本来就没有头像的行一致。
+  const [avBad, setAvBad] = useState(false);
   const label = suffix(v) + (r.drop ? ` · 少 ${r.drop}%` : '');
   return (
     <button
@@ -113,8 +116,8 @@ function PersonRow({ r, hero, max, suffix, onClick }) {
       disabled={!onClick}
     >
       <span className="ov-av" aria-hidden="true">
-        {av ? (
-          <img src={imgUrl(av)} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} />
+        {av && !avBad ? (
+          <img src={imgUrl(av)} alt="" loading="lazy" onError={() => setAvBad(true)} />
         ) : (
           <span className="ov-av-ch">{String(r.name ?? '?').trim().slice(0, 1)}</span>
         )}
