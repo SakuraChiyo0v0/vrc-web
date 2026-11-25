@@ -1,5 +1,5 @@
 {
- "at": "2026-11-25T05:09:33.292Z",
+ "at": "2026-11-25T05:55:36.544Z",
  "base": "http://127.0.0.1:8891",
  "pass": 2256,
  "total": 2256,
@@ -651,7 +651,7 @@
   {
    "view": "1024x600",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表992",
+   "ours": "4col 首列104/104 行39/39 表992",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -1589,7 +1589,7 @@
   {
    "view": "1024x768",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表992",
+   "ours": "4col 首列104/104 行39/39 表992",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -2527,7 +2527,7 @@
   {
    "view": "1100x800",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1068",
+   "ours": "4col 首列104/104 行39/39 表1068",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -3493,7 +3493,7 @@
   {
    "view": "1280x600",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1248",
+   "ours": "4col 首列104/104 行39/39 表1248",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -4431,7 +4431,7 @@
   {
    "view": "1280x800",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1248",
+   "ours": "4col 首列104/104 行39/39 表1248",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -5369,7 +5369,7 @@
   {
    "view": "1366x768",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1334",
+   "ours": "4col 首列104/104 行39/39 表1334",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -6356,7 +6356,7 @@
   {
    "view": "1440x900",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1055",
+   "ours": "4col 首列104/104 行39/39 表1055",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -7434,7 +7434,7 @@
   {
    "view": "1600x900",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1215",
+   "ours": "4col 首列104/104 行39/39 表1215",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -8512,7 +8512,7 @@
   {
    "view": "1700x1040",
    "name": "coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1315",
+   "ours": "4col 首列104/104 行39/39 表1315",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -9317,7 +9317,7 @@
   {
    "view": "1024x600",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表992",
+   "ours": "4col 首列104/104 行39/39 表992",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -10052,7 +10052,7 @@
   {
    "view": "1024x768",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表992",
+   "ours": "4col 首列104/104 行39/39 表992",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -10787,7 +10787,7 @@
   {
    "view": "1100x800",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1068",
+   "ours": "4col 首列104/104 行39/39 表1068",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -11550,7 +11550,7 @@
   {
    "view": "1280x600",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1248",
+   "ours": "4col 首列104/104 行39/39 表1248",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -12285,7 +12285,7 @@
   {
    "view": "1280x800",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1248",
+   "ours": "4col 首列104/104 行39/39 表1248",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -13020,7 +13020,7 @@
   {
    "view": "1366x768",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1334",
+   "ours": "4col 首列104/104 行39/39 表1334",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -13755,7 +13755,7 @@
   {
    "view": "1440x900",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1055",
+   "ours": "4col 首列104/104 行39/39 表1055",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -14581,7 +14581,7 @@
   {
    "view": "1600x900",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1215",
+   "ours": "4col 首列104/104 行39/39 表1215",
    "want": "4col 首列≥104",
    "ok": true
   },
@@ -15407,7 +15407,7 @@
   {
    "view": "1700x1040",
    "name": "dark.coll.density.feed",
-   "ours": "4col 首列104/104 行36/36 表1315",
+   "ours": "4col 首列104/104 行39/39 表1315",
    "want": "4col 首列≥104",
    "ok": true
   },
