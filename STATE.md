@@ -40,3 +40,12 @@
 
 - [2026-11-25 10:5x] 复核概览三榜单：`node scripts/overview_parity.mjs http://127.0.0.1:8891/vrc/` → **45/45 · OVERVIEW LISTS OK · exit 0**（节间距 138、无横向溢出 1688/1688 均 PASS）。修 README:146 命令示例 locations 20/20 → 24/24。
 - [2026-11-25 10:5x] 端到端 `cache/regress_all_r34.log`：structure 59/59、visual 215/215、frame 2166/2166 已 OK，nav 起跑；上一轮 r33 全量 `REGRESS OK 10/10`（overview 段 45/45）。
+
+## 第43轮 侧栏图标矢量化 + 导航密度 5 条常驻断言（2026-11-25）
+
+- [2026-11-25 11:0x] 第 32 轮「主框架与导航密度」收尾。上一轮探针量到 `⧉`(U+29C9) 在 Chromium 字体链缺字（glyphW 6.6 = 豆腐宽），与动态页 `⌖` 同类。改法：新增 `web/src/components/navIcons.jsx`（21 枚 14×14 内联 SVG，`stroke=currentColor` 1.3 描边），`Sidebar.jsx` 去掉 NAV 的 `icon` 字段、折叠夹箭头 `›` 也换 12×12 SVG；`styles.css` 补 `.nav-icon{display:flex;height:14px;opacity:.6}` + `.nav-glyph{display:block}`（矢量是 inline 元素，不写死会撑行高）。
+- [2026-11-25 11:0x] 断言：`frame_parity.mjs` 的 `measureFrame` 加 `rowGapTop/rowGapSub`、`iconVec/iconCells`、`subIconDelta`、`subBorder/subBorderX`、`folderCount/chevCount/chevW/chevRightGap`；`assertNav` 加 5 条 —— `nav.row_gap` 4/4、`nav.icon_vector` 19/19 全矢量、`nav.sub_icon_delta` 27±1、`nav.sub_border` 1px/solid@25±1、`nav.folders` 2 夹 / 2 箭头 12px 右距 19±2。
+- [2026-11-25 11:0x] 证据：全 9 视口浅/深 `node scripts/frame_parity.mjs http://127.0.0.1:8891` → **2256/2256 · FRAME OK · exit 0**（`cache/frame_r32_full2.log`；2166 + 5×浅/深×9 = +90，per-view 247/239/239/247/239/239/262/272/272，`docs/ref/frame-parity.json` pass=2256 total=2256）；单档 `FRAME_VIEWS=1024x600` → 247/247（`cache/scratch/frame_r32_v1.log`）；`cd web && npm test` → 48 pass 0 fail；`npm run build` → 12.00s 通过；探针 `scripts/probes/_probe_r32_navshot.mjs` 量 21 行全 `svg:true 14×14`，截图 `cache/scratch/nav_r32.png` 视觉复核无豆腐框/无裁字。
+- [2026-11-25 11:0x] 单测同步：`web/test/nav.test.mjs` 折叠夹判据从 `id/label/icon/children` 收窄到 `id/label/children`（NAV 已无 icon 字段，否则 folderIds 全空、收藏/社交被当页、快捷键断言假红）。
+- [2026-11-25 11:0x] 踩坑：跑 frame 期间我重建了 `web/dist`（demo 服务读 dist），旧 hash 资源被清 → 在跑的 frame 段 `browser has been closed` 重试；另有上一轮 10:40 遗留的 frame_parity 进程在跑。两个并发 frame 进程互相抢浏览器，kill 干净后单实例重跑才拿到 2256。**改 dist 前先确认没有 parity 在跑**。
+- [2026-11-25 11:0x] 下一步：`bash scripts/regress_all.sh` 单实例跑一次，确认十段仍全绿且 frame 段显示 2256/2256；README 已同步 2256 口径（表格/命令示例/per-view 计数），docs/vrcx0-parity.md 已加第四十三轮小节（389–392）。

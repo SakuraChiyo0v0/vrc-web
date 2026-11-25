@@ -239,6 +239,10 @@ body {
     flex: none;
   }
   .nav-item:hover { background: var(--state-hover-surface); color: var(--content-primary); }
+  /* 图标列 14px（w-3.5）：矢量 14×14 居中、整体 60% 不透明度（原字体字符的 opacity-60）。
+     真机图标列左端 x=18（nav 左右 padding 10 + 行内 padding 8）、二级 +27。 */
+  .nav-icon { display: flex; align-items: center; justify-content: center; flex: none; height: 14px; opacity: .6; }
+  .nav-glyph { display: block; }
   .nav-chevron { font-size: 13px; line-height: 1; opacity: .55; transition: transform .15s ease; }
   .nav-chevron[data-open='true'] { transform: rotate(90deg); }
   .nav-sub {

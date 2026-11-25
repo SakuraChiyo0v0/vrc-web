@@ -1,8 +1,8 @@
 {
- "at": "2026-11-25T02:21:38.145Z",
+ "at": "2026-11-25T02:57:59.942Z",
  "base": "http://127.0.0.1:8891",
- "pass": 2166,
- "total": 2166,
+ "pass": 2256,
+ "total": 2256,
  "rows": [
   {
    "view": "1024x600",
@@ -457,6 +457,41 @@
    "name": "nav.footer_visible",
    "ours": "553 / 565",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
    "ok": true
   },
   {
@@ -1388,6 +1423,41 @@
    "name": "nav.footer_visible",
    "ours": "721 / 733",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
    "ok": true
   },
   {
@@ -2295,6 +2365,41 @@
   },
   {
    "view": "1100x800",
+   "name": "nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "exp.fold.feed.open",
    "ours": "2 夹 sub 7→0→7",
    "want": "夹子收起后 sub=0，展开回来是原数",
@@ -3194,6 +3299,41 @@
    "name": "nav.footer_visible",
    "ours": "553 / 565",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
    "ok": true
   },
   {
@@ -4129,6 +4269,41 @@
   },
   {
    "view": "1280x800",
+   "name": "nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "exp.fold.feed.open",
    "ours": "2 夹 sub 7→0→7",
    "want": "夹子收起后 sub=0，展开回来是原数",
@@ -5032,6 +5207,41 @@
   },
   {
    "view": "1366x768",
+   "name": "nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "exp.fold.feed.open",
    "ours": "2 夹 sub 7→0→7",
    "want": "夹子收起后 sub=0，展开回来是原数",
@@ -5931,6 +6141,41 @@
    "name": "nav.footer_visible",
    "ours": "853 / 865",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
    "ok": true
   },
   {
@@ -6939,6 +7184,41 @@
    "name": "nav.footer_visible",
    "ours": "853 / 865",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
    "ok": true
   },
   {
@@ -7986,6 +8266,41 @@
   },
   {
    "view": "1700x1040",
+   "name": "nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
    "name": "exp.fold.feed.open",
    "ours": "2 夹 sub 7→0→7",
    "want": "夹子收起后 sub=0，展开回来是原数",
@@ -8805,6 +9120,41 @@
   },
   {
    "view": "1024x600",
+   "name": "dark.nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
+   "name": "dark.nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
+   "ok": true
+  },
+  {
+   "view": "1024x600",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -9533,6 +9883,41 @@
   },
   {
    "view": "1024x768",
+   "name": "dark.nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
+   "name": "dark.nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
+   "ok": true
+  },
+  {
+   "view": "1024x768",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -10233,6 +10618,41 @@
   },
   {
    "view": "1100x800",
+   "name": "dark.nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
+   "name": "dark.nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
+   "ok": true
+  },
+  {
+   "view": "1100x800",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -10929,6 +11349,41 @@
    "name": "dark.nav.footer_visible",
    "ours": "553 / 565",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1280x600",
+   "name": "dark.nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
    "ok": true
   },
   {
@@ -11661,6 +12116,41 @@
   },
   {
    "view": "1280x800",
+   "name": "dark.nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
+   "name": "dark.nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
+   "ok": true
+  },
+  {
+   "view": "1280x800",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -12361,6 +12851,41 @@
   },
   {
    "view": "1366x768",
+   "name": "dark.nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
+   "name": "dark.nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
+   "ok": true
+  },
+  {
+   "view": "1366x768",
    "name": "dark.overflow",
    "ours": 0,
    "want": "≤0",
@@ -13057,6 +13582,41 @@
    "name": "dark.nav.footer_visible",
    "ours": "853 / 865",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1440x900",
+   "name": "dark.nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
    "ok": true
   },
   {
@@ -13813,6 +14373,41 @@
    "name": "dark.nav.footer_visible",
    "ours": "853 / 865",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1600x900",
+   "name": "dark.nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
    "ok": true
   },
   {
@@ -14604,6 +15199,41 @@
    "name": "dark.nav.footer_visible",
    "ours": "993 / 1005",
    "want": "页脚在侧栏内且高于状态栏",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.row_gap",
+   "ours": "4 / 4",
+   "want": "4 / 4",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.icon_vector",
+   "ours": "19/19",
+   "want": "全矢量",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.sub_icon_delta",
+   "ours": 27,
+   "want": "27±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.sub_border",
+   "ours": "1px/solid @25",
+   "want": "1px/solid @25±1",
+   "ok": true
+  },
+  {
+   "view": "1700x1040",
+   "name": "dark.nav.folders",
+   "ours": "2 夹 / 2 箭头 12px 右距19",
+   "want": "2 夹 / 2 箭头 12px 右距19±2",
    "ok": true
   },
   {

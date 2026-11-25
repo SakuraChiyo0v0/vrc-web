@@ -1,10 +1,10 @@
 {
- "base": "http://127.0.0.1:8891/vrc",
+ "base": "http://127.0.0.1:8891",
  "viewport": {
   "width": 1688,
   "height": 1028
  },
- "at": "2026-11-25T02:08:36.998Z",
+ "at": "2026-11-25T02:33:15.570Z",
  "ref": "docs/ref/overview-lists-measure.json",
  "pass": 45,
  "total": 45,
@@ -393,23 +393,23 @@
       "name": {
        "x": 1154,
        "y": 219.59375,
-       "w": 87.375,
+       "w": 110.90625,
        "h": 33.59375,
-       "right": 1241.375,
+       "right": 1264.90625,
        "font": "32px",
        "weight": "600"
       },
       "val": {
        "x": 1154,
        "y": 278.1875,
-       "w": 87.375,
+       "w": 110.90625,
        "h": 20,
-       "right": 1241.375,
+       "right": 1264.90625,
        "font": "20px"
       },
       "bar": null,
       "zone": null,
-      "label": "Alice · 13小时"
+      "label": "Alice · 13小时25分"
      },
      {
       "hero": false,

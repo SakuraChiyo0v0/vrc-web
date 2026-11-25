@@ -210,8 +210,34 @@ const measureFrame = () => {
     }))
     : null;
   const footStyle = foot ? getComputedStyle(foot) : null;
+  // 行间隙：同组相邻行的 bottom→top 差值（真机 nav-measure.json row_gap 4 = 行距 − 行高）；
+  // >20 的差值出现在折叠夹块边界，按「块间距」剔除。
+  const gapOf = (els) => {
+    const ds = els.slice(1).map((el, i) => Math.round(el.getBoundingClientRect().top - els[i].getBoundingClientRect().bottom));
+    return [...new Set(ds.filter((d) => d >= 0 && d <= 20))];
+  };
+  // 图标必须是矢量：字体字符在缺字时渲染成豆腐框（第 32 轮实测 ⧉ U+29C9 缺字），
+  // 判据 = 每行第一个 span 里有 <svg> 且没有文本节点。
+  const iconCells = kinds.map((el) => el.querySelector('span'));
+  const iconVec = iconCells.filter((s) => s && s.querySelector('svg') && !(s.textContent || '').trim()).length;
+  const subEl = aside.querySelector('.nav-sub');
+  const subCs = subEl ? getComputedStyle(subEl) : null;
+  const chevs = [...aside.querySelectorAll('.nav-chevron')];
+  const chevRects = chevs.map((el) => el.getBoundingClientRect());
   return {
     ...c,
+    rowGapTop: gapOf(tops),
+    rowGapSub: gapOf(subs),
+    iconVec,
+    iconCells: iconCells.length,
+    subBorder: subCs ? `${subCs.borderLeftWidth}/${subCs.borderLeftStyle}` : null,
+    subBorderX: subEl ? Math.round(subEl.getBoundingClientRect().left - asideR.left) : null,
+    folderCount: aside.querySelectorAll('[data-nav-folder]').length,
+    chevCount: chevs.length,
+    chevW: chevRects.length ? Math.round(chevRects[0].width) : null,
+    chevRightGap: chevRects.length ? Math.round(asideR.right - Math.max(...chevRects.map((r) => r.right))) : null,
+    subIconDelta: subs.length && tops.length
+      ? Math.round(subs[0].querySelector('span').getBoundingClientRect().left - tops[0].querySelector('span').getBoundingClientRect().left) : null,
     topPitch: pitchOf(tops),
     subPitch: pitchOf(subs),
     subIndent: subs.length && tops.length
@@ -326,6 +352,21 @@ const assertNav = (view, got, width, p = '') => {
   check(view, `${p}nav.footer_count`, got.footCount, 2, got.footCount === 2);
   check(view, `${p}nav.footer_visible`, `${got.footBottom} / ${Math.min(got.sidebarBottom, got.statusbar.y)}`,
     '页脚在侧栏内且高于状态栏', got.footBottom !== null && got.footBottom <= Math.min(got.sidebarBottom, got.statusbar.y) + 1);
+  // 行间隙（真机 nav-measure.json row_gap 4）：行距对但行高被撑满时看不出，间隙单独锁
+  check(view, `${p}nav.row_gap`, `${got.rowGapTop.join(',')} / ${got.rowGapSub.join(',')}`, '4 / 4',
+    got.rowGapTop.length === 1 && got.rowGapTop[0] === 4 && got.rowGapSub.length === 1 && got.rowGapSub[0] === 4);
+  // 图标必须是矢量（不是字体字符）：缺字会整列变豆腐框（⧉ U+29C9 实测），21 行全要过
+  check(view, `${p}nav.icon_vector`, `${got.iconVec}/${got.iconCells}`, '全矢量',
+    got.iconCells > 0 && got.iconVec === got.iconCells);
+  // 二级图标列相对一级 +27（真机 top_icon_x 25 / sub_icon_x 52），与二级文字缩进同源
+  check(view, `${p}nav.sub_icon_delta`, got.subIconDelta, '27±1', got.subIconDelta !== null && Math.abs(got.subIconDelta - 27) <= 1);
+  // 二级竖线：真机 SidebarMenuSub 有 border-l，x=25（侧栏 nav padding 10 + mx-3.5 15）
+  check(view, `${p}nav.sub_border`, `${got.subBorder} @${got.subBorderX}`, '1px/solid @25±1',
+    got.subBorder === '1px/solid' && got.subBorderX !== null && Math.abs(got.subBorderX - 25) <= 1);
+  // 两个折叠夹（收藏/社交）默认展开，箭头矢量 12×12、贴行右端（侧栏右缘内 19 = nav 10 + 行内 8 + 1）
+  check(view, `${p}nav.folders`, `${got.folderCount} 夹 / ${got.chevCount} 箭头 ${got.chevW}px 右距${got.chevRightGap}`,
+    '2 夹 / 2 箭头 12px 右距19±2',
+    got.folderCount === 2 && got.chevCount === 2 && got.chevW === 12 && Math.abs(got.chevRightGap - 19) <= 2);
 };
 
 // 展开态整套（浅色 / 深色共用）

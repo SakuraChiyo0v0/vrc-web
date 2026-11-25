@@ -722,3 +722,21 @@ structure_parity 只数「右栏榜单节数 0/3」，三块榜单的字号/头�
 - **卡片外框数字对不代表排布对**：96 高、56 头像、6 列全 PASS 时卡内其实是竖排堆叠（头像在上、名字在中、状态在下）。断言要量「谁在谁右边、行跨多宽」，只量外框会漏。
 - **`showDur` 是分栏级开关**：私人房间栏 `showDur={g.type !== 'private'}`，所以「时长行存在」不能一刀切断言，要按分组类型分支（否则私人栏那 1 张永远假红）。
 - **卡左内边写进断言就用常量**：`x = 卡左 + 10`、`w ≥ 卡宽 − 22` 直接来自 `padding: 7px 10px`，改 padding 必须同步改这两处（脚本里有注释指向 CSS）。
+
+---
+
+# 第四十三轮：侧栏 21 行图标改内联矢量 + 导航密度 5 条常驻断言（frame 2256/2256）（2026-11-25）
+
+第 32 轮目标「主框架与导航密度」收尾。上一轮量到「遇到过的玩家」的 `⧉`(U+29C9) 在 Chromium 字体链里缺字（glyphW 6.6 = 豆腐宽，与 U+E000 私有区同宽），与动态页 `⌖`(U+2316) 同一类 bug；导航 21 行原本全是字体字符，缺字面随系统字体变化，跨平台不可控。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 389 | 新增 `web/src/components/navIcons.jsx`：`NAV_ICON` 21 枚 14×14 内联 SVG（`viewBox 0 0 16 16`、`stroke=currentColor`、1.3 描边、`fill=none`），`Sidebar.jsx` 去掉 NAV 里的 `icon` 字段、图标位改 `<span className="nav-icon">`，折叠夹箭头也从 `›` 字符改成 12×12 SVG | `_probe_r32_navshot.mjs` 量 21 行：`svg:true, w:14, h:14` 全通过；截图 `cache/scratch/nav_r32.png` 视觉复核无豆腐框/无裁字/图标与文字垂直居中 |
+| 390 | `styles.css` 补 `.nav-icon{display:flex;align-items:center;justify-content:center;flex:none;height:14px;opacity:.6}` + `.nav-glyph{display:block}`（原字体字符是 `text-[11px] opacity-60`，改矢量后不透明度与列宽必须显式写死，否则图标列宽被 `<svg>` 撑成行高） | 同上量测 `nav-icon` 宽恒 14、图标列左端仍 18（`nav.icon_x` 18±2 PASS） |
+| 391 | `frame_parity.mjs` 的 `measureFrame` 新增 `rowGapTop/rowGapSub`（同组相邻行 bottom→top，>20 剔除块间距）、`iconVec/iconCells`（每行第一个 span 里必须有 `<svg>` 且无文本残留）、`subIconDelta`、`subBorder/subBorderX`、`folderCount/chevCount/chevW/chevRightGap`；`assertNav` 加 5 条：`nav.row_gap` 4/4、`nav.icon_vector` 19/19 全矢量、`nav.sub_icon_delta` 27±1、`nav.sub_border` `1px/solid @25±1`、`nav.folders` 2 夹 / 2 箭头 12px 右距 19±2 | 全 9 视口浅/深 → **2256/2256 · FRAME OK · exit 0**（`cache/frame_r32_full2.log`；2166 + 5 条 × 浅/深 × 9 = +90；per-view 247/239/239/247/239/239/262/272/272） |
+| 392 | `web/test/nav.test.mjs` 折叠夹判据跟着改：NAV 里不再有 `icon` 字段，正则从 `id/label/icon/children` 收窄到 `id/label/children`（否则 folderIds 全空、`navPages` 把收藏/社交也算成页、快捷键表断言假红） | `cd web && npm test` → **48 pass 0 fail**；`npm run build` → built in 12.00s |
+
+踩坑记录：
+- **字体字符 = 隐式依赖系统字体**：缺字时不报错，只是渲染成 6.6px 方框，且只有量 glyph 宽度或看截图才发现（`⧉` 与 `⌖` 两次都是这样）。凡图标一律内联 SVG，并让断言判「有 `<svg>` 且无文本节点」，不要判「宽度 > 0」（豆腐框也有宽度）。
+- **换矢量后图标列宽会变**：字体字符 11px 行内盒子靠 `w-3.5` 撑；`<svg>` 是 inline 元素，垂直对齐会带基线空隙，必须 `display:flex` + 固定 `height:14px`，否则行高被撑、`nav.top_pitch` 40 立刻红。
+- **单测里的结构正则跟着改**：`nav.test.mjs` 用正则从 `Sidebar.jsx` 源码解析 NAV，删字段就等于改格式，正则会静默匹配 0 条（不报错），断言反而变成「空集合全过」或「把夹子当页」。

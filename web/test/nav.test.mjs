@@ -25,7 +25,8 @@ const TITLES = [...titlesBlock.matchAll(/^\s{2}(\w+):\s*\[/gm)].map((m) => m[1])
 // Sidebar：NAV 常量 + footer 内联的设置项
 const navBlock = sidebar.slice(sidebar.indexOf('const NAV = ['), sidebar.indexOf('/** 固定世界'));
 const navIds = [...navBlock.matchAll(/id: '(\w+)'/g)].map((m) => m[1]);
-const folderIds = [...navBlock.matchAll(/id: '(\w+)',\s*\n\s*label: '[^']*',\s*\n\s*icon: '[^']*',\s*\n\s*children:/g)].map((m) => m[1]);
+// 折叠夹判据只看 `children:`（第 32 轮图标改矢量后 NAV 里不再有 icon 字段）
+const folderIds = [...navBlock.matchAll(/id: '(\w+)',\s*\n\s*label: '[^']*',\s*\n\s*children:/g)].map((m) => m[1]);
 const footerSettings = /<NavItem item=\{\{ id: '(\w+)'/.exec(sidebar)?.[1];
 const navPages = [...navIds.filter((id) => !folderIds.includes(id)), footerSettings].filter(Boolean);
 

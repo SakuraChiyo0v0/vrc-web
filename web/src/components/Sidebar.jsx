@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { NAV_ICON } from './navIcons.jsx';
 
 /**
  * 185 侧栏导航按 VRCX-0 真机结构：单列 SidebarMenu（无分组标题）+ 两个折叠夹（收藏 / 社交），
@@ -6,37 +7,35 @@ import { useEffect, useRef, useState } from 'react';
  * 真机默认两夹都是展开的（截图里 sub 行可见），这里也默认展开。
  */
 const NAV = [
-  { id: 'overview', label: '概览', icon: '◈' },
-  { id: 'feed', label: '动态', icon: '≡' },
-  { id: 'friends', label: '好友位置', icon: '◉' },
-  { id: 'gamelog', label: '游戏日志', icon: '⏱' },
-  { id: 'sessions', label: '我的行程', icon: '◇' },
-  { id: 'players', label: '房内玩家', icon: '☺' },
-  { id: 'search', label: '搜索', icon: '⌕' },
+  { id: 'overview', label: '概览' },
+  { id: 'feed', label: '动态' },
+  { id: 'friends', label: '好友位置' },
+  { id: 'gamelog', label: '游戏日志' },
+  { id: 'sessions', label: '我的行程' },
+  { id: 'players', label: '房内玩家' },
+  { id: 'search', label: '搜索' },
   {
     id: 'fav',
     label: '收藏',
-    icon: '★',
     children: [
-      { id: 'favorites', label: '收藏', icon: '★' },
-      { id: 'worlds', label: '世界库', icon: '▢' },
-      { id: 'calendar', label: '日历', icon: '▦' }
+      { id: 'favorites', label: '收藏' },
+      { id: 'worlds', label: '世界库' },
+      { id: 'calendar', label: '日历' }
     ]
   },
   {
     id: 'social',
     label: '社交',
-    icon: '☷',
     children: [
-      { id: 'friendlist', label: '好友列表', icon: '☷' },
-      { id: 'friendlog', label: '好友历史', icon: '↺' },
-      { id: 'moderation', label: '玩家管理', icon: '▥' },
-      { id: 'encounters', label: '遇到过的玩家', icon: '⧉' }
+      { id: 'friendlist', label: '好友列表' },
+      { id: 'friendlog', label: '好友历史' },
+      { id: 'moderation', label: '玩家管理' },
+      { id: 'encounters', label: '遇到过的玩家' }
     ]
   },
-  { id: 'notifications', label: '通知', icon: '!' },
-  { id: 'stats', label: '统计', icon: '▤' },
-  { id: 'insights', label: '洞察', icon: '✧' }
+  { id: 'notifications', label: '通知' },
+  { id: 'stats', label: '统计' },
+  { id: 'insights', label: '洞察' }
 ];
 
 function NavItem({ item, page, onNavigate, depth = 0 }) {
@@ -48,7 +47,7 @@ function NavItem({ item, page, onNavigate, depth = 0 }) {
       data-nav-id={item.id}
       className="nav-item w-full text-left"
     >
-      <span className="w-3.5 text-center text-[11px] opacity-60">{item.icon}</span>
+      <span className="nav-icon w-3.5">{NAV_ICON[item.id] ?? NAV_ICON.overview}</span>
       <span className="truncate">{item.label}</span>
     </button>
   );
@@ -67,9 +66,9 @@ function NavFolder({ item, page, onNavigate }) {
         aria-expanded={open}
         className="nav-item w-full text-left"
       >
-        <span className="w-3.5 text-center text-[11px] opacity-60">{item.icon}</span>
+        <span className="nav-icon w-3.5">{NAV_ICON[item.id] ?? NAV_ICON.overview}</span>
         <span className="truncate">{item.label}</span>
-        <span className="nav-chevron ml-auto" data-open={open ? 'true' : 'false'}>›</span>
+        <svg className="nav-chevron ml-auto" data-open={open ? 'true' : 'false'} viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3.5L10.5 8 6 12.5" /></svg>
       </button>
       {open ? (
         <div className="nav-sub" data-nav-sub={item.id}>
@@ -162,7 +161,7 @@ export default function Sidebar({ page, onNavigate, me, open = false, onClose, o
       {/* 185/188 SidebarFooter：真机只有两项（设置 / 收起导航栏），上方无分割线、没有说明文字块。
           量测见 docs/ref/footer-measure.json：footer pitch 39。 */}
       <div className="px-2.5 pb-2" data-nav-footer="1">
-        <NavItem item={{ id: 'settings', label: '设置', icon: '⚙' }} page={page} onNavigate={onNavigate} />
+        <NavItem item={{ id: 'settings', label: '设置' }} page={page} onNavigate={onNavigate} />
         <button
           onClick={() => onCollapse?.()}
           data-nav-kind="footer"
@@ -170,7 +169,7 @@ export default function Sidebar({ page, onNavigate, me, open = false, onClose, o
           className="nav-item w-full text-left"
           title="收起导航栏"
         >
-          <span className="w-3.5 text-center text-[11px] opacity-60">⇤</span>
+          <span className="nav-icon w-3.5">{NAV_ICON.collapse}</span>
           <span className="truncate">收起导航栏</span>
         </button>
       </div>
