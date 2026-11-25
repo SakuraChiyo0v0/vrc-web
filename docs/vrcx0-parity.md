@@ -704,3 +704,21 @@ structure_parity 只数「右栏榜单节数 0/3」，三块榜单的字号/头�
 |---|---|---|
 | 383 | `FeedPage.jsx` 的 `kindCell` 改用 `<KindGlyph>`：9 类事件各一枚 12×12 内联 SVG（`viewBox 0 0 12 12`、`stroke=currentColor`、1.3 描边），颜色仍由 `.ek[data-kind]` 的 CSS 变量给；`styles.css` 的 `.ek-glyph` 由 `font-size:11px` 改为 `flex:none; width/height:12px` | 类型列截图逐行复核：位置变动=青色定位针、上线=绿箭头、下线=灰下箭头、模型变动=紫人形，9 行无豆腐块（`cache/scratch/feed_types_r32.png`） |
 | 384 | `feed_parity.mjs` 新增第 15 条断言「类型图标为矢量(非字体字符)」：四类必须有 `svg.ek-glyph` 且 `.ek-glyph` 无文本残留，并打印 12×12 尺寸 | `node scripts/feed_parity.mjs` → **15/15 · FEED OK · exit 0**（`cache/feed_r32_v2.log`）；`FEED_NEG=1` → 12/15 · NEG OK；`cd web && npm test` 48 pass |
+
+---
+
+# 第四十二轮：好友位置卡片两段式布局落 CSS + 内部几何常驻断言（locations 24/24，regress 10/10）（2026-11-25）
+
+第 33 轮目标「好友位置分栏复刻」收尾。上一轮把 `LocCard` 的 JSX 改成真机两段式（上段头像+名字/时长，下段世界行/状态行跨整卡宽），但 `styles.css` 里没有 `.loc-top` / `.loc-meta` / `.loc-glyph` 规则，`.loc-card` 还是旧的 grid 行样式，卡片被挤成竖排堆叠——而 `locations_parity` 只量卡片高 96 / 头像 56 / 列数 6，这种「卡内排布全错但外框数字对」的漂移量不到。本轮先补 CSS，再把内部几何变成断言。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 385 | `styles.css` 补 `.loc-card` 两段式：`display:block; height:96; padding:7px 10px; overflow:hidden`（7×2 内边 + 1px×2 边框 + 上段 56 + 世界/状态 12×2 = 96）、`.loc-top` 横排 56 高、`.loc-meta` 竖排、`.loc-world`/`.loc-status` 固定 12 高单行（状态 ellipsis），组头 glyph 改 12×12 矢量 | `web && npm run build` ✓；量测卡片 221×96、avatar(11,8,56×56)、name(77,27)、status(11,64,w199) —— 与 `docs/ref/vrcx0-locations.png` 裁图一致（`cache/loc_r33.png`） |
+| 386 | `scripts/locations_parity.mjs` 新增 4 条断言（20 → 24）：`卡上段高 56`、`名字/时长在头像右侧竖排`（name.x > 头像右缘、dur 在 name 下方 ≥8、左对齐 ±2；私人房间栏按设计无时长行，改为断言「无 dur」）、`世界行/状态行跨整卡宽单行`（x = 卡左+10 ±2、w ≥ 卡宽−22、高 12）、`卡内不溢出`（scrollWidth/scrollHeight 不超 client） | `node scripts/locations_parity.mjs` → **24/24 · LOCATIONS OK · rc=0** |
+| 387 | NEG 自检扩展：注入 `.loc-top{display:block}` + `.loc-status{width:120px}` 后新断言必须变红 | `LOC_NEG=1` → **20/24**（`名字/时长…` 与 `世界行/状态行…` 双红，明细打印每张卡的 name/dur 坐标） |
+| 388 | 端到端独占全量（`cache/regress_all_r33.log`，09:40–10:05） | **`REGRESS OK 10/10`**：structure 59/59、visual 215/215、frame 2166/2166、nav 366/366、mobile 1479/1479、grid 60/60、feed 15/15、locations 20/20、overview 45/45、unittest 48 pass |
+
+踩坑记录：
+- **卡片外框数字对不代表排布对**：96 高、56 头像、6 列全 PASS 时卡内其实是竖排堆叠（头像在上、名字在中、状态在下）。断言要量「谁在谁右边、行跨多宽」，只量外框会漏。
+- **`showDur` 是分栏级开关**：私人房间栏 `showDur={g.type !== 'private'}`，所以「时长行存在」不能一刀切断言，要按分组类型分支（否则私人栏那 1 张永远假红）。
+- **卡左内边写进断言就用常量**：`x = 卡左 + 10`、`w ≥ 卡宽 − 22` 直接来自 `padding: 7px 10px`，改 padding 必须同步改这两处（脚本里有注释指向 CSS）。

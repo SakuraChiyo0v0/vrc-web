@@ -28,3 +28,10 @@
 
 - [2026-11-25 09:2x] 第 32 轮（动态页表格复刻）：复核 feed 14/14 后做视觉对比，发现类型列图标是字体字符且 `⌖`(U+2316) 全字体链缺字——位置变动（最高频类型）整列豆腐块。改 FeedPage 为 9 类 12×12 内联 SVG（stroke=currentColor），`.ek-glyph` 改 flex:none/12px；feed_parity 加「类型图标为矢量(非字体字符)」第 15 条。实测 **15/15 FEED OK exit 0**（cache/feed_r32_v2.log）、FEED_NEG 12/15 NEG OK、npm test 48 pass；类型列截图无豆腐块。README/docs 口径同步，提交 ce9e15c。
 - [2026-11-25 09:2x] 下一步：数据侧两处与真机仍不同——群组公开不带群名（events 无 group name）、模型变动行详细信息为空（events 未返回模型/头像名）。需先从 friend_avatar_history / location 的 ~group(grp_) 关联出名字，再补 Detail 与断言；属数据管道改动，另起一轮。
+
+## 第33轮 好友位置分栏（卡片两段式布局收口，2026-11-25）
+
+- [2026-11-25 09:40] 接手上一轮未提交的半成品：`FriendsPage.jsx` 已把头像+名字/时长收进 `.loc-top`、世界行/状态行跨整卡宽，但 `styles.css` 没有 `.loc-top/.loc-meta/.loc-glyph` 规则，卡片实际被排成竖排堆叠（量测 name 与 avatar 同在 x=11）。补齐 CSS：`.loc-card` 改 `display:block`、`height:96px`（padding 7 + 上段 56 + 世界/状态各 12×2）、`overflow:hidden`；`.loc-top` flex 横排高 56；`.loc-world/.loc-status` 固定 12 高单行；世界栏组头加 12×12 矢量 glyph。
+- [2026-11-25 09:41] 证据：`web npm run build` 通过；量测卡片 221×96、avatar(11,8)56×56、name(77,27)、status(11,64,w199) → 头像左、名字/时长右侧竖排、世界/状态跨整卡宽，与 `docs/ref/vrcx0-locations.png` 裁图一致（截图 `cache/loc_r33.png`，vision 复核无裁字/重叠）；`node scripts/locations_parity.mjs` → 20/20 · LOCATIONS OK · exit 0；`grid_parity` 60/60 GRID OK；`structure_parity` 59/59；`cd web && npm test` 48 pass 0 fail。提交 74cb7d0。
+- [2026-11-25 09:52] 端到端 `bash scripts/regress_all.sh`（日志 `cache/regress_all_r33.log`）进行中：structure 59/59 OK、visual 215/215 OK（100%），frame 段仍在跑，末行未出。
+- [2026-11-25 09:52] 下一步：等 cache/regress_all_r33.log 出末行；若 `REGRESS OK 10/10` 则把 r33 数字写进 README 第 117 行与 docs/vrcx0-parity.md（新增「第四十二轮」小节：卡片两段式 + 三条踩坑：CSS 未构建/未补类导致静默竖排、世界栏卡片是否显示世界行、demo 数据缺 online_minutes 导致时长空行）并 push；若某段 FAIL 先看 cache/regress/<段>.log。另：demo 数据里世界栏好友没有 `online_minutes`，卡片时长行为空——属数据侧缺口，不编造。

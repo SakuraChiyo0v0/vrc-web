@@ -8,7 +8,10 @@
  *   栏序（世界 → 好友收藏 → 其他在线 → 私人房间 → 离线）、组头人数徽标 = 卡数、
  *   世界栏 ≥2 人且同实例、私人房间只收在线且不显示世界行、离线垫底、
  *   每个人只出现一次不丢不重、组头不重复区域码（JPJP）、卡片几何（96 高 / 56 正圆 / 6 列）、
- *   列表视图与网格视图分组一致。
+ *   卡片内部两段式（上段 56 = 头像左 + 名字/时长右竖排；世界行/状态行从卡左内边起跨整卡宽、单行 12 高；
+ *   卡内不横向/纵向溢出）、列表视图与网格视图分组一致。
+ *   内部几何是补的：第 33 轮前 JSX 已分组但 CSS 缺 .loc-top 规则，卡片被挤成竖排堆叠，只量卡片高/头像
+ *   完全看不出，所以现在把「谁在谁右边、行跨多宽」也变成断言。
  * 每项 PASS/DIFF；有 DIFF exit 1，明细写 docs/ref/locations-parity.json。
  */
 import fs from 'node:fs';
@@ -64,6 +67,7 @@ const readGroups = () => page.evaluate(() => {
       cards: cards.map((c) => ({
         u: c.getAttribute('data-user'),
         on: c.getAttribute('data-online'),
+        gtype: g.getAttribute('data-group'),
         hasWorldLine: !!c.querySelector('.loc-world'),
         h: Math.round(c.getBoundingClientRect().height),
         avatar: (() => {
@@ -71,6 +75,26 @@ const readGroups = () => page.evaluate(() => {
           if (!a) return null;
           const r = a.getBoundingClientRect();
           return { w: Math.round(r.width), h: Math.round(r.height), radius: cs(a).borderRadius };
+        })(),
+        // 卡片内部两段式几何：上段 头像(左)+名字/时长(右竖排)，下段 世界行/状态行跨整卡宽。
+        // 上一轮就是这样漏的：JSX 分组正确但 CSS 没跟上，卡片被挤成竖排堆叠也量不到。
+        layout: (() => {
+          const box = (el) => {
+            if (!el) return null;
+            const b = el.getBoundingClientRect();
+            return { x: +b.x.toFixed(1), y: +b.y.toFixed(1), w: +b.width.toFixed(1), h: +b.height.toFixed(1) };
+          };
+          const cr = c.getBoundingClientRect();
+          return {
+            x: +cr.x.toFixed(1), w: +cr.width.toFixed(1),
+            top: box(c.querySelector('.loc-top')),
+            name: box(c.querySelector('.loc-name')),
+            dur: box(c.querySelector('.loc-dur')),
+            world: box(c.querySelector('.loc-world')),
+            status: box(c.querySelector('.loc-status')),
+            overflowY: c.scrollHeight - c.clientHeight,
+            overflowX: c.scrollWidth - c.clientWidth
+          };
         })()
       }))
     };
@@ -109,6 +133,8 @@ try {
     await page.addStyleTag({ content: `
       .loc-card { height: 120px !important; }
       .loc-groups .loc-grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
+      .loc-top { display: block !important; }
+      .loc-status { width: 120px !important; }
     ` });
     await page.waitForTimeout(200);
   }
@@ -168,6 +194,44 @@ try {
   check('头像 56 正圆', avs.length ? `${avs[0].w}x${avs[0].h} r=${avs[0].radius}` : '无', `${SPEC.avatar_size} 50%`,
     avs.length === cards.length && avBad.length === 0, avBad.length ? `${avBad.length} 张不合` : '');
   check('网格列数(1688 内窗)', online.cols, SPEC.columns, online.cols === SPEC.columns);
+
+  // 卡片内部两段式（真机裁图）：上段 = 头像左 + 名字/时长右竖排，下段 = 世界行/状态行跨整卡宽
+  const L = cards.map((c) => (c.layout ? { ...c.layout, gtype: c.gtype, u: c.u } : null)).filter(Boolean);
+  const near = (a, b, tol = 2) => Math.abs(a - b) <= tol;
+  const topBad = L.filter((l) => !l.top || Math.abs(l.top.h - 56) > 1);
+  check('卡上段高 56', L.length ? `${L[0].top?.h ?? '—'}` : '无', '56',
+    L.length === cards.length && topBad.length === 0, topBad.length ? `${topBad.length} 张不合` : '');
+
+  // 私人房间卡按设计不显示时长（showDur={g.type!=='private'}），其余分组必须有时长行
+  const metaBad = L.filter((l) => {
+    if (!l.name || !l.top) return true;
+    const avRight = l.x + 10 + 56;                       // 卡左内边 10 + 头像 56
+    const nameRight = l.name.x > avRight - 1;            // 名字在头像右侧
+    if (l.gtype === 'private') return !(nameRight && !l.dur);
+    if (!l.dur) return true;
+    const stacked = l.dur.y > l.name.y + 8;              // 时长在名字下方（竖排）
+    const aligned = near(l.dur.x, l.name.x, 2);          // 左对齐同一列
+    return !(nameRight && stacked && aligned);
+  });
+  check('名字/时长在头像右侧竖排', L.length ? `name x=${L[0].name?.x} dur y=${L[0].dur?.y} name y=${L[0].name?.y}`
+    : '无', 'name.x>头像右缘；非私人栏 dur 在名下且左对齐', L.length === cards.length && metaBad.length === 0,
+    metaBad.length ? metaBad.map((l) => `${l.gtype}:x=${l.x} name(${l.name?.x},${l.name?.y}) dur(${l.dur?.x},${l.dur?.y})`).join(' | ') : '');
+
+  const lineBad = L.filter((l) => {
+    if (!l.status) return true;
+    const left = l.x + 10;                               // 卡左内边 10
+    const wide = (b) => b && near(b.x, left, 2) && b.w >= l.w - 22;   // 跨整卡宽（扣左右内边）
+    const oneLine = Math.abs(l.status.h - 12) <= 1;
+    const worldOk = !l.world || (wide(l.world) && Math.abs(l.world.h - 12) <= 1);
+    return !(wide(l.status) && oneLine && worldOk);
+  });
+  check('世界行/状态行跨整卡宽单行', L.length ? `status x=${L[0].status?.x} w=${L[0].status?.w}/${L[0].w} h=${L[0].status?.h}` : '无',
+    'x=卡左+10 w≥卡宽-22 h=12', L.length === cards.length && lineBad.length === 0,
+    lineBad.length ? `${lineBad.length} 张不合` : '');
+
+  const ofBad = L.filter((l) => l.overflowY > 1 || l.overflowX > 1);
+  check('卡内不溢出', ofBad.length ? `${ofBad.length} 张溢出` : `${L.length} 张无溢出`, '0 溢出',
+    L.length === cards.length && ofBad.length === 0);
 
   // 离线 tab：全部离线、垫底、不混在线
   await page.evaluate(() => document.querySelector('[data-facet="offline"]')?.click());

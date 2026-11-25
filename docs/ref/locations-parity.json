@@ -4,10 +4,10 @@
   "width": 1688,
   "height": 1028
  },
- "at": "2026-11-25T01:37:46.303Z",
+ "at": "2026-11-25T02:06:05.976Z",
  "ref": "docs/ref/vrcx0-spec.json#friends_locations",
- "pass": 20,
- "total": 20,
+ "pass": 24,
+ "total": 24,
  "rows": [
   {
    "name": "视图为网格分栏",
@@ -108,6 +108,34 @@
    "extra": ""
   },
   {
+   "name": "卡上段高 56",
+   "got": "56",
+   "want": "56",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "名字/时长在头像右侧竖排",
+   "got": "name x=370 dur y=163.9 name y=146",
+   "want": "name.x>头像右缘；非私人栏 dur 在名下且左对齐",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "世界行/状态行跨整卡宽单行",
+   "got": "status x=304 w=199/221 h=12",
+   "want": "x=卡左+10 w≥卡宽-22 h=12",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "卡内不溢出",
+   "got": "15 张无溢出",
+   "want": "0 溢出",
+   "ok": true,
+   "extra": ""
+  },
+  {
    "name": "离线标签下只有离线栏",
    "got": "offline",
    "want": "offline",
@@ -163,23 +191,87 @@
       {
        "u": "usr_kudan",
        "on": "1",
+       "gtype": "world",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 293,
+        "w": 221,
+        "top": {
+         "x": 304,
+         "y": 127,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 370,
+         "y": 146,
+         "w": 52,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 370,
+         "y": 163.9,
+         "w": 52,
+         "h": 0
+        },
+        "world": null,
+        "status": {
+         "x": 304,
+         "y": 183,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f01",
        "on": "1",
+       "gtype": "world",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 522,
+        "w": 221,
+        "top": {
+         "x": 533,
+         "y": 127,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 599,
+         "y": 146,
+         "w": 34.2,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 599,
+         "y": 163.9,
+         "w": 34.2,
+         "h": 0
+        },
+        "world": null,
+        "status": {
+         "x": 533,
+         "y": 183,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       }
      ]
@@ -194,23 +286,87 @@
       {
        "u": "usr_xiaohong",
        "on": "1",
+       "gtype": "world",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 293,
+        "w": 221,
+        "top": {
+         "x": 304,
+         "y": 261,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 370,
+         "y": 280,
+         "w": 26,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 370,
+         "y": 297.9,
+         "w": 26,
+         "h": 0
+        },
+        "world": null,
+        "status": {
+         "x": 304,
+         "y": 317,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f06",
        "on": "1",
+       "gtype": "world",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 522,
+        "w": 221,
+        "top": {
+         "x": 533,
+         "y": 261,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 599,
+         "y": 280,
+         "w": 39,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 599,
+         "y": 297.9,
+         "w": 39,
+         "h": 0
+        },
+        "world": null,
+        "status": {
+         "x": 533,
+         "y": 317,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       }
      ]
@@ -225,12 +381,49 @@
       {
        "u": "usr_alice",
        "on": "1",
+       "gtype": "favorite",
        "hasWorldLine": true,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 293,
+        "w": 221,
+        "top": {
+         "x": 304,
+         "y": 395,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 370,
+         "y": 406.9,
+         "w": 61,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 370,
+         "y": 424.8,
+         "w": 61,
+         "h": 14.3
+        },
+        "world": {
+         "x": 304,
+         "y": 451,
+         "w": 199,
+         "h": 12
+        },
+        "status": {
+         "x": 304,
+         "y": 463,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       }
      ]
@@ -245,100 +438,433 @@
       {
        "u": "usr_f13",
        "on": "1",
+       "gtype": "others",
        "hasWorldLine": true,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 293,
+        "w": 221,
+        "top": {
+         "x": 304,
+         "y": 529,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 370,
+         "y": 548,
+         "w": 26,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 370,
+         "y": 565.9,
+         "w": 26,
+         "h": 0
+        },
+        "world": {
+         "x": 304,
+         "y": 585,
+         "w": 199,
+         "h": 12
+        },
+        "status": {
+         "x": 304,
+         "y": 597,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_carol",
        "on": "1",
+       "gtype": "others",
        "hasWorldLine": true,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 522,
+        "w": 221,
+        "top": {
+         "x": 533,
+         "y": 529,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 599,
+         "y": 540.9,
+         "w": 61,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 599,
+         "y": 558.8,
+         "w": 61,
+         "h": 14.3
+        },
+        "world": {
+         "x": 533,
+         "y": 585,
+         "w": 199,
+         "h": 12
+        },
+        "status": {
+         "x": 533,
+         "y": 597,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f15",
        "on": "1",
+       "gtype": "others",
        "hasWorldLine": true,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 751,
+        "w": 221,
+        "top": {
+         "x": 762,
+         "y": 529,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 828,
+         "y": 548,
+         "w": 31.6,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 828,
+         "y": 565.9,
+         "w": 31.6,
+         "h": 0
+        },
+        "world": {
+         "x": 762,
+         "y": 585,
+         "w": 199,
+         "h": 12
+        },
+        "status": {
+         "x": 762,
+         "y": 597,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f04",
        "on": "1",
+       "gtype": "others",
        "hasWorldLine": true,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 980,
+        "w": 221,
+        "top": {
+         "x": 991,
+         "y": 529,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 1057,
+         "y": 548,
+         "w": 39.8,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 1057,
+         "y": 565.9,
+         "w": 39.8,
+         "h": 0
+        },
+        "world": {
+         "x": 991,
+         "y": 585,
+         "w": 199,
+         "h": 12
+        },
+        "status": {
+         "x": 991,
+         "y": 597,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f12",
        "on": "1",
+       "gtype": "others",
        "hasWorldLine": true,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 1209,
+        "w": 221,
+        "top": {
+         "x": 1220,
+         "y": 529,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 1286,
+         "y": 548,
+         "w": 21.3,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 1286,
+         "y": 565.9,
+         "w": 21.3,
+         "h": 0
+        },
+        "world": {
+         "x": 1220,
+         "y": 585,
+         "w": 199,
+         "h": 12
+        },
+        "status": {
+         "x": 1220,
+         "y": 597,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f05",
        "on": "1",
+       "gtype": "others",
        "hasWorldLine": true,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 1438,
+        "w": 221,
+        "top": {
+         "x": 1449,
+         "y": 529,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 1515,
+         "y": 548,
+         "w": 33.3,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 1515,
+         "y": 565.9,
+         "w": 33.3,
+         "h": 0
+        },
+        "world": {
+         "x": 1449,
+         "y": 585,
+         "w": 199,
+         "h": 12
+        },
+        "status": {
+         "x": 1449,
+         "y": 597,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f08",
        "on": "1",
+       "gtype": "others",
        "hasWorldLine": true,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 293,
+        "w": 221,
+        "top": {
+         "x": 304,
+         "y": 633,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 370,
+         "y": 652,
+         "w": 20.9,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 370,
+         "y": 669.9,
+         "w": 20.9,
+         "h": 0
+        },
+        "world": {
+         "x": 304,
+         "y": 689,
+         "w": 199,
+         "h": 12
+        },
+        "status": {
+         "x": 304,
+         "y": 701,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f02",
        "on": "1",
+       "gtype": "others",
        "hasWorldLine": true,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 522,
+        "w": 221,
+        "top": {
+         "x": 533,
+         "y": 633,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 599,
+         "y": 652,
+         "w": 39,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 599,
+         "y": 669.9,
+         "w": 39,
+         "h": 0
+        },
+        "world": {
+         "x": 533,
+         "y": 689,
+         "w": 199,
+         "h": 12
+        },
+        "status": {
+         "x": 533,
+         "y": 701,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f10",
        "on": "1",
+       "gtype": "others",
        "hasWorldLine": true,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 751,
+        "w": 221,
+        "top": {
+         "x": 762,
+         "y": 633,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 828,
+         "y": 652,
+         "w": 39,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 828,
+         "y": 669.9,
+         "w": 39,
+         "h": 0
+        },
+        "world": {
+         "x": 762,
+         "y": 689,
+         "w": 199,
+         "h": 12
+        },
+        "status": {
+         "x": 762,
+         "y": 701,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       }
      ]
@@ -353,12 +879,39 @@
       {
        "u": "usr_zk",
        "on": "1",
+       "gtype": "private",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 293,
+        "w": 221,
+        "top": {
+         "x": 304,
+         "y": 767,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 370,
+         "y": 786.5,
+         "w": 44.5,
+         "h": 16.9
+        },
+        "dur": null,
+        "world": null,
+        "status": {
+         "x": 304,
+         "y": 823,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       }
      ]
@@ -379,78 +932,302 @@
       {
        "u": "usr_bob",
        "on": "0",
+       "gtype": "offline",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 293,
+        "w": 221,
+        "top": {
+         "x": 304,
+         "y": 127,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 370,
+         "y": 138.9,
+         "w": 25.1,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 370,
+         "y": 156.8,
+         "w": 25.1,
+         "h": 14.3
+        },
+        "world": null,
+        "status": {
+         "x": 304,
+         "y": 183,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f09",
        "on": "0",
+       "gtype": "offline",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 522,
+        "w": 221,
+        "top": {
+         "x": 533,
+         "y": 127,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 599,
+         "y": 138.9,
+         "w": 22,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 599,
+         "y": 156.8,
+         "w": 22,
+         "h": 14.3
+        },
+        "world": null,
+        "status": {
+         "x": 533,
+         "y": 183,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f07",
        "on": "0",
+       "gtype": "offline",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 751,
+        "w": 221,
+        "top": {
+         "x": 762,
+         "y": 127,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 828,
+         "y": 138.9,
+         "w": 22,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 828,
+         "y": 156.8,
+         "w": 22,
+         "h": 14.3
+        },
+        "world": null,
+        "status": {
+         "x": 762,
+         "y": 183,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f11",
        "on": "0",
+       "gtype": "offline",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 980,
+        "w": 221,
+        "top": {
+         "x": 991,
+         "y": 127,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 1057,
+         "y": 138.9,
+         "w": 29.5,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 1057,
+         "y": 156.8,
+         "w": 29.5,
+         "h": 14.3
+        },
+        "world": null,
+        "status": {
+         "x": 991,
+         "y": 183,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f14",
        "on": "0",
+       "gtype": "offline",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 1209,
+        "w": 221,
+        "top": {
+         "x": 1220,
+         "y": 127,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 1286,
+         "y": 138.9,
+         "w": 32,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 1286,
+         "y": 156.8,
+         "w": 32,
+         "h": 14.3
+        },
+        "world": null,
+        "status": {
+         "x": 1220,
+         "y": 183,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f03",
        "on": "0",
+       "gtype": "offline",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 1438,
+        "w": 221,
+        "top": {
+         "x": 1449,
+         "y": 127,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 1515,
+         "y": 138.9,
+         "w": 25.8,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 1515,
+         "y": 156.8,
+         "w": 25.8,
+         "h": 14.3
+        },
+        "world": null,
+        "status": {
+         "x": 1449,
+         "y": 183,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       },
       {
        "u": "usr_f16",
        "on": "0",
+       "gtype": "offline",
        "hasWorldLine": false,
        "h": 96,
        "avatar": {
         "w": 56,
         "h": 56,
         "radius": "50%"
+       },
+       "layout": {
+        "x": 293,
+        "w": 221,
+        "top": {
+         "x": 304,
+         "y": 231,
+         "w": 199,
+         "h": 56
+        },
+        "name": {
+         "x": 370,
+         "y": 242.9,
+         "w": 26,
+         "h": 16.9
+        },
+        "dur": {
+         "x": 370,
+         "y": 260.8,
+         "w": 26,
+         "h": 14.3
+        },
+        "world": null,
+        "status": {
+         "x": 304,
+         "y": 287,
+         "w": 199,
+         "h": 12
+        },
+        "overflowY": 0,
+        "overflowX": 0
        }
       }
      ]
