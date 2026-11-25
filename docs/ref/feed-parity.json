@@ -4,10 +4,10 @@
   "width": 1688,
   "height": 1028
  },
- "at": "2026-11-25T05:20:32.487Z",
+ "at": "2026-11-25T05:42:27.348Z",
  "ref": "docs/ref/feed-measure.json",
- "pass": 15,
- "total": 15,
+ "pass": 19,
+ "total": 19,
  "rows": [
   {
    "name": "列名/列序",
@@ -113,6 +113,34 @@
    "want": "全部",
    "ok": true,
    "extra": ""
+  },
+  {
+   "name": "变更行详细信息非空",
+   "got": "7/7",
+   "want": "全部",
+   "ok": true,
+   "extra": ""
+  },
+  {
+   "name": "变更内容具体(字段→值)",
+   "got": "7/7",
+   "want": "全部",
+   "ok": true,
+   "extra": "资料更新 | 资料更新 | 资料更新"
+  },
+  {
+   "name": "变更三形态(模型/昵称/空)",
+   "got": "模型 1 · 昵称 1 · 资料更新 5",
+   "want": "各 ≥1",
+   "ok": true,
+   "extra": "资料更新 | 资料更新 | 资料更新 | 资料更新 | 模型 → 已更换 | 昵称 → Bob · 状态 → 今晚 VR 见 | 资料更新"
+  },
+  {
+   "name": "类型列按变更分文案",
+   "got": "模型变动 1 / 资料变动 6 / 共 7",
+   "want": "模型变动=模型变更行，其余=资料变动",
+   "ok": true,
+   "extra": "资料变动:资料更新 | 资料变动:资料更新 | 资料变动:资料更新 | 资料变动:资料更新 | 模型变动:模型 → 已更换 | 资料变动:昵称 → Bob · 状态 → 今晚 VR 见 | 资料变动:资料更新"
   }
  ],
  "measured": {
@@ -127,7 +155,7 @@
    "x": 296,
    "y": 93,
    "w": 1026,
-   "h": 1628,
+   "h": 1760,
    "right": 1322
   },
   "cols": [
@@ -193,7 +221,7 @@
    },
    "profile": {
     "color": "rgb(163, 113, 247)",
-    "text": "模型变动",
+    "text": "资料变动",
     "glyph": "",
     "svg": true,
     "svgSize": {
@@ -214,216 +242,312 @@
   },
   "details": [
    {
+    "kind": "online",
+    "ekText": "上线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "JP",
     "name": "Alpha Club",
     "access": "公开",
     "text": "JPAlpha Club· 公开"
    },
    {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "JP",
     "name": "Alpha Club",
     "access": "仅好友",
     "text": "JPAlpha Club· 仅好友"
    },
    {
+    "kind": "status",
+    "ekText": "状态变动",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "JP",
     "name": "夜の喫茶店",
     "access": "公开",
     "text": "JP夜の喫茶店· 公开"
    },
    {
+    "kind": "online",
+    "ekText": "上线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "offline",
+    "ekText": "下线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "profile",
+    "ekText": "资料变动",
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "资料更新"
+   },
+   {
+    "kind": "offline",
+    "ekText": "下线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
-    "region": null,
-    "name": null,
-    "access": null,
-    "text": "—"
-   },
-   {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "US",
     "name": "Beta Lounge",
     "access": "公开",
     "text": "USBeta Lounge· 公开"
    },
    {
+    "kind": "online",
+    "ekText": "上线",
     "region": "US",
     "name": "Beta Lounge",
     "access": "好友+",
     "text": "USBeta Lounge· 好友+"
    },
    {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "JP",
     "name": "Alpha Club",
     "access": "公开",
     "text": "JPAlpha Club· 公开"
    },
    {
+    "kind": "offline",
+    "ekText": "下线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "profile",
+    "ekText": "资料变动",
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "资料更新"
+   },
+   {
+    "kind": "online",
+    "ekText": "上线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
-    "region": null,
-    "name": null,
-    "access": null,
-    "text": "—"
-   },
-   {
+    "kind": "online",
+    "ekText": "上线",
     "region": "JP",
     "name": "夜の喫茶店",
     "access": "群组公开",
     "text": "JP夜の喫茶店· 群组公开"
    },
    {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "JP",
     "name": "Alpha Club",
     "access": "仅好友",
     "text": "JPAlpha Club· 仅好友"
    },
    {
+    "kind": "status",
+    "ekText": "状态变动",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "JP",
     "name": "Alpha Club",
     "access": "公开",
     "text": "JPAlpha Club· 公开"
    },
    {
+    "kind": "active",
+    "ekText": "活跃",
     "region": "JP",
     "name": "Alpha Club",
     "access": "仅好友",
     "text": "JPAlpha Club· 仅好友"
    },
    {
+    "kind": "online",
+    "ekText": "上线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "profile",
+    "ekText": "资料变动",
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "资料更新"
+   },
+   {
+    "kind": "profile",
+    "ekText": "资料变动",
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "资料更新"
+   },
+   {
+    "kind": "offline",
+    "ekText": "下线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
-    "region": null,
-    "name": null,
-    "access": null,
-    "text": "—"
-   },
-   {
-    "region": null,
-    "name": null,
-    "access": null,
-    "text": "—"
-   },
-   {
+    "kind": "active",
+    "ekText": "活跃",
     "region": "JP",
     "name": "Beta Lounge",
     "access": "群组公开",
     "text": "JPBeta Lounge· 群组公开"
    },
    {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "JP",
     "name": "Alpha Club",
     "access": "公开",
     "text": "JPAlpha Club· 公开"
    },
    {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "JP",
     "name": "Beta Lounge",
     "access": "群组公开",
     "text": "JPBeta Lounge· 群组公开"
    },
    {
+    "kind": "profile",
+    "ekText": "模型变动",
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "模型 → 已更换"
+   },
+   {
+    "kind": "online",
+    "ekText": "上线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "offline",
+    "ekText": "下线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "online",
+    "ekText": "上线",
     "region": "JP",
     "name": "Alpha Club",
     "access": "仅好友",
     "text": "JPAlpha Club· 仅好友"
    },
    {
+    "kind": "status",
+    "ekText": "状态变动",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "profile",
+    "ekText": "资料变动",
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "昵称 → Bob · 状态 → 今晚 VR 见"
+   },
+   {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "JP",
     "name": "Alpha Club",
     "access": "好友+",
     "text": "JPAlpha Club· 好友+"
    },
    {
+    "kind": "profile",
+    "ekText": "资料变动",
+    "region": null,
+    "name": null,
+    "access": null,
+    "text": "资料更新"
+   },
+   {
+    "kind": "online",
+    "ekText": "上线",
     "region": "US",
     "name": "Beta Lounge",
     "access": "公开",
     "text": "USBeta Lounge· 公开"
    },
    {
+    "kind": "offline",
+    "ekText": "下线",
     "region": null,
     "name": null,
     "access": null,
     "text": "—"
    },
    {
+    "kind": "location",
+    "ekText": "位置变动",
     "region": "JP",
     "name": "夜の喫茶店",
     "access": "公开",
     "text": "JP夜の喫茶店· 公开"
    },
    {
+    "kind": "active",
+    "ekText": "活跃",
     "region": "JP",
     "name": "夜の喫茶店",
     "access": "公开",
@@ -440,6 +564,6 @@
   "toolbarRowSpread": 0,
   "toolbarHasSelect": true,
   "toolbarHasSearch": true,
-  "rows": 36
+  "rows": 39
  }
 }

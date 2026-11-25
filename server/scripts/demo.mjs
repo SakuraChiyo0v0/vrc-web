@@ -172,6 +172,20 @@ for (const [uid, name, kind, loc, wid, wname, mins] of feed) {
   await ins(`insert into friend_event (user_id, display_name, kind, location, world_id, world_name, at)
              values (?,?,?,?,?,?,?)`, [uid, name, kind, loc, wid, wname, at(now - mins * MIN)]);
 }
+// 动态页详细信息列（第33轮）：profile 行要给出「变了什么」。三种形态各来一条 ——
+// 只换模型（→ 模型变动）、改昵称+状态（→ 资料变动）、空 changes（→ 资料更新），断言才有东西可量。
+const profiles = [
+  ['usr_alice', 'Alice', { fields: ['userId', 'user'], changes: [
+    { field: 'avatar_id', old: 'https://api.vrchat.cloud/api/1/file/file_a/1/256', new: 'https://api.vrchat.cloud/api/1/file/file_b/1/256' }] }, 88],
+  ['usr_bob', 'Bob', { fields: ['userId', 'user'], changes: [
+    { field: 'display_name', old: 'Bob.', new: 'Bob' },
+    { field: 'status_description', old: '在剪视频', new: '今晚 VR 见' }] }, 110],
+  ['usr_carol', 'Carol', { fields: ['userId', 'user'], changes: [] }, 150],
+];
+for (const [uid, name, payload, mins] of profiles) {
+  await ins(`insert into friend_event (user_id, display_name, kind, payload, at) values (?,?,?,?,?)`,
+    [uid, name, 'profile', JSON.stringify(payload), at(now - mins * MIN)]);
+}
 
 // 我的足迹：近 7 天每天 1~3 段，供概览/行程/游戏日志有形状
 const plan = [

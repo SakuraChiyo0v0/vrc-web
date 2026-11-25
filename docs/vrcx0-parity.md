@@ -789,3 +789,19 @@ structure_parity 只数「右栏榜单节数 0/3」，三块榜单的字号/头�
 - **折叠夹标题被当页面点**：`nav_coverage` 按 `[data-nav-id]` 收集页面项，夹子按钮补了 `data-nav-id` 后也被算成页，点它等于收起子项 → 子项后续全红。选择器必须带 `data-nav-kind=page` 语义，别复用同一个属性。
 - **模板串里的 `useSort` 静态扫不到**：`useSort(\`worlds-${mode}\`)` 逃过所有静态断言，直到整页崩才暴露。要么写显式常量，要么让单测能覆盖到（本轮两条都做）。
 - **回归脚本自身也要有分母来源**：nav 从 366 变 390 是「页面变多」而不是回归，README 里的数必须跟着实测走，否则下次有人拿 366 当基准反而把正确结果当失败。
+
+# 第四十七轮：动态页 profile 行「详细信息」补成真内容（feed 19/19）（2026-11-25）
+
+第 32 轮收尾时记下的数据侧缺口：动态页「详细信息」列对 `profile` 事件一律渲染 `—`。库里 6458 条 profile 事件中 2968 条 `payload.changes` 为空，其余含 `display_name/status/status_description/icon_url` 变更，全都没显示。本轮补齐并由常驻断言锁死。
+
+| # | 产出 | 验收 |
+|---|---|---|
+| 402 | `server/src/index.js` 的 `/api/events` 查询补 `e.payload`（原先只回 location/world，payload 没出接口，前端拿不到 changes） | `curl '127.0.0.1:8891/api/events?kind=profile&limit=5'` 每条带 `payload`（SQLite 给字符串、PG jsonb 给对象，前端两种都认） |
+| 403 | `FeedPage.jsx` 新增 `changesOf/showValue/profileText/kindLabel`：`昵称 → 新名` / `状态 → 文案` / `在线状态 → 中文标签`（active→活跃、join me→求邀请…）/ `头像更新` / `模型 → 已更换`，多字段 ` · ` 连接；空 changes →「资料更新」；URL 值一律收敛成「已更换」不外露。类型列按变更分：含 `avatar_id` →「模型变动」，其余 →「资料变动」，`data-kind` 仍 `profile`（四色断言不受影响）。库里没有模型名（`vrc.avatar` 0 行、`friend.avatar_id` 只是缩略图 URL），只写「已更换」不猜名字 | `node scripts/feed_parity.mjs` → **19/19 · FEED OK · exit 0**；实测 7 条 profile 行：`模型 → 已更换`×1、`昵称 → Bob · 状态 → 今晚 VR 见`×1、`资料更新`×5；类型列 `模型变动 1 / 资料变动 6` |
+| 404 | `scripts/feed_parity.mjs` 新增 4 条断言：变更行详细信息非空、变更内容具体（含 `→` 或「资料更新」且不含 URL/未知）、三种形态各 ≥1（模型/昵称/空）、类型列按变更分文案（模型变动条数 = 含 `模型 → 已更换` 行数，且全部 `data-kind=profile`） | 19/19 FEED OK；`FEED_NEG=1`（注入行高 56 + padding 8）→ 16/19 · NEG OK，破坏仍被 行高 / 列文字起点 抓到 |
+| 405 | `server/scripts/demo.mjs` 补三条 profile 事件（只换模型 / 改昵称+状态 / 空 changes），让断言有东西可量 | demo API 三条 payload 分别带 `avatar_id`、`display_name+status_description`、`changes: []` |
+
+踩坑记录：
+- **payload 没出接口**：前端早就写了 `changesOf`，但 `/api/events` 的 select 里没有 `e.payload`，所以永远走「资料更新」分支——这类缺口单看页面看不出，必须拿 API 返回对照。
+- **断言别只判「非空」**：只写「不为 `—`」的话，全渲染成「资料更新」也能过。要按形态分别计数（模型/昵称/空各 ≥1），否则回归是假绿。
+- **模型名不可编**：`vrc.avatar` 空表、`friend.avatar_id` 是缩略图 URL，写「模型 → 已更换」是唯一有依据的表述。

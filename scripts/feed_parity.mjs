@@ -110,7 +110,10 @@ try {
       const name = (btn || td.querySelector('span:not(.reg)'));
       const txt = (td.textContent || '').replace(/\s+/g, ' ').trim();
       const access = (txt.match(/·\s*(公开|仅好友|好友\+|群组公开)/) || [])[1] || null;
+      const ek = tr.querySelector('.ek');
       return {
+        kind: ek?.getAttribute('data-kind') || null,
+        ekText: (ek?.textContent || '').replace(/\s+/g, ' ').trim(),
         region: reg ? (reg.textContent || '').trim() : null,
         name: btn ? (btn.textContent || '').trim() : null,
         access,
@@ -191,6 +194,31 @@ try {
   const namedWorlds = got.details.filter((d) => d.region || d.name);
   check('详细信息有世界名', `${namedWorlds.filter((d) => d.name && d.name !== '未知世界').length}/${namedWorlds.length}`,
     '全部', namedWorlds.length > 0 && namedWorlds.every((d) => d.name && d.name !== '未知世界'));
+
+  // 资料变更行（第33轮）：详细信息列必须给「变了什么」，不许留空/「—」
+  const prof = got.details.filter((d) => d.kind === 'profile');
+  const profBad = prof.filter((d) => !d.text || d.text === '—');
+  check('变更行详细信息非空', `${prof.length - profBad.length}/${prof.length}`, '全部',
+    prof.length > 0 && profBad.length === 0, profBad.slice(0, 2).map((d) => d.text || '空').join(' | '));
+  // 具体到字段级：`昵称 → 新名` / `模型 → 已更换`，空 changes 至少给「资料更新」；不许出现未知/URL
+  const profOk = prof.filter((d) => (/→/.test(d.text) || d.text === '资料更新') && !/http|未知/.test(d.text));
+  check('变更内容具体(字段→值)', `${profOk.length}/${prof.length}`, '全部',
+    prof.length > 0 && profOk.length === prof.length, prof.map((d) => d.text).slice(0, 3).join(' | '));
+  // 三种形态各至少一条（demo 数据保证）：换模型不外露 URL / 昵称给新名 / 空 changes 给「资料更新」
+  const modelRows = prof.filter((d) => /(^| · )模型 → 已更换$/.test(d.text) || /模型 → 已更换/.test(d.text));
+  const nameRows = prof.filter((d) => /昵称 → \S/.test(d.text));
+  const emptyRows = prof.filter((d) => d.text === '资料更新');
+  check('变更三形态(模型/昵称/空)', `模型 ${modelRows.length} · 昵称 ${nameRows.length} · 资料更新 ${emptyRows.length}`,
+    '各 ≥1', modelRows.length >= 1 && nameRows.length >= 1 && emptyRows.length >= 1,
+    prof.map((d) => d.text).join(' | ').slice(0, 120));
+  // 类型列文案：含 avatar_id 变更 →「模型变动」，其余 profile →「资料变动」；data-kind 仍是 profile
+  const modelKind = prof.filter((d) => d.ekText === '模型变动');
+  const plainKind = prof.filter((d) => d.ekText === '资料变动');
+  check('类型列按变更分文案', `模型变动 ${modelKind.length} / 资料变动 ${plainKind.length} / 共 ${prof.length}`,
+    '模型变动=模型变更行，其余=资料变动',
+    prof.length > 0 && modelKind.length === modelRows.length && modelKind.length + plainKind.length === prof.length
+      && prof.every((d) => d.kind === 'profile'),
+    prof.map((d) => `${d.ekText}:${d.text}`).join(' | ').slice(0, 120));
 
   if (!NEG) fs.writeFileSync(OUT, JSON.stringify({
     base: BASE, viewport: VIEWPORT, at: new Date().toISOString(),

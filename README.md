@@ -110,14 +110,14 @@ scripts/regress_all.sh                 # 默认 http://127.0.0.1:8891
 | 侧栏清单对齐 | `node scripts/nav_inventory_check.mjs --strict` | 22/22（真机基准 `docs/ref/nav-inventory.json` ↔ 实际渲染侧栏：SAME 22 / RENAME 0 / MISSING 0 / EXTRA 0 / ORDER 0，`--strict` 下任一不齐 exit 1；补上 frame 只比密度不比文案的盲区） |
 | 移动断点 | `node scripts/mobile_parity.mjs` | 1479/1479 |
 | 网格列数阶梯 | `node scripts/grid_parity.mjs` | 60/60（10 视口：4 档中间值 + 3 处断点两侧；每档 6 项） |
-| 动态页表格 | `node scripts/feed_parity.mjs` | 15/15（列名/列序、无头像列、表头行高 44、列文字起点、右缘留白、工具条单行、无页脚、类型四色互异、类型图标为 12×12 矢量 SVG（非字体字符，避免缺字豆腐块）、详细信息三段） |
+| 动态页表格 | `node scripts/feed_parity.mjs` | 19/19（列名/列序、无头像列、表头行高 44、列文字起点、右缘留白、工具条单行、无页脚、类型四色互异、类型图标为 12×12 矢量 SVG（非字体字符，避免缺字豆腐块）、详细信息三段、profile 行详细信息非空且给「字段 → 值」（模型 → 已更换 / 昵称 → 新名 / 状态 → 文案 / 空 changes → 资料更新）、三种形态各 ≥1、类型列文案按变更分（含 avatar_id → 模型变动，其余 → 资料变动，data-kind 仍 profile）） |
 | 好友位置分栏 | `node scripts/locations_parity.mjs` | 24/24（栏序、组头人数=卡数、世界栏 ≥2 人同实例、私人房间只收在线且不显示世界行、离线垫底、在线不丢不重、组头区域不重复、卡片 96 高/头像 56 正圆/6 列、卡上段 56 高、名字/时长在头像右侧竖排且左对齐（私人栏无时长行）、世界行/状态行从卡左内边起跨整卡宽且单行 12 高、卡内不横向/纵向溢出、列表视图分组一致、私人房间折叠/记忆跨刷新/展开恢复） |
 | 概览三榜单 | `node scripts/overview_parity.mjs` | 45/45（三块榜单顺序与标题、栏宽 300、标题 24/600、副标题 18（标题下 46）、首名 hero 116 圆头像 + 32/600 名字 + 20px 时长（名下 25）/ 下距 55、紧凑行 50 头像 + 22 名字 + 行距 71.5、灰条高 7/槽宽 67/左端固定/右内缩 25/长度∝榜首、hero 唯一且首行、空态文案、末行→下块标题 138、无横向溢出） |
 | 前端单测 | `cd web && npm test` | 51 pass |
 
 端到端实测（第 33 轮，`cache/regress_all_r33.log`，09:40 起跑）：十段一次性全绿 `REGRESS OK 10/10`（structure 59/59、visual 215/215、frame 2166/2166、nav 366/366、mobile 1479/1479、grid 60/60、feed 15/15、locations 20/20→随后补断言后 24/24、overview 45/45、unittest 0 fail）。frame 此前在串行路径下会中途 `browser has been closed` 崩掉，现在每视口独立起停浏览器并在被关闭时换进程重试一次（`FRAME_VIEWS` / `FRAME_OUT` 可单档复现）。全量回归**只能单实例跑**：`regress_all.sh` 用 `flock` 占 `cache/regress/.lock`，后到者打印 `REGRESS BUSY` 直接退出；每段起跑前等 MemAvailable ≥ 600MB，只对 `Killed` / `browser has been closed` / `browserType.launch: Timeout` / 上游 408 这类环境性死亡重试一次（断言失败不重试）。
 
-端到端实测（第 46 轮，`cache/regress_all_r46c.log`，13:09 起跑）：**`REGRESS OK 11/11`** —— structure 59/59、visual 215/215、frame 2256/2256、nav 390/390、navinv 22/22、mobile 1479/1479、grid 60/60、feed 15/15、locations 24/24、overview 45/45、unittest 51 pass。本轮 nav 分母从 366 涨到 390，因为侧栏补齐真机 5 个缺页（群组收藏/模型收藏/我的模型/活动/好友关系图）后页面项 18→19；`navinv` 作为第 11 段常驻，专门守「文案与集合」这条 frame 只比密度时看不见的盲区。
+端到端实测（第 46 轮，`cache/regress_all_r46c.log`，13:09 起跑）：**`REGRESS OK 11/11`** —— structure 59/59、visual 215/215、frame 2256/2256、nav 390/390、navinv 22/22、mobile 1479/1479、grid 60/60、feed 19/19、locations 24/24、overview 45/45、unittest 51 pass。本轮 nav 分母从 366 涨到 390，因为侧栏补齐真机 5 个缺页（群组收藏/模型收藏/我的模型/活动/好友关系图）后页面项 18→19；`navinv` 作为第 11 段常驻，专门守「文案与集合」这条 frame 只比密度时看不见的盲区。
 
 刷新回归说明：脚本里**别用裸 `page.reload()`**。等 `'load'` 会被 demo 的长连接拖过 30s 直接整轮 TimeoutError（拿不到 FAIL 明细）；等 `'domcontentloaded'` 又早于 React 挂载，调用方 `evaluate` 会撞 `Execution context was destroyed`。统一走 `scripts/lib/page_structure.mjs` 的 `reloadVrc/reloadVrcHard`：只等 domcontentloaded，先给 `<html>` 打 `dataset.reloadStamp`，刷新后看不到这枚戳且 `#vrc-topbar h1` 在才算「文档真换新」，否则整页 goto 硬重试——否则旧 DOM 会让「reload 后状态还在」的断言假 PASS（第 30 轮 `exp.dirty.264/280` 读到上一条用例的 353 就是这个原因）。
 
@@ -145,7 +145,7 @@ node scripts/structure_parity.mjs http://172.30.0.7:8790/vrc/  # 59/59
 node scripts/nav_coverage.mjs    http://172.30.0.7:8790/vrc/   # 390/390（逐视口点侧栏项 + 命中测试）
 node scripts/mobile_parity.mjs   http://172.30.0.7:8790/vrc/   # 1479/1479
 node scripts/grid_parity.mjs     http://172.30.0.7:8790/vrc/   # 60/60（.loc-grid 列数阶梯）
-node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 15/15（动态页表格，基线 docs/ref/feed-measure.json）
+node scripts/feed_parity.mjs     http://172.30.0.7:8790/vrc/   # 19/19（动态页表格，基线 docs/ref/feed-measure.json）
 node scripts/locations_parity.mjs http://172.30.0.7:8790/vrc/  # 24/24（好友位置分栏，基线 docs/ref/vrcx0-spec.json#friends_locations）
 node scripts/overview_parity.mjs  http://172.30.0.7:8790/vrc/  # 45/45（概览三榜单，基线 docs/ref/overview-lists-measure.json）
 ```

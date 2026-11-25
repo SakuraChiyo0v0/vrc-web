@@ -151,7 +151,7 @@ app.get('/api/events', async (req) => {
     `select e.id, coalesce(e.user_id, fn.user_id) as user_id,
             coalesce(e.display_name, f.display_name) as display_name,
             coalesce(f.icon_url, fn.icon_url) as icon_url, e.kind, e.location, e.world_id,
-            coalesce(e.world_name, w.name) as world_name, e.at
+            coalesce(e.world_name, w.name) as world_name, e.payload, e.at
        from ${T('friend_event')} e
        left join ${T('friend')} f on f.user_id = e.user_id
        -- 67 历史事件可能只存了名字（采集器早期版本/事件先于好友表）：按名字兜底解析成 userId，

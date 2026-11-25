@@ -65,10 +65,68 @@ function KindGlyph({ kind }) {
   );
 }
 
-const KINDS = [['', '类型'], ['online', '上线'], ['location', '位置变动'], ['offline', '下线'], ['active', '活跃'], ['status', '状态变动'], ['profile', '模型变动']];
+const KINDS = [['', '类型'], ['online', '上线'], ['location', '位置变动'], ['offline', '下线'], ['active', '活跃'], ['status', '状态变动'], ['profile', '资料变动']];
 const LIMIT = 80;
 
 const ACCESS_LABEL = { public: '公开', 'friends+': '好友+', friends: '仅好友', group: '群组公开' };
+
+/** 在线状态码 → 中文（真机文案） */
+const STATUS_LABEL = { active: '活跃', 'join me': '求邀请', 'ask me': '求聊天', busy: '忙碌', offline: '离线', web: '网页在线' };
+
+/** 资料变更字段 → 文案前缀 */
+const FIELD_LABEL = {
+  display_name: '昵称',
+  status: '在线状态',
+  status_description: '状态',
+  icon_url: '头像',
+  avatar_id: '模型',
+  trust_level: '信任等级',
+  trust_rank: '信任等级',
+};
+
+/**
+ * 事件 payload 里的变更列表。PG 的 jsonb 直接给对象，SQLite 给字符串，两种都要认。
+ * 采集器早期版本没有 changes 字段（只有 fields），一律当空数组。
+ */
+function changesOf(e) {
+  let p = e.payload;
+  if (typeof p === 'string') {
+    try { p = JSON.parse(p); } catch { p = null; }
+  }
+  const ch = p?.changes;
+  return Array.isArray(ch) ? ch.filter((c) => c && c.field) : [];
+}
+
+/** 变更值 → 展示文案：状态类走中文表，长文本截断，URL 不外露 */
+function showValue(field, v) {
+  const s = String(v ?? '').trim();
+  if (!s) return '（空）';
+  if (field === 'status') return STATUS_LABEL[s] ?? s;
+  if (/^https?:\/\//.test(s)) return '已更换';
+  return s.length > 24 ? `${s.slice(0, 24)}…` : s;
+}
+
+/**
+ * 详细信息列（profile）：真机这一列给的是「变了什么」。
+ * 库里没有模型名（avatar 表空、friend.avatar_id 只是缩略图 URL），只写「模型 → 已更换」，不猜名字。
+ */
+function profileText(e) {
+  const ch = changesOf(e);
+  if (!ch.length) return '资料更新';
+  const parts = [];
+  for (const c of ch) {
+    const label = FIELD_LABEL[c.field] ?? c.field;
+    const same = c.field === 'avatar_id' || c.field === 'icon_url';
+    parts.push(`${label} → ${same ? '已更换' : showValue(c.field, c.new)}`);
+  }
+  return parts.join(' · ');
+}
+
+/** 类型列文案：profile 里只有换模型才叫「模型变动」，改昵称/状态/头像算「资料变动」 */
+function kindLabel(e) {
+  if (e.kind !== 'profile') return (KIND[e.kind] ?? [e.kind])[0];
+  return changesOf(e).some((c) => c.field === 'avatar_id') ? '模型变动' : '资料变动';
+}
 
 /**
  * 真机时间列只给「时:分」（不带前导 0）——真机列表是当天的，日期在工具条里选。
@@ -110,9 +168,10 @@ const stamp = (iso) =>
     month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
   });
 
-/** 详细信息列：`JP Alpha Club · 仅好友`，私密/离线退化成短语 */
+/** 详细信息列：`JP Alpha Club · 仅好友`，私密/离线退化成短语；资料变更行给「变了什么」 */
 function Detail({ e }) {
   const { openWorld } = useDrawer();
+  if (e.kind === 'profile') return <span className="min-w-0 truncate text-fg2">{profileText(e)}</span>;
   if (!e.location || e.location === 'offline') return <span className="text-fg3">—</span>;
   if (e.location === 'private') return <span className="text-fg3">私密世界</span>;
   if (e.location === 'traveling') return <span className="text-fg3">切换中</span>;
@@ -210,7 +269,7 @@ export default function FeedPage() {
   );
 
   const kindCell = (e) => {
-    const [label] = KIND[e.kind] ?? [e.kind];
+    const label = kindLabel(e);
     return (
       <span className="ek" data-kind={e.kind}>
         <KindGlyph kind={e.kind} />
