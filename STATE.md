@@ -25,3 +25,6 @@
 
 - [2026-11-25 08:45] 第 40 轮（主框架/导航密度断言加固）：`scripts/frame_parity.mjs` 新增 13 条契约断言 —— 状态栏 4 项文字与顺序（服务器状态,实时连接,VRChat,SteamVR）、圆点 8 + 圆点→文字 9、顶栏图标按钮中心距 36、导航顶层行距 40 / 二级行距 35 / 二级左移 27 / 图标距左 18±2 / 二级文字右内缩 ≤−8 / 页脚行距 39 / 页脚无上分割线。实测全 9 视口浅/深 × 展开/收起：**2166/2166 · FRAME OK**（`cache/frame_r51.log`；旧版 1932，每档 +26 = 13 条 × 浅/深两套；per-view 237/229/229/237/229/229/252/262/262）。README 三处数字 + per-view 口径、`docs/vrcx0-parity.md` 第 380 条同步。
 - [2026-11-25 08:45] 下一步：①`bash scripts/regress_all.sh` 单实例复跑确认十段仍全绿且 frame 段显示 2166/2166（frame.log 数字变了，需真实证据）；②`cd web && npm test` 确认 48 pass（本轮未改 web 源码）；③两个未跟踪探针 `scripts/probes/_probe_r31_density.mjs` / `_probe_r31_nav_density.mjs` 已随本轮提交入库。
+
+- [2026-11-25 09:2x] 第 32 轮（动态页表格复刻）：复核 feed 14/14 后做视觉对比，发现类型列图标是字体字符且 `⌖`(U+2316) 全字体链缺字——位置变动（最高频类型）整列豆腐块。改 FeedPage 为 9 类 12×12 内联 SVG（stroke=currentColor），`.ek-glyph` 改 flex:none/12px；feed_parity 加「类型图标为矢量(非字体字符)」第 15 条。实测 **15/15 FEED OK exit 0**（cache/feed_r32_v2.log）、FEED_NEG 12/15 NEG OK、npm test 48 pass；类型列截图无豆腐块。README/docs 口径同步，提交 ce9e15c。
+- [2026-11-25 09:2x] 下一步：数据侧两处与真机仍不同——群组公开不带群名（events 无 group name）、模型变动行详细信息为空（events 未返回模型/头像名）。需先从 friend_avatar_history / location 的 ~group(grp_) 关联出名字，再补 Detail 与断言；属数据管道改动，另起一轮。
